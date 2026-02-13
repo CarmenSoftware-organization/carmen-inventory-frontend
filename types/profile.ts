@@ -58,7 +58,7 @@ export interface BusinessUnitConfig {
   is_active: boolean;
 }
 
-interface ContactInfo {
+export interface ContactInfo {
   name: string;
   tel: string;
   email: string;

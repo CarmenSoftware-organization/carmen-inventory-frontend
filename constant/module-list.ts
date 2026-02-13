@@ -40,6 +40,7 @@ import {
   Network,
   ShieldCheck,
   UserCheck,
+  User,
 } from "lucide-react";
 
 interface ModuleDto {
@@ -294,5 +295,10 @@ export const moduleList: ModuleDto[] = [
         icon: SlidersHorizontal,
       },
     ],
+  },
+  {
+    name: "Profile",
+    path: "/profile",
+    icon: User,
   },
 ];
