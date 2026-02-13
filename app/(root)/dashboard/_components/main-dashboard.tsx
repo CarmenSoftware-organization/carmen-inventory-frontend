@@ -1,25 +1,28 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { useProfile, profileQueryKey } from "@/hooks/use-profile";
+import { useProfile } from "@/hooks/use-profile";
+import { useLogout } from "@/hooks/use-logout";
 import { Button } from "@/components/ui/button";
+import { AlertCircle, RefreshCw } from "lucide-react";
 
 export default function MainDashboard() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const { data: profile, isLoading } = useProfile();
+  const { data: profile, isLoading, isError, refetch } = useProfile();
+  const logoutMutation = useLogout();
 
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      const res = await fetch("/api/auth/logout", { method: "POST" });
-      if (!res.ok) throw new Error("Logout failed");
-    },
-    onSuccess: () => {
-      queryClient.removeQueries({ queryKey: profileQueryKey });
-      router.push("/login");
-    },
-  });
+  if (isError) {
+    return (
+      <div className="flex min-h-svh flex-col items-center justify-center gap-3 p-6">
+        <AlertCircle className="size-8 text-destructive" />
+        <p className="text-sm text-muted-foreground">
+          Unable to connect to server
+        </p>
+        <Button variant="outline" size="sm" onClick={() => refetch()}>
+          <RefreshCw className="mr-2 size-3" />
+          Retry
+        </Button>
+      </div>
+    );
+  }
 
   if (isLoading) return <div>Loading...</div>;
 

@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useState } from "react";
 import { Building2, ChevronsUpDown } from "lucide-react";
 
 import {
@@ -21,21 +21,17 @@ import type { BusinessUnit } from "@/types/profile";
 
 export default function BuSwitcher() {
   const { isMobile } = useSidebar();
-  const { data: profile, isLoading } = useProfile();
+  const { data: profile, isLoading, isError } = useProfile();
 
   const departments = profile?.business_unit ?? [];
   const defaultDept = departments.find((bu) => bu.is_default);
-  const [activeDept, setActiveDept] = React.useState<BusinessUnit | undefined>(
-    defaultDept,
+  const [activeDept, setActiveDept] = useState<BusinessUnit | undefined>(
+    undefined,
   );
 
-  React.useEffect(() => {
-    if (!activeDept && defaultDept) {
-      setActiveDept(defaultDept);
-    }
-  }, [defaultDept, activeDept]);
+  const currentDept = activeDept ?? defaultDept;
 
-  if (isLoading) {
+  if (isLoading || isError) {
     return (
       <SidebarMenu>
         <SidebarMenuItem>
@@ -51,7 +47,7 @@ export default function BuSwitcher() {
     );
   }
 
-  if (!activeDept) {
+  if (!currentDept) {
     return null;
   }
 
@@ -69,10 +65,10 @@ export default function BuSwitcher() {
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {activeDept.name}
+                  {currentDept.name}
                 </span>
                 <span className="truncate text-xs">
-                  {activeDept.config.hotel.name}
+                  {currentDept.config.hotel.name}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto" />

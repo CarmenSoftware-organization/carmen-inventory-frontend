@@ -10,8 +10,8 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get("access_token")?.value;
 
-  // Authenticated users on / or /login → redirect to dashboard
-  if ((pathname === "/" || pathname === "/login") && accessToken) {
+  // Redirect / to dashboard
+  if (pathname === "/" && accessToken) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

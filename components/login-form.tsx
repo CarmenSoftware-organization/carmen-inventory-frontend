@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { profileQueryKey } from "@/hooks/use-profile";
@@ -17,6 +18,10 @@ import { Input } from "@/components/ui/input";
 export default function LoginForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.removeQueries({ queryKey: profileQueryKey });
+  }, [queryClient]);
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
@@ -74,6 +79,7 @@ export default function LoginForm() {
                     id="email"
                     name="email"
                     type="email"
+                    autoComplete="email"
                     placeholder="m@example.com"
                     required
                   />
@@ -86,6 +92,7 @@ export default function LoginForm() {
                     id="password"
                     name="password"
                     type="password"
+                    autoComplete="current-password"
                     required
                   />
                 </Field>

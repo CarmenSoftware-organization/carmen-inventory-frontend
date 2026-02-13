@@ -31,7 +31,7 @@ export default function ModuleApp() {
         sideOffset={4}
         className="w-72 max-h-80 overflow-y-auto p-2"
       >
-        <div className="grid grid-cols-4 gap-0.5">
+        <div className="grid grid-cols-3 gap-0.5">
           {moduleList.map((mod) => {
             const isActive = pathname.startsWith(mod.path);
             return (

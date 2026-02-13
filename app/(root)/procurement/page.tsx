@@ -10,7 +10,7 @@ export default function ProcurementPage() {
     <ModuleLanding
       name={procurementModule.name}
       icon={procurementModule.icon}
-      description="Procurement Setup"
+      description="Purchasing and goods receiving workflow"
       subModules={procurementModule.subModules ?? []}
     />
   );

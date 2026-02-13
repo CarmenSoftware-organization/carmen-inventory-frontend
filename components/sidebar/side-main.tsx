@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/sidebar";
 import { moduleList } from "@/constant/module-list";
 
-export function NavMain() {
+export function SideMain() {
   const pathname = usePathname();
 
   const activeModule = moduleList.find((mod) => pathname.startsWith(mod.path));

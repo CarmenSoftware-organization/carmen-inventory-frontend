@@ -1,7 +1,6 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,15 +12,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { useProfile, profileQueryKey } from "@/hooks/use-profile";
+import { useProfile } from "@/hooks/use-profile";
+import { useLogout } from "@/hooks/use-logout";
 import { formatName } from "@/utils/format/name";
 
 export function UserProfile() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const { data: profile, isLoading } = useProfile();
+  const { data: profile, isLoading, isError } = useProfile();
+  const logoutMutation = useLogout();
 
   const name = profile
     ? `${profile.user_info.firstname} ${profile.user_info.lastname}`
@@ -37,18 +34,7 @@ export function UserProfile() {
     profile?.user_info.lastname,
   );
 
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      const res = await fetch("/api/auth/logout", { method: "POST" });
-      if (!res.ok) throw new Error("Logout failed");
-    },
-    onSuccess: () => {
-      queryClient.removeQueries({ queryKey: profileQueryKey });
-      router.push("/login");
-    },
-  });
-
-  if (isLoading) {
+  if (isLoading || isError) {
     return (
       <Button variant="ghost" className="h-auto gap-2 px-2 py-1.5" disabled>
         <div className="grid gap-1 text-right">

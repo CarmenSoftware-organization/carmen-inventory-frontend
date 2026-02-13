@@ -8,7 +8,7 @@ export default function ConfigPage() {
     <ModuleLanding
       name={configModule.name}
       icon={configModule.icon}
-      description="Config Setup"
+      description="Master data and system-wide settings"
       subModules={configModule.subModules ?? []}
     />
   );
