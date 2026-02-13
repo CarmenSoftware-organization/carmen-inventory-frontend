@@ -1,3 +1,5 @@
+import UnitComponent from "./_components/unit-component";
+
 export default function UnitPage() {
-  return <h1>UnitPage</h1>;
+  return <UnitComponent />;
 }

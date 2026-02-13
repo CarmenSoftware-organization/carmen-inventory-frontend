@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { profileQueryKey } from "@/hooks/use-profile";
+import { useRouter } from "next/navigation";
 
 export function useLogout() {
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation({
     mutationFn: async () => {
       const res = await fetch("/api/auth/logout", { method: "POST" });
@@ -11,7 +12,7 @@ export function useLogout() {
     },
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: profileQueryKey });
-      window.location.href = "/login";
+      router.push("/login");
     },
   });
 }

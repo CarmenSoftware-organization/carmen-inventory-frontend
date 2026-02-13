@@ -7,7 +7,7 @@ export const profileQueryKey = ["profile"] as const;
 export function useProfile() {
   const router = useRouter();
 
-  return useQuery<UserProfile>({
+  const query = useQuery<UserProfile>({
     queryKey: profileQueryKey,
     queryFn: async () => {
       const res = await fetch("/api/proxy/api/user/profile");
@@ -26,4 +26,10 @@ export function useProfile() {
     retry: (_, error) =>
       !(error instanceof Error && error.message === "Unauthorized"),
   });
+
+  const defaultBu = query.data?.business_unit.find((b) => b.is_default);
+  const buCode = defaultBu?.code;
+  const allBuCode = query.data?.business_unit.map((b) => b.code);
+
+  return { ...query, defaultBu, buCode, allBuCode };
 }

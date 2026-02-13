@@ -2,12 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { useProfile } from "@/hooks/use-profile";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -139,7 +134,7 @@ const BUCard = ({ bu }: { bu: BusinessUnit }) => {
       <CardContent className="px-4 py-2">
         <FieldGrid>
           <Field label="Alias" value={bu.alias_name} />
-          <Field label="Department" value={bu.department.name} />
+          <Field label="Department" value={bu.department?.name} />
           <Field label="System Level" value={bu.system_level} />
           <Field label="HOD Departments" value={bu.hod_department.join(", ")} />
           <Field label="Description" value={config.description} />

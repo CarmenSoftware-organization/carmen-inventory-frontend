@@ -17,7 +17,7 @@ import { useLogout } from "@/hooks/use-logout";
 import { formatName } from "@/utils/format/name";
 
 export function UserProfile() {
-  const { data: profile, isLoading, isError } = useProfile();
+  const { data: profile, isLoading, isError, defaultBu } = useProfile();
   const logoutMutation = useLogout();
 
   const name = profile
@@ -26,8 +26,7 @@ export function UserProfile() {
 
   const email = profile?.email ?? "";
 
-  const bu = profile?.business_unit.find((b) => b.is_default);
-  const department = bu?.department.name ?? "";
+  const department = defaultBu?.department?.name ?? "";
 
   const convertName = formatName(
     profile?.user_info.firstname,

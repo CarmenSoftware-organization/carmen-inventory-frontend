@@ -6,7 +6,13 @@ import { Button } from "@/components/ui/button";
 import { AlertCircle, RefreshCw } from "lucide-react";
 
 export default function MainDashboard() {
-  const { data: profile, isLoading, isError, refetch } = useProfile();
+  const {
+    data: profile,
+    isLoading,
+    isError,
+    refetch,
+    defaultBu,
+  } = useProfile();
   const logoutMutation = useLogout();
 
   if (isError) {
@@ -30,14 +36,12 @@ export default function MainDashboard() {
     ? `${profile.user_info.firstname} ${profile.user_info.lastname}`
     : "User";
 
-  const bu = profile?.business_unit.find((b) => b.is_default);
-
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-4 p-6">
       <h1 className="text-2xl font-bold">Welcome, {name}</h1>
-      {bu && (
+      {defaultBu && (
         <p className="text-muted-foreground">
-          {bu.name} &middot; {bu.department.name}
+          {defaultBu.name} &middot; {defaultBu.department?.name}
         </p>
       )}
       <Button
