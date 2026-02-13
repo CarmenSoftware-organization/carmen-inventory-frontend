@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -16,9 +15,7 @@ import { moduleList } from "@/constant/module-list";
 export function NavMain() {
   const pathname = usePathname();
 
-  const activeModule = moduleList.find((mod) =>
-    pathname.startsWith(mod.path),
-  );
+  const activeModule = moduleList.find((mod) => pathname.startsWith(mod.path));
 
   if (!activeModule) {
     return null;
@@ -36,7 +33,6 @@ export function NavMain() {
         <>
           <Separator />
           <SidebarGroup>
-            <SidebarGroupLabel>Sub Module</SidebarGroupLabel>
             <SidebarMenu>
               {activeModule.subModules.map((sub) => (
                 <SidebarMenuItem key={sub.path}>
