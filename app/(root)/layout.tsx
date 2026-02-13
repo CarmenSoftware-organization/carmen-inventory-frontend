@@ -1,5 +1,5 @@
+import { Navbar } from "@/components/navbar/navbar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
-import { Navbar } from "@/components/navbar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function RootLayout({
@@ -12,9 +12,7 @@ export default function RootLayout({
       <AppSidebar />
       <SidebarInset>
         <Navbar />
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {children}
-        </div>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );
