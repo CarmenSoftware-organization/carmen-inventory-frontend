@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Building2, ChevronsUpDown } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   DropdownMenu,
@@ -27,6 +28,7 @@ export default function BuSwitcher() {
   const [activeDept, setActiveDept] = useState<BusinessUnit | undefined>(
     undefined,
   );
+  const previousDept = useRef<BusinessUnit | undefined>(undefined);
 
   const departments = profile?.business_unit ?? [];
   const currentDept = activeDept ?? defaultBu;
@@ -84,8 +86,14 @@ export default function BuSwitcher() {
               <DropdownMenuItem
                 key={bu.id}
                 onClick={() => {
+                  previousDept.current = currentDept;
                   setActiveDept(bu);
-                  switchBuMutation.mutate(bu.id);
+                  switchBuMutation.mutate(bu.id, {
+                    onError: () => {
+                      setActiveDept(previousDept.current);
+                      toast.error("Failed to switch business unit");
+                    },
+                  });
                 }}
                 className="gap-2 p-2"
               >

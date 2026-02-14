@@ -1,5 +1,6 @@
 import { createConfigCrud } from "@/hooks/use-config-crud";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
+import { QUERY_KEYS } from "@/constant/query-keys";
 import type { ExtraCost } from "@/types/extra-cost";
 
 export interface CreateExtraCostDto {
@@ -8,7 +9,7 @@ export interface CreateExtraCostDto {
 }
 
 const crud = createConfigCrud<ExtraCost, CreateExtraCostDto>({
-  queryKey: "extra-costs",
+  queryKey: QUERY_KEYS.EXTRA_COSTS,
   endpoint: API_ENDPOINTS.EXTRA_COST_TYPES,
   label: "extra cost",
 });

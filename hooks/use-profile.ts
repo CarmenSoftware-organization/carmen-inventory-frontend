@@ -1,10 +1,12 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import type { UserProfile } from "@/types/profile";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
+import { QUERY_KEYS } from "@/constant/query-keys";
+import { httpClient } from "@/lib/http-client";
 
-export const profileQueryKey = ["profile"] as const;
+export const profileQueryKey = [QUERY_KEYS.PROFILE] as const;
 
 export function useProfile() {
   const router = useRouter();
@@ -12,7 +14,7 @@ export function useProfile() {
   const query = useQuery<UserProfile>({
     queryKey: profileQueryKey,
     queryFn: async () => {
-      const res = await fetch(API_ENDPOINTS.PROFILE);
+      const res = await httpClient.get(API_ENDPOINTS.PROFILE);
 
       if (res.status === 401) throw new Error("Unauthorized");
       if (!res.ok) throw new Error("Failed to fetch profile");
@@ -25,9 +27,11 @@ export function useProfile() {
       !(error instanceof Error && error.message === "Unauthorized"),
   });
 
-  if (query.error?.message === "Unauthorized") {
-    router.push("/login");
-  }
+  useEffect(() => {
+    if (query.error?.message === "Unauthorized") {
+      router.push("/login");
+    }
+  }, [query.error, router]);
 
   const defaultBu = useMemo(
     () =>

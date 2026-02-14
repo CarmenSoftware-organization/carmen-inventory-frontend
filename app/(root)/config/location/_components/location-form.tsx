@@ -29,25 +29,26 @@ import type {
   Location,
   UserLocation,
   ProductLocation,
+  PhysicalCountType,
 } from "@/types/location";
 import type { FormMode } from "@/types/form";
 import {
+  INVENTORY_TYPE,
   INVENTORY_TYPE_OPTIONS,
   PHYSICAL_COUNT_TYPE_OPTIONS,
 } from "@/constant/location";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DisplayTemplate from "@/components/display-template";
 
 const locationSchema = z.object({
   code: z.string().min(1, "Code is required"),
   name: z.string().min(1, "Name is required"),
-  location_type: z.string().min(1, "Location type is required"),
-  physical_count_type: z.string().min(1, "Physical count type is required"),
+  location_type: z.nativeEnum(INVENTORY_TYPE, {
+    error: "Location type is required",
+  }),
+  physical_count_type: z.enum(["yes", "no"], {
+    error: "Physical count type is required",
+  }),
   description: z.string(),
   is_active: z.boolean(),
 });
@@ -84,8 +85,8 @@ export function LocationForm({ location }: LocationFormProps) {
       : {
           code: "",
           name: "",
-          location_type: "",
-          physical_count_type: "",
+          location_type: "" as unknown as INVENTORY_TYPE,
+          physical_count_type: "" as unknown as PhysicalCountType,
           description: "",
           is_active: true,
         },
@@ -354,9 +355,7 @@ function UserLocationSection({ users }: { users: UserLocation[] }) {
             <thead>
               <tr className="border-b bg-muted/50">
                 <th className="px-3 py-1.5 text-left font-medium">Name</th>
-                <th className="px-3 py-1.5 text-left font-medium">
-                  Telephone
-                </th>
+                <th className="px-3 py-1.5 text-left font-medium">Telephone</th>
               </tr>
             </thead>
             <tbody>
@@ -378,11 +377,7 @@ function UserLocationSection({ users }: { users: UserLocation[] }) {
   );
 }
 
-function ProductLocationSection({
-  products,
-}: {
-  products: ProductLocation[];
-}) {
+function ProductLocationSection({ products }: { products: ProductLocation[] }) {
   const validProducts = products.filter((p) => p.code && p.name);
 
   return (

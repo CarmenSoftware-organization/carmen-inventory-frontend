@@ -1,5 +1,6 @@
 import { createConfigCrud } from "@/hooks/use-config-crud";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
+import { QUERY_KEYS } from "@/constant/query-keys";
 import type { TaxProfile } from "@/types/tax-profile";
 
 export interface CreateTaxProfileDto {
@@ -9,7 +10,7 @@ export interface CreateTaxProfileDto {
 }
 
 const crud = createConfigCrud<TaxProfile, CreateTaxProfileDto>({
-  queryKey: "tax-profiles",
+  queryKey: QUERY_KEYS.TAX_PROFILES,
   endpoint: API_ENDPOINTS.TAX_PROFILES,
   label: "tax profile",
 });

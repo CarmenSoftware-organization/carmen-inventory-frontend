@@ -96,6 +96,8 @@ const DataGridContext = createContext<
   DataGridContextProps<any> | undefined
 >(undefined)
 
+// Context uses `any` because React's createContext doesn't support generics.
+// Type safety is preserved at the component level via DataGridProvider<TData>.
 function useDataGrid() {
   const context = useContext(DataGridContext)
   if (!context) {

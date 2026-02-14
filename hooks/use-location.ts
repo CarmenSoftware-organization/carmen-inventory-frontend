@@ -1,18 +1,20 @@
 import { createConfigCrud } from "@/hooks/use-config-crud";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
-import type { Location } from "@/types/location";
+import { QUERY_KEYS } from "@/constant/query-keys";
+import type { Location, PhysicalCountType } from "@/types/location";
+import type { INVENTORY_TYPE } from "@/constant/location";
 
 export interface CreateLocationDto {
   code: string;
   name: string;
-  location_type: string;
-  physical_count_type: string;
+  location_type: INVENTORY_TYPE;
+  physical_count_type: PhysicalCountType;
   description: string;
   is_active: boolean;
 }
 
 const crud = createConfigCrud<Location, CreateLocationDto>({
-  queryKey: "locations",
+  queryKey: QUERY_KEYS.LOCATIONS,
   endpoint: API_ENDPOINTS.LOCATIONS,
   label: "location",
 });

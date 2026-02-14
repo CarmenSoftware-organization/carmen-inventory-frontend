@@ -1,5 +1,6 @@
 import { createConfigCrud } from "@/hooks/use-config-crud";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
+import { QUERY_KEYS } from "@/constant/query-keys";
 import type { Currency } from "@/types/currency";
 
 export interface CreateCurrencyDto {
@@ -12,7 +13,7 @@ export interface CreateCurrencyDto {
 }
 
 const crud = createConfigCrud<Currency, CreateCurrencyDto>({
-  queryKey: "currencies",
+  queryKey: QUERY_KEYS.CURRENCIES,
   endpoint: API_ENDPOINTS.CURRENCIES,
   label: "currency",
 });

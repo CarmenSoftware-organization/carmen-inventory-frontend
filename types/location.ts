@@ -1,8 +1,9 @@
-export interface DeliveryPoint {
-  id: string;
-  name: string;
-  is_active: boolean;
-}
+import type { DeliveryPoint } from "@/types/delivery-point";
+import type { INVENTORY_TYPE } from "@/constant/location";
+
+export type { DeliveryPoint };
+
+export type PhysicalCountType = "yes" | "no";
 
 export interface UserLocation {
   id: string;
@@ -26,8 +27,8 @@ export interface Location {
   id: string;
   code: string;
   name: string;
-  location_type: string;
-  physical_count_type: string;
+  location_type: INVENTORY_TYPE;
+  physical_count_type: PhysicalCountType;
   description: string;
   is_active: boolean;
   info: Record<string, unknown>;

@@ -1,5 +1,6 @@
 import { createConfigCrud } from "@/hooks/use-config-crud";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
+import { QUERY_KEYS } from "@/constant/query-keys";
 import type { BusinessType } from "@/types/business-type";
 
 export interface CreateBusinessTypeDto {
@@ -8,7 +9,7 @@ export interface CreateBusinessTypeDto {
 }
 
 const crud = createConfigCrud<BusinessType, CreateBusinessTypeDto>({
-  queryKey: "business-types",
+  queryKey: QUERY_KEYS.BUSINESS_TYPES,
   endpoint: API_ENDPOINTS.VENDOR_BUSINESS_TYPES,
   label: "business type",
 });

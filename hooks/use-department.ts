@@ -1,5 +1,6 @@
 import { createConfigCrud } from "@/hooks/use-config-crud";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
+import { QUERY_KEYS } from "@/constant/query-keys";
 import type { Department } from "@/types/department";
 
 export interface CreateDepartmentDto {
@@ -10,7 +11,7 @@ export interface CreateDepartmentDto {
 }
 
 const crud = createConfigCrud<Department, CreateDepartmentDto>({
-  queryKey: "departments",
+  queryKey: QUERY_KEYS.DEPARTMENTS,
   endpoint: API_ENDPOINTS.DEPARTMENTS,
   label: "department",
 });

@@ -29,6 +29,9 @@ export function useConfigTable<T>({
   tableConfig,
   onDelete,
 }: UseConfigTableOptions<T>) {
+  // "use no memo" opts out of React Compiler's automatic memoization.
+  // TanStack Table creates new column/row objects each render; memoizing them
+  // breaks reference-equality checks the library relies on internally.
   "use no memo";
 
   const allColumns: ColumnDef<T>[] = [
