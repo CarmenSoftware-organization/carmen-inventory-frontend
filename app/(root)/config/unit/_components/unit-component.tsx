@@ -20,7 +20,7 @@ import { DataGridPagination } from "@/components/reui/data-grid/data-grid-pagina
 import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
 import { Badge } from "@/components/reui/badge";
 import { Button } from "@/components/ui/button";
-import { useUnit } from "@/hooks/use-unit";
+import { useUnit, useDeleteUnit } from "@/hooks/use-unit";
 import { useDataGridState } from "@/hooks/use-data-grid-state";
 import type { Unit } from "@/types/unit";
 import SearchInput from "@/components/search-input";
@@ -28,9 +28,13 @@ import { DataGridRowActions } from "@/components/reui/data-grid/data-grid-row-ac
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
+import { UnitDialog } from "@/components/share/unit-dialog";
 
 export default function UnitComponent() {
-  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Unit | null>(null);
+  const deleteUnit = useDeleteUnit();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editUnit, setEditUnit] = useState<Unit | null>(null);
   const { params, search, setSearch, filter, setFilter, tableConfig } =
     useDataGridState();
   const { data, isLoading, error, refetch } = useUnit(params);
@@ -60,13 +64,12 @@ export default function UnitComponent() {
           <span className="text-muted-foreground">
             {row.index +
               1 +
-              ((Number(params.page) || 1) - 1) *
-                (Number(params.perpage) || 10)}
+              ((Number(params.page) || 1) - 1) * (Number(params.perpage) || 10)}
           </span>
         ),
         enableSorting: false,
         enableHiding: false,
-        size: 40,
+        size: 20,
       },
       {
         accessorKey: "name",
@@ -74,7 +77,18 @@ export default function UnitComponent() {
           <DataGridColumnHeader column={column} title="Name" />
         ),
         cell: ({ row }) => {
-          return <p className="font-medium">{row.getValue("name")}</p>;
+          return (
+            <button
+              type="button"
+              className="font-medium hover:underline text-left"
+              onClick={() => {
+                setEditUnit(row.original);
+                setDialogOpen(true);
+              }}
+            >
+              {row.getValue("name")}
+            </button>
+          );
         },
       },
       {
@@ -103,12 +117,7 @@ export default function UnitComponent() {
         id: "action",
         header: () => "",
         cell: ({ row }) => (
-          <DataGridRowActions
-            onEdit={() => {
-              // TODO: implement edit
-            }}
-            onDelete={() => setDeleteTarget(row.original.name)}
-          />
+          <DataGridRowActions onDelete={() => setDeleteTarget(row.original)} />
         ),
         enableSorting: false,
         size: 40,
@@ -132,7 +141,7 @@ export default function UnitComponent() {
     return <ErrorState message={error.message} onRetry={() => refetch()} />;
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <div>
         <h1 className="text-lg font-semibold">Unit</h1>
         <p className="text-muted-foreground text-sm">
@@ -150,7 +159,13 @@ export default function UnitComponent() {
           />
           <StatusFilter value={filter} onChange={setFilter} />
         </div>
-        <Button size="sm">
+        <Button
+          size="sm"
+          onClick={() => {
+            setEditUnit(null);
+            setDialogOpen(true);
+          }}
+        >
           <Plus />
           Add Unit
         </Button>
@@ -164,15 +179,25 @@ export default function UnitComponent() {
         <DataGridPagination />
       </DataGrid>
 
+      {/* Unit Dialog (Add / Edit) */}
+      <UnitDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        unit={editUnit}
+      />
+
       {/* Delete Confirmation */}
       <DeleteDialog
         open={!!deleteTarget}
         onOpenChange={(open) => !open && setDeleteTarget(null)}
         title="Delete Unit"
-        description={`Are you sure you want to delete unit "${deleteTarget}"? This action cannot be undone.`}
+        description={`Are you sure you want to delete unit "${deleteTarget?.name}"? This action cannot be undone.`}
+        isPending={deleteUnit.isPending}
         onConfirm={() => {
-          // TODO: implement delete API call
-          setDeleteTarget(null);
+          if (!deleteTarget) return;
+          deleteUnit.mutate(deleteTarget.id, {
+            onSuccess: () => setDeleteTarget(null),
+          });
         }}
       />
     </div>

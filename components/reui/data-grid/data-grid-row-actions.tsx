@@ -36,11 +36,8 @@ export function DataGridRowActions({
           )}
           {onEdit && onDelete && <DropdownMenuSeparator />}
           {onDelete && (
-            <DropdownMenuItem
-              className="text-destructive cursor-pointer"
-              onClick={onDelete}
-            >
-              <Trash2 className="size-3 text-destructive" />
+            <DropdownMenuItem onClick={onDelete} variant={"destructive"}>
+              <Trash2 className="text-destructive" />
               Delete
             </DropdownMenuItem>
           )}
