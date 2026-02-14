@@ -86,7 +86,7 @@ export function UnitDialog({ open, onOpenChange, unit }: UnitDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
       <DialogContent
         className="sm:max-w-sm gap-3 p-4"
         onOpenAutoFocus={() =>
