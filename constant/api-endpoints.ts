@@ -14,6 +14,8 @@ export const API_ENDPOINTS = {
     `/api/proxy/api/config/${buCode}/extra-cost-type`,
   VENDOR_BUSINESS_TYPES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/vendor-business-type`,
+  ADJUSTMENT_TYPES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/adjustment-type`,
   LOGOUT: "/api/auth/logout",
   SWITCH_BU: "/api/proxy/api/business-unit/default",
 } as const;
