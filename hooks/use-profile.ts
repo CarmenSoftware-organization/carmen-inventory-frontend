@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import type { UserProfile } from "@/types/profile";
@@ -28,9 +29,15 @@ export function useProfile() {
       !(error instanceof Error && error.message === "Unauthorized"),
   });
 
-  const defaultBu = query.data?.business_unit.find((b) => b.is_default);
+  const defaultBu = useMemo(
+    () => query.data?.business_unit.find((b) => b.is_default),
+    [query.data],
+  );
   const buCode = defaultBu?.code;
-  const allBuCode = query.data?.business_unit.map((b) => b.code);
+  const allBuCode = useMemo(
+    () => query.data?.business_unit.map((b) => b.code),
+    [query.data],
+  );
 
   return { ...query, defaultBu, buCode, allBuCode };
 }

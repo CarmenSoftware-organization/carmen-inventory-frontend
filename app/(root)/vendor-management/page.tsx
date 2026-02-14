@@ -1,7 +1,7 @@
 import { ModuleLanding } from "@/components/module-landing";
-import { moduleList } from "@/constant/module-list";
+import { getModule } from "@/constant/module-list";
 
-const modules = moduleList.find((mod) => mod.path === "/vendor-management")!;
+const modules = getModule("/vendor-management");
 
 export default function VendorManagementPage() {
   return (

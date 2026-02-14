@@ -50,6 +50,12 @@ interface ModuleDto {
   subModules?: ModuleDto[];
 }
 
+export function getModule(path: string): ModuleDto {
+  const mod = moduleList.find((m) => m.path === path);
+  if (!mod) throw new Error(`Module not found: ${path}`);
+  return mod;
+}
+
 export const moduleList: ModuleDto[] = [
   {
     name: "Dashboard",

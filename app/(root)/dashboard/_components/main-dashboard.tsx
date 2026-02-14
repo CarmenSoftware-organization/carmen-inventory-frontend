@@ -4,7 +4,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { useLogout } from "@/hooks/use-logout";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, RefreshCw } from "lucide-react";
+import { ErrorState } from "@/components/ui/error-state";
 
 export default function MainDashboard() {
   const {
@@ -18,16 +18,10 @@ export default function MainDashboard() {
 
   if (isError) {
     return (
-      <div className="flex min-h-svh flex-col items-center justify-center gap-3 p-6">
-        <AlertCircle className="size-8 text-destructive" />
-        <p className="text-sm text-muted-foreground">
-          Unable to connect to server
-        </p>
-        <Button variant="outline" size="sm" onClick={() => refetch()}>
-          <RefreshCw className="mr-2 size-3" />
-          Retry
-        </Button>
-      </div>
+      <ErrorState
+        message="Unable to connect to server"
+        onRetry={() => refetch()}
+      />
     );
   }
 

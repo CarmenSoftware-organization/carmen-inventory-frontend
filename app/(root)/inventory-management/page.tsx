@@ -1,7 +1,7 @@
 import { ModuleLanding } from "@/components/module-landing";
-import { moduleList } from "@/constant/module-list";
+import { getModule } from "@/constant/module-list";
 
-const modules = moduleList.find((mod) => mod.path === "/inventory-management")!;
+const modules = getModule("/inventory-management");
 
 export default function InventoryManagementPage() {
   return (

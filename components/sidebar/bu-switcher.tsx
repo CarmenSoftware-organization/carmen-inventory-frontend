@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Building2, ChevronsUpDown } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import {
   DropdownMenu,
@@ -16,11 +17,12 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useProfile } from "@/hooks/use-profile";
+import { useProfile, profileQueryKey } from "@/hooks/use-profile";
 import type { BusinessUnit } from "@/types/profile";
 
 export default function BuSwitcher() {
   const { isMobile } = useSidebar();
+  const queryClient = useQueryClient();
   const { data: profile, isLoading, isError } = useProfile();
 
   const departments = profile?.business_unit ?? [];
@@ -30,6 +32,16 @@ export default function BuSwitcher() {
   );
 
   const currentDept = activeDept ?? defaultDept;
+
+  const handleSwitchBu = useCallback(
+    (bu: BusinessUnit) => {
+      setActiveDept(bu);
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey !== profileQueryKey,
+      });
+    },
+    [queryClient],
+  );
 
   if (isLoading || isError) {
     return (
@@ -83,7 +95,7 @@ export default function BuSwitcher() {
             {departments.map((bu) => (
               <DropdownMenuItem
                 key={bu.id}
-                onClick={() => setActiveDept(bu)}
+                onClick={() => handleSwitchBu(bu)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">

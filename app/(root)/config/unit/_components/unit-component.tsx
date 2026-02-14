@@ -26,13 +26,14 @@ import type { Unit } from "@/types/unit";
 import SearchInput from "@/components/search-input";
 import { DataGridRowActions } from "@/components/reui/data-grid/data-grid-row-actions";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
+import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
 
 export default function UnitComponent() {
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const { params, search, setSearch, filter, setFilter, tableConfig } =
     useDataGridState();
-  const { data, isLoading, error } = useUnit(params);
+  const { data, isLoading, error, refetch } = useUnit(params);
 
   const columns: ColumnDef<Unit>[] = useMemo(
     () => [
@@ -127,7 +128,8 @@ export default function UnitComponent() {
     pageCount: Math.ceil(totalRecords / (params.perpage as number)),
   });
 
-  if (error) return <p>Error: {error.message}</p>;
+  if (error)
+    return <ErrorState message={error.message} onRetry={() => refetch()} />;
 
   return (
     <div className="space-y-3">

@@ -15,5 +15,9 @@ export function useLogout() {
       queryClient.removeQueries({ queryKey: profileQueryKey });
       router.push("/login");
     },
+    onError: () => {
+      queryClient.removeQueries({ queryKey: profileQueryKey });
+      router.push("/login");
+    },
   });
 }

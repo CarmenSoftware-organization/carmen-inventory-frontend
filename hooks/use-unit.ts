@@ -21,7 +21,8 @@ export function useUnit(params?: ParamsDto) {
   return useQuery<UnitResponse>({
     queryKey: ["units", buCode, params],
     queryFn: async () => {
-      const url = buildUrl(API_ENDPOINTS.UNITS(buCode!), params);
+      if (!buCode) throw new Error("Missing buCode");
+      const url = buildUrl(API_ENDPOINTS.UNITS(buCode), params);
       const res = await fetch(url);
       if (!res.ok) throw new Error("Failed to fetch units");
       return res.json();

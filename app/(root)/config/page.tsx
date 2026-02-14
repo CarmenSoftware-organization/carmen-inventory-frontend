@@ -1,7 +1,7 @@
 import { ModuleLanding } from "@/components/module-landing";
-import { moduleList } from "@/constant/module-list";
+import { getModule } from "@/constant/module-list";
 
-const configModule = moduleList.find((mod) => mod.path === "/config")!;
+const configModule = getModule("/config");
 
 export default function ConfigPage() {
   return (

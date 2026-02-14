@@ -1,7 +1,7 @@
 import { ModuleLanding } from "@/components/module-landing";
-import { moduleList } from "@/constant/module-list";
+import { getModule } from "@/constant/module-list";
 
-const modules = moduleList.find((mod) => mod.path === "/system-admin")!;
+const modules = getModule("/system-admin");
 
 export default function SystemAdminPage() {
   return (

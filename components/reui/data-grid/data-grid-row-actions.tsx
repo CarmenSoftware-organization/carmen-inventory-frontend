@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 interface DataGridRowActionsProps {
-  onEdit?: () => void;
-  onDelete?: () => void;
+  readonly onEdit?: () => void;
+  readonly onDelete?: () => void;
 }
 
 export function DataGridRowActions({
@@ -23,7 +23,7 @@ export function DataGridRowActions({
     <div className="flex justify-end">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon-xs">
+          <Button variant="ghost" size="icon-xs" aria-label="Row actions">
             <MoreHorizontal />
           </Button>
         </DropdownMenuTrigger>

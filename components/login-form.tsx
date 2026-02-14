@@ -94,8 +94,15 @@ export default function LoginForm() {
                     type="password"
                     autoComplete="current-password"
                     required
+                    minLength={6}
                   />
                 </Field>
+
+                {loginMutation.isError && (
+                  <p className="text-sm text-destructive">
+                    {loginMutation.error.message}
+                  </p>
+                )}
 
                 <Field>
                   <Button type="submit" disabled={loginMutation.isPending}>
@@ -106,11 +113,6 @@ export default function LoginForm() {
             </form>
           </CardContent>
         </Card>
-        {loginMutation.isError && (
-          <p className="text-sm text-destructive">
-            {loginMutation.error.message}
-          </p>
-        )}
       </div>
     </div>
   );
