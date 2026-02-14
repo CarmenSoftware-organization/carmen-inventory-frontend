@@ -29,6 +29,7 @@ import {
   useCreateProduct,
   useUpdateProduct,
   useDeleteProduct,
+  type CreateProductDto,
 } from "@/hooks/use-product";
 import { useTaxProfile } from "@/hooks/use-tax-profile";
 import { useLocation } from "@/hooks/use-location";
@@ -179,14 +180,14 @@ export function ProductForm({ product }: ProductFormProps) {
   );
 
   const onSubmit = (values: ProductFormValues) => {
-    const payload = {
+    const payload: CreateProductDto = {
       name: values.name,
       code: values.code,
       local_name: values.local_name,
       description: values.description,
       inventory_unit_id: values.inventory_unit_id,
       product_status_type: values.product_status_type,
-      tax_profile_id: values.tax_profile_id || undefined,
+      tax_profile_id: values.tax_profile_id || "",
       product_info: {
         is_used_in_recipe: values.is_used_in_recipe,
         is_sold_directly: values.is_sold_directly,
@@ -225,7 +226,7 @@ export function ProductForm({ product }: ProductFormProps) {
 
     if (isEdit && product) {
       updateProduct.mutate(
-        { id: product.id, ...payload } as never,
+        { id: product.id, ...payload },
         {
           onSuccess: () => {
             toast.success("Product updated successfully");
@@ -235,7 +236,7 @@ export function ProductForm({ product }: ProductFormProps) {
         },
       );
     } else if (isAdd) {
-      createProduct.mutate(payload as never, {
+      createProduct.mutate(payload, {
         onSuccess: () => {
           toast.success("Product created successfully");
           router.push("/product-management/product");

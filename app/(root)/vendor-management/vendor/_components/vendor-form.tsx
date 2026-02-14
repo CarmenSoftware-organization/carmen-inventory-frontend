@@ -29,6 +29,7 @@ import {
   useCreateVendor,
   useUpdateVendor,
   useDeleteVendor,
+  type CreateVendorDto,
 } from "@/hooks/use-vendor";
 import { useBusinessType } from "@/hooks/use-business-type";
 import type { VendorDetail } from "@/types/vendor";
@@ -161,7 +162,7 @@ export function VendorForm({ vendor }: VendorFormProps) {
   );
 
   const onSubmit = (values: VendorFormValues) => {
-    const payload = {
+    const payload: CreateVendorDto = {
       code: values.code,
       name: values.name,
       description: values.description,
@@ -194,7 +195,7 @@ export function VendorForm({ vendor }: VendorFormProps) {
 
     if (isEdit && vendor) {
       updateVendor.mutate(
-        { id: vendor.id, ...payload } as never,
+        { id: vendor.id, ...payload },
         {
           onSuccess: () => {
             toast.success("Vendor updated successfully");
@@ -204,7 +205,7 @@ export function VendorForm({ vendor }: VendorFormProps) {
         },
       );
     } else if (isAdd) {
-      createVendor.mutate(payload as never, {
+      createVendor.mutate(payload, {
         onSuccess: () => {
           toast.success("Vendor created successfully");
           router.push("/vendor-management/vendor");

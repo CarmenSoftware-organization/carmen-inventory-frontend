@@ -34,6 +34,7 @@ import {
   useCreateStoreRequisition,
   useUpdateStoreRequisition,
   useDeleteStoreRequisition,
+  type CreateStoreRequisitionDto,
 } from "@/hooks/use-store-requisition";
 import { useDepartment } from "@/hooks/use-department";
 import { useLocation } from "@/hooks/use-location";
@@ -146,7 +147,7 @@ export function StoreRequisitionForm({
   } = useFieldArray({ control: form.control, name: "items" });
 
   const onSubmit = (values: SrFormValues) => {
-    const details = {
+    const details: CreateStoreRequisitionDto["details"] = {
       sr_date: new Date(values.sr_date).toISOString(),
       expected_date: new Date(values.expected_date).toISOString(),
       description: values.description,
@@ -171,7 +172,7 @@ export function StoreRequisitionForm({
           id: storeRequisition.id,
           state_role: "update",
           details,
-        } as never,
+        },
         {
           onSuccess: () => {
             toast.success("Store requisition updated successfully");
@@ -182,7 +183,7 @@ export function StoreRequisitionForm({
       );
     } else if (isAdd) {
       createSr.mutate(
-        { state_role: "create", details } as never,
+        { state_role: "create", details },
         {
           onSuccess: () => {
             toast.success("Store requisition created successfully");

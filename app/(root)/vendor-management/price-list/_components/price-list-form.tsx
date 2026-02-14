@@ -28,6 +28,7 @@ import {
   useCreatePriceList,
   useUpdatePriceList,
   useDeletePriceList,
+  type CreatePriceListDto,
 } from "@/hooks/use-price-list";
 import { useVendor } from "@/hooks/use-vendor";
 import { useCurrency } from "@/hooks/use-currency";
@@ -158,7 +159,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
   } = useFieldArray({ control: form.control, name: "pricelist_detail" });
 
   const onSubmit = (values: PriceListFormValues) => {
-    const payload = {
+    const payload: CreatePriceListDto = {
       vendor_id: values.vendor_id,
       name: values.name,
       description: values.description,
@@ -174,7 +175,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
           price: d.price,
           price_without_tax: d.price_without_tax,
           unit_id: d.unit_id,
-          tax_profile_id: d.tax_profile_id || undefined,
+          tax_profile_id: d.tax_profile_id || "",
           tax_rate: d.tax_rate,
           tax_amt: d.tax_amt,
           lead_time_days: d.lead_time_days,
@@ -185,7 +186,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
 
     if (isEdit && priceList) {
       updatePriceList.mutate(
-        { id: priceList.id, ...payload } as never,
+        { id: priceList.id, ...payload },
         {
           onSuccess: () => {
             toast.success("Price list updated successfully");
@@ -195,7 +196,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
         },
       );
     } else if (isAdd) {
-      createPriceList.mutate(payload as never, {
+      createPriceList.mutate(payload, {
         onSuccess: () => {
           toast.success("Price list created successfully");
           router.push("/vendor-management/price-list");

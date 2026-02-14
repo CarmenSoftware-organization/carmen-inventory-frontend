@@ -34,6 +34,7 @@ import {
   useCreateRequestPriceList,
   useUpdateRequestPriceList,
   useDeleteRequestPriceList,
+  type CreateRequestPriceListDto,
 } from "@/hooks/use-request-price-list";
 import { usePriceListTemplate } from "@/hooks/use-price-list-template";
 import { useVendor } from "@/hooks/use-vendor";
@@ -138,7 +139,7 @@ export function RequestPriceListForm({
   } = useFieldArray({ control: form.control, name: "vendors" });
 
   const onSubmit = (values: RfpFormValues) => {
-    const payload = {
+    const payload: CreateRequestPriceListDto = {
       name: values.name,
       pricelist_template_id: values.pricelist_template_id,
       start_date: new Date(values.start_date).toISOString(),
@@ -161,7 +162,7 @@ export function RequestPriceListForm({
 
     if (isEdit && requestPriceList) {
       updateRfp.mutate(
-        { id: requestPriceList.id, ...payload } as never,
+        { id: requestPriceList.id, ...payload },
         {
           onSuccess: () => {
             toast.success("Request price list updated successfully");
@@ -171,7 +172,7 @@ export function RequestPriceListForm({
         },
       );
     } else if (isAdd) {
-      createRfp.mutate(payload as never, {
+      createRfp.mutate(payload, {
         onSuccess: () => {
           toast.success("Request price list created successfully");
           router.push("/vendor-management/request-price-list");

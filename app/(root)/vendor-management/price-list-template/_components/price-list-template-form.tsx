@@ -34,6 +34,7 @@ import {
   useCreatePriceListTemplate,
   useUpdatePriceListTemplate,
   useDeletePriceListTemplate,
+  type CreatePriceListTemplateDto,
 } from "@/hooks/use-price-list-template";
 import { useCurrency } from "@/hooks/use-currency";
 import { useProduct } from "@/hooks/use-product";
@@ -140,7 +141,7 @@ export function PriceListTemplateForm({
   } = useFieldArray({ control: form.control, name: "products" });
 
   const onSubmit = (values: TemplateFormValues) => {
-    const payload = {
+    const payload: CreatePriceListTemplateDto = {
       name: values.name,
       description: values.description,
       status: values.status,
@@ -162,7 +163,7 @@ export function PriceListTemplateForm({
 
     if (isEdit && priceListTemplate) {
       updateTemplate.mutate(
-        { id: priceListTemplate.id, ...payload } as never,
+        { id: priceListTemplate.id, ...payload },
         {
           onSuccess: () => {
             toast.success("Price list template updated successfully");
@@ -172,7 +173,7 @@ export function PriceListTemplateForm({
         },
       );
     } else if (isAdd) {
-      createTemplate.mutate(payload as never, {
+      createTemplate.mutate(payload, {
         onSuccess: () => {
           toast.success("Price list template created successfully");
           router.push("/vendor-management/price-list-template");

@@ -18,7 +18,7 @@ interface PaginatedResponse {
   };
 }
 
-interface CreateStoreRequisitionDto {
+export interface CreateStoreRequisitionDto {
   state_role: string;
   details: {
     sr_date: string;

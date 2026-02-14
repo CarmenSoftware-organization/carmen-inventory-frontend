@@ -16,7 +16,10 @@ export interface CreateVendorDto {
   business_type: { id: string }[];
   info: VendorInfoItem[];
   vendor_address: {
-    add?: Omit<VendorAddress, "id">[];
+    add?: {
+      address_type: string;
+      data: Omit<VendorAddress, "id" | "address_type">;
+    }[];
   };
   vendor_contact: {
     add?: Omit<VendorContact, "id">[];
