@@ -10,6 +10,7 @@ export const QUERY_KEYS = {
   TAX_PROFILES: "tax-profiles",
   CURRENCIES: "currencies",
   PRODUCTS: "products",
+  VENDORS: "vendors",
 } as const;
 
 export type QueryKey = (typeof QUERY_KEYS)[keyof typeof QUERY_KEYS];
