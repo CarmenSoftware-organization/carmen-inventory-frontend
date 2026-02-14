@@ -8,7 +8,7 @@ export default function StoreOperationPage() {
     <ModuleLanding
       name={modules.name}
       icon={modules.icon}
-      description="Order management, inventory control, and sales summar"
+      description="Order management, inventory control, and sales summary"
       subModules={modules.subModules ?? []}
     />
   );

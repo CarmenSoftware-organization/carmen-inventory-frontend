@@ -1,8 +1,14 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 const URL_CHANGE_EVENT = "useurl:change";
+
+function getURLParam(paramName: string, defaultValue: string): string {
+  return (
+    new URLSearchParams(window.location.search).get(paramName) ?? defaultValue
+  );
+}
 
 type URLStateOptions = {
   defaultValue?: string;
@@ -11,77 +17,50 @@ type URLStateOptions = {
 
 export const useURL = (paramName: string, options: URLStateOptions = {}) => {
   const { defaultValue = "", onUpdate } = options;
-  const isUpdatingRef = useRef(false);
 
-  const [value, setValue] = useState(() => {
-    if (globalThis.window !== undefined) {
-      return (
-        new URLSearchParams(globalThis.window.location.search).get(paramName) ??
-        defaultValue
-      );
-    }
-    return defaultValue;
-  });
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      window.addEventListener("popstate", callback);
+      window.addEventListener(URL_CHANGE_EVENT, callback);
+      return () => {
+        window.removeEventListener("popstate", callback);
+        window.removeEventListener(URL_CHANGE_EVENT, callback);
+      };
+    },
+    [],
+  );
+
+  const getSnapshot = useCallback(
+    () => getURLParam(paramName, defaultValue),
+    [paramName, defaultValue],
+  );
+
+  const getServerSnapshot = useCallback(() => defaultValue, [defaultValue]);
+
+  const value = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   const updateValue = useCallback(
     (newValue: string) => {
-      if (isUpdatingRef.current) return;
-
-      setValue(newValue);
-
-      if (globalThis.window !== undefined) {
-        isUpdatingRef.current = true;
-
-        const url = new URL(globalThis.window.location.href);
-        if (newValue) {
-          url.searchParams.set(paramName, newValue);
-        } else {
-          url.searchParams.delete(paramName);
-        }
-
-        if (url.toString() !== globalThis.window.location.href) {
-          globalThis.window.history.replaceState(
-            { ...globalThis.window.history.state },
-            "",
-            url.toString(),
-          );
-          globalThis.window.dispatchEvent(new CustomEvent(URL_CHANGE_EVENT));
-        }
-
-        onUpdate?.(newValue);
-        isUpdatingRef.current = false;
+      const url = new URL(window.location.href);
+      if (newValue) {
+        url.searchParams.set(paramName, newValue);
+      } else {
+        url.searchParams.delete(paramName);
       }
+
+      if (url.toString() !== window.location.href) {
+        window.history.replaceState(
+          { ...window.history.state },
+          "",
+          url.toString(),
+        );
+        window.dispatchEvent(new CustomEvent(URL_CHANGE_EVENT));
+      }
+
+      onUpdate?.(newValue);
     },
     [paramName, onUpdate],
   );
-
-  useEffect(() => {
-    if (globalThis.window === undefined) return;
-
-    const syncFromURL = () => {
-      if (isUpdatingRef.current) return;
-      const currentValue =
-        new URLSearchParams(globalThis.window.location.search).get(paramName) ??
-        defaultValue;
-      setValue((prev) => {
-        if (prev !== currentValue) {
-          onUpdate?.(currentValue);
-          return currentValue;
-        }
-        return prev;
-      });
-    };
-
-    globalThis.window.addEventListener("popstate", syncFromURL);
-    globalThis.window.addEventListener(URL_CHANGE_EVENT, syncFromURL);
-
-    return () => {
-      if (globalThis.window !== undefined) {
-        globalThis.window.removeEventListener("popstate", syncFromURL);
-        globalThis.window.removeEventListener(URL_CHANGE_EVENT, syncFromURL);
-      }
-    };
-  }, [paramName, defaultValue, onUpdate]);
 
   return [value, updateValue] as const;
 };

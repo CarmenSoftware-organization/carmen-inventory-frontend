@@ -3,6 +3,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { buildUrl } from "@/utils/build-query-string";
 import type { Unit } from "@/types/unit";
 import type { ParamsDto } from "@/types/params";
+import { API_ENDPOINTS } from "@/constant/api-endpoints";
 
 interface UnitResponse {
   data: Unit[];
@@ -20,7 +21,7 @@ export function useUnit(params?: ParamsDto) {
   return useQuery<UnitResponse>({
     queryKey: ["units", buCode, params],
     queryFn: async () => {
-      const url = buildUrl(`/api/proxy/api/config/${buCode}/units`, params);
+      const url = buildUrl(API_ENDPOINTS.UNITS(buCode!), params);
       const res = await fetch(url);
       if (!res.ok) throw new Error("Failed to fetch units");
       return res.json();

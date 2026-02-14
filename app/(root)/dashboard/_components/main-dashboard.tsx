@@ -3,6 +3,7 @@
 import { useProfile } from "@/hooks/use-profile";
 import { useLogout } from "@/hooks/use-logout";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, RefreshCw } from "lucide-react";
 
 export default function MainDashboard() {
@@ -30,7 +31,14 @@ export default function MainDashboard() {
     );
   }
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="flex min-h-svh flex-col items-center justify-center gap-4 p-6">
+        <Skeleton className="h-8 w-64" />
+        <Skeleton className="h-5 w-48" />
+        <Skeleton className="h-9 w-24" />
+      </div>
+    );
 
   const name = profile
     ? `${profile.user_info.firstname} ${profile.user_info.lastname}`

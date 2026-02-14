@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import type { UserProfile } from "@/types/profile";
+import { API_ENDPOINTS } from "@/constant/api-endpoints";
 
 export const profileQueryKey = ["profile"] as const;
 
@@ -10,7 +11,7 @@ export function useProfile() {
   const query = useQuery<UserProfile>({
     queryKey: profileQueryKey,
     queryFn: async () => {
-      const res = await fetch("/api/proxy/api/user/profile");
+      const res = await fetch(API_ENDPOINTS.PROFILE);
 
       if (res.status === 401) {
         router.push("/login");
