@@ -13,6 +13,7 @@ export const QUERY_KEYS = {
   VENDORS: "vendors",
   PRICE_LISTS: "price-lists",
   PRICE_LIST_TEMPLATES: "price-list-templates",
+  REQUEST_PRICE_LISTS: "request-price-lists",
 } as const;
 
 export type QueryKey = (typeof QUERY_KEYS)[keyof typeof QUERY_KEYS];
