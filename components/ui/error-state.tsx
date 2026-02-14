@@ -13,7 +13,7 @@ export function ErrorState({
   onRetry,
 }: ErrorStateProps) {
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-3 p-6">
+    <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6">
       <AlertCircle className="size-8 text-destructive" />
       <p className="text-sm text-muted-foreground">{message}</p>
       {onRetry && (
