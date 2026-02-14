@@ -69,13 +69,13 @@ export function createConfigCrud<T, TCreate>({
     });
   }
 
+  const methodMap = { PUT: "put", PATCH: "patch" } as const;
+  const httpMethod = methodMap[updateMethod];
+
   function useUpdate() {
     return useApiMutation<TCreate & { id: string }>({
       mutationFn: ({ id, ...data }, buCode) =>
-        httpClient[updateMethod.toLowerCase() as "put" | "patch"](
-          `${endpoint(buCode)}/${id}`,
-          data,
-        ),
+        httpClient[httpMethod](`${endpoint(buCode)}/${id}`, data),
       invalidateKeys: [queryKey],
       errorMessage: `Failed to update ${label}`,
     });

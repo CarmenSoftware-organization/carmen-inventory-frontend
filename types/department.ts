@@ -3,7 +3,7 @@ export interface DepartmentUser {
   user_id: string;
   firstname: string;
   lastname: string;
-  middlename: string;
+  middlename: string | null;
   telephone: string;
 }
 

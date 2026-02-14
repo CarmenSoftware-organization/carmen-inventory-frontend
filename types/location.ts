@@ -31,7 +31,7 @@ export interface Location {
   physical_count_type: PhysicalCountType;
   description: string;
   is_active: boolean;
-  info: Record<string, unknown>;
+  info: Record<string, string | number | boolean>;
   user_location: UserLocation[];
   product_location: ProductLocation[];
   delivery_point: DeliveryPoint | null;

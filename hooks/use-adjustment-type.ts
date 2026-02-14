@@ -2,11 +2,12 @@ import { createConfigCrud } from "@/hooks/use-config-crud";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { AdjustmentType } from "@/types/adjustment-type";
+import type { ADJUSTMENT_TYPE } from "@/constant/adjustment-type";
 
 export interface CreateAdjustmentTypeDto {
   code: string;
   name: string;
-  type: string;
+  type: ADJUSTMENT_TYPE;
   description: string;
   note: string;
   is_active: boolean;

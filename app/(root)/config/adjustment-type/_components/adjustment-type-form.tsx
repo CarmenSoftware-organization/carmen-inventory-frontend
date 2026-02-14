@@ -30,13 +30,16 @@ import {
 } from "@/hooks/use-adjustment-type";
 import type { AdjustmentType } from "@/types/adjustment-type";
 import type { FormMode } from "@/types/form";
-import { ADJUSTMENT_TYPE_OPTIONS } from "@/constant/adjustment-type";
+import {
+  ADJUSTMENT_TYPE,
+  ADJUSTMENT_TYPE_OPTIONS,
+} from "@/constant/adjustment-type";
 import DisplayTemplate from "@/components/display-template";
 
 const adjustmentTypeSchema = z.object({
   code: z.string().min(1, "Code is required"),
   name: z.string().min(1, "Name is required"),
-  type: z.string().min(1, "Type is required"),
+  type: z.nativeEnum(ADJUSTMENT_TYPE, { error: "Type is required" }),
   description: z.string(),
   note: z.string(),
   is_active: z.boolean(),
@@ -77,7 +80,7 @@ export function AdjustmentTypeForm({
       : {
           code: "",
           name: "",
-          type: "",
+          type: "" as unknown as ADJUSTMENT_TYPE,
           description: "",
           note: "",
           is_active: true,
