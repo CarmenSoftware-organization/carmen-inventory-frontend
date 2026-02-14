@@ -22,6 +22,10 @@ export const API_ENDPOINTS = {
     `/api/proxy/api/${buCode}/price-list-template`,
   REQUEST_PRICE_LISTS: (buCode: string) =>
     `/api/proxy/api/${buCode}/request-for-pricing`,
+  INVENTORY_ADJUSTMENTS: (buCode: string) =>
+    `/api/proxy/api/${buCode}/inventory-adjustment`,
+  STOCK_IN: (buCode: string) => `/api/proxy/api/${buCode}/stock-in`,
+  STOCK_OUT: (buCode: string) => `/api/proxy/api/${buCode}/stock-out`,
   STORE_REQUISITIONS: "/api/proxy/api/store-requisition",
   STORE_REQUISITION: (buCode: string) =>
     `/api/proxy/api/${buCode}/store-requisition`,
