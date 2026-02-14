@@ -6,6 +6,10 @@ export const API_ENDPOINTS = {
   LOCATIONS: (buCode: string) => `/api/proxy/api/config/${buCode}/locations`,
   DELIVERY_POINTS: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/delivery-point`,
+  CURRENCIES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/currencies`,
+  TAX_PROFILES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/tax-profile`,
   LOGOUT: "/api/auth/logout",
   SWITCH_BU: "/api/proxy/api/business-unit/default",
 } as const;

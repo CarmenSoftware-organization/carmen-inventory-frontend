@@ -36,10 +36,20 @@ export function useProfile() {
     [query.data],
   );
   const buCode = defaultBu?.code;
+  const defaultCurrencyCode = defaultBu?.config.default_currency.code;
+  const defaultCurrencyDecimalPlaces =
+    defaultBu?.config.default_currency.decimal_places;
   const allBuCode = useMemo(
     () => query.data?.business_unit.map((b) => b.code),
     [query.data],
   );
 
-  return { ...query, defaultBu, buCode, allBuCode };
+  return {
+    ...query,
+    defaultBu,
+    buCode,
+    defaultCurrencyCode,
+    defaultCurrencyDecimalPlaces,
+    allBuCode,
+  };
 }
