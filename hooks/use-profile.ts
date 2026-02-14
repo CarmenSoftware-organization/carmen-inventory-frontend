@@ -30,7 +30,9 @@ export function useProfile() {
   });
 
   const defaultBu = useMemo(
-    () => query.data?.business_unit.find((b) => b.is_default),
+    () =>
+      query.data?.business_unit.find((b) => b.is_default) ??
+      query.data?.business_unit[0],
     [query.data],
   );
   const buCode = defaultBu?.code;
