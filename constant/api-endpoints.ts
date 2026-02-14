@@ -19,6 +19,8 @@ export const API_ENDPOINTS = {
   PRODUCTS: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/products`,
   VENDORS: (buCode: string) => `/api/proxy/api/config/${buCode}/vendors`,
+  PRICE_LISTS: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/price-list`,
   LOGOUT: "/api/auth/logout",
   SWITCH_BU: "/api/proxy/api/business-unit/default",
 } as const;
