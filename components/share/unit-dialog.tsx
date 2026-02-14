@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -46,7 +46,7 @@ export function UnitDialog({ open, onOpenChange, unit }: UnitDialogProps) {
   const isPending = createUnit.isPending || updateUnit.isPending;
 
   const form = useForm<UnitFormValues>({
-    resolver: zodResolver(unitSchema),
+    resolver: zodResolver(unitSchema) as Resolver<UnitFormValues>,
     defaultValues: { name: "", description: "", is_active: true },
   });
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -51,7 +51,7 @@ export function ExtraCostDialog({
   const isPending = createExtraCost.isPending || updateExtraCost.isPending;
 
   const form = useForm<ExtraCostFormValues>({
-    resolver: zodResolver(extraCostSchema),
+    resolver: zodResolver(extraCostSchema) as Resolver<ExtraCostFormValues>,
     defaultValues: { name: "", is_active: true },
   });
 

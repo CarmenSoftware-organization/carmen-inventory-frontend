@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -52,7 +52,7 @@ export function BusinessTypeDialog({
     createBusinessType.isPending || updateBusinessType.isPending;
 
   const form = useForm<BusinessTypeFormValues>({
-    resolver: zodResolver(businessTypeSchema),
+    resolver: zodResolver(businessTypeSchema) as Resolver<BusinessTypeFormValues>,
     defaultValues: { name: "", is_active: true },
   });
 

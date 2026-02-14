@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -54,7 +54,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
   const isDisabled = isView || isPending;
 
   const form = useForm<DepartmentFormValues>({
-    resolver: zodResolver(departmentSchema),
+    resolver: zodResolver(departmentSchema) as Resolver<DepartmentFormValues>,
     defaultValues: department
       ? {
           code: department.code,

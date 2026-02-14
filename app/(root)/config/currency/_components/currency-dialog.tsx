@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -53,7 +53,7 @@ export function CurrencyDialog({
   const isPending = createCurrency.isPending || updateCurrency.isPending;
 
   const form = useForm<CurrencyFormValues>({
-    resolver: zodResolver(currencySchema),
+    resolver: zodResolver(currencySchema) as Resolver<CurrencyFormValues>,
     defaultValues: {
       code: "",
       name: "",

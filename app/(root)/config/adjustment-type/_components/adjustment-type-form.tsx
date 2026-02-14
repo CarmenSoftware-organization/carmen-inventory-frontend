@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -70,7 +70,7 @@ export function AdjustmentTypeForm({
   const isDisabled = isView || isPending;
 
   const form = useForm<AdjustmentTypeFormValues>({
-    resolver: zodResolver(adjustmentTypeSchema),
+    resolver: zodResolver(adjustmentTypeSchema) as Resolver<AdjustmentTypeFormValues>,
     defaultValues: adjustmentType
       ? {
           code: adjustmentType.code,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -52,7 +52,7 @@ export function TaxProfileDialog({
   const isPending = createTaxProfile.isPending || updateTaxProfile.isPending;
 
   const form = useForm<TaxProfileFormValues>({
-    resolver: zodResolver(taxProfileSchema),
+    resolver: zodResolver(taxProfileSchema) as Resolver<TaxProfileFormValues>,
     defaultValues: { name: "", tax_rate: 0, is_active: true },
   });
 

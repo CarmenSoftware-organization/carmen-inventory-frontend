@@ -258,7 +258,7 @@ export function useCategoryTable({
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -307,7 +307,7 @@ export function CategoryDialog({
   const isPending = createCategory.isPending || updateCategory.isPending;
 
   const form = useForm<CategoryFormValues>({
-    resolver: zodResolver(categorySchema),
+    resolver: zodResolver(categorySchema) as Resolver<CategoryFormValues>,
     defaultValues: { name: "", description: "", is_active: true },
   });
 
@@ -590,7 +590,7 @@ export default function CategoryPage() {
 "use client";
 
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -642,7 +642,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
   const isDisabled = isView || isPending;
 
   const form = useForm<CategoryFormValues>({
-    resolver: zodResolver(categorySchema),
+    resolver: zodResolver(categorySchema) as Resolver<CategoryFormValues>,
     defaultValues: category
       ? {
           name: category.name,
@@ -1049,3 +1049,4 @@ export default function EditCategoryPage({
 - **Dense DataGrid**: `tableLayout={{ dense: true }}` + `tableClassNames={{ base: "text-xs" }}`
 - **Query invalidation**: อัตโนมัติผ่าน `createConfigCrud` → `useApiMutation` → `invalidateKeys`
 - **Next.js 15 params** (Variant B): `params` เป็น `Promise` ใช้ `use(params)` เพื่อ unwrap
+- **zodResolver type assertion**: `zodResolver(schema) as Resolver<FormValues>` — จำเป็นเพราะ `@hookform/resolvers` กับ `react-hook-form` export `Resolver` type คนละตัว ต้อง import `type Resolver` จาก `react-hook-form` แล้ว cast

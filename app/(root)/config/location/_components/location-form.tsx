@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -78,7 +78,7 @@ export function LocationForm({ location }: LocationFormProps) {
   const isDisabled = isView || isPending;
 
   const form = useForm<LocationFormValues>({
-    resolver: zodResolver(locationSchema),
+    resolver: zodResolver(locationSchema) as Resolver<LocationFormValues>,
     defaultValues: location
       ? {
           code: location.code,

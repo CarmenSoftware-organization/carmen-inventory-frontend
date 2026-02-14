@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -52,7 +52,7 @@ export function DeliveryPointDialog({
     createDeliveryPoint.isPending || updateDeliveryPoint.isPending;
 
   const form = useForm<DeliveryPointFormValues>({
-    resolver: zodResolver(deliveryPointSchema),
+    resolver: zodResolver(deliveryPointSchema) as Resolver<DeliveryPointFormValues>,
     defaultValues: { name: "", is_active: true },
   });
 

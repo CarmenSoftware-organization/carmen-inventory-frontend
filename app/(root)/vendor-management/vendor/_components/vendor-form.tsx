@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { useForm, useFieldArray, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -133,7 +133,7 @@ export function VendorForm({ vendor }: VendorFormProps) {
       };
 
   const form = useForm<VendorFormValues>({
-    resolver: zodResolver(vendorSchema),
+    resolver: zodResolver(vendorSchema) as Resolver<VendorFormValues>,
     defaultValues,
   });
 
