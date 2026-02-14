@@ -10,6 +10,8 @@ import {
   actionColumn,
   columnSkeletons,
 } from "@/lib/data-grid/columns";
+import { useProfile } from "@/hooks/use-profile";
+import { formatDate } from "@/lib/date-utils";
 import type { PriceList } from "@/types/price-list";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
@@ -31,6 +33,17 @@ export function usePriceListTable({
   onEdit,
   onDelete,
 }: UsePriceListTableOptions) {
+  const { dateFormat } = useProfile();
+
+  const formatPeriod = (period: string): string => {
+    const parts = period.split(" - ");
+    if (parts.length !== 2) return period;
+    const from = formatDate(parts[0], dateFormat);
+    const to = formatDate(parts[1], dateFormat);
+    if (!from && !to) return "—";
+    return `${from} - ${to}`;
+  };
+
   const dataColumns: ColumnDef<PriceList>[] = [
     {
       accessorKey: "no",
@@ -67,6 +80,7 @@ export function usePriceListTable({
       accessorKey: "effectivePeriod",
       header: "Effective Period",
       enableSorting: false,
+      cell: ({ row }) => formatPeriod(row.getValue("effectivePeriod")),
       meta: { skeleton: columnSkeletons.text },
     },
     {

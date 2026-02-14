@@ -9,6 +9,8 @@ import {
   actionColumn,
   columnSkeletons,
 } from "@/lib/data-grid/columns";
+import { useProfile } from "@/hooks/use-profile";
+import { formatDate } from "@/lib/date-utils";
 import type { RequestPriceList } from "@/types/request-price-list";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
@@ -22,22 +24,6 @@ interface UseRequestPriceListTableOptions {
   onDelete: (item: RequestPriceList) => void;
 }
 
-function formatPeriod(startDate: string, endDate: string): string {
-  const fmt = (iso: string) => {
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return "";
-    return d.toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-  };
-  const from = fmt(startDate);
-  const to = fmt(endDate);
-  if (!from && !to) return "—";
-  return `${from} - ${to}`;
-}
-
 export function useRequestPriceListTable({
   items,
   totalRecords,
@@ -46,6 +32,15 @@ export function useRequestPriceListTable({
   onEdit,
   onDelete,
 }: UseRequestPriceListTableOptions) {
+  const { dateFormat } = useProfile();
+
+  const formatPeriod = (startDate: string, endDate: string): string => {
+    const from = formatDate(startDate, dateFormat);
+    const to = formatDate(endDate, dateFormat);
+    if (!from && !to) return "—";
+    return `${from} - ${to}`;
+  };
+
   const dataColumns: ColumnDef<RequestPriceList>[] = [
     {
       accessorKey: "name",

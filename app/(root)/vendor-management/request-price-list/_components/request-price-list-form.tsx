@@ -41,6 +41,7 @@ import { useVendor } from "@/hooks/use-vendor";
 import type { RequestPriceList } from "@/types/request-price-list";
 import type { FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
+import { isoToDateInput } from "@/lib/date-utils";
 
 const vendorSchema = z.object({
   vendor_id: z.string().min(1, "Vendor is required"),
@@ -64,12 +65,6 @@ const rfpSchema = z.object({
 });
 
 type RfpFormValues = z.infer<typeof rfpSchema>;
-
-function isoToDateInput(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toISOString().split("T")[0];
-}
 
 interface RequestPriceListFormProps {
   readonly requestPriceList?: RequestPriceList;

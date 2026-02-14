@@ -10,6 +10,8 @@ import {
   columnSkeletons,
 } from "@/lib/data-grid/columns";
 import { Badge } from "@/components/reui/badge";
+import { useProfile } from "@/hooks/use-profile";
+import { formatDate } from "@/lib/date-utils";
 import type { StoreRequisition, StoreRequisitionStatus } from "@/types/store-requisition";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
@@ -21,16 +23,6 @@ interface UseStoreRequisitionTableOptions {
   tableConfig: ReturnType<typeof useDataGridState>["tableConfig"];
   onEdit: (item: StoreRequisition) => void;
   onDelete: (item: StoreRequisition) => void;
-}
-
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
 }
 
 const statusVariantMap: Record<
@@ -51,6 +43,8 @@ export function useStoreRequisitionTable({
   onEdit,
   onDelete,
 }: UseStoreRequisitionTableOptions) {
+  const { dateFormat } = useProfile();
+
   const dataColumns: ColumnDef<StoreRequisition>[] = [
     {
       accessorKey: "sr_no",
@@ -73,7 +67,7 @@ export function useStoreRequisitionTable({
       header: ({ column }) => (
         <DataGridColumnHeader column={column} title="SR Date" />
       ),
-      cell: ({ row }) => formatDate(row.getValue("sr_date")),
+      cell: ({ row }) => formatDate(row.getValue("sr_date"), dateFormat),
       meta: { skeleton: columnSkeletons.text },
     },
     {

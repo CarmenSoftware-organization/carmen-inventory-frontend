@@ -42,6 +42,7 @@ import { useProduct } from "@/hooks/use-product";
 import type { StoreRequisition } from "@/types/store-requisition";
 import type { FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
+import { isoToDateInput } from "@/lib/date-utils";
 
 const detailSchema = z.object({
   product_id: z.string().min(1, "Product is required"),
@@ -64,12 +65,6 @@ const srSchema = z.object({
 });
 
 type SrFormValues = z.infer<typeof srSchema>;
-
-function isoToDateInput(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toISOString().split("T")[0];
-}
 
 interface StoreRequisitionFormProps {
   readonly storeRequisition?: StoreRequisition;

@@ -10,6 +10,8 @@ import {
   columnSkeletons,
 } from "@/lib/data-grid/columns";
 import { Badge } from "@/components/reui/badge";
+import { useProfile } from "@/hooks/use-profile";
+import { formatDate } from "@/lib/date-utils";
 import type {
   InventoryAdjustment,
   InventoryAdjustmentType,
@@ -25,16 +27,6 @@ interface UseInventoryAdjustmentTableOptions {
   tableConfig: ReturnType<typeof useDataGridState>["tableConfig"];
   onEdit: (item: InventoryAdjustment) => void;
   onDelete: (item: InventoryAdjustment) => void;
-}
-
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
 }
 
 const typeVariantMap: Record<InventoryAdjustmentType, "info" | "warning"> = {
@@ -63,6 +55,8 @@ export function useInventoryAdjustmentTable({
   onEdit,
   onDelete,
 }: UseInventoryAdjustmentTableOptions) {
+  const { dateFormat } = useProfile();
+
   const dataColumns: ColumnDef<InventoryAdjustment>[] = [
     {
       accessorKey: "document_no",
@@ -121,7 +115,7 @@ export function useInventoryAdjustmentTable({
       header: ({ column }) => (
         <DataGridColumnHeader column={column} title="Created" />
       ),
-      cell: ({ row }) => formatDate(row.getValue("created_at")),
+      cell: ({ row }) => formatDate(row.getValue("created_at"), dateFormat),
       meta: { skeleton: columnSkeletons.text },
     },
   ];
