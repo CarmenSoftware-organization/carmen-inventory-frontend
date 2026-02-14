@@ -1,0 +1,414 @@
+"use client";
+
+import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { Pencil } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldError,
+} from "@/components/ui/field";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
+import { useCreateLocation, useUpdateLocation } from "@/hooks/use-location";
+import type {
+  Location,
+  UserLocation,
+  ProductLocation,
+} from "@/types/location";
+import type { FormMode } from "@/types/form";
+import {
+  INVENTORY_TYPE_OPTIONS,
+  PHYSICAL_COUNT_TYPE_OPTIONS,
+} from "@/constant/location";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import DisplayTemplate from "@/components/display-template";
+
+const locationSchema = z.object({
+  code: z.string().min(1, "Code is required"),
+  name: z.string().min(1, "Name is required"),
+  location_type: z.string().min(1, "Location type is required"),
+  physical_count_type: z.string().min(1, "Physical count type is required"),
+  description: z.string(),
+  is_active: z.boolean(),
+});
+
+type LocationFormValues = z.infer<typeof locationSchema>;
+
+interface LocationFormProps {
+  readonly location?: Location;
+}
+
+export function LocationForm({ location }: LocationFormProps) {
+  const router = useRouter();
+  const [mode, setMode] = useState<FormMode>(location ? "view" : "add");
+  const isView = mode === "view";
+  const isEdit = mode === "edit";
+  const isAdd = mode === "add";
+
+  const createLocation = useCreateLocation();
+  const updateLocation = useUpdateLocation();
+  const isPending = createLocation.isPending || updateLocation.isPending;
+  const isDisabled = isView || isPending;
+
+  const form = useForm<LocationFormValues>({
+    resolver: zodResolver(locationSchema),
+    defaultValues: location
+      ? {
+          code: location.code,
+          name: location.name,
+          location_type: location.location_type,
+          physical_count_type: location.physical_count_type,
+          description: location.description,
+          is_active: location.is_active,
+        }
+      : {
+          code: "",
+          name: "",
+          location_type: "",
+          physical_count_type: "",
+          description: "",
+          is_active: true,
+        },
+  });
+
+  const onSubmit = (values: LocationFormValues) => {
+    const payload = {
+      code: values.code,
+      name: values.name,
+      location_type: values.location_type,
+      physical_count_type: values.physical_count_type,
+      description: values.description ?? "",
+      is_active: values.is_active,
+    };
+
+    if (isEdit && location) {
+      updateLocation.mutate(
+        { id: location.id, ...payload },
+        {
+          onSuccess: () => {
+            toast.success("Location updated successfully");
+            router.push("/config/location");
+          },
+          onError: (err) => toast.error(err.message),
+        },
+      );
+    } else if (isAdd) {
+      createLocation.mutate(payload, {
+        onSuccess: () => {
+          toast.success("Location created successfully");
+          router.push("/config/location");
+        },
+        onError: (err) => toast.error(err.message),
+      });
+    }
+  };
+
+  const handleCancel = () => {
+    if (isEdit && location) {
+      form.reset({
+        code: location.code,
+        name: location.name,
+        location_type: location.location_type,
+        physical_count_type: location.physical_count_type,
+        description: location.description,
+        is_active: location.is_active,
+      });
+      setMode("view");
+    } else {
+      router.push("/config/location");
+    }
+  };
+
+  const title = isAdd
+    ? "Add Store Location"
+    : isEdit
+      ? "Edit Store Location"
+      : "Store Location";
+
+  return (
+    <DisplayTemplate
+      title={title}
+      actions={
+        <>
+          {isView ? (
+            <Button size="xs" onClick={() => setMode("edit")}>
+              <Pencil />
+              Edit
+            </Button>
+          ) : (
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                size="xs"
+                onClick={handleCancel}
+                disabled={isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                size="xs"
+                form="location-form"
+                disabled={isPending}
+              >
+                {isPending
+                  ? isEdit
+                    ? "Saving..."
+                    : "Creating..."
+                  : isEdit
+                    ? "Save"
+                    : "Create"}
+              </Button>
+            </>
+          )}
+        </>
+      }
+    >
+      <form
+        id="location-form"
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="max-w-2xl space-y-4"
+      >
+        <FieldGroup className="gap-3">
+          <Field data-invalid={!!form.formState.errors.code}>
+            <FieldLabel htmlFor="location-code" className="text-xs">
+              Code
+            </FieldLabel>
+            <Input
+              id="location-code"
+              placeholder="e.g. M123D"
+              className="h-8 text-sm"
+              disabled={isDisabled}
+              {...form.register("code")}
+            />
+            <FieldError>{form.formState.errors.code?.message}</FieldError>
+          </Field>
+
+          <Field data-invalid={!!form.formState.errors.name}>
+            <FieldLabel htmlFor="location-name" className="text-xs">
+              Name
+            </FieldLabel>
+            <Input
+              id="location-name"
+              placeholder="e.g. BAR เหล้า"
+              className="h-8 text-sm"
+              disabled={isDisabled}
+              {...form.register("name")}
+            />
+            <FieldError>{form.formState.errors.name?.message}</FieldError>
+          </Field>
+
+          <Field data-invalid={!!form.formState.errors.location_type}>
+            <FieldLabel className="text-xs">Location Type</FieldLabel>
+            <Controller
+              control={form.control}
+              name="location_type"
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  disabled={isDisabled}
+                >
+                  <SelectTrigger className="h-8 w-full text-sm">
+                    <SelectValue placeholder="Select location type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {INVENTORY_TYPE_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            <FieldError>
+              {form.formState.errors.location_type?.message}
+            </FieldError>
+          </Field>
+
+          <Field data-invalid={!!form.formState.errors.physical_count_type}>
+            <FieldLabel className="text-xs">Physical Count</FieldLabel>
+            <Controller
+              control={form.control}
+              name="physical_count_type"
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  disabled={isDisabled}
+                >
+                  <SelectTrigger className="h-8 w-full text-sm">
+                    <SelectValue placeholder="Select physical count type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PHYSICAL_COUNT_TYPE_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            <FieldError>
+              {form.formState.errors.physical_count_type?.message}
+            </FieldError>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="location-description" className="text-xs">
+              Description
+            </FieldLabel>
+            <Textarea
+              id="location-description"
+              placeholder="Optional"
+              className="text-sm"
+              disabled={isDisabled}
+              {...form.register("description")}
+            />
+          </Field>
+
+          <Field orientation="horizontal">
+            <Controller
+              control={form.control}
+              name="is_active"
+              render={({ field }) => (
+                <Checkbox
+                  id="location-is-active"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={isDisabled}
+                />
+              )}
+            />
+            <FieldLabel htmlFor="location-is-active" className="text-xs">
+              Active
+            </FieldLabel>
+          </Field>
+        </FieldGroup>
+      </form>
+
+      {location && (
+        <div className="max-w-2xl space-y-4 pt-4">
+          {location.delivery_point && (
+            <div className="space-y-2">
+              <h3 className="text-xs font-medium text-muted-foreground">
+                Delivery Point
+              </h3>
+              <p className="text-xs">{location.delivery_point.name}</p>
+            </div>
+          )}
+
+          <Tabs defaultValue="users">
+            <TabsList variant="line">
+              <TabsTrigger value="users" className="text-xs">
+                Location Users ({location.user_location.length})
+              </TabsTrigger>
+              <TabsTrigger value="products" className="text-xs">
+                Products ({location.product_location.length})
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="users">
+              <UserLocationSection users={location.user_location} />
+            </TabsContent>
+            <TabsContent value="products">
+              <ProductLocationSection products={location.product_location} />
+            </TabsContent>
+          </Tabs>
+        </div>
+      )}
+    </DisplayTemplate>
+  );
+}
+
+function UserLocationSection({ users }: { users: UserLocation[] }) {
+  return (
+    <div>
+      {users.length === 0 ? (
+        <p className="text-xs text-muted-foreground">No users assigned</p>
+      ) : (
+        <div className="rounded-md border">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b bg-muted/50">
+                <th className="px-3 py-1.5 text-left font-medium">Name</th>
+                <th className="px-3 py-1.5 text-left font-medium">
+                  Telephone
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.id} className="border-b last:border-0">
+                  <td className="px-3 py-1.5">
+                    {user.firstname} {user.lastname}
+                  </td>
+                  <td className="px-3 py-1.5 text-muted-foreground">
+                    {user.telephone}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ProductLocationSection({
+  products,
+}: {
+  products: ProductLocation[];
+}) {
+  const validProducts = products.filter((p) => p.code && p.name);
+
+  return (
+    <div>
+      {validProducts.length === 0 ? (
+        <p className="text-xs text-muted-foreground">No products assigned</p>
+      ) : (
+        <div className="rounded-md border">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b bg-muted/50">
+                <th className="px-3 py-1.5 text-left font-medium">Code</th>
+                <th className="px-3 py-1.5 text-left font-medium">Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {validProducts.map((product) => (
+                <tr key={product.id} className="border-b last:border-0">
+                  <td className="px-3 py-1.5 font-medium">{product.code}</td>
+                  <td className="px-3 py-1.5">{product.name}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}

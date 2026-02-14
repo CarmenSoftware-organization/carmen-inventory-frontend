@@ -54,9 +54,24 @@ Pattern สำหรับสร้าง CRUD module ใหม่ภายใ�
 | | Dialog (Variant A) | Page (Variant B) |
 |---|---|---|
 | **เหมาะกับ** | Form ง่าย fields น้อย (Unit, Status) | Form ซับซ้อน fields เยอะ มี tabs/sections |
-| **Add** | เปิด Dialog ใน list page เดิม | Navigate ไป `/{module}/new` |
-| **Edit** | เปิด Dialog พร้อม prefill data | Navigate ไป `/{module}/[id]` |
+| **Add** | เปิด Dialog ใน list page เดิม | Navigate ไป `/{module}/new` → mode = **add** |
+| **Edit** | เปิด Dialog พร้อม prefill data | Navigate ไป `/{module}/[id]` → mode = **view** → กด Edit → mode = **edit** |
 | **UX** | ไม่ออกจากหน้า list เร็วกว่า | เต็มจอ เหมาะกับ form ใหญ่ |
+
+### Form Mode (Variant B only)
+
+Variant B มี 3 mode:
+
+| Mode | เข้าผ่าน | Form state | Actions |
+|------|----------|------------|---------|
+| **add** | `/{module}/new` | enabled ทุก field | Cancel (กลับ list), Create |
+| **view** | `/{module}/[id]` | disabled ทุก field | Edit (เปลี่ยนเป็น edit mode) |
+| **edit** | กดปุ่ม Edit ใน view | enabled ทุก field | Cancel (reset form กลับ view), Save |
+
+- `/[id]` เปิดมาจะเป็น **view mode** เสมอ — form disabled ดูข้อมูลได้อย่างเดียว
+- กด **Edit** → เปลี่ยนเป็น **edit mode** — form enabled แก้ไขได้
+- กด **Cancel** ตอน edit → reset form กลับค่าเดิม แล้วกลับเป็น **view mode**
+- กด **Cancel** ตอน add → กลับไปหน้า list
 
 ---
 
@@ -688,13 +703,17 @@ export default function CategoryPage() {
 
 #### B5. Shared Form — `_components/{module}-form.tsx`
 
+มี 3 mode: **add** (จาก `/new`), **view** (จาก `/[id]` เริ่มต้น disabled), **edit** (กด Edit ใน view)
+
 ```tsx
 "use client";
 
+import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -708,6 +727,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useCreateCategory, useUpdateCategory } from "@/hooks/use-category";
 import type { Category } from "@/types/category";
+import type { FormMode } from "@/types/form";
 import DisplayTemplate from "@/components/display-template";
 
 const categorySchema = z.object({
@@ -724,10 +744,15 @@ interface CategoryFormProps {
 
 export function CategoryForm({ category }: CategoryFormProps) {
   const router = useRouter();
-  const isEdit = !!category;
+  const [mode, setMode] = useState<FormMode>(category ? "view" : "add");
+  const isView = mode === "view";
+  const isEdit = mode === "edit";
+  const isAdd = mode === "add";
+
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();
   const isPending = createCategory.isPending || updateCategory.isPending;
+  const isDisabled = isView || isPending;
 
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(categorySchema),
@@ -747,7 +772,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
       is_active: values.is_active,
     };
 
-    if (isEdit) {
+    if (isEdit && category) {
       updateCategory.mutate(
         { id: category.id, ...payload },
         {
@@ -758,7 +783,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           onError: (err) => toast.error(err.message),
         },
       );
-    } else {
+    } else if (isAdd) {
       createCategory.mutate(payload, {
         onSuccess: () => {
           toast.success("Category created successfully");
@@ -769,28 +794,60 @@ export function CategoryForm({ category }: CategoryFormProps) {
     }
   };
 
+  const handleCancel = () => {
+    if (isEdit && category) {
+      // Edit mode → reset form กลับค่าเดิม แล้วกลับเป็น view
+      form.reset({
+        name: category.name,
+        description: category.description,
+        is_active: category.is_active,
+      });
+      setMode("view");
+    } else {
+      // Add mode → กลับไปหน้า list
+      router.push("/config/category");
+    }
+  };
+
+  const title = isAdd
+    ? "Add Category"
+    : isEdit
+      ? "Edit Category"
+      : "Category";
+
   return (
     <DisplayTemplate
-      title={isEdit ? "Edit Category" : "Add Category"}
+      title={title}
       actions={
         <>
-          <Button
-            type="button"
-            variant="outline"
-            size="xs"
-            onClick={() => router.push("/config/category")}
-            disabled={isPending}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            size="xs"
-            form="category-form"
-            disabled={isPending}
-          >
-            {isPending ? (isEdit ? "Saving..." : "Creating...") : (isEdit ? "Save" : "Create")}
-          </Button>
+          {isView ? (
+            <Button size="xs" onClick={() => setMode("edit")}>
+              <Pencil />
+              Edit
+            </Button>
+          ) : (
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                size="xs"
+                onClick={handleCancel}
+                disabled={isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                size="xs"
+                form="category-form"
+                disabled={isPending}
+              >
+                {isPending
+                  ? isEdit ? "Saving..." : "Creating..."
+                  : isEdit ? "Save" : "Create"}
+              </Button>
+            </>
+          )}
         </>
       }
     >
@@ -808,7 +865,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
               id="category-name"
               placeholder="e.g. Electronics"
               className="h-8 text-sm"
-              disabled={isPending}
+              disabled={isDisabled}
               {...form.register("name")}
             />
             <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -822,7 +879,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
               id="category-description"
               placeholder="Optional"
               className="text-sm"
-              disabled={isPending}
+              disabled={isDisabled}
               {...form.register("description")}
             />
           </Field>
@@ -836,7 +893,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
                   id="category-is-active"
                   checked={field.value}
                   onCheckedChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isDisabled}
                 />
               )}
             />
@@ -1033,6 +1090,7 @@ export default function EditCategoryPage({
 | `components/reui/data-grid/*` | DataGrid, DataGridTable, DataGridPagination, etc. |
 | `utils/build-query-string.ts` | URL query string builder |
 | `types/params.ts` | ParamsDto interface |
+| `types/form.ts` | `FormMode` type (`"add" \| "view" \| "edit"`) สำหรับ Variant B |
 | `constant/api-endpoints.ts` | API endpoint constants |
 
 ## Key Patterns
@@ -1040,6 +1098,7 @@ export default function EditCategoryPage({
 - **Dialog close prevention** (Variant A): `onOpenChange={isPending ? undefined : onOpenChange}`
 - **DeleteDialog close prevention**: `!open && !isPending && setTarget(null)` + `e.preventDefault()`
 - **Form reset on dialog open** (Variant A): ใช้ `onOpenAutoFocus` ของ DialogContent
+- **View/Edit/Add mode** (Variant B): `/[id]` เริ่มเป็น view (disabled) → กด Edit → edit mode → Cancel reset กลับ view
 - **Navigate back on success** (Variant B): `router.push("/config/{module}")` หลัง mutation สำเร็จ
 - **React Compiler**: ใส่ `"use no memo"` ใน function body ของ table hook ที่ใช้ useReactTable
 - **Dense DataGrid**: `tableLayout={{ dense: true }}` + `tableClassNames={{ base: "text-xs" }}`

@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,7 +21,8 @@ import {
   useCreateDepartment,
   useUpdateDepartment,
 } from "@/hooks/use-department";
-import type { Department } from "@/types/department";
+import type { Department, DepartmentUser } from "@/types/department";
+import type { FormMode } from "@/types/form";
 import DisplayTemplate from "@/components/display-template";
 
 const departmentSchema = z.object({
@@ -37,10 +40,15 @@ interface DepartmentFormProps {
 
 export function DepartmentForm({ department }: DepartmentFormProps) {
   const router = useRouter();
-  const isEdit = !!department;
+  const [mode, setMode] = useState<FormMode>(department ? "view" : "add");
+  const isView = mode === "view";
+  const isEdit = mode === "edit";
+  const isAdd = mode === "add";
+
   const createDepartment = useCreateDepartment();
   const updateDepartment = useUpdateDepartment();
   const isPending = createDepartment.isPending || updateDepartment.isPending;
+  const isDisabled = isView || isPending;
 
   const form = useForm<DepartmentFormValues>({
     resolver: zodResolver(departmentSchema),
@@ -62,7 +70,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
       is_active: values.is_active,
     };
 
-    if (isEdit) {
+    if (isEdit && department) {
       updateDepartment.mutate(
         { id: department.id, ...payload },
         {
@@ -73,7 +81,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
           onError: (err) => toast.error(err.message),
         },
       );
-    } else {
+    } else if (isAdd) {
       createDepartment.mutate(payload, {
         onSuccess: () => {
           toast.success("Department created successfully");
@@ -84,34 +92,63 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
     }
   };
 
+  const handleCancel = () => {
+    if (isEdit && department) {
+      form.reset({
+        code: department.code,
+        name: department.name,
+        description: department.description,
+        is_active: department.is_active,
+      });
+      setMode("view");
+    } else {
+      router.push("/config/department");
+    }
+  };
+
+  const title = isAdd
+    ? "Add Department"
+    : isEdit
+      ? "Edit Department"
+      : "Department";
+
   return (
     <DisplayTemplate
-      title={isEdit ? "Edit Department" : "Add Department"}
+      title={title}
       actions={
         <>
-          <Button
-            type="button"
-            variant="outline"
-            size="xs"
-            onClick={() => router.push("/config/department")}
-            disabled={isPending}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            size="xs"
-            form="department-form"
-            disabled={isPending}
-          >
-            {isPending
-              ? isEdit
-                ? "Saving..."
-                : "Creating..."
-              : isEdit
-                ? "Save"
-                : "Create"}
-          </Button>
+          {isView ? (
+            <Button size="xs" onClick={() => setMode("edit")}>
+              <Pencil />
+              Edit
+            </Button>
+          ) : (
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                size="xs"
+                onClick={handleCancel}
+                disabled={isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                size="xs"
+                form="department-form"
+                disabled={isPending}
+              >
+                {isPending
+                  ? isEdit
+                    ? "Saving..."
+                    : "Creating..."
+                  : isEdit
+                    ? "Save"
+                    : "Create"}
+              </Button>
+            </>
+          )}
         </>
       }
     >
@@ -129,7 +166,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
               id="department-code"
               placeholder="e.g. IT, HR, FIN"
               className="h-8 text-sm"
-              disabled={isPending}
+              disabled={isDisabled}
               {...form.register("code")}
             />
             <FieldError>{form.formState.errors.code?.message}</FieldError>
@@ -143,7 +180,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
               id="department-name"
               placeholder="e.g. Information Technology"
               className="h-8 text-sm"
-              disabled={isPending}
+              disabled={isDisabled}
               {...form.register("name")}
             />
             <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -157,7 +194,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
               id="department-description"
               placeholder="Optional"
               className="text-sm"
-              disabled={isPending}
+              disabled={isDisabled}
               {...form.register("description")}
             />
           </Field>
@@ -171,7 +208,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
                   id="department-is-active"
                   checked={field.value}
                   onCheckedChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isDisabled}
                 />
               )}
             />
@@ -181,6 +218,61 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
           </Field>
         </FieldGroup>
       </form>
+
+      {department && (
+        <div className="max-w-2xl space-y-4 pt-4">
+          <UserSection
+            title="Head of Department"
+            users={department.hod_users}
+          />
+          <UserSection
+            title="Department Members"
+            users={department.department_users}
+          />
+        </div>
+      )}
     </DisplayTemplate>
+  );
+}
+
+function UserSection({
+  title,
+  users,
+}: {
+  title: string;
+  users: DepartmentUser[];
+}) {
+  return (
+    <div className="space-y-2">
+      <h3 className="text-xs font-medium text-muted-foreground">{title}</h3>
+      {users.length === 0 ? (
+        <p className="text-xs text-muted-foreground">No users assigned</p>
+      ) : (
+        <div className="rounded-md border">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b bg-muted/50">
+                <th className="px-3 py-1.5 text-left font-medium">Name</th>
+                <th className="px-3 py-1.5 text-left font-medium">
+                  Telephone
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.id} className="border-b last:border-0">
+                  <td className="px-3 py-1.5">
+                    {user.firstname} {user.lastname}
+                  </td>
+                  <td className="px-3 py-1.5 text-muted-foreground">
+                    {user.telephone}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
   );
 }

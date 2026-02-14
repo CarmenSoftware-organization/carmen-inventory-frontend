@@ -267,7 +267,7 @@ export const moduleList: ModuleDto[] = [
       },
       {
         name: "Store Location",
-        path: "/config/store-location",
+        path: "/config/location",
         icon: Building,
       },
       {
