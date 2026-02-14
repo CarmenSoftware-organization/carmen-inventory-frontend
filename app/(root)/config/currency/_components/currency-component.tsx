@@ -61,7 +61,7 @@ export default function CurrencyComponent() {
       actions={
         <>
           <Button
-            size="xs"
+            size="sm"
             onClick={() => {
               setEditCurrency(null);
               setDialogOpen(true);
@@ -70,11 +70,11 @@ export default function CurrencyComponent() {
             <Plus />
             Add Currency
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Download />
             Export
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Printer />
             Print
           </Button>

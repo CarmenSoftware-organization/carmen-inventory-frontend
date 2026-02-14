@@ -61,7 +61,7 @@ export default function ExtraCostComponent() {
       actions={
         <>
           <Button
-            size="xs"
+            size="sm"
             onClick={() => {
               setEditExtraCost(null);
               setDialogOpen(true);
@@ -70,11 +70,11 @@ export default function ExtraCostComponent() {
             <Plus />
             Add Extra Cost
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Download />
             Export
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Printer />
             Print
           </Button>

@@ -65,7 +65,7 @@ export default function DeliveryPointComponent() {
       actions={
         <>
           <Button
-            size="xs"
+            size="sm"
             onClick={() => {
               setEditDeliveryPoint(null);
               setDialogOpen(true);
@@ -74,11 +74,11 @@ export default function DeliveryPointComponent() {
             <Plus />
             Add Delivery Point
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Download />
             Export
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Printer />
             Print
           </Button>

@@ -58,17 +58,17 @@ export default function DepartmentComponent() {
       actions={
         <>
           <Button
-            size="xs"
+            size="sm"
             onClick={() => router.push("/config/department/new")}
           >
             <Plus />
             Add Department
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Download />
             Export
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Printer />
             Print
           </Button>

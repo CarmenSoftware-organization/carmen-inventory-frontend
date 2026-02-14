@@ -147,7 +147,7 @@ export function AdjustmentTypeForm({
       actions={
         <>
           {isView ? (
-            <Button size="xs" onClick={() => setMode("edit")}>
+            <Button size="sm" onClick={() => setMode("edit")}>
               <Pencil />
               Edit
             </Button>
@@ -156,7 +156,7 @@ export function AdjustmentTypeForm({
               <Button
                 type="button"
                 variant="outline"
-                size="xs"
+                size="sm"
                 onClick={handleCancel}
                 disabled={isPending}
               >
@@ -164,7 +164,7 @@ export function AdjustmentTypeForm({
               </Button>
               <Button
                 type="submit"
-                size="xs"
+                size="sm"
                 form="adjustment-type-form"
                 disabled={isPending}
               >

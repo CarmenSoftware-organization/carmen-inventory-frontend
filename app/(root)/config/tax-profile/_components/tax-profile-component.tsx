@@ -63,7 +63,7 @@ export default function TaxProfileComponent() {
       actions={
         <>
           <Button
-            size="xs"
+            size="sm"
             onClick={() => {
               setEditTaxProfile(null);
               setDialogOpen(true);
@@ -72,11 +72,11 @@ export default function TaxProfileComponent() {
             <Plus />
             Add Tax Profile
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Download />
             Export
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Printer />
             Print
           </Button>

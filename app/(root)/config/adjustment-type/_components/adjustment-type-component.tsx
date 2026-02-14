@@ -63,17 +63,17 @@ export default function AdjustmentTypeComponent() {
       actions={
         <>
           <Button
-            size="xs"
+            size="sm"
             onClick={() => router.push("/config/adjustment-type/new")}
           >
             <Plus />
             Add Adjustment Type
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Download />
             Export
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Printer />
             Print
           </Button>

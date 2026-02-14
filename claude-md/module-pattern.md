@@ -13,10 +13,10 @@ Pattern สำหรับสร้าง CRUD module ใหม่ภายใ�
 1. **Module name** — ชื่อ module (ภาษาอังกฤษ, singular) เช่น `category`, `warehouse`, `supplier`
 2. **API path** — path ของ API endpoint เช่น `/api/proxy/api/config/{buCode}/categories`
 3. **Form mode** — เปิด form แบบไหน
-   - **Dialog** — form ง่าย fields น้อย เปิด dialog ใน list page (เช่น Unit)
-   - **Page** — form ซับซ้อน fields เยอะ navigate ไป `/new` และ `/[id]`
+   - **Dialog** — form ง่าย fields น้อย เปิด dialog ใน list page (เช่น Currency)
+   - **Page** — form ซับซ้อน fields เยอะ navigate ไป `/new` และ `/[id]` (เช่น Adjustment Type)
 4. **Fields** — มี field อะไรบ้างใน form (ชื่อ field, type, required หรือไม่, placeholder)
-5. **Table columns** — อยากแสดง column อะไรบ้างใน list (ชื่อ column, sortable หรือไม่)
+5. **Table columns** — อยากแสดง column อะไรบ้างใน list (ชื่อ column, sortable หรือไม่) — column `select`, `#`, `status`, `action` มีอยู่แล้วจาก `useConfigTable`
 6. **Page title & description** — หัวข้อและคำอธิบายของหน้า list
 
 ### ตัวอย่างคำถาม
@@ -32,10 +32,10 @@ Pattern สำหรับสร้าง CRUD module ใหม่ภายใ�
    - name (string, required, placeholder: "e.g. Electronics")
    - description (text, optional)
    - is_active (checkbox, default: true)
-5. แสดง column อะไรบ้างใน table?
+5. แสดง column อะไรบ้างใน table? (select, #, status, action มีให้อยู่แล้ว)
    ตัวอย่าง:
+   - code (sortable, clickable, size: 120)
    - name (sortable)
-   - is_active (badge Active/Inactive)
 6. Page title & description?
    ตัวอย่าง: title="Category", description="Manage categories for your inventory."
 ```
@@ -44,8 +44,9 @@ Pattern สำหรับสร้าง CRUD module ใหม่ภายใ�
 
 1. สร้างไฟล์ตาม file structure ของ variant ที่เลือก (Dialog หรือ Page)
 2. เพิ่ม API endpoint ที่ `constant/api-endpoints.ts`
-3. ใช้ code template ด้านล่างเป็น reference
-4. ปรับ fields, columns, types ตามคำตอบ
+3. เพิ่ม query key ที่ `constant/query-keys.ts`
+4. ใช้ code template ด้านล่างเป็น reference
+5. ปรับ fields, columns, types ตามคำตอบ
 
 ---
 
@@ -53,7 +54,7 @@ Pattern สำหรับสร้าง CRUD module ใหม่ภายใ�
 
 | | Dialog (Variant A) | Page (Variant B) |
 |---|---|---|
-| **เหมาะกับ** | Form ง่าย fields น้อย (Unit, Status) | Form ซับซ้อน fields เยอะ มี tabs/sections |
+| **เหมาะกับ** | Form ง่าย fields น้อย (Currency, Unit) | Form ซับซ้อน fields เยอะ มี tabs/sections (Adjustment Type) |
 | **Add** | เปิด Dialog ใน list page เดิม | Navigate ไป `/{module}/new` → mode = **add** |
 | **Edit** | เปิด Dialog พร้อม prefill data | Navigate ไป `/{module}/[id]` → mode = **view** → กด Edit → mode = **edit** |
 | **UX** | ไม่ออกจากหน้า list เร็วกว่า | เต็มจอ เหมาะกับ form ใหญ่ |
@@ -83,14 +84,12 @@ Variant B มี 3 mode:
 app/(root)/config/{module}/
 ├── page.tsx                          # List page
 └── _components/
-    ├── {module}-component.tsx        # List + dialogs
-    └── use-{module}-table.tsx        # Table columns + useReactTable
+    ├── {module}-component.tsx        # List + dialog state
+    ├── {module}-dialog.tsx           # Create/Edit dialog (อยู่ใน _components)
+    └── use-{module}-table.tsx        # Table columns (เฉพาะ custom columns)
 
 hooks/
-└── use-{module}.ts                   # useQuery + mutations
-
-components/share/
-└── {module}-dialog.tsx               # Create/Edit dialog
+└── use-{module}.ts                   # createConfigCrud + DTO
 
 types/
 └── {module}.ts                       # TypeScript interface
@@ -108,10 +107,10 @@ app/(root)/config/{module}/
 └── _components/
     ├── {module}-component.tsx        # List only (no dialog state)
     ├── {module}-form.tsx             # Shared form (used by both new + [id])
-    └── use-{module}-table.tsx        # Table columns + useReactTable
+    └── use-{module}-table.tsx        # Table columns (เฉพาะ custom columns)
 
 hooks/
-└── use-{module}.ts                   # useQuery + useQueryById + mutations
+└── use-{module}.ts                   # createConfigCrud + DTO
 
 types/
 └── {module}.ts                       # TypeScript interface
@@ -136,6 +135,8 @@ export interface Category {
 
 ### 2. API Endpoint — `constant/api-endpoints.ts`
 
+เพิ่ม entry ใน object:
+
 ```ts
 export const API_ENDPOINTS = {
   // ... existing
@@ -143,121 +144,54 @@ export const API_ENDPOINTS = {
 } as const;
 ```
 
-### 3. Hooks — `hooks/use-{module}.ts`
+### 3. Query Key — `constant/query-keys.ts`
+
+เพิ่ม entry ใน object:
 
 ```ts
-import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
-import { useApiMutation } from "@/hooks/use-api-mutation";
-import { buildUrl } from "@/utils/build-query-string";
-import type { Category } from "@/types/category";
-import type { ParamsDto } from "@/types/params";
+export const QUERY_KEYS = {
+  // ... existing
+  CATEGORIES: "categories",
+} as const;
+```
+
+### 4. Hooks — `hooks/use-{module}.ts`
+
+ใช้ `createConfigCrud` factory — **ไม่ต้องเขียน useQuery/useMutation เอง**:
+
+```ts
+import { createConfigCrud } from "@/hooks/use-config-crud";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
+import { QUERY_KEYS } from "@/constant/query-keys";
+import type { Category } from "@/types/category";
 
-interface CategoryResponse {
-  data: Category[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
-
-// --- List query ---
-export function useCategory(params?: ParamsDto) {
-  const { buCode } = useProfile();
-
-  return useQuery<CategoryResponse>({
-    queryKey: ["categories", buCode, params],
-    queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
-      const url = buildUrl(API_ENDPOINTS.CATEGORIES(buCode), params);
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("Failed to fetch categories");
-      return res.json();
-    },
-    enabled: !!buCode,
-  });
-}
-
-// --- Single item query (Variant B only) ---
-export function useCategoryById(id: string | undefined) {
-  const { buCode } = useProfile();
-
-  return useQuery<Category>({
-    queryKey: ["categories", buCode, id],
-    queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
-      const res = await fetch(`${API_ENDPOINTS.CATEGORIES(buCode)}/${id}`);
-      if (!res.ok) throw new Error("Failed to fetch category");
-      const json = await res.json();
-      return json.data;
-    },
-    enabled: !!buCode && !!id,
-  });
-}
-
-// --- Mutations ---
 export interface CreateCategoryDto {
   name: string;
   description: string;
   is_active: boolean;
 }
 
-export function useCreateCategory() {
-  return useApiMutation<CreateCategoryDto>({
-    mutationFn: (data, buCode) =>
-      fetch(API_ENDPOINTS.CATEGORIES(buCode), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      }),
-    invalidateKeys: ["categories"],
-    errorMessage: "Failed to create category",
-  });
-}
+const crud = createConfigCrud<Category, CreateCategoryDto>({
+  queryKey: QUERY_KEYS.CATEGORIES,
+  endpoint: API_ENDPOINTS.CATEGORIES,
+  label: "category",
+});
 
-export function useDeleteCategory() {
-  return useApiMutation<string>({
-    mutationFn: (id, buCode) =>
-      fetch(`${API_ENDPOINTS.CATEGORIES(buCode)}/${id}`, {
-        method: "DELETE",
-      }),
-    invalidateKeys: ["categories"],
-    errorMessage: "Failed to delete category",
-  });
-}
-
-export function useUpdateCategory() {
-  return useApiMutation<CreateCategoryDto & { id: string }>({
-    mutationFn: ({ id, ...data }, buCode) =>
-      fetch(`${API_ENDPOINTS.CATEGORIES(buCode)}/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      }),
-    invalidateKeys: ["categories"],
-    errorMessage: "Failed to update category",
-  });
-}
+export const useCategory = crud.useList;
+export const useCategoryById = crud.useById;
+export const useCreateCategory = crud.useCreate;
+export const useUpdateCategory = crud.useUpdate;
+export const useDeleteCategory = crud.useDelete;
 ```
 
-### 4. Table Hook — `_components/use-{module}-table.tsx`
+### 5. Table Hook — `_components/use-{module}-table.tsx`
+
+ใช้ `useConfigTable` helper — column `select`, `#`, `status`, `action` มีให้อยู่แล้ว เขียนแค่ custom columns:
 
 ```tsx
-import {
-  ColumnDef,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import {
-  DataGridTableRowSelect,
-  DataGridTableRowSelectAll,
-} from "@/components/reui/data-grid/data-grid-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
-import { Badge } from "@/components/reui/badge";
-import { DataGridRowActions } from "@/components/reui/data-grid/data-grid-row-actions";
+import { useConfigTable } from "@/lib/data-grid/use-config-table";
 import type { Category } from "@/types/category";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
@@ -279,36 +213,7 @@ export function useCategoryTable({
   onEdit,
   onDelete,
 }: UseCategoryTableOptions) {
-  "use no memo";
-
   const columns: ColumnDef<Category>[] = [
-    {
-      id: "select",
-      header: () => (
-        <div className="flex justify-center">
-          <DataGridTableRowSelectAll />
-        </div>
-      ),
-      cell: ({ row }) => (
-        <div className="flex justify-center">
-          <DataGridTableRowSelect row={row} />
-        </div>
-      ),
-      enableSorting: false,
-      enableHiding: false,
-      size: 20,
-    },
-    {
-      id: "index",
-      header: "#",
-      cell: ({ row }) =>
-        row.index +
-        1 +
-        ((Number(params.page) || 1) - 1) * (Number(params.perpage) || 10),
-      enableSorting: false,
-      enableHiding: false,
-      size: 20,
-    },
     {
       accessorKey: "name",
       header: ({ column }) => (
@@ -324,60 +229,32 @@ export function useCategoryTable({
         </button>
       ),
     },
-    // ... เพิ่ม columns ตามที่ user ระบุ
-    {
-      accessorKey: "is_active",
-      header: ({ column }) => (
-        <DataGridColumnHeader
-          column={column}
-          title="Status"
-          className="justify-center"
-        />
-      ),
-      cell: ({ row }) => (
-        <Badge
-          size="sm"
-          variant={row.getValue("is_active") ? "success" : "destructive"}
-        >
-          {row.getValue("is_active") ? "Active" : "Inactive"}
-        </Badge>
-      ),
-      size: 100,
-      meta: {
-        cellClassName: "text-center",
-        headerClassName: "text-center",
-      },
-    },
-    {
-      id: "action",
-      header: () => "",
-      cell: ({ row }) => (
-        <DataGridRowActions onDelete={() => onDelete(row.original)} />
-      ),
-      enableSorting: false,
-      size: 40,
-    },
+    // ... เพิ่ม custom columns ตามที่ user ระบุ
   ];
 
-  return useReactTable({
+  return useConfigTable<Category>({
     data: categories,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    ...tableConfig,
-    pageCount: Math.ceil(totalRecords / (params.perpage as number)),
+    totalRecords,
+    params,
+    tableConfig,
+    onDelete,
   });
 }
 ```
+
+> **หมายเหตุ**: `useConfigTable` จะเพิ่ม column `select`, `#` (index), `status` (is_active badge), `action` (delete button) ให้อัตโนมัติ ดังนั้นเขียนแค่ columns ที่เป็น data จริงๆ
 
 ---
 
 ### Variant A: Dialog-based
 
-#### A5. Dialog — `components/share/{module}-dialog.tsx`
+#### A6. Dialog — `_components/{module}-dialog.tsx`
 
 ```tsx
 "use client";
 
+import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -431,6 +308,20 @@ export function CategoryDialog({
     defaultValues: { name: "", description: "", is_active: true },
   });
 
+  useEffect(() => {
+    if (open) {
+      form.reset(
+        category
+          ? {
+              name: category.name,
+              description: category.description,
+              is_active: category.is_active,
+            }
+          : { name: "", description: "", is_active: true },
+      );
+    }
+  }, [open, category, form]);
+
   const onSubmit = (values: CategoryFormValues) => {
     const payload = {
       name: values.name,
@@ -467,20 +358,7 @@ export function CategoryDialog({
 
   return (
     <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
-      <DialogContent
-        className="sm:max-w-sm gap-3 p-4"
-        onOpenAutoFocus={() =>
-          form.reset(
-            category
-              ? {
-                  name: category.name,
-                  description: category.description,
-                  is_active: category.is_active,
-                }
-              : { name: "", description: "", is_active: true },
-          )
-        }
-      >
+      <DialogContent className="sm:max-w-sm gap-3 p-4">
         <DialogHeader className="gap-0 pb-1">
           <DialogTitle className="text-sm">
             {isEdit ? "Edit Category" : "Add Category"}
@@ -558,7 +436,7 @@ export function CategoryDialog({
 }
 ```
 
-#### A6. Main Component — `_components/{module}-component.tsx`
+#### A7. Main Component — `_components/{module}-component.tsx`
 
 ```tsx
 "use client";
@@ -580,7 +458,7 @@ import SearchInput from "@/components/search-input";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
-import { CategoryDialog } from "@/components/share/category-dialog";
+import { CategoryDialog } from "./category-dialog";
 import DisplayTemplate from "@/components/display-template";
 import { useCategoryTable } from "./use-category-table";
 
@@ -624,7 +502,7 @@ export default function CategoryComponent() {
       actions={
         <>
           <Button
-            size="xs"
+            size="sm"
             onClick={() => {
               setEditCategory(null);
               setDialogOpen(true);
@@ -633,11 +511,11 @@ export default function CategoryComponent() {
             <Plus />
             Add Category
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Download />
             Export
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Printer />
             Print
           </Button>
@@ -687,7 +565,7 @@ export default function CategoryComponent() {
 }
 ```
 
-#### A7. Page — `app/(root)/config/{module}/page.tsx`
+#### A8. Page — `app/(root)/config/{module}/page.tsx`
 
 ```tsx
 import CategoryComponent from "./_components/category-component";
@@ -701,7 +579,7 @@ export default function CategoryPage() {
 
 ### Variant B: Page-based
 
-#### B5. Shared Form — `_components/{module}-form.tsx`
+#### B6. Shared Form — `_components/{module}-form.tsx`
 
 มี 3 mode: **add** (จาก `/new`), **view** (จาก `/[id]` เริ่มต้น disabled), **edit** (กด Edit ใน view)
 
@@ -821,7 +699,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
       actions={
         <>
           {isView ? (
-            <Button size="xs" onClick={() => setMode("edit")}>
+            <Button size="sm" onClick={() => setMode("edit")}>
               <Pencil />
               Edit
             </Button>
@@ -830,7 +708,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
               <Button
                 type="button"
                 variant="outline"
-                size="xs"
+                size="sm"
                 onClick={handleCancel}
                 disabled={isPending}
               >
@@ -838,7 +716,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
               </Button>
               <Button
                 type="submit"
-                size="xs"
+                size="sm"
                 form="category-form"
                 disabled={isPending}
               >
@@ -908,7 +786,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
 }
 ```
 
-#### B6. Main Component (List only) — `_components/{module}-component.tsx`
+#### B7. Main Component (List only) — `_components/{module}-component.tsx`
 
 ```tsx
 "use client";
@@ -970,17 +848,17 @@ export default function CategoryComponent() {
       actions={
         <>
           <Button
-            size="xs"
+            size="sm"
             onClick={() => router.push("/config/category/new")}
           >
             <Plus />
             Add Category
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Download />
             Export
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Printer />
             Print
           </Button>
@@ -1024,7 +902,7 @@ export default function CategoryComponent() {
 }
 ```
 
-#### B7. Pages
+#### B8. Pages
 
 **List page** — `app/(root)/config/{module}/page.tsx`
 
@@ -1064,8 +942,12 @@ export default function EditCategoryPage({
   const { id } = use(params);
   const { data: category, isLoading, error, refetch } = useCategoryById(id);
 
-  if (isLoading) return <div className="p-6 text-sm text-muted-foreground">Loading...</div>;
-  if (error) return <ErrorState message={error.message} onRetry={() => refetch()} />;
+  if (isLoading)
+    return (
+      <div className="p-6 text-sm text-muted-foreground">Loading...</div>
+    );
+  if (error)
+    return <ErrorState message={error.message} onRetry={() => refetch()} />;
   if (!category) return <ErrorState message="Category not found" />;
 
   return <CategoryForm category={category} />;
@@ -1078,29 +960,37 @@ export default function EditCategoryPage({
 
 | File | Purpose |
 |------|---------|
+| `hooks/use-config-crud.ts` | Factory function สร้าง CRUD hooks (useList, useById, useCreate, useUpdate, useDelete) |
 | `hooks/use-api-mutation.ts` | Generic mutation helper (buCode, error handling, invalidation) |
 | `hooks/use-data-grid-state.ts` | Pagination, sorting, search, filter state via URL params |
-| `hooks/use-list-page-state.ts` | URL-based state (resets page on search/filter change) |
 | `hooks/use-profile.ts` | User profile + buCode |
-| `components/display-template.tsx` | Page layout (title, toolbar, actions, children) |
+| `lib/data-grid/use-config-table.ts` | Shared table helper — เพิ่ม select, index, status, action columns อัตโนมัติ |
+| `lib/data-grid/columns.tsx` | Shared column definitions (selectColumn, indexColumn, statusColumn, actionColumn) |
+| `lib/http-client.ts` | HTTP client wrapper (get, post, put, patch, delete) |
+| `components/display-template.tsx` | Page layout (title, description, toolbar, actions, children) |
 | `components/search-input.tsx` | Search input with Enter key + clear button |
 | `components/ui/status-filter.tsx` | Active/Inactive filter dropdown |
 | `components/ui/delete-dialog.tsx` | Confirmation dialog with isPending support |
 | `components/ui/error-state.tsx` | Error display with retry button |
-| `components/reui/data-grid/*` | DataGrid, DataGridTable, DataGridPagination, etc. |
+| `components/ui/field.tsx` | Field, FieldGroup, FieldLabel, FieldError components |
+| `components/reui/data-grid/*` | DataGrid, DataGridTable, DataGridPagination, DataGridColumnHeader, etc. |
 | `utils/build-query-string.ts` | URL query string builder |
 | `types/params.ts` | ParamsDto interface |
 | `types/form.ts` | `FormMode` type (`"add" \| "view" \| "edit"`) สำหรับ Variant B |
 | `constant/api-endpoints.ts` | API endpoint constants |
+| `constant/query-keys.ts` | Centralized query key registry |
 
 ## Key Patterns
 
+- **CRUD hook factory**: ใช้ `createConfigCrud<T, TCreate>()` แทนการเขียน hooks เอง — ให้ `queryKey`, `endpoint`, `label`
+- **HTTP client**: ใช้ `httpClient` จาก `@/lib/http-client` แทน raw `fetch`
+- **Table columns**: ใช้ `useConfigTable<T>()` ที่มี select, index, status, action columns อยู่แล้ว — เขียนแค่ custom columns
+- **Dialog form reset** (Variant A): ใช้ `useEffect` กับ `open` dependency เพื่อ reset form
 - **Dialog close prevention** (Variant A): `onOpenChange={isPending ? undefined : onOpenChange}`
-- **DeleteDialog close prevention**: `!open && !isPending && setTarget(null)` + `e.preventDefault()`
-- **Form reset on dialog open** (Variant A): ใช้ `onOpenAutoFocus` ของ DialogContent
+- **DeleteDialog close prevention**: `!open && !isPending && setTarget(null)`
 - **View/Edit/Add mode** (Variant B): `/[id]` เริ่มเป็น view (disabled) → กด Edit → edit mode → Cancel reset กลับ view
 - **Navigate back on success** (Variant B): `router.push("/config/{module}")` หลัง mutation สำเร็จ
-- **React Compiler**: ใส่ `"use no memo"` ใน function body ของ table hook ที่ใช้ useReactTable
+- **React Compiler**: `"use no memo"` อยู่ใน `useConfigTable` แล้ว ไม่ต้องใส่เอง
 - **Dense DataGrid**: `tableLayout={{ dense: true }}` + `tableClassNames={{ base: "text-xs" }}`
-- **Query invalidation**: ใช้ `invalidateKeys` ใน useApiMutation
+- **Query invalidation**: อัตโนมัติผ่าน `createConfigCrud` → `useApiMutation` → `invalidateKeys`
 - **Next.js 15 params** (Variant B): `params` เป็น `Promise` ใช้ `use(params)` เพื่อ unwrap

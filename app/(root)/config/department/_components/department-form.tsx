@@ -118,7 +118,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
       actions={
         <>
           {isView ? (
-            <Button size="xs" onClick={() => setMode("edit")}>
+            <Button size="sm" onClick={() => setMode("edit")}>
               <Pencil />
               Edit
             </Button>
@@ -127,7 +127,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
               <Button
                 type="button"
                 variant="outline"
-                size="xs"
+                size="sm"
                 onClick={handleCancel}
                 disabled={isPending}
               >
@@ -135,7 +135,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
               </Button>
               <Button
                 type="submit"
-                size="xs"
+                size="sm"
                 form="department-form"
                 disabled={isPending}
               >

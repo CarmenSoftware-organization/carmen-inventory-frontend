@@ -152,7 +152,7 @@ export function LocationForm({ location }: LocationFormProps) {
       actions={
         <>
           {isView ? (
-            <Button size="xs" onClick={() => setMode("edit")}>
+            <Button size="sm" onClick={() => setMode("edit")}>
               <Pencil />
               Edit
             </Button>
@@ -161,7 +161,7 @@ export function LocationForm({ location }: LocationFormProps) {
               <Button
                 type="button"
                 variant="outline"
-                size="xs"
+                size="sm"
                 onClick={handleCancel}
                 disabled={isPending}
               >
@@ -169,7 +169,7 @@ export function LocationForm({ location }: LocationFormProps) {
               </Button>
               <Button
                 type="submit"
-                size="xs"
+                size="sm"
                 form="location-form"
                 disabled={isPending}
               >

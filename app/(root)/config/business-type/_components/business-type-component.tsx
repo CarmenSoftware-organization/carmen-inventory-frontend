@@ -65,7 +65,7 @@ export default function BusinessTypeComponent() {
       actions={
         <>
           <Button
-            size="xs"
+            size="sm"
             onClick={() => {
               setEditBusinessType(null);
               setDialogOpen(true);
@@ -74,11 +74,11 @@ export default function BusinessTypeComponent() {
             <Plus />
             Add Business Type
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Download />
             Export
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Printer />
             Print
           </Button>

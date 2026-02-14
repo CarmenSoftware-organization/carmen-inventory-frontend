@@ -57,17 +57,17 @@ export default function LocationComponent() {
       actions={
         <>
           <Button
-            size="xs"
+            size="sm"
             onClick={() => router.push("/config/location/new")}
           >
             <Plus />
             Add Store Location
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Download />
             Export
           </Button>
-          <Button size="xs" variant="outline">
+          <Button size="sm" variant="outline">
             <Printer />
             Print
           </Button>
