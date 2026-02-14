@@ -14,6 +14,8 @@ export const QUERY_KEYS = {
   PRICE_LISTS: "price-lists",
   PRICE_LIST_TEMPLATES: "price-list-templates",
   REQUEST_PRICE_LISTS: "request-price-lists",
+  PERMISSIONS: "permissions",
+  APPLICATION_ROLES: "application-roles",
   STORE_REQUISITIONS: "store-requisitions",
   INVENTORY_ADJUSTMENTS: "inventory-adjustments",
 } as const;

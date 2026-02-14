@@ -26,6 +26,10 @@ export const API_ENDPOINTS = {
     `/api/proxy/api/${buCode}/inventory-adjustment`,
   STOCK_IN: (buCode: string) => `/api/proxy/api/${buCode}/stock-in`,
   STOCK_OUT: (buCode: string) => `/api/proxy/api/${buCode}/stock-out`,
+  PERMISSIONS: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/permissions`,
+  APPLICATION_ROLES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/application-roles`,
   STORE_REQUISITIONS: "/api/proxy/api/store-requisition",
   STORE_REQUISITION: (buCode: string) =>
     `/api/proxy/api/${buCode}/store-requisition`,
