@@ -37,8 +37,7 @@ export default function DepartmentComponent() {
     totalRecords,
     params,
     tableConfig,
-    onEdit: (department) =>
-      router.push(`/config/department/${department.id}`),
+    onEdit: (department) => router.push(`/config/department/${department.id}`),
     onDelete: setDeleteTarget,
   });
 

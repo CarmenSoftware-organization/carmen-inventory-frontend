@@ -67,7 +67,7 @@ Variant B มี 3 mode:
 |------|----------|------------|---------|
 | **add** | `/{module}/new` | enabled ทุก field | Cancel (กลับ list), Create |
 | **view** | `/{module}/[id]` | disabled ทุก field | Edit (เปลี่ยนเป็น edit mode) |
-| **edit** | กดปุ่ม Edit ใน view | enabled ทุก field | Cancel (reset form กลับ view), Save |
+| **edit** | กดปุ่ม Edit ใน view | enabled ทุก field | Cancel (reset form กลับ view), Save, Delete (destructive) |
 
 - `/[id]` เปิดมาจะเป็น **view mode** เสมอ — form disabled ดูข้อมูลได้อย่างเดียว
 - กด **Edit** → เปลี่ยนเป็น **edit mode** — form enabled แก้ไขได้
@@ -591,7 +591,7 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -603,10 +603,15 @@ import {
 } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { useCreateCategory, useUpdateCategory } from "@/hooks/use-category";
+import {
+  useCreateCategory,
+  useUpdateCategory,
+  useDeleteCategory,
+} from "@/hooks/use-category";
 import type { Category } from "@/types/category";
 import type { FormMode } from "@/types/form";
 import DisplayTemplate from "@/components/display-template";
+import { DeleteDialog } from "@/components/ui/delete-dialog";
 
 const categorySchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -629,6 +634,8 @@ export function CategoryForm({ category }: CategoryFormProps) {
 
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();
+  const deleteCategory = useDeleteCategory();
+  const [showDelete, setShowDelete] = useState(false);
   const isPending = createCategory.isPending || updateCategory.isPending;
   const isDisabled = isView || isPending;
 
@@ -726,6 +733,18 @@ export function CategoryForm({ category }: CategoryFormProps) {
               </Button>
             </>
           )}
+          {isEdit && category && (
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={() => setShowDelete(true)}
+              disabled={isPending || deleteCategory.isPending}
+            >
+              <Trash2 />
+              Delete
+            </Button>
+          )}
         </>
       }
     >
@@ -781,6 +800,27 @@ export function CategoryForm({ category }: CategoryFormProps) {
           </Field>
         </FieldGroup>
       </form>
+
+      {category && (
+        <DeleteDialog
+          open={showDelete}
+          onOpenChange={(open) =>
+            !open && !deleteCategory.isPending && setShowDelete(false)
+          }
+          title="Delete Category"
+          description={`Are you sure you want to delete category "${category.name}"? This action cannot be undone.`}
+          isPending={deleteCategory.isPending}
+          onConfirm={() => {
+            deleteCategory.mutate(category.id, {
+              onSuccess: () => {
+                toast.success("Category deleted successfully");
+                router.push("/config/category");
+              },
+              onError: (err) => toast.error(err.message),
+            });
+          }}
+        />
+      )}
     </DisplayTemplate>
   );
 }
@@ -989,6 +1029,7 @@ export default function EditCategoryPage({
 - **Dialog close prevention** (Variant A): `onOpenChange={isPending ? undefined : onOpenChange}`
 - **DeleteDialog close prevention**: `!open && !isPending && setTarget(null)`
 - **View/Edit/Add mode** (Variant B): `/[id]` เริ่มเป็น view (disabled) → กด Edit → edit mode → Cancel reset กลับ view
+- **Delete in form** (Variant B): แสดงปุ่ม Delete เฉพาะ **edit mode** (`variant="destructive"`) → เปิด `DeleteDialog` confirm → ลบแล้ว `router.push` กลับ list
 - **Navigate back on success** (Variant B): `router.push("/config/{module}")` หลัง mutation สำเร็จ
 - **React Compiler**: `"use no memo"` อยู่ใน `useConfigTable` แล้ว ไม่ต้องใส่เอง
 - **Dense DataGrid**: `tableLayout={{ dense: true }}` + `tableClassNames={{ base: "text-xs" }}`

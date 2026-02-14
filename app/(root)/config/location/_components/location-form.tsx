@@ -5,7 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -24,7 +24,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { useCreateLocation, useUpdateLocation } from "@/hooks/use-location";
+import {
+  useCreateLocation,
+  useUpdateLocation,
+  useDeleteLocation,
+} from "@/hooks/use-location";
 import type {
   Location,
   UserLocation,
@@ -39,6 +43,7 @@ import {
 } from "@/constant/location";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DisplayTemplate from "@/components/display-template";
+import { DeleteDialog } from "@/components/ui/delete-dialog";
 
 const locationSchema = z.object({
   code: z.string().min(1, "Code is required"),
@@ -68,6 +73,8 @@ export function LocationForm({ location }: LocationFormProps) {
 
   const createLocation = useCreateLocation();
   const updateLocation = useUpdateLocation();
+  const deleteLocation = useDeleteLocation();
+  const [showDelete, setShowDelete] = useState(false);
   const isPending = createLocation.isPending || updateLocation.isPending;
   const isDisabled = isView || isPending;
 
@@ -182,6 +189,18 @@ export function LocationForm({ location }: LocationFormProps) {
                     : "Create"}
               </Button>
             </>
+          )}
+          {isEdit && location && (
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={() => setShowDelete(true)}
+              disabled={isPending || deleteLocation.isPending}
+            >
+              <Trash2 />
+              Delete
+            </Button>
           )}
         </>
       }
@@ -339,6 +358,27 @@ export function LocationForm({ location }: LocationFormProps) {
             </TabsContent>
           </Tabs>
         </div>
+      )}
+
+      {location && (
+        <DeleteDialog
+          open={showDelete}
+          onOpenChange={(open) =>
+            !open && !deleteLocation.isPending && setShowDelete(false)
+          }
+          title="Delete Store Location"
+          description={`Are you sure you want to delete location "${location.name}"? This action cannot be undone.`}
+          isPending={deleteLocation.isPending}
+          onConfirm={() => {
+            deleteLocation.mutate(location.id, {
+              onSuccess: () => {
+                toast.success("Location deleted successfully");
+                router.push("/config/location");
+              },
+              onError: (err) => toast.error(err.message),
+            });
+          }}
+        />
       )}
     </DisplayTemplate>
   );

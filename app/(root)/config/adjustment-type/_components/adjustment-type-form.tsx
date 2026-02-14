@@ -5,7 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import {
   useCreateAdjustmentType,
   useUpdateAdjustmentType,
+  useDeleteAdjustmentType,
 } from "@/hooks/use-adjustment-type";
 import type { AdjustmentType } from "@/types/adjustment-type";
 import type { FormMode } from "@/types/form";
@@ -35,6 +36,7 @@ import {
   ADJUSTMENT_TYPE_OPTIONS,
 } from "@/constant/adjustment-type";
 import DisplayTemplate from "@/components/display-template";
+import { DeleteDialog } from "@/components/ui/delete-dialog";
 
 const adjustmentTypeSchema = z.object({
   code: z.string().min(1, "Code is required"),
@@ -62,6 +64,8 @@ export function AdjustmentTypeForm({
 
   const createAdjustmentType = useCreateAdjustmentType();
   const updateAdjustmentType = useUpdateAdjustmentType();
+  const deleteAdjustmentType = useDeleteAdjustmentType();
+  const [showDelete, setShowDelete] = useState(false);
   const isPending =
     createAdjustmentType.isPending || updateAdjustmentType.isPending;
   const isDisabled = isView || isPending;
@@ -178,6 +182,18 @@ export function AdjustmentTypeForm({
               </Button>
             </>
           )}
+          {isEdit && adjustmentType && (
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={() => setShowDelete(true)}
+              disabled={isPending || deleteAdjustmentType.isPending}
+            >
+              <Trash2 />
+              Delete
+            </Button>
+          )}
         </>
       }
     >
@@ -293,6 +309,27 @@ export function AdjustmentTypeForm({
           </Field>
         </FieldGroup>
       </form>
+
+      {adjustmentType && (
+        <DeleteDialog
+          open={showDelete}
+          onOpenChange={(open) =>
+            !open && !deleteAdjustmentType.isPending && setShowDelete(false)
+          }
+          title="Delete Adjustment Type"
+          description={`Are you sure you want to delete adjustment type "${adjustmentType.name}"? This action cannot be undone.`}
+          isPending={deleteAdjustmentType.isPending}
+          onConfirm={() => {
+            deleteAdjustmentType.mutate(adjustmentType.id, {
+              onSuccess: () => {
+                toast.success("Adjustment type deleted successfully");
+                router.push("/config/adjustment-type");
+              },
+              onError: (err) => toast.error(err.message),
+            });
+          }}
+        />
+      )}
     </DisplayTemplate>
   );
 }

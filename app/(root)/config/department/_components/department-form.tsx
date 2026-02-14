@@ -5,7 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -20,10 +20,12 @@ import { toast } from "sonner";
 import {
   useCreateDepartment,
   useUpdateDepartment,
+  useDeleteDepartment,
 } from "@/hooks/use-department";
 import type { Department, DepartmentUser } from "@/types/department";
 import type { FormMode } from "@/types/form";
 import DisplayTemplate from "@/components/display-template";
+import { DeleteDialog } from "@/components/ui/delete-dialog";
 
 const departmentSchema = z.object({
   code: z.string().min(1, "Code is required"),
@@ -47,6 +49,8 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
 
   const createDepartment = useCreateDepartment();
   const updateDepartment = useUpdateDepartment();
+  const deleteDepartment = useDeleteDepartment();
+  const [showDelete, setShowDelete] = useState(false);
   const isPending = createDepartment.isPending || updateDepartment.isPending;
   const isDisabled = isView || isPending;
 
@@ -149,6 +153,18 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
               </Button>
             </>
           )}
+          {isEdit && department && (
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={() => setShowDelete(true)}
+              disabled={isPending || deleteDepartment.isPending}
+            >
+              <Trash2 />
+              Delete
+            </Button>
+          )}
         </>
       }
     >
@@ -230,6 +246,27 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
             users={department.department_users}
           />
         </div>
+      )}
+
+      {department && (
+        <DeleteDialog
+          open={showDelete}
+          onOpenChange={(open) =>
+            !open && !deleteDepartment.isPending && setShowDelete(false)
+          }
+          title="Delete Department"
+          description={`Are you sure you want to delete department "${department.name}"? This action cannot be undone.`}
+          isPending={deleteDepartment.isPending}
+          onConfirm={() => {
+            deleteDepartment.mutate(department.id, {
+              onSuccess: () => {
+                toast.success("Department deleted successfully");
+                router.push("/config/department");
+              },
+              onError: (err) => toast.error(err.message),
+            });
+          }}
+        />
       )}
     </DisplayTemplate>
   );
