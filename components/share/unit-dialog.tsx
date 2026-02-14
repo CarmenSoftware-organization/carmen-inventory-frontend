@@ -20,6 +20,7 @@ import {
   FieldError,
 } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 import { useCreateUnit, useUpdateUnit } from "@/hooks/use-unit";
 import type { Unit } from "@/types/unit";
 
@@ -58,13 +59,30 @@ export function UnitDialog({ open, onOpenChange, unit }: UnitDialogProps) {
     if (isEdit) {
       updateUnit.mutate(
         { id: unit.id, ...payload },
-        { onSuccess: () => onOpenChange(false) },
+        {
+          onSuccess: () => {
+            toast.success("Unit updated successfully");
+            onOpenChange(false);
+          },
+          onError: (err) => toast.error(err.message),
+        },
       );
     } else {
       createUnit.mutate(payload, {
-        onSuccess: () => onOpenChange(false),
+        onSuccess: () => {
+          toast.success("Unit created successfully");
+          onOpenChange(false);
+        },
+        onError: (err) => toast.error(err.message),
       });
     }
+  };
+
+  const getButtonLabel = () => {
+    if (isPending) {
+      return isEdit ? "Saving..." : "Creating...";
+    }
+    return isEdit ? "Save" : "Create";
   };
 
   return (
@@ -74,7 +92,11 @@ export function UnitDialog({ open, onOpenChange, unit }: UnitDialogProps) {
         onOpenAutoFocus={() =>
           form.reset(
             unit
-              ? { name: unit.name, description: unit.description, is_active: unit.is_active }
+              ? {
+                  name: unit.name,
+                  description: unit.description,
+                  is_active: unit.is_active,
+                }
               : { name: "", description: "", is_active: true },
           )
         }
@@ -144,13 +166,7 @@ export function UnitDialog({ open, onOpenChange, unit }: UnitDialogProps) {
               Cancel
             </Button>
             <Button type="submit" size="sm" disabled={isPending}>
-              {isPending
-                ? isEdit
-                  ? "Saving..."
-                  : "Creating..."
-                : isEdit
-                  ? "Save"
-                  : "Create"}
+              {getButtonLabel()}
             </Button>
           </DialogFooter>
         </form>

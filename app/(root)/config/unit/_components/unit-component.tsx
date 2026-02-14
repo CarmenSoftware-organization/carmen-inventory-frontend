@@ -7,6 +7,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
+import { toast } from "sonner";
 import {
   DataGrid,
   DataGridContainer,
@@ -196,7 +197,11 @@ export default function UnitComponent() {
         onConfirm={() => {
           if (!deleteTarget) return;
           deleteUnit.mutate(deleteTarget.id, {
-            onSuccess: () => setDeleteTarget(null),
+            onSuccess: () => {
+              toast.success("Unit deleted successfully");
+              setDeleteTarget(null);
+            },
+            onError: (err) => toast.error(err.message),
           });
         }}
       />
