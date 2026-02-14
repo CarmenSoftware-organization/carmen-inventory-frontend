@@ -1,5 +1,6 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useProfile } from "@/hooks/use-profile";
+import { useApiMutation } from "@/hooks/use-api-mutation";
 import { buildUrl } from "@/utils/build-query-string";
 import type { Unit } from "@/types/unit";
 import type { ParamsDto } from "@/types/params";
@@ -38,71 +39,38 @@ export interface CreateUnitDto {
 }
 
 export function useCreateUnit() {
-  const { buCode } = useProfile();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (data: CreateUnitDto) => {
-      if (!buCode) throw new Error("Missing buCode");
-      const res = await fetch(API_ENDPOINTS.UNITS(buCode), {
+  return useApiMutation<CreateUnitDto>({
+    mutationFn: (data, buCode) =>
+      fetch(API_ENDPOINTS.UNITS(buCode), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || "Failed to create unit");
-      }
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["units"] });
-    },
+      }),
+    invalidateKeys: ["units"],
+    errorMessage: "Failed to create unit",
   });
 }
 
 export function useDeleteUnit() {
-  const { buCode } = useProfile();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (id: string) => {
-      if (!buCode) throw new Error("Missing buCode");
-      const res = await fetch(`${API_ENDPOINTS.UNITS(buCode)}/${id}`, {
+  return useApiMutation<string>({
+    mutationFn: (id, buCode) =>
+      fetch(`${API_ENDPOINTS.UNITS(buCode)}/${id}`, {
         method: "DELETE",
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || "Failed to delete unit");
-      }
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["units"] });
-    },
+      }),
+    invalidateKeys: ["units"],
+    errorMessage: "Failed to delete unit",
   });
 }
 
 export function useUpdateUnit() {
-  const { buCode } = useProfile();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ id, ...data }: CreateUnitDto & { id: string }) => {
-      if (!buCode) throw new Error("Missing buCode");
-      const res = await fetch(`${API_ENDPOINTS.UNITS(buCode)}/${id}`, {
+  return useApiMutation<CreateUnitDto & { id: string }>({
+    mutationFn: ({ id, ...data }, buCode) =>
+      fetch(`${API_ENDPOINTS.UNITS(buCode)}/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || "Failed to update unit");
-      }
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["units"] });
-    },
+      }),
+    invalidateKeys: ["units"],
+    errorMessage: "Failed to update unit",
   });
 }

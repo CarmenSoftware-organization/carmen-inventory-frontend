@@ -27,14 +27,30 @@ export function useListPageState(options: UseListPageStateOptions = {}) {
     [setPerpage],
   );
 
+  const handleSetSearch = useCallback(
+    (value: string) => {
+      setSearch(value);
+      setPage("");
+    },
+    [setSearch, setPage],
+  );
+
+  const handleSetFilter = useCallback(
+    (value: string) => {
+      setFilter(value);
+      setPage("");
+    },
+    [setFilter, setPage],
+  );
+
   const pageNumber = page ? Number(page) : defaultPage;
   const perpageNumber = perpage ? Number(perpage) : defaultPerpage;
 
   return {
     search,
-    setSearch,
+    setSearch: handleSetSearch,
     filter,
-    setFilter,
+    setFilter: handleSetFilter,
     sort,
     setSort,
     page,

@@ -14,11 +14,7 @@ export function useProfile() {
     queryFn: async () => {
       const res = await fetch(API_ENDPOINTS.PROFILE);
 
-      if (res.status === 401) {
-        router.push("/login");
-        throw new Error("Unauthorized");
-      }
-
+      if (res.status === 401) throw new Error("Unauthorized");
       if (!res.ok) throw new Error("Failed to fetch profile");
 
       const json = await res.json();
@@ -28,6 +24,10 @@ export function useProfile() {
     retry: (_, error) =>
       !(error instanceof Error && error.message === "Unauthorized"),
   });
+
+  if (query.error?.message === "Unauthorized") {
+    router.push("/login");
+  }
 
   const defaultBu = useMemo(
     () =>
