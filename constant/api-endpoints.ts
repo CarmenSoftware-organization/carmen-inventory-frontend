@@ -22,6 +22,9 @@ export const API_ENDPOINTS = {
     `/api/proxy/api/${buCode}/price-list-template`,
   REQUEST_PRICE_LISTS: (buCode: string) =>
     `/api/proxy/api/${buCode}/request-for-pricing`,
+  STORE_REQUISITIONS: "/api/proxy/api/store-requisition",
+  STORE_REQUISITION: (buCode: string) =>
+    `/api/proxy/api/${buCode}/store-requisition`,
   LOGOUT: "/api/auth/logout",
   SWITCH_BU: "/api/proxy/api/business-unit/default",
 } as const;
