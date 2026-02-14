@@ -8,11 +8,11 @@ import ModuleApp from "./module-app";
 
 export function Navbar() {
   return (
-    <header className="sticky top-0 z-50 bg-background flex h-12 border-b shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-      <div className="flex w-full items-center gap-2 px-2">
+    <header className="sticky top-0 z-50 bg-background flex h-10 border-b shrink-0 items-center gap-1.5 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-10">
+      <div className="flex w-full items-center gap-1.5 px-2">
         <SidebarTrigger />
         <PathBreadcrumb />
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-1">
           <ModuleApp />
           <NotificationComponent />
           <UserProfile />

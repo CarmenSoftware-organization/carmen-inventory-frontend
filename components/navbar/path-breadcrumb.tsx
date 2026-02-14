@@ -11,9 +11,19 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
+function isIdSegment(segment: string) {
+  // numeric id
+  if (/^\d+$/.test(segment)) return true;
+  // UUID
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(segment)) return true;
+  // MongoDB ObjectId (24 hex chars)
+  if (/^[0-9a-f]{24}$/i.test(segment)) return true;
+  return false;
+}
+
 export default function PathBreadcrumb() {
   const pathname = usePathname();
-  const segments = pathname.split("/").filter(Boolean);
+  const segments = pathname.split("/").filter((s) => Boolean(s) && !isIdSegment(s));
 
   return (
     <Breadcrumb>

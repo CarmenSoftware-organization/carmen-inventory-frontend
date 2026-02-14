@@ -38,7 +38,7 @@ export default function BuSwitcher() {
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton size="lg" disabled>
-            <Skeleton className="size-8 bg-sidebar-border" />
+            <Skeleton className="size-7 bg-sidebar-border" />
             <div className="grid flex-1 gap-1">
               <Skeleton className="h-3.5 w-24 bg-sidebar-border" />
               <Skeleton className="h-3 w-16 bg-sidebar-border" />
@@ -62,8 +62,8 @@ export default function BuSwitcher() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <Building2 className="size-4" />
+              <div className="flex aspect-square size-7 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
+                <Building2 className="size-3.5" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
@@ -82,10 +82,14 @@ export default function BuSwitcher() {
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
-            {departments.map((bu) => (
+            {departments.map((bu) => {
+              const isActive = bu.id === currentDept.id;
+              return (
               <DropdownMenuItem
                 key={bu.id}
+                disabled={isActive}
                 onClick={() => {
+                  if (isActive) return;
                   previousDept.current = currentDept;
                   setActiveDept(bu);
                   switchBuMutation.mutate(bu.id, {
@@ -95,19 +99,20 @@ export default function BuSwitcher() {
                     },
                   });
                 }}
-                className="gap-2 p-2"
+                className="gap-3 p-1a"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
                   <Building2 className="size-4 shrink-0" />
                 </div>
-                <div className="grid text-sm leading-tight">
+                <div className="grid text-xs leading-tight">
                   <span className="truncate font-medium">{bu.name}</span>
                   <span className="truncate text-xs text-muted-foreground">
                     {bu.config.hotel.name}
                   </span>
                 </div>
               </DropdownMenuItem>
-            ))}
+              );
+            })}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

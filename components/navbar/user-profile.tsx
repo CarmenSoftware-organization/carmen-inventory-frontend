@@ -35,12 +35,12 @@ export function UserProfile() {
 
   if (isLoading || isError) {
     return (
-      <Button variant="ghost" className="h-auto gap-2 px-2 py-1.5" disabled>
-        <div className="grid gap-1 text-right">
+      <Button variant="ghost" className="h-auto gap-1.5 px-1.5 py-1" disabled>
+        <div className="grid gap-0.5 text-right">
           <Skeleton className="h-3.5 w-20" />
           <Skeleton className="h-3 w-14 ml-auto" />
         </div>
-        <Skeleton className="size-8 rounded-full" />
+        <Skeleton className="size-7 rounded-full" />
       </Button>
     );
   }
@@ -48,14 +48,14 @@ export function UserProfile() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-auto gap-2 px-2 py-1.5">
+        <Button variant="ghost" className="h-auto gap-1.5 px-1.5 py-1">
           <div className="grid text-right text-sm leading-tight">
             <span className="truncate font-semibold">{name}</span>
             <span className="truncate text-xs text-muted-foreground">
               {department}
             </span>
           </div>
-          <Avatar className="size-8">
+          <Avatar className="size-7">
             <AvatarFallback className="text-xs">{convertName}</AvatarFallback>
           </Avatar>
         </Button>

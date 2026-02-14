@@ -21,7 +21,7 @@ export default function ModuleApp() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="size-9">
+        <Button variant="ghost" size="icon" className="size-7">
           <LayoutGrid className="size-4" />
           <span className="sr-only">Modules</span>
         </Button>
