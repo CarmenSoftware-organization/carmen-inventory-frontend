@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -55,6 +56,16 @@ export function DeliveryPointDialog({
     defaultValues: { name: "", is_active: true },
   });
 
+  useEffect(() => {
+    if (open) {
+      form.reset(
+        deliveryPoint
+          ? { name: deliveryPoint.name, is_active: deliveryPoint.is_active }
+          : { name: "", is_active: true },
+      );
+    }
+  }, [open, deliveryPoint, form]);
+
   const onSubmit = (values: DeliveryPointFormValues) => {
     const payload = {
       name: values.name,
@@ -92,19 +103,7 @@ export function DeliveryPointDialog({
 
   return (
     <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
-      <DialogContent
-        className="sm:max-w-sm gap-3 p-4"
-        onOpenAutoFocus={() =>
-          form.reset(
-            deliveryPoint
-              ? {
-                  name: deliveryPoint.name,
-                  is_active: deliveryPoint.is_active,
-                }
-              : { name: "", is_active: true },
-          )
-        }
-      >
+      <DialogContent className="sm:max-w-sm gap-3 p-4">
         <DialogHeader className="gap-0 pb-1">
           <DialogTitle className="text-sm">
             {isEdit ? "Edit Delivery Point" : "Add Delivery Point"}

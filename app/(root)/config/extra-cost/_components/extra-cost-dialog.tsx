@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -54,6 +55,16 @@ export function ExtraCostDialog({
     defaultValues: { name: "", is_active: true },
   });
 
+  useEffect(() => {
+    if (open) {
+      form.reset(
+        extraCost
+          ? { name: extraCost.name, is_active: extraCost.is_active }
+          : { name: "", is_active: true },
+      );
+    }
+  }, [open, extraCost, form]);
+
   const onSubmit = (values: ExtraCostFormValues) => {
     const payload = {
       name: values.name,
@@ -91,19 +102,7 @@ export function ExtraCostDialog({
 
   return (
     <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
-      <DialogContent
-        className="sm:max-w-sm gap-3 p-4"
-        onOpenAutoFocus={() =>
-          form.reset(
-            extraCost
-              ? {
-                  name: extraCost.name,
-                  is_active: extraCost.is_active,
-                }
-              : { name: "", is_active: true },
-          )
-        }
-      >
+      <DialogContent className="sm:max-w-sm gap-3 p-4">
         <DialogHeader className="gap-0 pb-1">
           <DialogTitle className="text-sm">
             {isEdit ? "Edit Extra Cost" : "Add Extra Cost"}

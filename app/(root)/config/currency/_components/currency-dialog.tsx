@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -63,6 +64,23 @@ export function CurrencyDialog({
     },
   });
 
+  useEffect(() => {
+    if (open) {
+      form.reset(
+        currency
+          ? {
+              code: currency.code,
+              name: currency.name,
+              symbol: currency.symbol,
+              exchange_rate: currency.exchange_rate,
+              description: currency.description,
+              is_active: currency.is_active,
+            }
+          : { code: "", name: "", symbol: "", exchange_rate: 0, description: "", is_active: true },
+      );
+    }
+  }, [open, currency, form]);
+
   const onSubmit = (values: CurrencyFormValues) => {
     const payload = {
       code: values.code,
@@ -104,30 +122,7 @@ export function CurrencyDialog({
 
   return (
     <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
-      <DialogContent
-        className="sm:max-w-sm gap-3 p-4"
-        onOpenAutoFocus={() =>
-          form.reset(
-            currency
-              ? {
-                  code: currency.code,
-                  name: currency.name,
-                  symbol: currency.symbol,
-                  exchange_rate: currency.exchange_rate,
-                  description: currency.description,
-                  is_active: currency.is_active,
-                }
-              : {
-                  code: "",
-                  name: "",
-                  symbol: "",
-                  exchange_rate: 0,
-                  description: "",
-                  is_active: true,
-                },
-          )
-        }
-      >
+      <DialogContent className="sm:max-w-sm gap-3 p-4">
         <DialogHeader className="gap-0 pb-1">
           <DialogTitle className="text-sm">
             {isEdit ? "Edit Currency" : "Add Currency"}

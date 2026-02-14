@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -55,6 +56,16 @@ export function TaxProfileDialog({
     defaultValues: { name: "", tax_rate: 0, is_active: true },
   });
 
+  useEffect(() => {
+    if (open) {
+      form.reset(
+        taxProfile
+          ? { name: taxProfile.name, tax_rate: taxProfile.tax_rate, is_active: taxProfile.is_active }
+          : { name: "", tax_rate: 0, is_active: true },
+      );
+    }
+  }, [open, taxProfile, form]);
+
   const onSubmit = (values: TaxProfileFormValues) => {
     const payload = {
       name: values.name,
@@ -93,20 +104,7 @@ export function TaxProfileDialog({
 
   return (
     <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
-      <DialogContent
-        className="sm:max-w-sm gap-3 p-4"
-        onOpenAutoFocus={() =>
-          form.reset(
-            taxProfile
-              ? {
-                  name: taxProfile.name,
-                  tax_rate: taxProfile.tax_rate,
-                  is_active: taxProfile.is_active,
-                }
-              : { name: "", tax_rate: 0, is_active: true },
-          )
-        }
-      >
+      <DialogContent className="sm:max-w-sm gap-3 p-4">
         <DialogHeader className="gap-0 pb-1">
           <DialogTitle className="text-sm">
             {isEdit ? "Edit Tax Profile" : "Add Tax Profile"}
