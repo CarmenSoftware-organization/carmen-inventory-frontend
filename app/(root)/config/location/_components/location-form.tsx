@@ -5,7 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2 } from "lucide-react";
+import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -42,7 +42,6 @@ import {
   PHYSICAL_COUNT_TYPE_OPTIONS,
 } from "@/constant/location";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import DisplayTemplate from "@/components/display-template";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 
 const locationSchema = z.object({
@@ -154,10 +153,19 @@ export function LocationForm({ location }: LocationFormProps) {
       : "Store Location";
 
   return (
-    <DisplayTemplate
-      title={title}
-      actions={
-        <>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={() => router.push("/config/location")}
+          >
+            <ArrowLeft />
+          </Button>
+          <h1 className="text-lg font-semibold">{title}</h1>
+        </div>
+        <div className="flex items-center gap-2">
           {isView ? (
             <Button size="sm" onClick={() => setMode("edit")}>
               <Pencil />
@@ -202,9 +210,9 @@ export function LocationForm({ location }: LocationFormProps) {
               Delete
             </Button>
           )}
-        </>
-      }
-    >
+        </div>
+      </div>
+
       <form
         id="location-form"
         onSubmit={form.handleSubmit(onSubmit)}
@@ -380,7 +388,7 @@ export function LocationForm({ location }: LocationFormProps) {
           }}
         />
       )}
-    </DisplayTemplate>
+    </div>
   );
 }
 

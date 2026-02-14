@@ -6,7 +6,16 @@ import {
 import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
 import { Badge } from "@/components/reui/badge";
 import { DataGridRowActions } from "@/components/reui/data-grid/data-grid-row-actions";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { ParamsDto } from "@/types/params";
+
+export const columnSkeletons = {
+  checkbox: <Skeleton className="mx-auto h-3 w-3 rounded" />,
+  number: <Skeleton className="h-2.5 w-5" />,
+  text: <Skeleton className="h-2.5 w-3/4" />,
+  textShort: <Skeleton className="h-2.5 w-1/2" />,
+  badge: <Skeleton className="mx-auto h-4 w-12 rounded-full" />,
+};
 
 export function selectColumn<T>(): ColumnDef<T> {
   return {
@@ -24,6 +33,7 @@ export function selectColumn<T>(): ColumnDef<T> {
     enableSorting: false,
     enableHiding: false,
     size: 20,
+    meta: { skeleton: columnSkeletons.checkbox },
   };
 }
 
@@ -38,6 +48,7 @@ export function indexColumn<T>(params: ParamsDto): ColumnDef<T> {
     enableSorting: false,
     enableHiding: false,
     size: 20,
+    meta: { skeleton: columnSkeletons.number },
   };
 }
 
@@ -63,6 +74,7 @@ export function statusColumn<T>(): ColumnDef<T> {
     meta: {
       cellClassName: "text-center",
       headerClassName: "text-center",
+      skeleton: columnSkeletons.badge,
     },
   };
 }
@@ -78,5 +90,6 @@ export function actionColumn<T>(
     ),
     enableSorting: false,
     size: 40,
+    meta: { skeleton: null },
   };
 }

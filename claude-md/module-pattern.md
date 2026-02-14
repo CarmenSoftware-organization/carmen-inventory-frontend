@@ -1,17 +1,18 @@
-# Config Module Pattern
+# Module Pattern
 
-Pattern สำหรับสร้าง CRUD module ใหม่ภายใต้ `app/(root)/config/`
+Pattern สำหรับสร้าง CRUD module ใหม่ภายใต้ `app/(root)/`
+path ไม่จำกัดว่าต้องอยู่ใต้ `config/` — อาจอยู่ที่ `config/{module}`, `product-management/{module}`, หรือ path อื่น
 
 ---
 
 ## Instruction for Claude
 
-เมื่อ user ต้องการสร้าง config module ใหม่ **ต้องถามคำถามเหล่านี้ก่อนเริ่มทำ** โดยใช้ AskUserQuestion tool:
+เมื่อ user ต้องการสร้าง module ใหม่ **ต้องถามคำถามเหล่านี้ก่อนเริ่มทำ** โดยใช้ AskUserQuestion tool:
 
 ### คำถามที่ต้องถาม
 
-1. **Module name** — ชื่อ module (ภาษาอังกฤษ, singular) เช่น `category`, `warehouse`, `supplier`
-2. **API path** — path ของ API endpoint เช่น `/api/proxy/api/config/{buCode}/categories`
+1. **Module name** — ชื่อ module path (ภาษาอังกฤษ) เช่น `config/category`, `product-management/product`, `config/warehouse`
+2. **API path** — full path ของ API endpoint เช่น `/api/proxy/api/config/{buCode}/categories`, `/api/proxy/api/config/{buCode}/products`
 3. **Form mode** — เปิด form แบบไหน
    - **Dialog** — form ง่าย fields น้อย เปิด dialog ใน list page (เช่น Currency)
    - **Page** — form ซับซ้อน fields เยอะ navigate ไป `/new` และ `/[id]` (เช่น Adjustment Type)
@@ -24,8 +25,8 @@ Pattern สำหรับสร้าง CRUD module ใหม่ภายใ�
 ```
 กรุณาให้ข้อมูลสำหรับ module ใหม่:
 
-1. ชื่อ module? (เช่น category, warehouse)
-2. API path? (เช่น /categories, /warehouses — จะต่อหลัง /api/proxy/api/config/{buCode}/)
+1. ชื่อ module path? (เช่น config/category, product-management/product)
+2. API path? (full path เช่น /api/proxy/api/config/{buCode}/categories)
 3. Form mode? — Dialog (form ง่าย) หรือ Page (form ซับซ้อน navigate ไป /new, /[id])
 4. มี field อะไรบ้างใน form?
    ตัวอย่าง:
@@ -81,7 +82,7 @@ Variant B มี 3 mode:
 ### Variant A: Dialog-based
 
 ```
-app/(root)/config/{module}/
+app/(root)/{basePath}/{module}/
 ├── page.tsx                          # List page
 └── _components/
     ├── {module}-component.tsx        # List + dialog state
@@ -95,10 +96,12 @@ types/
 └── {module}.ts                       # TypeScript interface
 ```
 
+> **Note**: `{basePath}` คือ path ก่อน module เช่น `config`, `product-management` เป็นต้น
+
 ### Variant B: Page-based
 
 ```
-app/(root)/config/{module}/
+app/(root)/{basePath}/{module}/
 ├── page.tsx                          # List page
 ├── new/
 │   └── page.tsx                      # Create page
@@ -565,7 +568,7 @@ export default function CategoryComponent() {
 }
 ```
 
-#### A8. Page — `app/(root)/config/{module}/page.tsx`
+#### A8. Page — `app/(root)/{basePath}/{module}/page.tsx`
 
 ```tsx
 import CategoryComponent from "./_components/category-component";
@@ -591,7 +594,7 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2 } from "lucide-react";
+import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -610,7 +613,6 @@ import {
 } from "@/hooks/use-category";
 import type { Category } from "@/types/category";
 import type { FormMode } from "@/types/form";
-import DisplayTemplate from "@/components/display-template";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 
 const categorySchema = z.object({
@@ -663,7 +665,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
         {
           onSuccess: () => {
             toast.success("Category updated successfully");
-            router.push("/config/category");
+            router.push("/{basePath}/{module}");
           },
           onError: (err) => toast.error(err.message),
         },
@@ -672,7 +674,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
       createCategory.mutate(payload, {
         onSuccess: () => {
           toast.success("Category created successfully");
-          router.push("/config/category");
+          router.push("/{basePath}/{module}");
         },
         onError: (err) => toast.error(err.message),
       });
@@ -690,7 +692,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
       setMode("view");
     } else {
       // Add mode → กลับไปหน้า list
-      router.push("/config/category");
+      router.push("/{basePath}/{module}");
     }
   };
 
@@ -701,10 +703,19 @@ export function CategoryForm({ category }: CategoryFormProps) {
       : "Category";
 
   return (
-    <DisplayTemplate
-      title={title}
-      actions={
-        <>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={() => router.push("/{basePath}/{module}")}
+          >
+            <ArrowLeft />
+          </Button>
+          <h1 className="text-lg font-semibold">{title}</h1>
+        </div>
+        <div className="flex items-center gap-2">
           {isView ? (
             <Button size="sm" onClick={() => setMode("edit")}>
               <Pencil />
@@ -745,9 +756,9 @@ export function CategoryForm({ category }: CategoryFormProps) {
               Delete
             </Button>
           )}
-        </>
-      }
-    >
+        </div>
+      </div>
+
       <form
         id="category-form"
         onSubmit={form.handleSubmit(onSubmit)}
@@ -814,17 +825,19 @@ export function CategoryForm({ category }: CategoryFormProps) {
             deleteCategory.mutate(category.id, {
               onSuccess: () => {
                 toast.success("Category deleted successfully");
-                router.push("/config/category");
+                router.push("/{basePath}/{module}");
               },
               onError: (err) => toast.error(err.message),
             });
           }}
         />
       )}
-    </DisplayTemplate>
+    </div>
   );
 }
 ```
+
+> **หมายเหตุ**: Variant B form **ไม่ใช้ `DisplayTemplate`** — ใช้ layout ตรงๆ (`div` + flex) แทน เพราะเป็นหน้า detail ไม่ใช่หน้า list. `DisplayTemplate` ใช้เฉพาะหน้า list (component) เท่านั้น
 
 #### B7. Main Component (List only) — `_components/{module}-component.tsx`
 
@@ -868,7 +881,7 @@ export default function CategoryComponent() {
     totalRecords,
     params,
     tableConfig,
-    onEdit: (category) => router.push(`/config/category/${category.id}`),
+    onEdit: (category) => router.push(`/{basePath}/{module}/${category.id}`),
     onDelete: setDeleteTarget,
   });
 
@@ -889,7 +902,7 @@ export default function CategoryComponent() {
         <>
           <Button
             size="sm"
-            onClick={() => router.push("/config/category/new")}
+            onClick={() => router.push("/{basePath}/{module}/new")}
           >
             <Plus />
             Add Category
@@ -944,7 +957,7 @@ export default function CategoryComponent() {
 
 #### B8. Pages
 
-**List page** — `app/(root)/config/{module}/page.tsx`
+**List page** — `app/(root)/{basePath}/{module}/page.tsx`
 
 ```tsx
 import CategoryComponent from "./_components/category-component";
@@ -954,7 +967,7 @@ export default function CategoryPage() {
 }
 ```
 
-**Create page** — `app/(root)/config/{module}/new/page.tsx`
+**Create page** — `app/(root)/{basePath}/{module}/new/page.tsx`
 
 ```tsx
 import { CategoryForm } from "../_components/category-form";
@@ -964,7 +977,7 @@ export default function NewCategoryPage() {
 }
 ```
 
-**Edit page** — `app/(root)/config/{module}/[id]/page.tsx`
+**Edit page** — `app/(root)/{basePath}/{module}/[id]/page.tsx`
 
 ```tsx
 "use client";
@@ -1030,7 +1043,8 @@ export default function EditCategoryPage({
 - **DeleteDialog close prevention**: `!open && !isPending && setTarget(null)`
 - **View/Edit/Add mode** (Variant B): `/[id]` เริ่มเป็น view (disabled) → กด Edit → edit mode → Cancel reset กลับ view
 - **Delete in form** (Variant B): แสดงปุ่ม Delete เฉพาะ **edit mode** (`variant="destructive"`) → เปิด `DeleteDialog` confirm → ลบแล้ว `router.push` กลับ list
-- **Navigate back on success** (Variant B): `router.push("/config/{module}")` หลัง mutation สำเร็จ
+- **Back button** (Variant B): ใช้ `ArrowLeft` icon inline กับ title (`← Title`) — ไม่ใช้ `DisplayTemplate` ในหน้า form
+- **Navigate back on success** (Variant B): `router.push("/{basePath}/{module}")` หลัง mutation สำเร็จ
 - **React Compiler**: `"use no memo"` อยู่ใน `useConfigTable` แล้ว ไม่ต้องใส่เอง
 - **Dense DataGrid**: `tableLayout={{ dense: true }}` + `tableClassNames={{ base: "text-xs" }}`
 - **Query invalidation**: อัตโนมัติผ่าน `createConfigCrud` → `useApiMutation` → `invalidateKeys`

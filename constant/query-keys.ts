@@ -1,9 +1,3 @@
-/**
- * Centralized query key registry.
- *
- * Every TanStack Query key used in the app should be defined here
- * so that invalidation, removal, and debugging are predictable.
- */
 export const QUERY_KEYS = {
   PROFILE: "profile",
   BUSINESS_TYPES: "business-types",
@@ -15,6 +9,7 @@ export const QUERY_KEYS = {
   ADJUSTMENT_TYPES: "adjustment-types",
   TAX_PROFILES: "tax-profiles",
   CURRENCIES: "currencies",
+  PRODUCTS: "products",
 } as const;
 
 export type QueryKey = (typeof QUERY_KEYS)[keyof typeof QUERY_KEYS];

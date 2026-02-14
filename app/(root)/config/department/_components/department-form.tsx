@@ -5,7 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2 } from "lucide-react";
+import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -24,7 +24,6 @@ import {
 } from "@/hooks/use-department";
 import type { Department, DepartmentUser } from "@/types/department";
 import type { FormMode } from "@/types/form";
-import DisplayTemplate from "@/components/display-template";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 
 const departmentSchema = z.object({
@@ -117,10 +116,19 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
       : "Department";
 
   return (
-    <DisplayTemplate
-      title={title}
-      actions={
-        <>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={() => router.push("/config/department")}
+          >
+            <ArrowLeft />
+          </Button>
+          <h1 className="text-lg font-semibold">{title}</h1>
+        </div>
+        <div className="flex items-center gap-2">
           {isView ? (
             <Button size="sm" onClick={() => setMode("edit")}>
               <Pencil />
@@ -165,9 +173,9 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
               Delete
             </Button>
           )}
-        </>
-      }
-    >
+        </div>
+      </div>
+
       <form
         id="department-form"
         onSubmit={form.handleSubmit(onSubmit)}
@@ -268,7 +276,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
           }}
         />
       )}
-    </DisplayTemplate>
+    </div>
   );
 }
 
