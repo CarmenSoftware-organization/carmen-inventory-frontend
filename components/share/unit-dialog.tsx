@@ -24,6 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useCreateUnit, useUpdateUnit } from "@/hooks/use-unit";
 import type { Unit } from "@/types/unit";
+import { getModeLabels } from "@/types/form";
 
 const unitSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -44,6 +45,7 @@ export function UnitDialog({ open, onOpenChange, unit }: UnitDialogProps) {
   const createUnit = useCreateUnit();
   const updateUnit = useUpdateUnit();
   const isPending = createUnit.isPending || updateUnit.isPending;
+  const labels = getModeLabels(isEdit ? "edit" : "add", "Unit");
 
   const form = useForm<UnitFormValues>({
     resolver: zodResolver(unitSchema) as Resolver<UnitFormValues>,
@@ -89,19 +91,12 @@ export function UnitDialog({ open, onOpenChange, unit }: UnitDialogProps) {
     }
   };
 
-  const getButtonLabel = () => {
-    if (isPending) {
-      return isEdit ? "Saving..." : "Creating...";
-    }
-    return isEdit ? "Save" : "Create";
-  };
-
   return (
     <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
       <DialogContent className="sm:max-w-sm gap-3 p-4">
         <DialogHeader className="gap-0 pb-1">
           <DialogTitle className="text-sm">
-            {isEdit ? "Edit Unit" : "Add Unit"}
+            {labels.title}
           </DialogTitle>
         </DialogHeader>
 
@@ -164,7 +159,7 @@ export function UnitDialog({ open, onOpenChange, unit }: UnitDialogProps) {
               Cancel
             </Button>
             <Button type="submit" size="sm" disabled={isPending}>
-              {getButtonLabel()}
+              {isPending ? labels.pending : labels.submit}
             </Button>
           </DialogFooter>
         </form>

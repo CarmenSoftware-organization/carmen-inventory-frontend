@@ -281,6 +281,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useCreateCategory, useUpdateCategory } from "@/hooks/use-category";
 import type { Category } from "@/types/category";
+import { getModeLabels } from "@/types/form";
 
 const categorySchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -305,6 +306,7 @@ export function CategoryDialog({
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();
   const isPending = createCategory.isPending || updateCategory.isPending;
+  const labels = getModeLabels(isEdit ? "edit" : "add", "Category");
 
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(categorySchema) as Resolver<CategoryFormValues>,
@@ -354,17 +356,12 @@ export function CategoryDialog({
     }
   };
 
-  const getButtonLabel = () => {
-    if (isPending) return isEdit ? "Saving..." : "Creating...";
-    return isEdit ? "Save" : "Create";
-  };
-
   return (
     <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
       <DialogContent className="sm:max-w-sm gap-3 p-4">
         <DialogHeader className="gap-0 pb-1">
           <DialogTitle className="text-sm">
-            {isEdit ? "Edit Category" : "Add Category"}
+            {labels.title}
           </DialogTitle>
         </DialogHeader>
 
@@ -429,7 +426,7 @@ export function CategoryDialog({
               Cancel
             </Button>
             <Button type="submit" size="sm" disabled={isPending}>
-              {getButtonLabel()}
+              {isPending ? labels.pending : labels.submit}
             </Button>
           </DialogFooter>
         </form>
@@ -612,7 +609,7 @@ import {
   useDeleteCategory,
 } from "@/hooks/use-category";
 import type { Category } from "@/types/category";
-import type { FormMode } from "@/types/form";
+import { getModeLabels, type FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 
 const categorySchema = z.object({
@@ -640,6 +637,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
   const [showDelete, setShowDelete] = useState(false);
   const isPending = createCategory.isPending || updateCategory.isPending;
   const isDisabled = isView || isPending;
+  const labels = getModeLabels(mode, "Category");
 
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(categorySchema) as Resolver<CategoryFormValues>,
@@ -696,12 +694,6 @@ export function CategoryForm({ category }: CategoryFormProps) {
     }
   };
 
-  const title = isAdd
-    ? "Add Category"
-    : isEdit
-      ? "Edit Category"
-      : "Category";
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -713,7 +705,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           >
             <ArrowLeft />
           </Button>
-          <h1 className="text-lg font-semibold">{title}</h1>
+          <h1 className="text-lg font-semibold">{labels.title}</h1>
         </div>
         <div className="flex items-center gap-2">
           {isView ? (
@@ -738,9 +730,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
                 form="category-form"
                 disabled={isPending}
               >
-                {isPending
-                  ? isEdit ? "Saving..." : "Creating..."
-                  : isEdit ? "Save" : "Create"}
+                {isPending ? labels.pending : labels.submit}
               </Button>
             </>
           )}
@@ -1029,7 +1019,7 @@ export default function EditCategoryPage({
 | `components/reui/data-grid/*` | DataGrid, DataGridTable, DataGridPagination, DataGridColumnHeader, etc. |
 | `utils/build-query-string.ts` | URL query string builder |
 | `types/params.ts` | ParamsDto interface |
-| `types/form.ts` | `FormMode` type (`"add" \| "view" \| "edit"`) สำหรับ Variant B |
+| `types/form.ts` | `FormMode` type + `getModeLabels(mode, entity)` helper สำหรับ title/button labels |
 | `constant/api-endpoints.ts` | API endpoint constants |
 | `constant/query-keys.ts` | Centralized query key registry |
 
@@ -1050,3 +1040,4 @@ export default function EditCategoryPage({
 - **Query invalidation**: อัตโนมัติผ่าน `createConfigCrud` → `useApiMutation` → `invalidateKeys`
 - **Next.js 15 params** (Variant B): `params` เป็น `Promise` ใช้ `use(params)` เพื่อ unwrap
 - **zodResolver type assertion**: `zodResolver(schema) as Resolver<FormValues>` — จำเป็นเพราะ `@hookform/resolvers` กับ `react-hook-form` export `Resolver` type คนละตัว ต้อง import `type Resolver` จาก `react-hook-form` แล้ว cast
+- **Mode labels**: ใช้ `getModeLabels(mode, "Entity")` จาก `@/types/form` แทน nested ternary — ใช้ได้ทั้ง Dialog (`isEdit ? "edit" : "add"`) และ Page-based (`mode`)

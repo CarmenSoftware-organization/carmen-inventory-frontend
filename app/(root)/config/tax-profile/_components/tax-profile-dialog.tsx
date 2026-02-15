@@ -26,6 +26,7 @@ import {
   useUpdateTaxProfile,
 } from "@/hooks/use-tax-profile";
 import type { TaxProfile } from "@/types/tax-profile";
+import { getModeLabels } from "@/types/form";
 
 const taxProfileSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -50,6 +51,7 @@ export function TaxProfileDialog({
   const createTaxProfile = useCreateTaxProfile();
   const updateTaxProfile = useUpdateTaxProfile();
   const isPending = createTaxProfile.isPending || updateTaxProfile.isPending;
+  const labels = getModeLabels(isEdit ? "edit" : "add", "Tax Profile");
 
   const form = useForm<TaxProfileFormValues>({
     resolver: zodResolver(taxProfileSchema) as Resolver<TaxProfileFormValues>,
@@ -95,19 +97,12 @@ export function TaxProfileDialog({
     }
   };
 
-  const getButtonLabel = () => {
-    if (isPending) {
-      return isEdit ? "Saving..." : "Creating...";
-    }
-    return isEdit ? "Save" : "Create";
-  };
-
   return (
     <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
       <DialogContent className="sm:max-w-sm gap-3 p-4">
         <DialogHeader className="gap-0 pb-1">
           <DialogTitle className="text-sm">
-            {isEdit ? "Edit Tax Profile" : "Add Tax Profile"}
+            {labels.title}
           </DialogTitle>
         </DialogHeader>
 
@@ -173,7 +168,7 @@ export function TaxProfileDialog({
               Cancel
             </Button>
             <Button type="submit" size="sm" disabled={isPending}>
-              {getButtonLabel()}
+              {isPending ? labels.pending : labels.submit}
             </Button>
           </DialogFooter>
         </form>

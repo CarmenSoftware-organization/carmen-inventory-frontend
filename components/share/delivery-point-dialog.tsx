@@ -26,6 +26,7 @@ import {
   useUpdateDeliveryPoint,
 } from "@/hooks/use-delivery-point";
 import type { DeliveryPoint } from "@/types/delivery-point";
+import { getModeLabels } from "@/types/form";
 
 const deliveryPointSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -50,6 +51,7 @@ export function DeliveryPointDialog({
   const updateDeliveryPoint = useUpdateDeliveryPoint();
   const isPending =
     createDeliveryPoint.isPending || updateDeliveryPoint.isPending;
+  const labels = getModeLabels(isEdit ? "edit" : "add", "Delivery Point");
 
   const form = useForm<DeliveryPointFormValues>({
     resolver: zodResolver(deliveryPointSchema) as Resolver<DeliveryPointFormValues>,
@@ -94,19 +96,12 @@ export function DeliveryPointDialog({
     }
   };
 
-  const getButtonLabel = () => {
-    if (isPending) {
-      return isEdit ? "Saving..." : "Creating...";
-    }
-    return isEdit ? "Save" : "Create";
-  };
-
   return (
     <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
       <DialogContent className="sm:max-w-sm gap-3 p-4">
         <DialogHeader className="gap-0 pb-1">
           <DialogTitle className="text-sm">
-            {isEdit ? "Edit Delivery Point" : "Add Delivery Point"}
+            {labels.title}
           </DialogTitle>
         </DialogHeader>
 
@@ -159,7 +154,7 @@ export function DeliveryPointDialog({
               Cancel
             </Button>
             <Button type="submit" size="sm" disabled={isPending}>
-              {getButtonLabel()}
+              {isPending ? labels.pending : labels.submit}
             </Button>
           </DialogFooter>
         </form>

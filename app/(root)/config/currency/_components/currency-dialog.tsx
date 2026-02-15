@@ -24,6 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useCreateCurrency, useUpdateCurrency } from "@/hooks/use-currency";
 import type { Currency } from "@/types/currency";
+import { getModeLabels } from "@/types/form";
 
 const currencySchema = z.object({
   code: z.string().min(1, "Code is required"),
@@ -51,6 +52,7 @@ export function CurrencyDialog({
   const createCurrency = useCreateCurrency();
   const updateCurrency = useUpdateCurrency();
   const isPending = createCurrency.isPending || updateCurrency.isPending;
+  const labels = getModeLabels(isEdit ? "edit" : "add", "Currency");
 
   const form = useForm<CurrencyFormValues>({
     resolver: zodResolver(currencySchema) as Resolver<CurrencyFormValues>,
@@ -113,19 +115,12 @@ export function CurrencyDialog({
     }
   };
 
-  const getButtonLabel = () => {
-    if (isPending) {
-      return isEdit ? "Saving..." : "Creating...";
-    }
-    return isEdit ? "Save" : "Create";
-  };
-
   return (
     <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
       <DialogContent className="sm:max-w-sm gap-3 p-4">
         <DialogHeader className="gap-0 pb-1">
           <DialogTitle className="text-sm">
-            {isEdit ? "Edit Currency" : "Add Currency"}
+            {labels.title}
           </DialogTitle>
         </DialogHeader>
 
@@ -234,7 +229,7 @@ export function CurrencyDialog({
               Cancel
             </Button>
             <Button type="submit" size="sm" disabled={isPending}>
-              {getButtonLabel()}
+              {isPending ? labels.pending : labels.submit}
             </Button>
           </DialogFooter>
         </form>

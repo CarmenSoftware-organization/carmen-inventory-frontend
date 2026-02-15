@@ -17,7 +17,7 @@ import {
 import { toast } from "sonner";
 import { useCreateRole, useUpdateRole, useDeleteRole } from "@/hooks/use-role";
 import type { RoleDetail } from "@/types/role";
-import type { FormMode } from "@/types/form";
+import { getModeLabels, type FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { PermissionMatrix } from "./permission-matrix";
 
@@ -46,6 +46,8 @@ export function RoleForm({ role }: RoleFormProps) {
 
   const isPending = createRole.isPending || updateRole.isPending;
   const isDisabled = isView || isPending;
+
+  const labels = getModeLabels(mode, "Role");
 
   const originalPermissionIds = useMemo(
     () => new Set(role?.permissions.map((p) => p.permission_id) ?? []),
@@ -117,7 +119,7 @@ export function RoleForm({ role }: RoleFormProps) {
     }
   };
 
-  const title = isAdd ? "Add Role" : isEdit ? "Edit Role" : "Role";
+  const { title } = labels;
 
   return (
     <div className="space-y-4">
@@ -156,13 +158,7 @@ export function RoleForm({ role }: RoleFormProps) {
                 form="role-form"
                 disabled={isPending}
               >
-                {isPending
-                  ? isEdit
-                    ? "Saving..."
-                    : "Creating..."
-                  : isEdit
-                    ? "Save"
-                    : "Create"}
+                {isPending ? labels.pending : labels.submit}
               </Button>
             </>
           )}

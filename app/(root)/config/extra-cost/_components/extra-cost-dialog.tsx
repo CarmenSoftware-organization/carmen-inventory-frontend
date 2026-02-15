@@ -26,6 +26,7 @@ import {
   useUpdateExtraCost,
 } from "@/hooks/use-extra-cost";
 import type { ExtraCost } from "@/types/extra-cost";
+import { getModeLabels } from "@/types/form";
 
 const extraCostSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -49,6 +50,7 @@ export function ExtraCostDialog({
   const createExtraCost = useCreateExtraCost();
   const updateExtraCost = useUpdateExtraCost();
   const isPending = createExtraCost.isPending || updateExtraCost.isPending;
+  const labels = getModeLabels(isEdit ? "edit" : "add", "Extra Cost");
 
   const form = useForm<ExtraCostFormValues>({
     resolver: zodResolver(extraCostSchema) as Resolver<ExtraCostFormValues>,
@@ -93,19 +95,12 @@ export function ExtraCostDialog({
     }
   };
 
-  const getButtonLabel = () => {
-    if (isPending) {
-      return isEdit ? "Saving..." : "Creating...";
-    }
-    return isEdit ? "Save" : "Create";
-  };
-
   return (
     <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
       <DialogContent className="sm:max-w-sm gap-3 p-4">
         <DialogHeader className="gap-0 pb-1">
           <DialogTitle className="text-sm">
-            {isEdit ? "Edit Extra Cost" : "Add Extra Cost"}
+            {labels.title}
           </DialogTitle>
         </DialogHeader>
 
@@ -155,7 +150,7 @@ export function ExtraCostDialog({
               Cancel
             </Button>
             <Button type="submit" size="sm" disabled={isPending}>
-              {getButtonLabel()}
+              {isPending ? labels.pending : labels.submit}
             </Button>
           </DialogFooter>
         </form>
