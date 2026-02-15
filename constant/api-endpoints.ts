@@ -33,6 +33,8 @@ export const API_ENDPOINTS = {
   STORE_REQUISITIONS: "/api/proxy/api/store-requisition",
   STORE_REQUISITION: (buCode: string) =>
     `/api/proxy/api/${buCode}/store-requisition`,
+  WORKFLOWS: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/workflows`,
   LOGOUT: "/api/auth/logout",
   SWITCH_BU: "/api/proxy/api/business-unit/default",
 } as const;

@@ -17,6 +17,7 @@ export const QUERY_KEYS = {
   PERMISSIONS: "permissions",
   APPLICATION_ROLES: "application-roles",
   STORE_REQUISITIONS: "store-requisitions",
+  WORKFLOWS: "workflows",
   INVENTORY_ADJUSTMENTS: "inventory-adjustments",
 } as const;
 
