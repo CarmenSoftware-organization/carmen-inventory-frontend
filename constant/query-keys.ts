@@ -19,6 +19,10 @@ export const QUERY_KEYS = {
   STORE_REQUISITIONS: "store-requisitions",
   WORKFLOWS: "workflows",
   INVENTORY_ADJUSTMENTS: "inventory-adjustments",
+  PURCHASE_REQUESTS: "purchase-requests",
+  MY_PENDING_PURCHASE_REQUESTS: "my-pending-purchase-requests",
+  PURCHASE_REQUEST_WORKFLOW_STAGES: "purchase-request-workflow-stages",
+  PURCHASE_REQUEST_TEMPLATES: "purchase-request-templates",
 } as const;
 
 export type QueryKey = (typeof QUERY_KEYS)[keyof typeof QUERY_KEYS];

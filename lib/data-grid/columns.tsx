@@ -20,20 +20,16 @@ export const columnSkeletons = {
 export function selectColumn<T>(): ColumnDef<T> {
   return {
     id: "select",
-    header: () => (
-      <div className="flex justify-center">
-        <DataGridTableRowSelectAll />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <DataGridTableRowSelect row={row} />
-      </div>
-    ),
+    header: () => <DataGridTableRowSelectAll />,
+    cell: ({ row }) => <DataGridTableRowSelect row={row} />,
     enableSorting: false,
     enableHiding: false,
-    size: 20,
-    meta: { skeleton: columnSkeletons.checkbox },
+    size: 30,
+    meta: {
+      headerClassName: "text-center",
+      cellClassName: "text-center",
+      skeleton: columnSkeletons.checkbox,
+    },
   };
 }
 
@@ -47,8 +43,12 @@ export function indexColumn<T>(params: ParamsDto): ColumnDef<T> {
       ((Number(params.page) || 1) - 1) * (Number(params.perpage) || 10),
     enableSorting: false,
     enableHiding: false,
-    size: 20,
-    meta: { skeleton: columnSkeletons.number },
+    size: 30,
+    meta: {
+      headerClassName: "text-center",
+      cellClassName: "text-center",
+      skeleton: columnSkeletons.checkbox,
+    },
   };
 }
 
@@ -79,9 +79,7 @@ export function statusColumn<T>(): ColumnDef<T> {
   };
 }
 
-export function actionColumn<T>(
-  onDelete: (item: T) => void,
-): ColumnDef<T> {
+export function actionColumn<T>(onDelete: (item: T) => void): ColumnDef<T> {
   return {
     id: "action",
     header: () => "",
@@ -90,6 +88,10 @@ export function actionColumn<T>(
     ),
     enableSorting: false,
     size: 40,
-    meta: { skeleton: null },
+    meta: {
+      headerClassName: "text-right",
+      cellClassName: "text-right",
+      skeleton: null,
+    },
   };
 }

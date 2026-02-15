@@ -35,6 +35,12 @@ export const API_ENDPOINTS = {
     `/api/proxy/api/${buCode}/store-requisition`,
   WORKFLOWS: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/workflows`,
+  PURCHASE_REQUESTS: "/api/proxy/api/purchase-request",
+  MY_PENDING_PURCHASE_REQUESTS: "/api/proxy/api/my-pending/purchase-request",
+  PURCHASE_REQUEST_WORKFLOW_STAGES:
+    "/api/proxy/api/purchase-request/workflow-stages",
+  PURCHASE_REQUEST_TEMPLATES: (buCode: string) =>
+    `/api/proxy/api/${buCode}/purchase-request-template`,
   LOGOUT: "/api/auth/logout",
   SWITCH_BU: "/api/proxy/api/business-unit/default",
 } as const;

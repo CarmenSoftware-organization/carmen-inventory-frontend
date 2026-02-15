@@ -20,6 +20,8 @@ export function useDataGridState(options?: UseDataGridStateOptions) {
     setSearch,
     filter,
     setFilter,
+    stage,
+    setStage,
     handlePageChange,
     handleSetPerpage,
   } = useListPageState(options);
@@ -35,12 +37,16 @@ export function useDataGridState(options?: UseDataGridStateOptions) {
     pageSize: perpageNumber,
   };
 
+  const combinedFilter = [filter, stage ? `workflow_current_stage:${stage}` : ""]
+    .filter(Boolean)
+    .join(",") || undefined;
+
   const params: ParamsDto = {
     page: pageNumber,
     perpage: perpageNumber,
     sort: sort || undefined,
     search: search || undefined,
-    filter: filter || undefined,
+    filter: combinedFilter,
   };
 
   const onPaginationChange = (
@@ -70,6 +76,8 @@ export function useDataGridState(options?: UseDataGridStateOptions) {
     setSearch,
     filter,
     setFilter,
+    stage,
+    setStage,
     tableState: { pagination, sorting },
     tableConfig: {
       manualPagination: true as const,

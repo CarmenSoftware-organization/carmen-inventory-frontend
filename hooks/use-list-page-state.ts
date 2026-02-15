@@ -16,6 +16,7 @@ export function useListPageState(options: UseListPageStateOptions = {}) {
   const [sort, setSort] = useURL("sort");
   const [page, setPage] = useURL("page");
   const [perpage, setPerpage] = useURL("perpage");
+  const [stage, setStageRaw] = useURL("workflow_current_stage");
 
   const handlePageChange = useCallback(
     (newPage: number) => setPage(newPage.toString()),
@@ -43,6 +44,14 @@ export function useListPageState(options: UseListPageStateOptions = {}) {
     [setFilter, setPage],
   );
 
+  const handleSetStage = useCallback(
+    (value: string) => {
+      setStageRaw(value);
+      setPage("");
+    },
+    [setStageRaw, setPage],
+  );
+
   const pageNumber = page ? Number(page) : defaultPage;
   const perpageNumber = perpage ? Number(perpage) : defaultPerpage;
 
@@ -51,6 +60,8 @@ export function useListPageState(options: UseListPageStateOptions = {}) {
     setSearch: handleSetSearch,
     filter,
     setFilter: handleSetFilter,
+    stage,
+    setStage: handleSetStage,
     sort,
     setSort,
     page,
