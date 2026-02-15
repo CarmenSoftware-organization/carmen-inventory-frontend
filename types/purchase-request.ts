@@ -6,19 +6,59 @@ export type PurchaseRequestStatus =
 
 export interface PurchaseRequestDetail {
   id: string;
+  purchase_request_id: string;
   sequence_no: number;
+  location_id: string;
+  location_code: string;
+  location_name: string;
+  delivery_point_id: string;
+  delivery_point_name: string;
+  delivery_date: string | null;
   product_id: string;
   product_name: string;
-  product_local_name: string;
-  description: string;
+  product_local_name: string | null;
+  inventory_unit_id: string;
+  inventory_unit_name: string;
+  description: string | null;
+  comment: string | null;
+  vendor_id: string | null;
+  vendor_name: string | null;
+  pricelist_detail_id: string | null;
+  pricelist_no: string | null;
+  pricelist_unit: string | null;
+  pricelist_price: number;
+  pricelist_type: string;
+  currency_id: string;
+  currency_code: string | null;
+  exchange_rate: number;
+  exchange_rate_date: string | null;
   requested_qty: number;
+  requested_unit_id: string;
+  requested_unit_name: string;
   approved_qty: number;
+  approved_unit_id: string;
+  approved_unit_name: string;
+  foc_qty: number;
+  foc_unit_id: string;
+  foc_unit_name: string;
+  tax_profile_id: string | null;
+  tax_profile_name: string | null;
+  tax_rate: number;
+  tax_amount: number;
+  is_tax_adjustment: boolean;
+  discount_rate: number;
+  discount_amount: number;
+  is_discount_adjustment: boolean;
+  sub_total_price: number;
+  net_amount: number;
   unit_price: number;
   total_price: number;
   current_stage_status: string;
   info: Record<string, unknown>;
-  dimension: string;
+  dimension: unknown[];
   doc_version: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface PurchaseRequestTemplateDetail {
@@ -86,6 +126,7 @@ export interface PurchaseRequestTemplate {
 export interface PurchaseRequest {
   id: string;
   pr_no: string;
+  pr_status: string;
   pr_date: string;
   expected_date: string;
   description: string;

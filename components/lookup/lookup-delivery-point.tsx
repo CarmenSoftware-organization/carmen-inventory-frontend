@@ -7,37 +7,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useWorkflowTypeQuery } from "@/hooks/use-workflow";
-import { WORKFLOW_TYPE } from "@/types/workflows";
+import { useDeliveryPoint } from "@/hooks/use-delivery-point";
 
-interface LookupWorkflowProps {
+interface LookupDeliveryPointProps {
   readonly value: string;
   readonly onValueChange: (value: string) => void;
-  readonly workflowType: WORKFLOW_TYPE;
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
 }
 
-export function LookupWorkflow({
+export function LookupDeliveryPoint({
   value,
   onValueChange,
-  workflowType,
   disabled,
-  placeholder = "Select workflow",
+  placeholder = "Select delivery point",
   className,
-}: LookupWorkflowProps) {
-  const { data: workflows } = useWorkflowTypeQuery(workflowType);
+}: LookupDeliveryPointProps) {
+  const { data } = useDeliveryPoint({ perpage: 9999 });
+  const deliveryPoints = data?.data?.filter((d) => d.is_active) ?? [];
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger size="sm" className={className ?? "text-xs"}>
+      <SelectTrigger size="sm" className={className ?? "h-8 w-full text-sm"}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        {workflows?.map((wf) => (
-          <SelectItem key={wf.id} value={wf.id} className="text-xs">
-            {wf.name}
+        {deliveryPoints.map((dp) => (
+          <SelectItem key={dp.id} value={dp.id}>
+            {dp.name}
           </SelectItem>
         ))}
       </SelectContent>

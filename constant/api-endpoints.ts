@@ -36,6 +36,8 @@ export const API_ENDPOINTS = {
   WORKFLOWS: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/workflows`,
   PURCHASE_REQUESTS: "/api/proxy/api/purchase-request",
+  PURCHASE_REQUEST: (buCode: string) =>
+    `/api/proxy/api/${buCode}/purchase-request`,
   MY_PENDING_PURCHASE_REQUESTS: "/api/proxy/api/my-pending/purchase-request",
   PURCHASE_REQUEST_WORKFLOW_STAGES:
     "/api/proxy/api/purchase-request/workflow-stages",

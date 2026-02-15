@@ -7,37 +7,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useWorkflowTypeQuery } from "@/hooks/use-workflow";
-import { WORKFLOW_TYPE } from "@/types/workflows";
+import { useCurrency } from "@/hooks/use-currency";
 
-interface LookupWorkflowProps {
+interface LookupCurrencyProps {
   readonly value: string;
   readonly onValueChange: (value: string) => void;
-  readonly workflowType: WORKFLOW_TYPE;
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
 }
 
-export function LookupWorkflow({
+export function LookupCurrency({
   value,
   onValueChange,
-  workflowType,
   disabled,
-  placeholder = "Select workflow",
+  placeholder = "Select currency",
   className,
-}: LookupWorkflowProps) {
-  const { data: workflows } = useWorkflowTypeQuery(workflowType);
+}: LookupCurrencyProps) {
+  const { data } = useCurrency({ perpage: 9999 });
+  const currencies = data?.data?.filter((c) => c.is_active) ?? [];
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger size="sm" className={className ?? "text-xs"}>
+      <SelectTrigger size="sm" className={className ?? "h-8 w-full text-xs"}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        {workflows?.map((wf) => (
-          <SelectItem key={wf.id} value={wf.id} className="text-xs">
-            {wf.name}
+        {currencies.map((currency) => (
+          <SelectItem key={currency.id} value={currency.id} className="text-xs">
+            {currency.code}
           </SelectItem>
         ))}
       </SelectContent>

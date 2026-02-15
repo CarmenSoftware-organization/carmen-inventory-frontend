@@ -5,7 +5,12 @@ import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
-import type { WorkflowDto, Workflow, WorkflowCreateModel } from "@/types/workflows";
+import {
+  type WorkflowDto,
+  type Workflow,
+  type WorkflowCreateModel,
+  WORKFLOW_TYPE,
+} from "@/types/workflows";
 import type { ParamsDto } from "@/types/params";
 
 interface WorkflowListResponse {
@@ -23,6 +28,24 @@ export function useWorkflow(params?: ParamsDto) {
       const res = await httpClient.get(url);
       if (!res.ok) throw new Error("Failed to fetch workflows");
       return res.json();
+    },
+    enabled: !!buCode,
+  });
+}
+
+export function useWorkflowTypeQuery(type: WORKFLOW_TYPE) {
+  const { buCode } = useProfile();
+
+  return useQuery<WorkflowDto[]>({
+    queryKey: [QUERY_KEYS.WORKFLOWS, buCode, "type", type],
+    queryFn: async () => {
+      if (!buCode) throw new Error("Missing buCode");
+      const res = await httpClient.get(
+        `/api/proxy/api/${buCode}/workflow/type/${type}`,
+      );
+      if (!res.ok) throw new Error("Failed to fetch workflows by type");
+      const json = await res.json();
+      return json.data ?? [];
     },
     enabled: !!buCode,
   });

@@ -1,15 +1,15 @@
 import { z } from "zod";
 
-export enum enum_workflow_type {
-  purchase_request = "purchase_request_workflow",
-  purchase_order = "purchase_order_workflow",
-  store_requisition = "store_requisition_workflow",
+export enum WORKFLOW_TYPE {
+  PR = "purchase_request_workflow",
+  PO = "purchase_order_workflow",
+  SR = "store_requisition_workflow",
 }
 
 export const workflowTypeField = [
-  { label: "Purchase Request", value: enum_workflow_type.purchase_request },
-  { label: "Store Requisition", value: enum_workflow_type.store_requisition },
-  { label: "Purchase Order", value: enum_workflow_type.purchase_order },
+  { label: "Purchase Request", value: WORKFLOW_TYPE.PR },
+  { label: "Store Requisition", value: WORKFLOW_TYPE.SR },
+  { label: "Purchase Order", value: WORKFLOW_TYPE.PO },
 ];
 
 export enum enum_available_actions {
@@ -271,7 +271,7 @@ export const wfFormSchema = z.object({
                   })
                   .optional(),
                 initials: z.string(),
-              })
+              }),
             )
             .optional(),
           is_hod: z.boolean().optional(),
@@ -284,7 +284,7 @@ export const wfFormSchema = z.object({
               template: z.string().optional(),
             })
             .optional(),
-        })
+        }),
       ),
       routing_rules: z.array(
         z.object({
@@ -302,7 +302,7 @@ export const wfFormSchema = z.object({
             type: z.enum(["SKIP_STAGE", "NEXT_STAGE"]),
             parameters: z.object({ target_stage: z.string() }),
           }),
-        })
+        }),
       ),
       notifications: z.array(z.object({})),
       notification_templates: z.array(z.object({})),
@@ -335,7 +335,7 @@ export const wfFormSchema = z.object({
               name: z.string(),
             })
             .optional(),
-        })
+        }),
       ),
     })
     .optional(),

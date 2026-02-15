@@ -7,27 +7,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useWorkflowTypeQuery } from "@/hooks/use-workflow";
-import { WORKFLOW_TYPE } from "@/types/workflows";
+import { useVendor } from "@/hooks/use-vendor";
 
-interface LookupWorkflowProps {
+interface LookupVendorProps {
   readonly value: string;
   readonly onValueChange: (value: string) => void;
-  readonly workflowType: WORKFLOW_TYPE;
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
 }
 
-export function LookupWorkflow({
+export function LookupVendor({
   value,
   onValueChange,
-  workflowType,
   disabled,
-  placeholder = "Select workflow",
+  placeholder = "Select vendor",
   className,
-}: LookupWorkflowProps) {
-  const { data: workflows } = useWorkflowTypeQuery(workflowType);
+}: LookupVendorProps) {
+  const { data } = useVendor({ perpage: 9999 });
+  const vendors = data?.data?.filter((v) => v.is_active) ?? [];
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
@@ -35,9 +33,9 @@ export function LookupWorkflow({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        {workflows?.map((wf) => (
-          <SelectItem key={wf.id} value={wf.id} className="text-xs">
-            {wf.name}
+        {vendors.map((vendor) => (
+          <SelectItem key={vendor.id} value={vendor.id} className="text-xs">
+            {vendor.name}
           </SelectItem>
         ))}
       </SelectContent>
