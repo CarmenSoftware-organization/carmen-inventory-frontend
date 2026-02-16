@@ -37,7 +37,7 @@ const detailSchema = z.object({
   product_id: z.string().min(1, "Product is required"),
   product_name: z.string(),
   description: z.string(),
-  unit_price: z.coerce.number().min(0, "Unit price must be at least 0"),
+  pricelist_price: z.coerce.number().min(0, "Unit price must be at least 0"),
   vendor_id: z.string(),
   vendor_name: z.string(),
   current_stage_status: z.string(),
@@ -102,7 +102,7 @@ function getDefaultValues(
           product_id: d.product_id,
           product_name: d.product_name,
           description: d.description ?? "",
-          unit_price: d.unit_price,
+          pricelist_price: d.pricelist_price,
           vendor_id: d.vendor_id ?? "",
           vendor_name: d.vendor_name ?? "",
           current_stage_status: d.current_stage_status ?? "draft",
@@ -142,7 +142,7 @@ function getDefaultValues(
           product_id: d.product_id,
           product_name: d.product_name,
           description: d.description ?? "",
-          unit_price: 0,
+          pricelist_price: 0,
           vendor_id: "",
           vendor_name: "",
           current_stage_status: "pending",
@@ -249,7 +249,7 @@ export function PurchaseRequestForm({
           description: item.description,
           requested_qty: item.requested_qty,
           requested_unit_id: item.requested_unit_id,
-          unit_price: item.unit_price,
+          pricelist_price: item.pricelist_price,
           vendor_id: item.vendor_id,
           pricelist_detail_id: item.pricelist_detail_id,
           current_stage_status: item.current_stage_status || "pending",
@@ -335,7 +335,7 @@ export function PurchaseRequestForm({
         approved_unit_id: item.approved_unit_id || item.requested_unit_id,
         vendor_id: item.vendor_id || undefined,
         pricelist_detail_id: item.pricelist_detail_id,
-        unit_price: Number(item.unit_price),
+        pricelist_price: Number(item.pricelist_price),
         currency_id: item.currency_id || undefined,
         tax_profile_id: item.tax_profile_id,
         tax_rate: Number(item.tax_rate ?? 0),
@@ -520,6 +520,7 @@ export function PurchaseRequestForm({
           disabled={isDisabled}
           role={role}
           prId={purchaseRequest?.id}
+          prStatus={purchaseRequest?.pr_status}
           onSplit={handleSplit}
         />
       </form>

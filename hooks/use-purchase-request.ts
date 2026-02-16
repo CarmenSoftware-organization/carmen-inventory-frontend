@@ -37,7 +37,7 @@ export interface CreatePurchaseRequestDto {
         current_stage_status: string;
         requested_qty: number;
         requested_unit_id: string;
-        unit_price: number;
+        pricelist_price: number;
         vendor_id: string;
         pricelist_detail_id: string | null;
         location_id: string;
@@ -312,7 +312,7 @@ export interface ApproveDetail {
   approved_unit_id: string;
   vendor_id?: string;
   pricelist_detail_id?: string | null;
-  unit_price?: number;
+  pricelist_price?: number;
   currency_id?: string;
   tax_profile_id?: string | null;
   tax_rate?: number;

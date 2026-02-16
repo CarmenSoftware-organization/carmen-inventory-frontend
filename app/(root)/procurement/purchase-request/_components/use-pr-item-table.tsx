@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { selectColumn } from "@/lib/data-grid/columns";
 import { useProfile } from "@/hooks/use-profile";
 import { formatDate } from "@/lib/date-utils";
+import { DatePicker } from "@/components/ui/date-picker";
 import { LookupLocation } from "@/components/lookup/lookup-location";
 import { LookupProductInLocation } from "@/components/lookup/lookup-product-in-location";
 import { LookupProductUnit } from "@/components/lookup/lookup-product-unit";
@@ -31,6 +32,7 @@ interface UsePrItemTableOptions {
   form: UseFormReturn<PrFormValues>;
   itemFields: ItemField[];
   disabled: boolean;
+  prStatus?: string;
   onDelete: (index: number) => void;
 }
 
@@ -38,9 +40,10 @@ export function usePrItemTable({
   form,
   itemFields,
   disabled,
+  prStatus,
   onDelete,
 }: UsePrItemTableOptions) {
-  const { buCode, dateFormat } = useProfile();
+  const { dateFormat } = useProfile();
 
   const expandColumn: ColumnDef<ItemField> = {
     id: "expand",
@@ -287,31 +290,20 @@ export function usePrItemTable({
               : "—"}
           </span>
         ) : (
-          <Input
-            type="date"
-            className="h-6 text-[11px] text-right"
-            {...form.register(`items.${row.index}.delivery_date`)}
+          <Controller
+            control={form.control}
+            name={`items.${row.index}.delivery_date`}
+            render={({ field }) => (
+              <DatePicker
+                value={field.value}
+                onValueChange={field.onChange}
+                fromDate={new Date()}
+                className="h-6 w-full text-[11px]"
+              />
+            )}
           />
         ),
-      size: 130,
-    },
-    {
-      accessorKey: "unit_price",
-      header: "Unit Price",
-      cell: ({ row }) => (
-        <Input
-          type="number"
-          min={0}
-          step="0.01"
-          placeholder="0.00"
-          className="h-6 text-[11px] text-right"
-          disabled={disabled}
-          {...form.register(`items.${row.index}.unit_price`, {
-            valueAsNumber: true,
-          })}
-        />
-      ),
-      size: 90,
+      size: 150,
     },
   ];
 
@@ -336,11 +328,16 @@ export function usePrItemTable({
     },
   };
 
+  const isDraft = !prStatus || prStatus === "draft";
+  const hiddenInDraft = new Set(["foc", "approved"]);
+
   const allColumns: ColumnDef<ItemField>[] = [
     expandColumn,
     selectColumn<ItemField>(),
     indexColumn,
-    ...dataColumns,
+    ...(isDraft
+      ? dataColumns.filter((col) => !hiddenInDraft.has(col.id ?? ""))
+      : dataColumns),
     ...(!disabled ? [actionColumn] : []),
   ];
 

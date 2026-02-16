@@ -46,6 +46,7 @@ interface PrItemFieldsProps {
   disabled: boolean;
   role?: string;
   prId?: string;
+  prStatus?: string;
   onSplit?: (detailIds: string[]) => void;
 }
 
@@ -54,14 +55,15 @@ export function PrItemFields({
   disabled,
   role,
   prId,
+  prStatus,
   onSplit,
 }: PrItemFieldsProps) {
   const { buCode, defaultBu } = useProfile();
   const [isAllocating, setIsAllocating] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
-  const [bulkAction, setBulkAction] = useState<
-    "review" | "rejected" | null
-  >(null);
+  const [bulkAction, setBulkAction] = useState<"review" | "rejected" | null>(
+    null,
+  );
 
   const {
     fields: itemFields,
@@ -70,9 +72,13 @@ export function PrItemFields({
   } = useFieldArray({ control: form.control, name: "items" });
 
   const handleAddItem = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
     appendItem({
       ...PR_ITEM,
       currency_id: defaultBu?.config.default_currency_id ?? "",
+      delivery_date: tomorrow.toISOString(),
     });
   };
 
@@ -80,6 +86,7 @@ export function PrItemFields({
     form,
     itemFields,
     disabled,
+    prStatus,
     onDelete: setDeleteIndex,
   });
 
@@ -121,7 +128,7 @@ export function PrItemFields({
 
           form.setValue(`items.${index}.vendor_id`, selected.vendor_id);
           form.setValue(`items.${index}.vendor_name`, selected.vendor_name);
-          form.setValue(`items.${index}.unit_price`, selected.price);
+          form.setValue(`items.${index}.pricelist_price`, selected.price);
           form.setValue(
             `items.${index}.pricelist_detail_id`,
             selected.pricelist_detail_id,
@@ -167,9 +174,7 @@ export function PrItemFields({
     });
     table.resetRowSelection();
     setBulkAction(null);
-    toast.success(
-      `${indices.length} item(s) marked as ${bulkAction}`,
-    );
+    toast.success(`${indices.length} item(s) marked as ${bulkAction}`);
   };
 
   const handleBulkSplit = () => {
@@ -286,9 +291,11 @@ export function PrItemFields({
             title="No Products Yet"
             description="You haven't created any Products yet."
             content={
-              <Button type="button" size="xs" onClick={() => handleAddItem()}>
-                <Plus /> Add Item
-              </Button>
+              !disabled && (
+                <Button type="button" size="xs" onClick={() => handleAddItem()}>
+                  <Plus /> Add Item
+                </Button>
+              )
             }
           />
         }

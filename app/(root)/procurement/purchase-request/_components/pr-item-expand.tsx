@@ -37,6 +37,20 @@ export function PrItemExpand({
         )}
       />
       <label className="text-xs font-medium text-muted-foreground">
+        Unit Price
+      </label>
+      <Input
+        type="number"
+        min={0}
+        step="0.01"
+        placeholder="0.00"
+        className="h-7 text-xs"
+        disabled={disabled}
+        {...form.register(`items.${index}.pricelist_price`, {
+          valueAsNumber: true,
+        })}
+      />
+      <label className="text-xs font-medium text-muted-foreground">
         Description
       </label>
       <Input

@@ -64,7 +64,7 @@ export function LookupProductUnit({
       onValueChange={onValueChange}
       disabled={disabled || !productId}
     >
-      <SelectTrigger size="sm" className={className ?? "h-8 w-full text-xs"}>
+      <SelectTrigger size="sm" className={className ?? "w-full text-xs"}>
         {isLoading ? (
           <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
         ) : (

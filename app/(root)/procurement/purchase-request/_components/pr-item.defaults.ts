@@ -2,7 +2,7 @@ export const PR_ITEM = {
   product_id: "",
   product_name: "",
   description: "",
-  unit_price: 0,
+  pricelist_price: 0,
   vendor_id: "",
   vendor_name: "",
   current_stage_status: "pending",
