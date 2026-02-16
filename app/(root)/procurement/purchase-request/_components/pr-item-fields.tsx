@@ -26,8 +26,9 @@ import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { STAGE_ROLE } from "@/types/stage-role";
 import type { PrFormValues } from "./pr-form-schema";
-import { usePrItemTable } from "./use-pr-item-table";
+import { usePrItemTable } from "./pr-item-table";
 import { PrActionDialog } from "./pr-action-dialog";
+import { PrSelectDialog } from "./pr-select-dialog";
 import EmptyComponent from "@/components/empty-component";
 import { PR_ITEM } from "./pr-form-schema";
 
@@ -82,7 +83,15 @@ export function PrItemFields({
     });
   };
 
-  const table = usePrItemTable({
+  const {
+    table,
+    selectDialogOpen,
+    setSelectDialogOpen,
+    allCount,
+    pendingCount,
+    handleSelectAll,
+    handleSelectPending,
+  } = usePrItemTable({
     form,
     itemFields,
     disabled,
@@ -216,7 +225,7 @@ export function PrItemFields({
 
         <div className="flex flex-col  gap-2">
           <div className="flex items-center justify-end gap-1.5">
-            {(!disabled && role !== STAGE_ROLE.PURCHASE) && (
+            {!disabled && role !== STAGE_ROLE.PURCHASE && (
               <Button type="button" size="xs" onClick={() => handleAddItem()}>
                 <Plus /> Add Item
               </Button>
@@ -335,6 +344,15 @@ export function PrItemFields({
           {...bulkActionDialogConfig[bulkAction]}
         />
       )}
+
+      <PrSelectDialog
+        open={selectDialogOpen}
+        onOpenChange={setSelectDialogOpen}
+        allCount={allCount}
+        pendingCount={pendingCount}
+        onSelectAll={handleSelectAll}
+        onSelectPending={handleSelectPending}
+      />
     </div>
   );
 }

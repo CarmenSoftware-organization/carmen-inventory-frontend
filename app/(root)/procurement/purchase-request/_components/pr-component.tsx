@@ -33,8 +33,8 @@ import { StatusFilter } from "@/components/ui/status-filter";
 import DisplayTemplate from "@/components/display-template";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { PURCHASE_REQUEST_STATUS_OPTIONS } from "@/constant/purchase-request";
-import { usePurchaseRequestTable } from "./use-purchase-request-table";
-import { CreatePRDialog } from "./create-pr-dialog";
+import { usePurchaseRequestTable } from "./pr-table";
+import { CreatePRDialog } from "./pr-create-dialog";
 
 export default function PurchaseRequestComponent() {
   const router = useRouter();
@@ -94,10 +94,7 @@ export default function PurchaseRequestComponent() {
       }
       actions={
         <>
-          <Button
-            size="sm"
-            onClick={() => setCreateDialogOpen(true)}
-          >
+          <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
             <Plus />
             Add Request
           </Button>

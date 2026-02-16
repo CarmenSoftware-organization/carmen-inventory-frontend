@@ -2,7 +2,7 @@
 
 import { use } from "react";
 import { usePurchaseRequestById } from "@/hooks/use-purchase-request";
-import { PurchaseRequestForm } from "../_components/purchase-request-form";
+import { PurchaseRequestForm } from "../_components/pr-form";
 import { ErrorState } from "@/components/ui/error-state";
 
 export default function EditPurchaseRequestPage({
@@ -19,9 +19,7 @@ export default function EditPurchaseRequestPage({
   } = usePurchaseRequestById(id);
 
   if (isLoading)
-    return (
-      <div className="p-6 text-sm text-muted-foreground">Loading...</div>
-    );
+    return <div className="p-6 text-sm text-muted-foreground">Loading...</div>;
   if (error)
     return <ErrorState message={error.message} onRetry={() => refetch()} />;
   if (!purchaseRequest)

@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { PurchaseRequestForm } from "../_components/purchase-request-form";
+import { PurchaseRequestForm } from "../_components/pr-form";
 import { usePurchaseRequestTemplates } from "@/hooks/use-purchase-request";
 
 export default function NewPurchaseRequestPage() {

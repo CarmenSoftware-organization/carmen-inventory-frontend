@@ -11,10 +11,12 @@ import {
   getExpandedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useState } from "react";
 import { ChevronDown, ChevronRight, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { selectColumn } from "@/lib/data-grid/columns";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DataGridTableRowSelect } from "@/components/reui/data-grid/data-grid-table";
 import { useProfile } from "@/hooks/use-profile";
 import { formatDate } from "@/lib/date-utils";
 import { DatePicker } from "@/components/ui/date-picker";
@@ -25,6 +27,7 @@ import { LookupCurrency } from "@/components/lookup/lookup-currency";
 import { LookupDeliveryPoint } from "@/components/lookup/lookup-delivery-point";
 import type { PrFormValues } from "./pr-form-schema";
 import { PrItemExpand } from "./pr-item-expand";
+import { Badge } from "@/components/ui/badge";
 
 export type ItemField = FieldArrayWithId<PrFormValues, "items", "id">;
 
@@ -44,6 +47,45 @@ export function usePrItemTable({
   onDelete,
 }: UsePrItemTableOptions) {
   const { dateFormat } = useProfile();
+  const [selectDialogOpen, setSelectDialogOpen] = useState(false);
+
+  const allCount = itemFields.length;
+  const pendingCount = itemFields.filter((_, index) => {
+    const status = form.getValues(`items.${index}.current_stage_status`);
+    return !status || status === "pending";
+  }).length;
+
+  const prSelectColumn: ColumnDef<ItemField> = {
+    id: "select",
+    header: ({ table: t }) => {
+      const isAllSelected = t.getIsAllPageRowsSelected();
+      const isSomeSelected = t.getIsSomePageRowsSelected();
+      return (
+        <Checkbox
+          checked={
+            isSomeSelected && !isAllSelected ? "indeterminate" : isAllSelected
+          }
+          onCheckedChange={(checked) => {
+            if (checked) {
+              setSelectDialogOpen(true);
+            } else {
+              t.toggleAllPageRowsSelected(false);
+            }
+          }}
+          aria-label="Select all"
+          className="align-[inherit]"
+        />
+      );
+    },
+    cell: ({ row }) => <DataGridTableRowSelect row={row} />,
+    enableSorting: false,
+    enableHiding: false,
+    size: 30,
+    meta: {
+      headerClassName: "text-center",
+      cellClassName: "text-center",
+    },
+  };
 
   const expandColumn: ColumnDef<ItemField> = {
     id: "expand",
@@ -143,6 +185,17 @@ export function usePrItemTable({
         />
       ),
       size: 280,
+    },
+    {
+      accessorKey: "current_stage_status",
+      header: "Status",
+      cell: ({ row }) => (
+        <Badge className="text-[11px]">
+          {form.getValues(`items.${row.index}.current_stage_status`) ||
+            "Pending"}
+        </Badge>
+      ),
+      size: 100,
     },
     {
       id: "requested",
@@ -346,7 +399,7 @@ export function usePrItemTable({
 
   const allColumns: ColumnDef<ItemField>[] = [
     expandColumn,
-    selectColumn<ItemField>(),
+    prSelectColumn,
     indexColumn,
     ...(isDraft
       ? dataColumns.filter((col) => !hiddenInDraft.has(col.id ?? ""))
@@ -354,11 +407,37 @@ export function usePrItemTable({
     ...(!disabled ? [actionColumn] : []),
   ];
 
-  return useReactTable({
+  const table = useReactTable({
     data: itemFields,
     columns: allColumns,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     enableRowSelection: true,
   });
+
+  const handleSelectAll = () => {
+    table.toggleAllPageRowsSelected(true);
+    setSelectDialogOpen(false);
+  };
+
+  const handleSelectPending = () => {
+    table.resetRowSelection();
+    itemFields.forEach((_, index) => {
+      const status = form.getValues(`items.${index}.current_stage_status`);
+      if (!status || status === "pending") {
+        table.getRowModel().rows[index]?.toggleSelected(true);
+      }
+    });
+    setSelectDialogOpen(false);
+  };
+
+  return {
+    table,
+    selectDialogOpen,
+    setSelectDialogOpen,
+    allCount,
+    pendingCount,
+    handleSelectAll,
+    handleSelectPending,
+  };
 }
