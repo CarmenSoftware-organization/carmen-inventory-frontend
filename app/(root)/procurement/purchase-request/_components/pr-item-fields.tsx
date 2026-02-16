@@ -104,6 +104,7 @@ export function PrItemFields({
     disabled,
     prStatus,
     dateFormat,
+    buCode,
     onDelete: setDeleteIndex,
   });
 

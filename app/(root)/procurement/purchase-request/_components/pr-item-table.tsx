@@ -134,6 +134,7 @@ interface UsePrItemTableOptions {
   disabled: boolean;
   prStatus?: string;
   dateFormat: string;
+  buCode?: string;
   onDelete: (index: number) => void;
 }
 
@@ -143,6 +144,7 @@ export function usePrItemTable({
   disabled,
   prStatus,
   dateFormat,
+  buCode,
   onDelete,
 }: UsePrItemTableOptions) {
   const [selectDialogOpen, setSelectDialogOpen] = useState(false);
@@ -219,6 +221,7 @@ export function usePrItemTable({
             form={form}
             disabled={disabled}
             itemFields={itemFields}
+            buCode={buCode}
           />
         ),
       },
@@ -463,7 +466,7 @@ export function usePrItemTable({
         : dataColumns),
       ...(!disabled ? [actionColumn] : []),
     ];
-  }, [form, disabled, prStatus, dateFormat, itemFields, onDelete, setSelectDialogOpen, today]);
+  }, [form, disabled, prStatus, dateFormat, buCode, itemFields, onDelete, setSelectDialogOpen, today]);
 
   const table = useReactTable({
     data: itemFields,

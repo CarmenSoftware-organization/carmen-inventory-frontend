@@ -3,14 +3,18 @@ import {
   Controller,
   useWatch,
   type UseFormReturn,
+  type Control,
   type FieldArrayWithId,
 } from "react-hook-form";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import { LookupVendor } from "@/components/lookup/lookup-vendor";
 import { LookupTaxProfile } from "@/components/lookup/lookup-tax-profile";
+import { useProductInventory } from "@/hooks/use-product-inventory";
 import type { PrFormValues } from "./pr-form-schema";
 import { PrPricelistDialog, type PricelistEntry } from "./pr-pricelist-dialog";
 
@@ -20,11 +24,95 @@ const round2 = (n: number): number =>
 
 type ItemField = FieldArrayWithId<PrFormValues, "items", "id">;
 
+function InventoryRow({
+  control,
+  index,
+  buCode,
+}: {
+  control: Control<PrFormValues>;
+  index: number;
+  buCode?: string;
+}) {
+  const locationId = useWatch({ control, name: `items.${index}.location_id` }) ?? "";
+  const productId = useWatch({ control, name: `items.${index}.product_id` }) ?? "";
+
+  const { data, isLoading } = useProductInventory(buCode, locationId, productId);
+
+  if (!locationId || !productId) return null;
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-12 gap-2 items-end">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="col-span-2">
+            <Skeleton className="h-3 w-12 mb-1" />
+            <Skeleton className="h-5 w-full" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (!data) return null;
+
+  const { on_hand_qty, on_order_qty, re_order_qty, re_stock_qty } = data;
+  const pct = re_stock_qty > 0 ? Math.min(Math.round((on_hand_qty / re_stock_qty) * 100), 100) : 0;
+
+  let indicatorColor = "bg-emerald-500";
+  if (on_hand_qty < re_order_qty) {
+    indicatorColor = "bg-red-500";
+  } else if (on_hand_qty < re_stock_qty) {
+    indicatorColor = "bg-amber-500";
+  }
+
+  return (
+    <div className="grid grid-cols-12 gap-2 items-end">
+      <div className="col-span-2">
+        <label className="text-[10px] text-muted-foreground">On Hand</label>
+        <div className="h-6 leading-6 text-[11px] font-medium tabular-nums">
+          {on_hand_qty.toLocaleString()}
+        </div>
+      </div>
+      <div className="col-span-2">
+        <label className="text-[10px] text-muted-foreground">On Order</label>
+        <div className="h-6 leading-6 text-[11px] font-medium tabular-nums">
+          {on_order_qty.toLocaleString()}
+        </div>
+      </div>
+      <div className="col-span-2">
+        <label className="text-[10px] text-muted-foreground">Re-order Pt.</label>
+        <div className="h-6 leading-6 text-[11px] tabular-nums text-muted-foreground">
+          {re_order_qty.toLocaleString()}
+        </div>
+      </div>
+      <div className="col-span-2">
+        <label className="text-[10px] text-muted-foreground">Re-stock</label>
+        <div className="h-6 leading-6 text-[11px] tabular-nums text-muted-foreground">
+          {re_stock_qty.toLocaleString()}
+        </div>
+      </div>
+      <div className="col-span-4">
+        <label className="text-[10px] text-muted-foreground">
+          Stock Level ({pct}%)
+        </label>
+        <div className="h-6 flex items-center">
+          <Progress
+            value={pct}
+            className="h-2"
+            indicatorClassName={indicatorColor}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface PrItemExpandProps {
   item: ItemField;
   form: UseFormReturn<PrFormValues>;
   disabled: boolean;
   itemFields: ItemField[];
+  buCode?: string;
 }
 
 export function PrItemExpand({
@@ -32,6 +120,7 @@ export function PrItemExpand({
   form,
   disabled,
   itemFields,
+  buCode,
 }: PrItemExpandProps) {
   const index = itemFields.findIndex((f) => f.id === item.id);
   const [showPricelist, setShowPricelist] = useState(false);
@@ -288,6 +377,9 @@ export function PrItemExpand({
           </div>
         </div>
       </div>
+
+      {/* Row 3: Inventory */}
+      <InventoryRow control={form.control} index={index} buCode={buCode} />
 
       <PrPricelistDialog
         open={showPricelist}
