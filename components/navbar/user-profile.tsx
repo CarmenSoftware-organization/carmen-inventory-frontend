@@ -1,8 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { LogOut } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   DropdownMenu,
@@ -35,46 +35,50 @@ export function UserProfile() {
 
   if (isLoading || isError) {
     return (
-      <Button variant="ghost" className="h-auto gap-1.5 px-1.5 py-1" disabled>
-        <div className="grid gap-0.5 text-right">
-          <Skeleton className="h-3.5 w-20" />
-          <Skeleton className="h-3 w-14 ml-auto" />
+      <div className="flex items-center gap-1.5 px-1.5">
+        <Skeleton className="size-6 rounded-full" />
+        <div className="grid gap-0.5">
+          <Skeleton className="h-3 w-16" />
+          <Skeleton className="h-2.5 w-10" />
         </div>
-        <Skeleton className="size-7 rounded-full" />
-      </Button>
+      </div>
     );
   }
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-auto gap-1.5 px-1.5 py-1">
-          <div className="grid text-right text-sm leading-tight">
-            <span className="truncate font-semibold">{name}</span>
-            <span className="truncate text-xs text-muted-foreground">
-              {department}
-            </span>
-          </div>
-          <Avatar className="size-7">
-            <AvatarFallback className="text-xs">{convertName}</AvatarFallback>
-          </Avatar>
-        </Button>
+      <DropdownMenuTrigger className="flex items-center gap-1.5 rounded-md px-1.5 py-1 text-right hover:bg-muted/50 transition-colors outline-none">
+        <div className="hidden sm:grid text-xs leading-tight">
+          <span className="truncate font-semibold max-w-28">{name}</span>
+          <span className="truncate text-[10px] text-muted-foreground max-w-28">
+            {department}
+          </span>
+        </div>
+        <Avatar className="size-6">
+          <AvatarFallback className="text-[10px] font-semibold">
+            {convertName}
+          </AvatarFallback>
+        </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="min-w-56" align="end" sideOffset={4}>
-        <DropdownMenuLabel className="font-normal">
-          <div className="grid flex-1 text-left text-sm leading-tight">
+      <DropdownMenuContent className="min-w-48" align="end">
+        <DropdownMenuItem asChild>
+          <Link
+            href="/profile"
+            className="grid text-left text-xs leading-tight"
+          >
             <span className="truncate font-semibold">{name}</span>
-            <span className="truncate text-xs text-muted-foreground">
+            <span className="truncate text-[11px] text-muted-foreground">
               {email}
             </span>
-          </div>
-        </DropdownMenuLabel>
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
+          className="text-xs"
           onClick={() => logoutMutation.mutate()}
           disabled={logoutMutation.isPending}
         >
-          <LogOut />
+          <LogOut className="size-3.5" />
           {logoutMutation.isPending ? "Logging out..." : "Log out"}
         </DropdownMenuItem>
       </DropdownMenuContent>
