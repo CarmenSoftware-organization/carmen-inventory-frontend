@@ -128,6 +128,14 @@ export interface PurchaseRequestTemplate {
   purchase_request_template_detail: PurchaseRequestTemplateDetail[];
 }
 
+export interface WorkflowHistoryEntry {
+  user: { id: string; name: string };
+  action: string;
+  datetime: Record<string, unknown>;
+  next_stage: string;
+  current_stage?: string;
+}
+
 export interface PurchaseRequest {
   id: string;
   pr_no: string;
@@ -140,6 +148,9 @@ export interface PurchaseRequest {
   workflow_id: string;
   workflow_name: string;
   workflow_current_stage: string;
+  workflow_next_stage: string;
+  workflow_previous_stage: string;
+  workflow_history: WorkflowHistoryEntry[];
   requestor_id: string;
   requestor_name: string;
   department_id: string;

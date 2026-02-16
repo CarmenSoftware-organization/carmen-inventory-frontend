@@ -22,6 +22,30 @@ interface PaginatedResponse {
   };
 }
 
+export interface PurchaseRequestDetailPayload {
+  product_id: string | null;
+  description: string;
+  current_stage_status: string;
+  requested_qty: number;
+  requested_unit_id: string | null;
+  pricelist_price: number;
+  vendor_id: string | null;
+  pricelist_detail_id: string | null;
+  location_id: string | null;
+  delivery_point_id: string | null;
+  delivery_date: string;
+  currency_id: string | null;
+  foc_qty: number;
+  foc_unit_id: string | null;
+  approved_qty: number;
+  approved_unit_id: string | null;
+  tax_profile_id?: string | null;
+  tax_rate: number;
+  tax_amount: number;
+  discount_rate: number;
+  discount_amount: number;
+}
+
 export interface CreatePurchaseRequestDto {
   state_role: string;
   details: {
@@ -31,29 +55,9 @@ export interface CreatePurchaseRequestDto {
     workflow_id: string;
     department_id: string;
     purchase_request_detail: {
-      add: {
-        product_id: string;
-        description: string;
-        current_stage_status: string;
-        requested_qty: number;
-        requested_unit_id: string;
-        pricelist_price: number;
-        vendor_id: string;
-        pricelist_detail_id: string | null;
-        location_id: string;
-        delivery_point_id: string;
-        delivery_date: string;
-        currency_id: string;
-        foc_qty: number;
-        foc_unit_id: string;
-        approved_qty: number;
-        approved_unit_id: string;
-        tax_profile_id?: string | null;
-        tax_rate: number;
-        tax_amount: number;
-        discount_rate: number;
-        discount_amount: number;
-      }[];
+      add?: PurchaseRequestDetailPayload[];
+      update?: (PurchaseRequestDetailPayload & { id: string })[];
+      remove?: { id: string }[];
     };
   };
 }
@@ -309,8 +313,8 @@ export interface ApproveDetail {
   stage_status: string;
   stage_message: string;
   approved_qty: number;
-  approved_unit_id: string;
-  vendor_id?: string;
+  approved_unit_id: string | null;
+  vendor_id?: string | null;
   pricelist_detail_id?: string | null;
   pricelist_price?: number;
   currency_id?: string;
@@ -320,7 +324,7 @@ export interface ApproveDetail {
   discount_rate?: number;
   discount_amount?: number;
   foc_qty?: number;
-  foc_unit_id?: string;
+  foc_unit_id?: string | null;
 }
 
 export interface PrActionPayload {

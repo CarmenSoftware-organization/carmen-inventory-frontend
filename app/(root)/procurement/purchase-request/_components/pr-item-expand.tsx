@@ -1,4 +1,8 @@
-import { Controller, type UseFormReturn, type FieldArrayWithId } from "react-hook-form";
+import {
+  Controller,
+  type UseFormReturn,
+  type FieldArrayWithId,
+} from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { LookupVendor } from "@/components/lookup/lookup-vendor";
 import type { PrFormValues } from "./purchase-request-form";
@@ -30,9 +34,10 @@ export function PrItemExpand({
         name={`items.${index}.vendor_id`}
         render={({ field }) => (
           <LookupVendor
-            value={field.value}
+            value={field.value ?? ""}
             onValueChange={field.onChange}
             disabled={disabled}
+            size="xs"
           />
         )}
       />
@@ -44,7 +49,7 @@ export function PrItemExpand({
         min={0}
         step="0.01"
         placeholder="0.00"
-        className="h-7 text-xs"
+        className="h-6 text-xs"
         disabled={disabled}
         {...form.register(`items.${index}.pricelist_price`, {
           valueAsNumber: true,

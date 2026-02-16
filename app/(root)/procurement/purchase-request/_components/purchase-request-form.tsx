@@ -14,6 +14,7 @@ import {
   useUpdatePr,
   useSplitPurchaseRequest,
   type CreatePurchaseRequestDto,
+  type PurchaseRequestDetailPayload,
   type WorkflowStageDetail,
   type ApproveDetail,
 } from "@/hooks/use-purchase-request";
@@ -30,31 +31,34 @@ import { PrItemFields } from "./pr-item-fields";
 import { PrCommentSheet } from "./pr-comment-sheet";
 import { PrFormActions } from "./pr-form-actions";
 import { PrActionDialog } from "./pr-action-dialog";
+import { PrWorkflowStep } from "./pr-workflow-step";
+import { PrWorkflowHistory } from "./pr-workflow-history";
 import { Badge } from "@/components/reui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const detailSchema = z.object({
   id: z.string().optional(),
-  product_id: z.string().min(1, "Product is required"),
+  product_id: z.string().min(1, "Product is required").nullable(),
   product_name: z.string(),
   description: z.string(),
   pricelist_price: z.coerce.number().min(0, "Unit price must be at least 0"),
-  vendor_id: z.string(),
+  vendor_id: z.string().nullable(),
   vendor_name: z.string(),
   current_stage_status: z.string(),
   stage_status: z.string().optional(),
   stage_message: z.string().optional(),
-  location_id: z.string(),
+  location_id: z.string().nullable(),
   requested_qty: z.coerce.number().min(1, "Quantity must be at least 1"),
-  requested_unit_id: z.string(),
+  requested_unit_id: z.string().nullable(),
   requested_unit_name: z.string(),
   foc_qty: z.coerce.number().min(0),
-  foc_unit_id: z.string(),
+  foc_unit_id: z.string().nullable(),
   foc_unit_name: z.string(),
   approved_qty: z.coerce.number().min(0),
-  approved_unit_id: z.string(),
+  approved_unit_id: z.string().nullable(),
   approved_unit_name: z.string(),
-  currency_id: z.string(),
-  delivery_point_id: z.string(),
+  currency_id: z.string().nullable(),
+  delivery_point_id: z.string().nullable(),
   delivery_date: z.string(),
   pricelist_detail_id: z.string().nullable(),
   pricelist_no: z.string().nullable(),
@@ -195,7 +199,9 @@ export function PurchaseRequestForm({
 
   // CRUD mutations
   const createPr = useCreatePurchaseRequest();
-  const updatePr = useUpdatePr<CreatePurchaseRequestDto & { id: string }>("save");
+  const updatePr = useUpdatePr<CreatePurchaseRequestDto & { id: string }>(
+    "save",
+  );
   const deletePr = useDeletePurchaseRequest();
 
   // Workflow action mutations
@@ -236,38 +242,74 @@ export function PurchaseRequestForm({
 
   // --- CRUD Handlers ---
 
+  const mapItemToPayload = (
+    item: PrFormValues["items"][number],
+  ): PurchaseRequestDetailPayload => ({
+    product_id: item.product_id,
+    description: item.description,
+    requested_qty: item.requested_qty,
+    requested_unit_id: item.requested_unit_id,
+    pricelist_price: item.pricelist_price,
+    vendor_id: item.vendor_id,
+    pricelist_detail_id: item.pricelist_detail_id,
+    current_stage_status:
+      item.current_stage_status && item.current_stage_status !== "draft"
+        ? item.current_stage_status
+        : "pending",
+    location_id: item.location_id,
+    delivery_point_id: item.delivery_point_id,
+    delivery_date: item.delivery_date,
+    currency_id: item.currency_id,
+    foc_qty: item.foc_qty ?? 0,
+    foc_unit_id: item.foc_unit_id,
+    approved_qty: item.approved_qty ?? 0,
+    approved_unit_id: item.approved_unit_id,
+    tax_profile_id: item.tax_profile_id,
+    tax_rate: item.tax_rate ?? 0,
+    tax_amount: item.tax_amount ?? 0,
+    discount_rate: item.discount_rate ?? 0,
+    discount_amount: item.discount_amount ?? 0,
+  });
+
   const onSubmit = (values: PrFormValues) => {
+    const newItems = values.items.filter((item) => !item.id);
+    const existingItems = values.items.filter((item) => !!item.id);
+
+    // Items in defaults but no longer in form → removed
+    const currentIds = new Set(existingItems.map((item) => item.id));
+    const removedItems = defaultValues.items
+      .filter((item) => item.id && !currentIds.has(item.id))
+      .map((item) => ({ id: item.id! }));
+
+    // Existing items that changed → update
+    const updatedItems = existingItems.filter((item) => {
+      const original = defaultValues.items.find((d) => d.id === item.id);
+      if (!original) return false;
+      return JSON.stringify(item) !== JSON.stringify(original);
+    });
+
+    const purchase_request_detail: CreatePurchaseRequestDto["details"]["purchase_request_detail"] =
+      {};
+    if (newItems.length > 0) {
+      purchase_request_detail.add = newItems.map(mapItemToPayload);
+    }
+    if (updatedItems.length > 0) {
+      purchase_request_detail.update = updatedItems.map((item) => ({
+        id: item.id!,
+        ...mapItemToPayload(item),
+      }));
+    }
+    if (removedItems.length > 0) {
+      purchase_request_detail.remove = removedItems;
+    }
+
     const details: CreatePurchaseRequestDto["details"] = {
       pr_date: new Date(values.pr_date).toISOString(),
       description: values.description,
       requestor_id: values.requestor_id,
       workflow_id: values.workflow_id,
       department_id: values.department_id,
-      purchase_request_detail: {
-        add: values.items.map((item) => ({
-          product_id: item.product_id,
-          description: item.description,
-          requested_qty: item.requested_qty,
-          requested_unit_id: item.requested_unit_id,
-          pricelist_price: item.pricelist_price,
-          vendor_id: item.vendor_id,
-          pricelist_detail_id: item.pricelist_detail_id,
-          current_stage_status: item.current_stage_status || "pending",
-          location_id: item.location_id,
-          delivery_point_id: item.delivery_point_id,
-          delivery_date: item.delivery_date,
-          currency_id: item.currency_id,
-          foc_qty: item.foc_qty ?? 0,
-          foc_unit_id: item.foc_unit_id,
-          approved_qty: item.approved_qty ?? 0,
-          approved_unit_id: item.approved_unit_id,
-          tax_profile_id: item.tax_profile_id,
-          tax_rate: item.tax_rate ?? 0,
-          tax_amount: item.tax_amount ?? 0,
-          discount_rate: item.discount_rate ?? 0,
-          discount_amount: item.discount_amount ?? 0,
-        })),
-      },
+      purchase_request_detail,
     };
 
     if (isEdit && purchaseRequest) {
@@ -280,7 +322,7 @@ export function PurchaseRequestForm({
         {
           onSuccess: () => {
             toast.success("Purchase request updated successfully");
-            router.push("/procurement/purchase-request");
+            setMode("view");
           },
           onError: (err) => toast.error(err.message),
         },
@@ -289,9 +331,13 @@ export function PurchaseRequestForm({
       createPr.mutate(
         { state_role: "create", details },
         {
-          onSuccess: () => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onSuccess: (data: any) => {
             toast.success("Purchase request created successfully");
-            router.push("/procurement/purchase-request");
+            const id = data?.data?.id;
+            if (id) {
+              router.replace(`/procurement/purchase-request/${id}`);
+            }
           },
           onError: (err) => toast.error(err.message),
         },
@@ -318,7 +364,8 @@ export function PurchaseRequestForm({
       .filter((item) => item.id)
       .map((item) => ({
         id: item.id!,
-        stage_status: item.stage_status || item.current_stage_status || "pending",
+        stage_status:
+          item.stage_status || item.current_stage_status || "pending",
         stage_message: item.stage_message || defaultMessage,
       }));
   };
@@ -515,15 +562,39 @@ export function PurchaseRequestForm({
         className="space-y-4"
       >
         <PrGeneralFields form={form} disabled={isDisabled} />
-        <PrItemFields
-          form={form}
-          disabled={isDisabled}
-          role={role}
-          prId={purchaseRequest?.id}
-          prStatus={purchaseRequest?.pr_status}
-          onSplit={handleSplit}
-        />
+
+        <Tabs defaultValue="items">
+          <TabsList variant="line">
+            <TabsTrigger value="items">Items</TabsTrigger>
+            {(purchaseRequest?.workflow_history?.length ?? 0) > 0 && (
+              <TabsTrigger value="history">Workflow History</TabsTrigger>
+            )}
+          </TabsList>
+          <TabsContent value="items">
+            <PrItemFields
+              form={form}
+              disabled={isDisabled}
+              role={role}
+              prId={purchaseRequest?.id}
+              prStatus={purchaseRequest?.pr_status}
+              onSplit={handleSplit}
+            />
+          </TabsContent>
+          {(purchaseRequest?.workflow_history?.length ?? 0) > 0 && (
+            <TabsContent value="history">
+              <PrWorkflowHistory history={purchaseRequest!.workflow_history} />
+            </TabsContent>
+          )}
+        </Tabs>
       </form>
+
+      {purchaseRequest?.workflow_current_stage && (
+        <PrWorkflowStep
+          previousStage={purchaseRequest.workflow_previous_stage}
+          currentStage={purchaseRequest.workflow_current_stage}
+          nextStage={purchaseRequest.workflow_next_stage}
+        />
+      )}
 
       {purchaseRequest && (
         <DeleteDialog

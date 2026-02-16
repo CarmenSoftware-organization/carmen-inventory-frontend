@@ -100,7 +100,7 @@ export function usePrItemTable({
           name={`items.${row.index}.location_id`}
           render={({ field }) => (
             <LookupLocation
-              value={field.value}
+              value={field.value ?? ""}
               onValueChange={field.onChange}
               disabled={disabled}
               className="w-full text-[11px]"
@@ -120,8 +120,8 @@ export function usePrItemTable({
           name={`items.${row.index}.product_id`}
           render={({ field }) => (
             <LookupProductInLocation
-              locationId={form.watch(`items.${row.index}.location_id`)}
-              value={field.value}
+              locationId={form.watch(`items.${row.index}.location_id`) ?? ""}
+              value={field.value ?? ""}
               onValueChange={(value, product) => {
                 field.onChange(value);
                 if (product) {
@@ -164,8 +164,8 @@ export function usePrItemTable({
             name={`items.${row.index}.requested_unit_id`}
             render={({ field }) => (
               <LookupProductUnit
-                productId={form.watch(`items.${row.index}.product_id`)}
-                value={field.value}
+                productId={form.watch(`items.${row.index}.product_id`) ?? ""}
+                value={field.value ?? ""}
                 onValueChange={(value) => {
                   field.onChange(value);
                   form.setValue(`items.${row.index}.foc_unit_id`, value);
@@ -201,8 +201,8 @@ export function usePrItemTable({
             name={`items.${row.index}.approved_unit_id`}
             render={({ field }) => (
               <LookupProductUnit
-                productId={form.watch(`items.${row.index}.product_id`)}
-                value={field.value}
+                productId={form.watch(`items.${row.index}.product_id`) ?? ""}
+                value={field.value ?? ""}
                 onValueChange={field.onChange}
                 disabled={disabled}
                 className="w-full text-[11px]"
@@ -234,8 +234,8 @@ export function usePrItemTable({
             name={`items.${row.index}.foc_unit_id`}
             render={({ field }) => (
               <LookupProductUnit
-                productId={form.watch(`items.${row.index}.product_id`)}
-                value={field.value}
+                productId={form.watch(`items.${row.index}.product_id`) ?? ""}
+                value={field.value ?? ""}
                 onValueChange={field.onChange}
                 disabled={disabled}
                 className="w-full text-[11px]"
@@ -257,7 +257,7 @@ export function usePrItemTable({
           name={`items.${row.index}.currency_id`}
           render={({ field }) => (
             <LookupCurrency
-              value={field.value}
+              value={field.value ?? ""}
               onValueChange={field.onChange}
               disabled={disabled}
               className="w-full text-[11px]"
@@ -277,7 +277,7 @@ export function usePrItemTable({
           name={`items.${row.index}.delivery_point_id`}
           render={({ field }) => (
             <LookupDeliveryPoint
-              value={field.value}
+              value={field.value ?? ""}
               onValueChange={field.onChange}
               disabled={disabled}
               className="w-full text-[11px]"

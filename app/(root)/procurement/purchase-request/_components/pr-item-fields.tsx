@@ -77,7 +77,7 @@ export function PrItemFields({
 
     appendItem({
       ...PR_ITEM,
-      currency_id: defaultBu?.config.default_currency_id ?? "",
+      currency_id: defaultBu?.config.default_currency_id ?? null,
       delivery_date: tomorrow.toISOString(),
     });
   };
