@@ -105,13 +105,17 @@ export function PurchaseRequestForm({
 
   const onSubmit = (values: PrFormValues) => {
     const newItems = values.items.filter((item) => !item.id);
-    const existingItems = values.items.filter((item) => !!item.id);
+    const existingItems = values.items.filter(
+      (item): item is typeof item & { id: string } => !!item.id,
+    );
 
     // Items in defaults but no longer in form → removed
     const currentIds = new Set(existingItems.map((item) => item.id));
     const removedItems = defaultValues.items
-      .filter((item) => item.id && !currentIds.has(item.id))
-      .map((item) => ({ id: item.id! }));
+      .filter((item): item is typeof item & { id: string } =>
+        !!item.id && !currentIds.has(item.id),
+      )
+      .map((item) => ({ id: item.id }));
 
     // Existing items that changed → update
     const updatedItems = existingItems.filter((item) => {
@@ -127,7 +131,7 @@ export function PurchaseRequestForm({
     }
     if (updatedItems.length > 0) {
       purchase_request_detail.update = updatedItems.map((item) => ({
-        id: item.id!,
+        id: item.id,
         ...mapItemToPayload(item),
       }));
     }
@@ -163,12 +167,10 @@ export function PurchaseRequestForm({
       createPr.mutate(
         { state_role: "create", details },
         {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onSuccess: (data: any) => {
+          onSuccess: (data) => {
             toast.success("Purchase request created successfully");
-            const id = data?.data?.id;
-            if (id) {
-              router.replace(`/procurement/purchase-request/${id}`);
+            if (data?.data?.id) {
+              router.replace(`/procurement/purchase-request/${data.data.id}`);
             }
           },
           onError: (err) => toast.error(err.message),

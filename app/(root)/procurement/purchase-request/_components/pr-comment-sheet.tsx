@@ -73,14 +73,46 @@ export function PrCommentSheet({
   const updateComment = useUpdatePurchaseRequestComment();
   const deleteComment = useDeletePurchaseRequestComment();
 
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+  const ALLOWED_TYPES = new Set([
+    // Images
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    // Documents
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.ms-powerpoint",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "text/plain",
+    "text/csv",
+    "text/markdown",
+  ]);
+
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files?.length || !prId || !buCode) return;
 
+    const validFiles: File[] = [];
+    for (const file of Array.from(files)) {
+      if (!ALLOWED_TYPES.has(file.type)) {
+        toast.error(`"${file.name}" — only images and documents are allowed`);
+      } else if (file.size > MAX_FILE_SIZE) {
+        toast.error(`"${file.name}" exceeds 10 MB limit`);
+      } else {
+        validFiles.push(file);
+      }
+    }
+    if (validFiles.length === 0) return;
+
     setIsUploading(true);
     try {
       const uploaded = await Promise.all(
-        Array.from(files).map((file) =>
+        validFiles.map((file) =>
           uploadCommentAttachment(buCode, prId, file),
         ),
       );
@@ -308,6 +340,7 @@ export function PrCommentSheet({
                 ref={fileInputRef}
                 type="file"
                 multiple
+                accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.md"
                 className="hidden"
                 onChange={handleFileSelect}
               />

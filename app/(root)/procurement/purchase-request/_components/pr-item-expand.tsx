@@ -13,7 +13,9 @@ import { LookupTaxProfile } from "@/components/lookup/lookup-tax-profile";
 import type { PrFormValues } from "./pr-form-schema";
 import { PrPricelistDialog, type PricelistEntry } from "./pr-pricelist-dialog";
 
-const round2 = (n: number) => Math.round(n * 100) / 100;
+/** Round to 2 decimal places using exponential shift to avoid floating-point errors (e.g. 1.005 → 1.01) */
+const round2 = (n: number): number =>
+  Number(Math.round(parseFloat(n + "e2")) + "e-2");
 
 type ItemField = FieldArrayWithId<PrFormValues, "items", "id">;
 

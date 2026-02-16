@@ -181,8 +181,12 @@ export function usePurchaseRequestById(id: string | undefined) {
   });
 }
 
+interface CreatePrResponse {
+  data: { id: string };
+}
+
 export function useCreatePurchaseRequest() {
-  return useApiMutation<CreatePurchaseRequestDto>({
+  return useApiMutation<CreatePurchaseRequestDto, CreatePrResponse>({
     mutationFn: (data, buCode) =>
       httpClient.post(API_ENDPOINTS.PURCHASE_REQUEST(buCode), data),
     invalidateKeys: [QUERY_KEYS.PURCHASE_REQUESTS],
