@@ -23,7 +23,7 @@ export function PrWorkflowStep({
   const currentIndex = stages.indexOf(currentStage);
 
   return (
-    <div className="flex items-center gap-1 overflow-x-auto py-2">
+    <div className="flex items-center gap-1 overflow-x-auto pt-4">
       {stages.map((stage, i) => {
         const isCompleted = i < currentIndex;
         const isCurrent = i === currentIndex;
@@ -39,7 +39,9 @@ export function PrWorkflowStep({
                   "flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-medium text-white",
                   isCompleted && "bg-success",
                   isCurrent && "bg-info ring-2 ring-info/30",
-                  !isCompleted && !isCurrent && "bg-muted text-muted-foreground",
+                  !isCompleted &&
+                    !isCurrent &&
+                    "bg-muted text-muted-foreground",
                 )}
               >
                 {isCompleted ? <Check className="size-3" /> : i + 1}

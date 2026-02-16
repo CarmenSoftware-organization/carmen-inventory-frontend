@@ -12,10 +12,8 @@ import {
 import { Badge } from "@/components/reui/badge";
 import { useProfile } from "@/hooks/use-profile";
 import { formatDate } from "@/lib/date-utils";
-import type {
-  PurchaseRequest,
-  PurchaseRequestStatus,
-} from "@/types/purchase-request";
+import { PR_STATUS_CONFIG } from "@/constant/purchase-request";
+import type { PurchaseRequest } from "@/types/purchase-request";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
 
@@ -27,19 +25,6 @@ interface UsePurchaseRequestTableOptions {
   onEdit: (item: PurchaseRequest) => void;
   onDelete: (item: PurchaseRequest) => void;
 }
-
-const statusVariantMap: Record<
-  PurchaseRequestStatus,
-  "outline" | "secondary" | "success" | "destructive"
-> = {
-  draft: "outline",
-  submitted: "secondary",
-  approved: "success",
-  rejected: "destructive",
-  in_progress: "secondary",
-  completed: "success",
-  voided: "outline",
-};
 
 export function usePurchaseRequestTable({
   items,
@@ -66,7 +51,7 @@ export function usePurchaseRequestTable({
           {row.getValue("pr_no")}
         </button>
       ),
-      size: 220,
+      size: 160,
       meta: { skeleton: columnSkeletons.text },
     },
     {
@@ -75,6 +60,7 @@ export function usePurchaseRequestTable({
         <DataGridColumnHeader column={column} title="Date" />
       ),
       cell: ({ row }) => formatDate(row.getValue("pr_date"), dateFormat),
+      size: 130,
       meta: { skeleton: columnSkeletons.text },
     },
     {
@@ -82,26 +68,37 @@ export function usePurchaseRequestTable({
       header: "Type",
       enableSorting: false,
       meta: { skeleton: columnSkeletons.text },
+      size: 100,
     },
     {
       accessorKey: "pr_status",
       header: "Status",
       enableSorting: false,
       cell: ({ row }) => {
-        const status = row.getValue("pr_status") as PurchaseRequestStatus;
+        const status = row.getValue("pr_status") as string;
+        const config = PR_STATUS_CONFIG[status] ?? PR_STATUS_CONFIG.draft;
         return (
-          <Badge variant={statusVariantMap[status]} size="sm">
-            {status}
+          <Badge variant={config.variant} size="sm">
+            {config.label}
           </Badge>
         );
       },
-      meta: { skeleton: columnSkeletons.badge },
+      meta: {
+        cellClassName: "text-center",
+        headerClassName: "text-center",
+        skeleton: columnSkeletons.badge,
+      },
+      size: 80,
     },
     {
       accessorKey: "workflow_current_stage",
       header: "Stage",
       enableSorting: false,
-      meta: { skeleton: columnSkeletons.text },
+      meta: {
+        cellClassName: "text-center",
+        headerClassName: "text-center",
+        skeleton: columnSkeletons.text,
+      },
     },
     {
       accessorKey: "requestor_name",

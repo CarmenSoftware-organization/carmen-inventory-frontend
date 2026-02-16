@@ -1,19 +1,38 @@
+type BadgeVariant =
+  | "outline"
+  | "secondary"
+  | "info"
+  | "success"
+  | "warning"
+  | "destructive";
+
+/** Badge variant + label for PR document-level status */
+export const PR_STATUS_CONFIG: Record<
+  string,
+  { variant: BadgeVariant; label: string }
+> = {
+  draft: { variant: "secondary", label: "DRAFT" },
+  submitted: { variant: "info", label: "SUBMITTED" },
+  in_progress: { variant: "warning", label: "IN PROGRESS" },
+  approved: { variant: "success", label: "APPROVED" },
+  rejected: { variant: "destructive", label: "REJECTED" },
+  completed: { variant: "success", label: "COMPLETED" },
+  voided: { variant: "destructive", label: "VOIDED" },
+};
+
 /** Badge variant + label for PR item-level status */
 export const PR_ITEM_STATUS_CONFIG: Record<
   string,
-  { variant: "warning" | "success" | "info" | "destructive"; label: string }
+  { variant: BadgeVariant; label: string }
 > = {
-  pending: { variant: "warning", label: "Pending" },
-  approved: { variant: "success", label: "Approved" },
-  review: { variant: "info", label: "Review" },
-  rejected: { variant: "destructive", label: "Rejected" },
+  pending: { variant: "warning", label: "PENDING" },
+  approved: { variant: "success", label: "APPROVED" },
+  review: { variant: "info", label: "REVIEW" },
+  rejected: { variant: "destructive", label: "REJECTED" },
 };
 
 /** Badge variant for workflow history actions */
-export const PR_WORKFLOW_ACTION_VARIANT: Record<
-  string,
-  "secondary" | "success" | "destructive" | "warning" | "outline"
-> = {
+export const PR_WORKFLOW_ACTION_VARIANT: Record<string, BadgeVariant> = {
   submitted: "secondary",
   approved: "success",
   rejected: "destructive",

@@ -25,6 +25,7 @@ import { type FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/reui/badge";
+import { PR_STATUS_CONFIG } from "@/constant/purchase-request";
 import { PrGeneralFields } from "./pr-general-fields";
 import { PrItemFields } from "./pr-item-fields";
 import { PrCommentSheet } from "./pr-comment-sheet";
@@ -418,7 +419,9 @@ export function PurchaseRequestForm({
               <h1 className="font-semibold text-lg">
                 {purchaseRequest?.pr_no}
               </h1>
-              <Badge>{purchaseRequest?.pr_status}</Badge>
+              <Badge variant={PR_STATUS_CONFIG[purchaseRequest?.pr_status ?? "draft"]?.variant}>
+                {PR_STATUS_CONFIG[purchaseRequest?.pr_status ?? "draft"]?.label ?? purchaseRequest?.pr_status}
+              </Badge>
             </div>
           )}
         </div>
@@ -474,6 +477,13 @@ export function PurchaseRequestForm({
               dateFormat={dateFormat}
               onSplit={handleSplit}
             />
+            {purchaseRequest?.workflow_current_stage && (
+              <PrWorkflowStep
+                previousStage={purchaseRequest.workflow_previous_stage}
+                currentStage={purchaseRequest.workflow_current_stage}
+                nextStage={purchaseRequest.workflow_next_stage}
+              />
+            )}
           </TabsContent>
           {(purchaseRequest?.workflow_history?.length ?? 0) > 0 && (
             <TabsContent value="history">
@@ -482,14 +492,6 @@ export function PurchaseRequestForm({
           )}
         </Tabs>
       </form>
-
-      {purchaseRequest?.workflow_current_stage && (
-        <PrWorkflowStep
-          previousStage={purchaseRequest.workflow_previous_stage}
-          currentStage={purchaseRequest.workflow_current_stage}
-          nextStage={purchaseRequest.workflow_next_stage}
-        />
-      )}
 
       {purchaseRequest && (
         <DeleteDialog
