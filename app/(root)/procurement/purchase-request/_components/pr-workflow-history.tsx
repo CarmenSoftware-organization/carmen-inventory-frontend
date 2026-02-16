@@ -35,11 +35,11 @@ export function PrWorkflowHistory({ history }: PrWorkflowHistoryProps) {
         return (
           <div key={i} className="relative flex gap-3 pb-4">
             {!isLast && (
-              <div className="absolute left-1.75 top-4 h-full w-px bg-border" />
+              <div className="absolute left-[7px] top-4 h-full w-px bg-border" />
             )}
             <div
               className={cn(
-                "relative z-10 mt-1 size-3.75 shrink-0 rounded-full border-2",
+                "relative z-10 mt-1 size-3.5 shrink-0 rounded-full border-2",
                 i === 0
                   ? "border-primary bg-primary"
                   : "border-muted-foreground/30 bg-background",

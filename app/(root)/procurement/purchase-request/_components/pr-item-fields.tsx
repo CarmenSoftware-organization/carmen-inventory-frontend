@@ -110,53 +110,52 @@ export function PrItemFields({
     setIsAllocating(true);
     let allocated = 0;
 
-    try {
-      await Promise.all(
-        items.map(async (item, index) => {
-          if (!item.product_id || !item.requested_unit_id || !item.currency_id)
-            return;
+    const results = await Promise.allSettled(
+      items.map(async (item, index) => {
+        if (!item.product_id || !item.requested_unit_id || !item.currency_id)
+          return;
 
-          const url = buildUrl(
-            `/api/proxy/api/${buCode}/price-list/price-compare`,
-            {
-              product_id: item.product_id,
-              unit_id: item.requested_unit_id,
-              at_date: item.delivery_date,
-              currency_id: item.currency_id,
-            },
-          );
+        const url = buildUrl(
+          `/api/proxy/api/${buCode}/price-list/price-compare`,
+          {
+            product_id: item.product_id,
+            unit_id: item.requested_unit_id,
+            at_date: item.delivery_date,
+            currency_id: item.currency_id,
+          },
+        );
 
-          const res = await httpClient.get(url);
+        const res = await httpClient.get(url);
+        if (!res.ok) throw new Error("fetch failed");
 
-          if (!res.ok) return;
+        const json = await res.json();
+        const selected = json.data?.selected;
+        if (!selected) return;
 
-          const json = await res.json();
+        form.setValue(`items.${index}.vendor_id`, selected.vendor_id);
+        form.setValue(`items.${index}.vendor_name`, selected.vendor_name);
+        form.setValue(`items.${index}.pricelist_price`, selected.price);
+        form.setValue(
+          `items.${index}.pricelist_detail_id`,
+          selected.pricelist_detail_id,
+        );
+        form.setValue(`items.${index}.pricelist_no`, selected.pricelist_no);
+        allocated++;
+      }),
+    );
 
-          const selected = json.data?.selected;
-          if (!selected) return;
-
-          form.setValue(`items.${index}.vendor_id`, selected.vendor_id);
-          form.setValue(`items.${index}.vendor_name`, selected.vendor_name);
-          form.setValue(`items.${index}.pricelist_price`, selected.price);
-          form.setValue(
-            `items.${index}.pricelist_detail_id`,
-            selected.pricelist_detail_id,
-          );
-          form.setValue(`items.${index}.pricelist_no`, selected.pricelist_no);
-          allocated++;
-        }),
-      );
-
-      if (allocated > 0) {
-        toast.success(`Allocated ${allocated} of ${items.length} items`);
-      } else {
-        toast.warning("No price list found for the items");
-      }
-    } catch {
-      toast.error("Failed to auto allocate");
-    } finally {
-      setIsAllocating(false);
+    const failed = results.filter((r) => r.status === "rejected").length;
+    if (allocated > 0) {
+      toast.success(`Allocated ${allocated} of ${items.length} items`);
     }
+    if (failed > 0) {
+      toast.error(`${failed} item(s) failed to allocate`);
+    }
+    if (allocated === 0 && failed === 0) {
+      toast.warning("No price list found for the items");
+    }
+
+    setIsAllocating(false);
   };
 
   const getSelectedIndices = (): number[] => {

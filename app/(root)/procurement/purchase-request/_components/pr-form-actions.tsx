@@ -155,12 +155,7 @@ function WorkflowActions({
 
   const canApprove = role === STAGE_ROLE.APPROVE;
   const canPurchaseApprove = role === STAGE_ROLE.PURCHASE;
-  const canReject =
-    role === STAGE_ROLE.APPROVE || role === STAGE_ROLE.PURCHASE;
-  const canSendBack =
-    role === STAGE_ROLE.APPROVE || role === STAGE_ROLE.PURCHASE;
-  const canReview =
-    role === STAGE_ROLE.APPROVE || role === STAGE_ROLE.PURCHASE;
+  const canAction = canApprove || canPurchaseApprove;
 
   return (
     <>
@@ -197,7 +192,7 @@ function WorkflowActions({
           Purchase Approve
         </Button>
       )}
-      {canReject && (
+      {canAction && (
         <Button
           size="sm"
           variant="destructive"
@@ -208,7 +203,7 @@ function WorkflowActions({
           Reject
         </Button>
       )}
-      {canSendBack && (
+      {canAction && (
         <Button
           size="sm"
           variant="warning"
@@ -219,7 +214,7 @@ function WorkflowActions({
           Send Back
         </Button>
       )}
-      {canReview && (
+      {canAction && (
         <Button
           size="sm"
           variant="outline"

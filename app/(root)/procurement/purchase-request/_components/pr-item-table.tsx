@@ -2,7 +2,9 @@
 
 import {
   Controller,
+  useWatch,
   type UseFormReturn,
+  type Control,
   type FieldArrayWithId,
 } from "react-hook-form";
 import {
@@ -28,6 +30,34 @@ import { LookupDeliveryPoint } from "@/components/lookup/lookup-delivery-point";
 import type { PrFormValues } from "./pr-form-schema";
 import { PrItemExpand } from "./pr-item-expand";
 import { Badge } from "@/components/ui/badge";
+
+const STATUS_CONFIG: Record<
+  string,
+  { variant: "warning" | "success" | "info" | "destructive"; label: string }
+> = {
+  pending: { variant: "warning", label: "Pending" },
+  approved: { variant: "success", label: "Approved" },
+  review: { variant: "info", label: "Review" },
+  rejected: { variant: "destructive", label: "Rejected" },
+};
+
+function StatusCell({
+  control,
+  index,
+}: {
+  control: Control<PrFormValues>;
+  index: number;
+}) {
+  const status =
+    useWatch({ control, name: `items.${index}.current_stage_status` }) ||
+    "pending";
+  const { variant, label } = STATUS_CONFIG[status] ?? STATUS_CONFIG.pending;
+  return (
+    <Badge variant={variant} className="text-[11px]">
+      {label}
+    </Badge>
+  );
+}
 
 export type ItemField = FieldArrayWithId<PrFormValues, "items", "id">;
 
@@ -189,48 +219,9 @@ export function usePrItemTable({
     {
       accessorKey: "current_stage_status",
       header: "Status",
-      cell: ({ row }) => {
-        const status =
-          form.getValues(`items.${row.index}.current_stage_status`) ||
-          "pending";
-        const config: Record<
-          string,
-          {
-            variant:
-              | "default"
-              | "secondary"
-              | "destructive"
-              | "outline"
-              | "success"
-              | "info"
-              | "warning";
-            label: string;
-          }
-        > = {
-          pending: {
-            variant: "warning",
-            label: "Pending",
-          },
-          approved: {
-            variant: "success",
-            label: "Approved",
-          },
-          review: {
-            variant: "info",
-            label: "Review",
-          },
-          rejected: {
-            variant: "destructive",
-            label: "Rejected",
-          },
-        };
-        const { variant, label } = config[status] ?? config.pending;
-        return (
-          <Badge variant={variant} className="text-[11px]">
-            {label}
-          </Badge>
-        );
-      },
+      cell: ({ row }) => (
+        <StatusCell control={form.control} index={row.index} />
+      ),
       size: 100,
     },
     {

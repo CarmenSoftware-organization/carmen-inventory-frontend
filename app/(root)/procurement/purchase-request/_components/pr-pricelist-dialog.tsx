@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { FileText } from "lucide-react";
+import { toast } from "sonner";
 import {
   type ColumnDef,
   useReactTable,
@@ -161,7 +162,7 @@ export function PrPricelistDialog({
         const json = await res.json();
         setLists(json.data?.lists ?? []);
       } catch {
-        // silently fail
+        toast.error("Failed to load price lists");
       } finally {
         setIsLoading(false);
       }
