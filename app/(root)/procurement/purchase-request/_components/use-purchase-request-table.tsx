@@ -36,6 +36,9 @@ const statusVariantMap: Record<
   submitted: "secondary",
   approved: "success",
   rejected: "destructive",
+  in_progress: "secondary",
+  completed: "success",
+  voided: "outline",
 };
 
 export function usePurchaseRequestTable({

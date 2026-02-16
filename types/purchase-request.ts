@@ -2,7 +2,10 @@ export type PurchaseRequestStatus =
   | "draft"
   | "submitted"
   | "approved"
-  | "rejected";
+  | "rejected"
+  | "in_progress"
+  | "completed"
+  | "voided";
 
 export interface PurchaseRequestDetail {
   id: string;
@@ -53,6 +56,8 @@ export interface PurchaseRequestDetail {
   net_amount: number;
   unit_price: number;
   total_price: number;
+  stage_status: string;
+  stage_message: string | null;
   current_stage_status: string;
   info: Record<string, unknown>;
   dimension: unknown[];
@@ -131,8 +136,10 @@ export interface PurchaseRequest {
   expected_date: string;
   description: string;
   doc_status: PurchaseRequestStatus;
+  role: string;
   workflow_id: string;
   workflow_name: string;
+  workflow_current_stage: string;
   requestor_id: string;
   requestor_name: string;
   department_id: string;

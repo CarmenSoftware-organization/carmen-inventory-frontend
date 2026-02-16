@@ -9,6 +9,7 @@ import type {
   PurchaseRequest,
   PurchaseRequestTemplate,
 } from "@/types/purchase-request";
+import type { ActionPr } from "@/types/stage-role";
 import type { ParamsDto } from "@/types/params";
 
 interface PaginatedResponse {
@@ -31,13 +32,27 @@ export interface CreatePurchaseRequestDto {
     department_id: string;
     purchase_request_detail: {
       add: {
+        product_id: string;
         description: string;
         current_stage_status: string;
-        product_id: string;
         requested_qty: number;
+        requested_unit_id: string;
         unit_price: number;
         vendor_id: string;
         pricelist_detail_id: string | null;
+        location_id: string;
+        delivery_point_id: string;
+        delivery_date: string;
+        currency_id: string;
+        foc_qty: number;
+        foc_unit_id: string;
+        approved_qty: number;
+        approved_unit_id: string;
+        tax_profile_id?: string | null;
+        tax_rate: number;
+        tax_amount: number;
+        discount_rate: number;
+        discount_amount: number;
       }[];
     };
   };
@@ -167,15 +182,6 @@ export function useCreatePurchaseRequest() {
   });
 }
 
-export function useUpdatePurchaseRequest() {
-  return useApiMutation<CreatePurchaseRequestDto & { id: string }>({
-    mutationFn: ({ id, ...data }, buCode) =>
-      httpClient.patch(`${API_ENDPOINTS.PURCHASE_REQUEST(buCode)}/${id}`, data),
-    invalidateKeys: [QUERY_KEYS.PURCHASE_REQUESTS],
-    errorMessage: "Failed to update purchase request",
-  });
-}
-
 export interface PurchaseRequestCommentAttachment {
   size: number;
   fileUrl: string;
@@ -287,5 +293,77 @@ export function useDeletePurchaseRequest() {
       httpClient.delete(`${API_ENDPOINTS.PURCHASE_REQUEST(buCode)}/${id}`),
     invalidateKeys: [QUERY_KEYS.PURCHASE_REQUESTS],
     errorMessage: "Failed to delete purchase request",
+  });
+}
+
+// --- Workflow Action DTOs ---
+
+export interface WorkflowStageDetail {
+  id: string;
+  stage_status: string;
+  stage_message: string;
+}
+
+export interface ApproveDetail {
+  id: string;
+  stage_status: string;
+  stage_message: string;
+  approved_qty: number;
+  approved_unit_id: string;
+  vendor_id?: string;
+  pricelist_detail_id?: string | null;
+  unit_price?: number;
+  currency_id?: string;
+  tax_profile_id?: string | null;
+  tax_rate?: number;
+  tax_amount?: number;
+  discount_rate?: number;
+  discount_amount?: number;
+  foc_qty?: number;
+  foc_unit_id?: string;
+}
+
+export interface PrActionPayload {
+  id: string;
+  state_role: string;
+  details: (WorkflowStageDetail | ApproveDetail)[];
+  des_stage?: string;
+}
+
+export interface SplitActionDto {
+  id: string;
+  detail_ids: string[];
+}
+
+// --- Workflow Action Hooks ---
+
+const PR_INVALIDATE_KEYS = [
+  QUERY_KEYS.PURCHASE_REQUESTS,
+  QUERY_KEYS.MY_PENDING_PURCHASE_REQUESTS,
+];
+
+export function useUpdatePr<T extends { id: string } = PrActionPayload>(
+  action?: ActionPr,
+) {
+  return useApiMutation<T>({
+    mutationFn: ({ id, ...data }, buCode) => {
+      let url = `${API_ENDPOINTS.PURCHASE_REQUEST(buCode)}/${id}`;
+      if (action) url += `/${action}`;
+      return httpClient.patch(url, data);
+    },
+    invalidateKeys: PR_INVALIDATE_KEYS,
+    errorMessage: `Failed to ${action ?? "update"} purchase request`,
+  });
+}
+
+export function useSplitPurchaseRequest() {
+  return useApiMutation<SplitActionDto>({
+    mutationFn: ({ id, ...data }, buCode) =>
+      httpClient.post(
+        `${API_ENDPOINTS.PURCHASE_REQUEST(buCode)}/${id}/split`,
+        data,
+      ),
+    invalidateKeys: PR_INVALIDATE_KEYS,
+    errorMessage: "Failed to split purchase request",
   });
 }

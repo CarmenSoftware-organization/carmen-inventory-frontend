@@ -24,8 +24,10 @@ import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { STAGE_ROLE } from "@/types/stage-role";
 import type { PrFormValues } from "./purchase-request-form";
 import { usePrItemTable } from "./use-pr-item-table";
+import { PrActionDialog } from "./pr-action-dialog";
 import EmptyComponent from "@/components/empty-component";
 import { PR_ITEM } from "./pr-item.defaults";
 
@@ -42,12 +44,24 @@ function getDeleteDescription(
 interface PrItemFieldsProps {
   form: UseFormReturn<PrFormValues>;
   disabled: boolean;
+  role?: string;
+  prId?: string;
+  onSplit?: (detailIds: string[]) => void;
 }
 
-export function PrItemFields({ form, disabled }: PrItemFieldsProps) {
-  const { buCode } = useProfile();
+export function PrItemFields({
+  form,
+  disabled,
+  role,
+  prId,
+  onSplit,
+}: PrItemFieldsProps) {
+  const { buCode, defaultBu } = useProfile();
   const [isAllocating, setIsAllocating] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+  const [bulkAction, setBulkAction] = useState<
+    "review" | "rejected" | null
+  >(null);
 
   const {
     fields: itemFields,
@@ -56,7 +70,10 @@ export function PrItemFields({ form, disabled }: PrItemFieldsProps) {
   } = useFieldArray({ control: form.control, name: "items" });
 
   const handleAddItem = () => {
-    appendItem({ ...PR_ITEM });
+    appendItem({
+      ...PR_ITEM,
+      currency_id: defaultBu?.config.default_currency_id ?? "",
+    });
   };
 
   const table = usePrItemTable({
@@ -65,6 +82,10 @@ export function PrItemFields({ form, disabled }: PrItemFieldsProps) {
     disabled,
     onDelete: setDeleteIndex,
   });
+
+  const selectedRows = table.getSelectedRowModel().rows;
+  const canBulkAction =
+    role === STAGE_ROLE.APPROVE || role === STAGE_ROLE.PURCHASE;
 
   const handleAutoAllocate = async () => {
     const items = form.getValues("items");
@@ -122,6 +143,67 @@ export function PrItemFields({ form, disabled }: PrItemFieldsProps) {
     }
   };
 
+  // --- Bulk Action Handlers ---
+
+  const getSelectedIndices = (): number[] => {
+    return selectedRows.map((row) => row.index);
+  };
+
+  const handleBulkApprove = () => {
+    const indices = getSelectedIndices();
+    indices.forEach((index) => {
+      form.setValue(`items.${index}.stage_status`, "approved");
+    });
+    table.resetRowSelection();
+    toast.success(`${indices.length} item(s) marked as approved`);
+  };
+
+  const handleBulkActionConfirm = (message: string) => {
+    if (!bulkAction) return;
+    const indices = getSelectedIndices();
+    indices.forEach((index) => {
+      form.setValue(`items.${index}.stage_status`, bulkAction);
+      form.setValue(`items.${index}.stage_message`, message);
+    });
+    table.resetRowSelection();
+    setBulkAction(null);
+    toast.success(
+      `${indices.length} item(s) marked as ${bulkAction}`,
+    );
+  };
+
+  const handleBulkSplit = () => {
+    const detailIds = selectedRows
+      .map((row) => {
+        const item = form.getValues(`items.${row.index}`);
+        return item.id;
+      })
+      .filter((id): id is string => !!id);
+
+    if (detailIds.length === 0) {
+      toast.error("No saved items selected for split");
+      return;
+    }
+
+    onSplit?.(detailIds);
+    table.resetRowSelection();
+  };
+
+  const bulkActionDialogConfig = {
+    review: {
+      title: "Review Selected Items",
+      description: "Please provide a reason for sending items for review.",
+      confirmLabel: "Send for Review",
+      confirmVariant: "default" as const,
+    },
+    rejected: {
+      title: "Reject Selected Items",
+      description: "Please provide a reason for rejecting these items.",
+      confirmLabel: "Reject",
+      confirmVariant: "destructive" as const,
+    },
+  };
+
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
@@ -148,24 +230,46 @@ export function PrItemFields({ form, disabled }: PrItemFieldsProps) {
               Auto Allocate
             </Button>
           </div>
-          {table.getSelectedRowModel().rows.length > 0 && (
+          {selectedRows.length > 0 && canBulkAction && (
             <div className="flex items-center gap-1.5">
-              <Button type="button" variant="success" size="xs">
+              <Button
+                type="button"
+                variant="success"
+                size="xs"
+                onClick={handleBulkApprove}
+              >
                 <Check />
                 Approve
               </Button>
-              <Button type="button" variant="info" size="xs">
+              <Button
+                type="button"
+                variant="info"
+                size="xs"
+                onClick={() => setBulkAction("review")}
+              >
                 <Eye />
                 Review
               </Button>
-              <Button type="button" variant="destructive" size="xs">
+              <Button
+                type="button"
+                variant="destructive"
+                size="xs"
+                onClick={() => setBulkAction("rejected")}
+              >
                 <X />
                 Reject
               </Button>
-              <Button type="button" variant="warning" size="xs">
-                <Scissors />
-                Split
-              </Button>
+              {prId && (
+                <Button
+                  type="button"
+                  variant="warning"
+                  size="xs"
+                  onClick={handleBulkSplit}
+                >
+                  <Scissors />
+                  Split
+                </Button>
+              )}
             </div>
           )}
         </div>
@@ -210,6 +314,17 @@ export function PrItemFields({ form, disabled }: PrItemFieldsProps) {
           setDeleteIndex(null);
         }}
       />
+
+      {bulkAction && (
+        <PrActionDialog
+          open={!!bulkAction}
+          onOpenChange={(open) => {
+            if (!open) setBulkAction(null);
+          }}
+          onConfirm={handleBulkActionConfirm}
+          {...bulkActionDialogConfig[bulkAction]}
+        />
+      )}
     </div>
   );
 }

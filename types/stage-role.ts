@@ -5,3 +5,12 @@ export enum STAGE_ROLE {
   ISSUE = "issue",
   VIEW_ONLY = "view_only",
 }
+
+export type ActionPr =
+  | "save"
+  | "submit"
+  | "approve"
+  | "purchase"
+  | "review"
+  | "reject"
+  | "send_back";
