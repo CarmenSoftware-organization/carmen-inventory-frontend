@@ -19,6 +19,7 @@ interface LookupProductInLocationProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
+  readonly size?: "xs" | "sm" | "default";
 }
 
 export function LookupProductInLocation({
@@ -28,6 +29,7 @@ export function LookupProductInLocation({
   disabled,
   placeholder = "Select product",
   className,
+  size = "sm",
 }: LookupProductInLocationProps) {
   const { buCode } = useProfile();
 
@@ -54,7 +56,7 @@ export function LookupProductInLocation({
       }}
       disabled={disabled || !locationId}
     >
-      <SelectTrigger size="sm" className={className ?? "text-xs"}>
+      <SelectTrigger size={size} className={className ?? "text-xs"}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

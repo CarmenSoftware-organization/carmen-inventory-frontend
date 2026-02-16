@@ -17,6 +17,7 @@ interface LookupWorkflowProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
+  readonly size?: "xs" | "sm" | "default";
 }
 
 export function LookupWorkflow({
@@ -26,12 +27,13 @@ export function LookupWorkflow({
   disabled,
   placeholder = "Select workflow",
   className,
+  size = "sm",
 }: LookupWorkflowProps) {
   const { data: workflows } = useWorkflowTypeQuery(workflowType);
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger size="sm" className={className ?? "text-xs"}>
+      <SelectTrigger size={size} className={className ?? "text-xs"}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

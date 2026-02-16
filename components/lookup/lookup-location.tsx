@@ -15,6 +15,7 @@ interface LookupLocationProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
+  readonly size?: "xs" | "sm" | "default";
 }
 
 export function LookupLocation({
@@ -23,13 +24,14 @@ export function LookupLocation({
   disabled,
   placeholder = "Select location",
   className,
+  size = "sm",
 }: LookupLocationProps) {
   const { data } = useLocation({ perpage: 9999 });
   const locations = data?.data?.filter((l) => l.is_active) ?? [];
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger size="sm" className={className ?? "text-xs w-full"}>
+      <SelectTrigger size={size} className={className ?? "text-xs w-full"}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

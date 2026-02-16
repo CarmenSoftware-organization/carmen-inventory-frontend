@@ -103,7 +103,8 @@ export function usePrItemTable({
               value={field.value}
               onValueChange={field.onChange}
               disabled={disabled}
-              className="h-6 w-full text-[11px]"
+              className="w-full text-[11px]"
+              size="xs"
             />
           )}
         />
@@ -135,7 +136,8 @@ export function usePrItemTable({
                 form.setValue(`items.${row.index}.approved_unit_id`, "");
               }}
               disabled={disabled}
-              className="h-6 w-full text-[11px]"
+              className="w-full text-[11px]"
+              size="xs"
             />
           )}
         />
@@ -164,41 +166,14 @@ export function usePrItemTable({
               <LookupProductUnit
                 productId={form.watch(`items.${row.index}.product_id`)}
                 value={field.value}
-                onValueChange={field.onChange}
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  form.setValue(`items.${row.index}.foc_unit_id`, value);
+                  form.setValue(`items.${row.index}.approved_unit_id`, value);
+                }}
                 disabled={disabled}
-                className="h-6 w-full text-[11px]"
-              />
-            )}
-          />
-        </div>
-      ),
-      size: 110,
-    },
-    {
-      id: "foc",
-      header: "FOC",
-      cell: ({ row }) => (
-        <div className="flex flex-col gap-0.5">
-          <Input
-            type="number"
-            min={0}
-            placeholder="Qty"
-            className="h-6 text-[11px] text-right"
-            disabled={disabled}
-            {...form.register(`items.${row.index}.foc_qty`, {
-              valueAsNumber: true,
-            })}
-          />
-          <Controller
-            control={form.control}
-            name={`items.${row.index}.foc_unit_id`}
-            render={({ field }) => (
-              <LookupProductUnit
-                productId={form.watch(`items.${row.index}.product_id`)}
-                value={field.value}
-                onValueChange={field.onChange}
-                disabled={disabled}
-                className="h-6 w-full text-[11px]"
+                className="w-full text-[11px]"
+                size="xs"
               />
             )}
           />
@@ -230,7 +205,8 @@ export function usePrItemTable({
                 value={field.value}
                 onValueChange={field.onChange}
                 disabled={disabled}
-                className="h-6 w-full text-[11px]"
+                className="w-full text-[11px]"
+                size="xs"
               />
             )}
           />
@@ -238,6 +214,40 @@ export function usePrItemTable({
       ),
       size: 110,
     },
+    {
+      id: "foc",
+      header: "FOC",
+      cell: ({ row }) => (
+        <div className="flex flex-col gap-0.5">
+          <Input
+            type="number"
+            min={0}
+            placeholder="Qty"
+            className="h-6 text-[11px] text-right"
+            disabled={disabled}
+            {...form.register(`items.${row.index}.foc_qty`, {
+              valueAsNumber: true,
+            })}
+          />
+          <Controller
+            control={form.control}
+            name={`items.${row.index}.foc_unit_id`}
+            render={({ field }) => (
+              <LookupProductUnit
+                productId={form.watch(`items.${row.index}.product_id`)}
+                value={field.value}
+                onValueChange={field.onChange}
+                disabled={disabled}
+                className="w-full text-[11px]"
+                size="xs"
+              />
+            )}
+          />
+        </div>
+      ),
+      size: 110,
+    },
+
     {
       accessorKey: "currency_id",
       header: "Currency",
@@ -250,12 +260,13 @@ export function usePrItemTable({
               value={field.value}
               onValueChange={field.onChange}
               disabled={disabled}
-              className="h-6 w-full text-[11px]"
+              className="w-full text-[11px]"
+              size="xs"
             />
           )}
         />
       ),
-      size: 100,
+      size: 90,
     },
     {
       accessorKey: "delivery_point_id",
@@ -269,12 +280,13 @@ export function usePrItemTable({
               value={field.value}
               onValueChange={field.onChange}
               disabled={disabled}
-              className="h-6 w-full text-[11px]"
+              className="w-full text-[11px]"
+              size="xs"
             />
           )}
         />
       ),
-      size: 130,
+      size: 180,
     },
     {
       accessorKey: "delivery_date",
@@ -298,7 +310,8 @@ export function usePrItemTable({
                 value={field.value}
                 onValueChange={field.onChange}
                 fromDate={new Date()}
-                className="h-6 w-full text-[11px]"
+                className="w-full text-[11px]"
+                size="xs"
               />
             )}
           />
@@ -314,17 +327,17 @@ export function usePrItemTable({
       <Button
         type="button"
         variant="ghost"
-        size="icon-xs"
+        size="xs"
         onClick={() => onDelete(row.index)}
       >
         <Trash2 />
       </Button>
     ),
     enableSorting: false,
-    size: 32,
+    size: 40,
     meta: {
-      headerClassName: "text-center",
-      cellClassName: "text-center",
+      headerClassName: "text-right",
+      cellClassName: "text-right",
     },
   };
 

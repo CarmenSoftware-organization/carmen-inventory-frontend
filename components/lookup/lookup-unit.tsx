@@ -15,6 +15,7 @@ interface LookupUnitProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
+  readonly size?: "xs" | "sm" | "default";
 }
 
 export function LookupUnit({
@@ -23,13 +24,14 @@ export function LookupUnit({
   disabled,
   placeholder = "Select unit",
   className,
+  size = "sm",
 }: LookupUnitProps) {
   const { data } = useUnit({ perpage: 9999 });
   const units = data?.data?.filter((u) => u.is_active) ?? [];
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger className={className ?? "h-8 w-full text-sm"}>
+      <SelectTrigger size={size} className={className ?? "h-8 w-full text-sm"}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

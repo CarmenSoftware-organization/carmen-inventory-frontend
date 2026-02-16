@@ -15,6 +15,7 @@ interface LookupCurrencyProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
+  readonly size?: "xs" | "sm" | "default";
 }
 
 export function LookupCurrency({
@@ -23,13 +24,14 @@ export function LookupCurrency({
   disabled,
   placeholder = "Select currency",
   className,
+  size = "sm",
 }: LookupCurrencyProps) {
   const { data } = useCurrency({ perpage: 9999 });
   const currencies = data?.data?.filter((c) => c.is_active) ?? [];
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger size="sm" className={className ?? "h-8 w-full text-xs"}>
+      <SelectTrigger align="end" size={size} className={className ?? "text-xs"}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

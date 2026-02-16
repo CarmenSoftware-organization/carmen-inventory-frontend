@@ -15,6 +15,7 @@ interface LookupVendorProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
+  readonly size?: "xs" | "sm" | "default";
 }
 
 export function LookupVendor({
@@ -23,13 +24,14 @@ export function LookupVendor({
   disabled,
   placeholder = "Select vendor",
   className,
+  size = "sm",
 }: LookupVendorProps) {
   const { data } = useVendor({ perpage: 9999 });
   const vendors = data?.data?.filter((v) => v.is_active) ?? [];
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger size="sm" className={className ?? "text-xs"}>
+      <SelectTrigger size={size} className={className ?? "text-xs"}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

@@ -25,6 +25,7 @@ interface DateRangePickerProps {
   readonly placeholder?: string;
   readonly className?: string;
   readonly numberOfMonths?: number;
+  readonly size?: "xs" | "sm" | "default";
 }
 
 export function DateRangePicker({
@@ -34,6 +35,7 @@ export function DateRangePicker({
   placeholder = "Pick a date range",
   className,
   numberOfMonths = 2,
+  size = "sm",
 }: DateRangePickerProps) {
   const { dateFormat } = useProfile();
   const [open, setOpen] = useState(false);
@@ -60,6 +62,7 @@ export function DateRangePicker({
           type="button"
           variant="outline"
           disabled={disabled}
+          size={size}
           className={cn(
             "justify-start font-normal",
             !displayValue && "text-muted-foreground",

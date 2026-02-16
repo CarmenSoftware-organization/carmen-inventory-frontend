@@ -20,6 +20,7 @@ interface DatePickerProps {
   readonly placeholder?: string;
   readonly className?: string;
   readonly fromDate?: Date;
+  readonly size?: "xs" | "sm" | "default";
 }
 
 export function DatePicker({
@@ -29,6 +30,7 @@ export function DatePicker({
   placeholder = "Pick a date",
   className,
   fromDate,
+  size = "sm",
 }: DatePickerProps) {
   const { dateFormat } = useProfile();
   const [open, setOpen] = useState(false);
@@ -49,13 +51,14 @@ export function DatePicker({
           type="button"
           variant="outline"
           disabled={disabled}
+          size={size}
           className={cn(
             "justify-start font-normal",
             !value && "text-muted-foreground",
             className,
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4" />
+          <CalendarIcon />
           {value ? formatDate(value, dateFormat) : <span>{placeholder}</span>}
         </Button>
       </PopoverTrigger>

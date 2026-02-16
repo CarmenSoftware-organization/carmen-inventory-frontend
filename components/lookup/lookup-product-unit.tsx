@@ -26,6 +26,7 @@ interface LookupProductUnitProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
+  readonly size?: "xs" | "sm" | "default";
 }
 
 export function LookupProductUnit({
@@ -35,6 +36,7 @@ export function LookupProductUnit({
   disabled,
   placeholder = "Select unit",
   className,
+  size = "sm",
 }: LookupProductUnitProps) {
   const { buCode } = useProfile();
 
@@ -64,7 +66,7 @@ export function LookupProductUnit({
       onValueChange={onValueChange}
       disabled={disabled || !productId}
     >
-      <SelectTrigger size="sm" className={className ?? "w-full text-xs"}>
+      <SelectTrigger size={size} align="end" className={className ?? "text-xs"}>
         {isLoading ? (
           <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
         ) : (
