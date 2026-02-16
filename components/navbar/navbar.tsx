@@ -2,9 +2,9 @@
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { UserProfile } from "./user-profile";
-import NotificationComponent from "./notification-component";
 import PathBreadcrumb from "./path-breadcrumb";
 import ModuleApp from "./module-app";
+import Notification from "./notification";
 
 export function Navbar() {
   return (
@@ -14,7 +14,7 @@ export function Navbar() {
         <PathBreadcrumb />
         <div className="ml-auto flex items-center gap-1">
           <ModuleApp />
-          <NotificationComponent />
+          <Notification />
           <UserProfile />
         </div>
       </div>

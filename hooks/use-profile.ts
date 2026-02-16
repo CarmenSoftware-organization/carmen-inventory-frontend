@@ -39,6 +39,8 @@ export function useProfile() {
       query.data?.business_unit[0],
     [query.data],
   );
+
+  const userId = query.data?.id;
   const buCode = defaultBu?.code;
   const defaultCurrencyCode = defaultBu?.config.default_currency.code;
   const defaultCurrencyDecimalPlaces =
@@ -57,5 +59,6 @@ export function useProfile() {
     defaultCurrencyDecimalPlaces,
     dateFormat,
     allBuCode,
+    userId,
   };
 }

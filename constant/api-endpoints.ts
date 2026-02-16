@@ -43,6 +43,8 @@ export const API_ENDPOINTS = {
     "/api/proxy/api/purchase-request/workflow-stages",
   PURCHASE_REQUEST_TEMPLATES: (buCode: string) =>
     `/api/proxy/api/${buCode}/purchase-request-template`,
+  NOTIFICATIONS_MARK_ALL_READ: (userId: string) =>
+    `/api/proxy/api/notifications/mark-all-read/${userId}`,
   LOGOUT: "/api/auth/logout",
   SWITCH_BU: "/api/proxy/api/business-unit/default",
 } as const;
