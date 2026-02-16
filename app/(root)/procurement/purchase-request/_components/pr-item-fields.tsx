@@ -216,7 +216,7 @@ export function PrItemFields({
 
         <div className="flex flex-col  gap-2">
           <div className="flex items-center justify-end gap-1.5">
-            {!disabled && (
+            {(!disabled && role !== STAGE_ROLE.PURCHASE) && (
               <Button type="button" size="xs" onClick={() => handleAddItem()}>
                 <Plus /> Add Item
               </Button>
@@ -304,7 +304,7 @@ export function PrItemFields({
         }
       >
         <DataGridContainer>
-          <ScrollArea className="w-full">
+          <ScrollArea className="w-full pb-4">
             <DataGridTable />
             <ScrollBar orientation="horizontal" />
           </ScrollArea>

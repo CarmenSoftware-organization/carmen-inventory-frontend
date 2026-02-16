@@ -35,8 +35,12 @@ export const detailSchema = z.object({
   tax_profile_id: z.string().nullable().optional(),
   tax_rate: z.coerce.number().optional(),
   tax_amount: z.coerce.number().optional(),
+  is_tax_adjustment: z.boolean().optional(),
   discount_rate: z.coerce.number().optional(),
   discount_amount: z.coerce.number().optional(),
+  is_discount_adjustment: z.boolean().optional(),
+  net_amount: z.coerce.number().optional(),
+  total_price: z.coerce.number().optional(),
 });
 
 export const prSchema = z.object({
@@ -80,8 +84,12 @@ export const PR_ITEM = {
   tax_profile_id: null,
   tax_rate: 0,
   tax_amount: 0,
+  is_tax_adjustment: false,
   discount_rate: 0,
   discount_amount: 0,
+  is_discount_adjustment: false,
+  net_amount: 0,
+  total_price: 0,
 } as const;
 
 export const EMPTY_FORM: PrFormValues = {
@@ -136,8 +144,12 @@ export function getDefaultValues(
           tax_profile_id: d.tax_profile_id ?? null,
           tax_rate: d.tax_rate ?? 0,
           tax_amount: d.tax_amount ?? 0,
+          is_tax_adjustment: d.is_tax_adjustment ?? false,
           discount_rate: d.discount_rate ?? 0,
           discount_amount: d.discount_amount ?? 0,
+          is_discount_adjustment: d.is_discount_adjustment ?? false,
+          net_amount: d.net_amount ?? 0,
+          total_price: d.total_price ?? 0,
         })) ?? [],
     };
   }
@@ -176,8 +188,12 @@ export function getDefaultValues(
           tax_profile_id: d.tax_profile_id ?? null,
           tax_rate: d.tax_rate ?? 0,
           tax_amount: d.tax_amount ?? 0,
+          is_tax_adjustment: d.is_tax_adjustment ?? false,
           discount_rate: d.discount_rate ?? 0,
           discount_amount: d.discount_amount ?? 0,
+          is_discount_adjustment: d.is_discount_adjustment ?? false,
+          net_amount: 0,
+          total_price: 0,
         })) ?? [],
     };
   }
@@ -210,7 +226,11 @@ export function mapItemToPayload(
     tax_profile_id: item.tax_profile_id || null,
     tax_rate: item.tax_rate ?? 0,
     tax_amount: item.tax_amount ?? 0,
+    is_tax_adjustment: item.is_tax_adjustment ?? false,
     discount_rate: item.discount_rate ?? 0,
     discount_amount: item.discount_amount ?? 0,
+    is_discount_adjustment: item.is_discount_adjustment ?? false,
+    net_amount: item.net_amount ?? 0,
+    total_price: item.total_price ?? 0,
   };
 }

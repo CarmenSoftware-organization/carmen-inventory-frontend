@@ -153,7 +153,7 @@ export function usePrItemTable({
             type="number"
             min={1}
             placeholder="Qty"
-            className="h-6 text-[11px] text-right"
+            className="h-6 text-[11px] md:text-[11px] text-right"
             disabled={disabled}
             {...form.register(`items.${row.index}.requested_qty`, {
               valueAsNumber: true,
@@ -190,7 +190,7 @@ export function usePrItemTable({
             type="number"
             min={0}
             placeholder="Qty"
-            className="h-6 text-[11px] text-right"
+            className="h-6 text-[11px] md:text-[11px] text-right"
             disabled={disabled}
             {...form.register(`items.${row.index}.approved_qty`, {
               valueAsNumber: true,
@@ -223,7 +223,7 @@ export function usePrItemTable({
             type="number"
             min={0}
             placeholder="Qty"
-            className="h-6 text-[11px] text-right"
+            className="h-6 text-[11px] md:text-[11px] text-right"
             disabled={disabled}
             {...form.register(`items.${row.index}.foc_qty`, {
               valueAsNumber: true,
