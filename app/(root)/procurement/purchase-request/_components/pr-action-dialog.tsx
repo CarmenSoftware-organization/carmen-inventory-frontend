@@ -12,6 +12,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 interface PrActionDialogProps {
   readonly open: boolean;
@@ -28,7 +29,7 @@ export function PrActionDialog({
   open,
   onOpenChange,
   title,
-  description = "Please provide a reason for this action.",
+  description,
   confirmLabel = "Confirm",
   confirmVariant = "default",
   isPending,
@@ -48,21 +49,31 @@ export function PrActionDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={handleOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+      <AlertDialogContent className="gap-3 p-4 sm:max-w-sm">
+        <AlertDialogHeader className="gap-0.5">
+          <AlertDialogTitle className="text-sm">{title}</AlertDialogTitle>
+          {description && (
+            <AlertDialogDescription className="text-xs">
+              {description}
+            </AlertDialogDescription>
+          )}
         </AlertDialogHeader>
-        <Textarea
-          placeholder="Enter reason (optional)..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          rows={3}
-          disabled={isPending}
-        />
+        <div className="space-y-1">
+          <Label className="text-xs text-muted-foreground">Reason</Label>
+          <Textarea
+            className="text-xs placeholder:text-xs"
+            placeholder="Enter reason (optional)..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            disabled={isPending}
+          />
+        </div>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel size="sm" disabled={isPending}>
+            Cancel
+          </AlertDialogCancel>
           <AlertDialogAction
+            size="sm"
             variant={confirmVariant}
             onClick={(e) => {
               e.preventDefault();

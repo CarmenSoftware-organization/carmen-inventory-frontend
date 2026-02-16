@@ -159,17 +159,16 @@ export function PrItemFields({
     }
   };
 
-  // --- Bulk Action Handlers ---
-
   const getSelectedIndices = (): number[] => {
     return selectedRows.map((row) => row.index);
   };
 
   const handleBulkApprove = () => {
     const indices = getSelectedIndices();
-    indices.forEach((index) => {
+    for (const index of indices) {
       form.setValue(`items.${index}.stage_status`, "approved");
-    });
+      form.setValue(`items.${index}.current_stage_status`, "approved");
+    }
     table.resetRowSelection();
     toast.success(`${indices.length} item(s) marked as approved`);
   };
@@ -177,10 +176,11 @@ export function PrItemFields({
   const handleBulkActionConfirm = (message: string) => {
     if (!bulkAction) return;
     const indices = getSelectedIndices();
-    indices.forEach((index) => {
+    for (const index of indices) {
       form.setValue(`items.${index}.stage_status`, bulkAction);
-      form.setValue(`items.${index}.stage_message`, message);
-    });
+      form.setValue(`items.${index}.state_message`, message);
+      form.setValue(`items.${index}.current_stage_status`, bulkAction);
+    }
     table.resetRowSelection();
     setBulkAction(null);
     toast.success(`${indices.length} item(s) marked as ${bulkAction}`);
@@ -279,7 +279,7 @@ export function PrItemFields({
               {prId && (
                 <Button
                   type="button"
-                  variant="warning"
+                  variant="outline"
                   size="xs"
                   onClick={handleBulkSplit}
                 >

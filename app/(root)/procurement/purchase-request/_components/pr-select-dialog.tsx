@@ -1,11 +1,14 @@
-import { Button } from "@/components/ui/button";
+import { CheckSquare, ListChecks } from "lucide-react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 interface PrSelectDialogProps {
   open: boolean;
@@ -25,29 +28,38 @@ export function PrSelectDialog({
   onSelectPending,
 }: PrSelectDialogProps) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent showCloseButton={false}>
-        <DialogHeader>
-          <DialogTitle>Select Items</DialogTitle>
-          <DialogDescription>Choose which items to select.</DialogDescription>
-        </DialogHeader>
-        <div className="flex flex-col gap-2">
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent className="sm:max-w-sm">
+        <AlertDialogHeader>
+          <AlertDialogTitle className="text-sm">Select Items</AlertDialogTitle>
+          <AlertDialogDescription className="text-xs">
+            Choose which items to select.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <div className="flex flex-col gap-1.5">
           <Button
             variant="outline"
-            className="justify-start"
+            size="sm"
+            className="justify-start gap-2 text-xs"
             onClick={onSelectAll}
           >
+            <ListChecks className="size-3.5" />
             Select All Purchase Request Items ({allCount} Items)
           </Button>
           <Button
             variant="outline"
-            className="justify-start"
+            size="sm"
+            className="justify-start gap-2 text-xs"
             onClick={onSelectPending}
           >
-            Select Only Purchase Request Status Pending ({pendingCount} Items)
+            <CheckSquare className="size-3.5" />
+            Select Only Status Pending ({pendingCount} Items)
           </Button>
         </div>
-      </DialogContent>
-    </Dialog>
+        <AlertDialogFooter>
+          <AlertDialogCancel className="h-7 text-xs">Cancel</AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

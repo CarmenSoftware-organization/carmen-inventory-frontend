@@ -189,12 +189,48 @@ export function usePrItemTable({
     {
       accessorKey: "current_stage_status",
       header: "Status",
-      cell: ({ row }) => (
-        <Badge className="text-[11px]">
-          {form.getValues(`items.${row.index}.current_stage_status`) ||
-            "Pending"}
-        </Badge>
-      ),
+      cell: ({ row }) => {
+        const status =
+          form.getValues(`items.${row.index}.current_stage_status`) ||
+          "pending";
+        const config: Record<
+          string,
+          {
+            variant:
+              | "default"
+              | "secondary"
+              | "destructive"
+              | "outline"
+              | "success"
+              | "info"
+              | "warning";
+            label: string;
+          }
+        > = {
+          pending: {
+            variant: "warning",
+            label: "Pending",
+          },
+          approved: {
+            variant: "success",
+            label: "Approved",
+          },
+          review: {
+            variant: "info",
+            label: "Review",
+          },
+          rejected: {
+            variant: "destructive",
+            label: "Rejected",
+          },
+        };
+        const { variant, label } = config[status] ?? config.pending;
+        return (
+          <Badge variant={variant} className="text-[11px]">
+            {label}
+          </Badge>
+        );
+      },
       size: 100,
     },
     {
@@ -422,7 +458,7 @@ export function usePrItemTable({
 
   const handleSelectPending = () => {
     table.resetRowSelection();
-    itemFields.forEach((_, index) => {
+    itemFields.forEach((_item: ItemField, index: number) => {
       const status = form.getValues(`items.${index}.current_stage_status`);
       if (!status || status === "pending") {
         table.getRowModel().rows[index]?.toggleSelected(true);

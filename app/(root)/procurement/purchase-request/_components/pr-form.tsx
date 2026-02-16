@@ -317,13 +317,28 @@ export function PurchaseRequestForm({
     splitPr.mutate(
       { id: purchaseRequest.id, detail_ids: detailIds },
       {
-        onSuccess: () => toast.success("Items split to new PR"),
+        onSuccess: (data) => {
+          const items = form.getValues("items");
+          const detailIdSet = new Set(detailIds);
+          for (const [index, item] of items.entries()) {
+            if (item.id && detailIdSet.has(item.id)) {
+              form.setValue(`items.${index}.current_stage_status`, "rejected");
+              form.setValue(`items.${index}.stage_status`, "rejected");
+            }
+          }
+
+          // Open new PR in new tab
+          const newPrId = data?.data?.id;
+          if (newPrId) {
+            window.open(`/procurement/purchase-request/${newPrId}`, "_blank");
+          }
+
+          toast.success("Items split to new PR");
+        },
         onError: (err) => toast.error(err.message),
       },
     );
   };
-
-  // --- Action Dialog config ---
 
   const actionDialogConfig = {
     reject: {

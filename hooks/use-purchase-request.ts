@@ -364,8 +364,12 @@ export function useUpdatePr<T extends { id: string } = PrActionPayload>(
   });
 }
 
+interface SplitResponse {
+  data: { id: string };
+}
+
 export function useSplitPurchaseRequest() {
-  return useApiMutation<SplitActionDto>({
+  return useApiMutation<SplitActionDto, SplitResponse>({
     mutationFn: ({ id, ...data }, buCode) =>
       httpClient.post(
         `${API_ENDPOINTS.PURCHASE_REQUEST(buCode)}/${id}/split`,

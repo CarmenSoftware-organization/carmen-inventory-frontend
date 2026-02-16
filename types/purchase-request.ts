@@ -56,8 +56,8 @@ export interface PurchaseRequestDetail {
   net_amount: number;
   unit_price: number;
   total_price: number;
-  stage_status: string;
-  stage_message: string | null;
+  state_status: string;
+  state_message: string | null;
   current_stage_status: string;
   info: Record<string, unknown>;
   dimension: unknown[];
