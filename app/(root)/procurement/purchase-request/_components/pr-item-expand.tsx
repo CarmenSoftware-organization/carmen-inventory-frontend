@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Controller,
+  useWatch,
   type UseFormReturn,
   type FieldArrayWithId,
 } from "react-hook-form";
@@ -35,28 +36,32 @@ export function PrItemExpand({
   const index = itemFields.findIndex((f) => f.id === item.id);
   const [showPricelist, setShowPricelist] = useState(false);
 
-  // Watch fields for auto-calculation (form.watch is not a hook, safe before early return)
+  // Watch entire item via useWatch — scoped re-render only when this item changes
+  // (form.watch re-renders on ANY form field change; useWatch is targeted)
   const i = Math.max(index, 0);
-  const watchPrice = form.watch(`items.${i}.pricelist_price`) ?? 0;
-  const watchQty = form.watch(`items.${i}.requested_qty`) ?? 0;
-  const watchTaxRate = form.watch(`items.${i}.tax_rate`) ?? 0;
-  const watchIsTaxAdj = form.watch(`items.${i}.is_tax_adjustment`) ?? false;
-  const watchTaxAmt = form.watch(`items.${i}.tax_amount`) ?? 0;
-  const watchDiscRate = form.watch(`items.${i}.discount_rate`) ?? 0;
-  const watchIsDiscAdj =
-    form.watch(`items.${i}.is_discount_adjustment`) ?? false;
-  const watchDiscAmt = form.watch(`items.${i}.discount_amount`) ?? 0;
+  const watched = useWatch({ control: form.control, name: `items.${i}` });
+  const watchPrice = watched?.pricelist_price ?? 0;
+  const watchQty = watched?.requested_qty ?? 0;
+  const watchTaxRate = watched?.tax_rate ?? 0;
+  const watchIsTaxAdj = watched?.is_tax_adjustment ?? false;
+  const watchTaxAmt = watched?.tax_amount ?? 0;
+  const watchDiscRate = watched?.discount_rate ?? 0;
+  const watchIsDiscAdj = watched?.is_discount_adjustment ?? false;
+  const watchDiscAmt = watched?.discount_amount ?? 0;
 
-  // Compute derived values
-  const subtotal = round2(watchPrice * watchQty);
-  const discountAmount = watchIsDiscAdj
-    ? watchDiscAmt
-    : round2((subtotal * watchDiscRate) / 100);
-  const netAmount = round2(subtotal - discountAmount);
-  const taxAmount = watchIsTaxAdj
-    ? watchTaxAmt
-    : round2((netAmount * watchTaxRate) / 100);
-  const totalPrice = round2(netAmount + taxAmount);
+  // Compute derived values (memoized to avoid recalculating on unrelated renders)
+  const { discountAmount, netAmount, taxAmount, totalPrice } = useMemo(() => {
+    const sub = round2(watchPrice * watchQty);
+    const disc = watchIsDiscAdj
+      ? watchDiscAmt
+      : round2((sub * watchDiscRate) / 100);
+    const net = round2(sub - disc);
+    const tax = watchIsTaxAdj
+      ? watchTaxAmt
+      : round2((net * watchTaxRate) / 100);
+    const total = round2(net + tax);
+    return { discountAmount: disc, netAmount: net, taxAmount: tax, totalPrice: total };
+  }, [watchPrice, watchQty, watchDiscRate, watchIsDiscAdj, watchDiscAmt, watchTaxRate, watchIsTaxAdj, watchTaxAmt]);
 
   // Sync computed values back to form
   useEffect(() => {
@@ -69,16 +74,7 @@ export function PrItemExpand({
     }
     form.setValue(`items.${index}.net_amount`, netAmount);
     form.setValue(`items.${index}.total_price`, totalPrice);
-  }, [
-    index,
-    discountAmount,
-    taxAmount,
-    netAmount,
-    totalPrice,
-    watchIsDiscAdj,
-    watchIsTaxAdj,
-    form,
-  ]);
+  }, [index, discountAmount, taxAmount, netAmount, totalPrice, watchIsDiscAdj, watchIsTaxAdj, form]);
 
   if (index === -1) return null;
 

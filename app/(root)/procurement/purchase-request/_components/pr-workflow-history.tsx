@@ -2,22 +2,12 @@
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/reui/badge";
+import { PR_WORKFLOW_ACTION_VARIANT } from "@/constant/purchase-request";
 import type { WorkflowHistoryEntry } from "@/types/purchase-request";
 
 interface PrWorkflowHistoryProps {
   readonly history: WorkflowHistoryEntry[];
 }
-
-const ACTION_VARIANT: Record<
-  string,
-  "secondary" | "success" | "destructive" | "warning" | "outline"
-> = {
-  submitted: "secondary",
-  approved: "success",
-  rejected: "destructive",
-  sent_back: "warning",
-  reviewed: "outline",
-};
 
 export function PrWorkflowHistory({ history }: PrWorkflowHistoryProps) {
   if (!history || history.length === 0) {
@@ -30,7 +20,7 @@ export function PrWorkflowHistory({ history }: PrWorkflowHistoryProps) {
     <div className="space-y-0">
       {history.map((entry, i) => {
         const isLast = i === history.length - 1;
-        const variant = ACTION_VARIANT[entry.action] ?? "outline";
+        const variant = PR_WORKFLOW_ACTION_VARIANT[entry.action] ?? "outline";
 
         return (
           <div key={i} className="relative flex gap-3 pb-4">

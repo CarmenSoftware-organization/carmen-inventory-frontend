@@ -1,3 +1,5 @@
+// Opt out of React Compiler memoization — useFieldArray + dynamic setValue calls
+// cause stale closure issues when auto-memoized.
 "use no memo";
 
 import { useState } from "react";
@@ -177,7 +179,7 @@ export function PrItemFields({
     const indices = getSelectedIndices();
     for (const index of indices) {
       form.setValue(`items.${index}.stage_status`, bulkAction);
-      form.setValue(`items.${index}.state_message`, message);
+      form.setValue(`items.${index}.stage_message`, message);
       form.setValue(`items.${index}.current_stage_status`, bulkAction);
     }
     table.resetRowSelection();

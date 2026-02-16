@@ -8,7 +8,10 @@ import { isoToDateInput } from "@/lib/date-utils";
 
 export const detailSchema = z.object({
   id: z.string().optional(),
-  product_id: z.string().min(1, "Product is required").nullable(),
+  product_id: z
+    .string()
+    .nullable()
+    .refine((v) => !!v, "Product is required"),
   product_name: z.string(),
   description: z.string(),
   pricelist_price: z.coerce.number().min(0, "Unit price must be at least 0"),
@@ -17,7 +20,6 @@ export const detailSchema = z.object({
   current_stage_status: z.string(),
   stage_status: z.string().optional(),
   stage_message: z.string().optional(),
-  state_message: z.string().optional(),
   location_id: z.string().nullable(),
   requested_qty: z.coerce.number().min(1, "Quantity must be at least 1"),
   requested_unit_id: z.string().nullable(),
@@ -67,7 +69,6 @@ export const PR_ITEM = {
   current_stage_status: "pending",
   stage_status: "",
   stage_message: "",
-  state_message: "",
   location_id: null,
   requested_qty: 1,
   requested_unit_id: null,
@@ -128,7 +129,6 @@ export function getDefaultValues(
           current_stage_status: d.current_stage_status ?? "draft",
           stage_status: d.state_status ?? "",
           stage_message: d.state_message ?? "",
-          state_message: d.state_message ?? "",
           location_id: d.location_id ?? null,
           requested_qty: d.requested_qty,
           requested_unit_id: d.requested_unit_id ?? null,
@@ -173,7 +173,6 @@ export function getDefaultValues(
           current_stage_status: "pending",
           stage_status: "",
           stage_message: "",
-          state_message: "",
           location_id: d.location_id ?? null,
           requested_qty: d.requested_qty,
           requested_unit_id: d.requested_unit_id ?? null,
