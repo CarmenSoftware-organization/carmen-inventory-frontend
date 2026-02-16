@@ -25,11 +25,11 @@ import { buildUrl } from "@/utils/build-query-string";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { STAGE_ROLE } from "@/types/stage-role";
-import type { PrFormValues } from "./purchase-request-form";
+import type { PrFormValues } from "./pr-form-schema";
 import { usePrItemTable } from "./use-pr-item-table";
 import { PrActionDialog } from "./pr-action-dialog";
 import EmptyComponent from "@/components/empty-component";
-import { PR_ITEM } from "./pr-item.defaults";
+import { PR_ITEM } from "./pr-form-schema";
 
 function getDeleteDescription(
   index: number | null,

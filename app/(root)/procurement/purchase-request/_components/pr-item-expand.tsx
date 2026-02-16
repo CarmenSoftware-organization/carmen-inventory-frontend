@@ -5,7 +5,7 @@ import {
 } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { LookupVendor } from "@/components/lookup/lookup-vendor";
-import type { PrFormValues } from "./purchase-request-form";
+import type { PrFormValues } from "./pr-form-schema";
 
 type ItemField = FieldArrayWithId<PrFormValues, "items", "id">;
 

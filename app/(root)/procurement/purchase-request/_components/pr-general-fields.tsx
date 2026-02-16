@@ -6,7 +6,7 @@ import { LookupWorkflow } from "@/components/lookup/lookup-workflow";
 import { WORKFLOW_TYPE } from "@/types/workflows";
 import { useProfile } from "@/hooks/use-profile";
 import { formatDate } from "@/lib/date-utils";
-import type { PrFormValues } from "./purchase-request-form";
+import type { PrFormValues } from "./pr-form-schema";
 
 interface PrGeneralFieldsProps {
   form: UseFormReturn<PrFormValues>;

@@ -23,7 +23,7 @@ import { LookupProductInLocation } from "@/components/lookup/lookup-product-in-l
 import { LookupProductUnit } from "@/components/lookup/lookup-product-unit";
 import { LookupCurrency } from "@/components/lookup/lookup-currency";
 import { LookupDeliveryPoint } from "@/components/lookup/lookup-delivery-point";
-import type { PrFormValues } from "./purchase-request-form";
+import type { PrFormValues } from "./pr-form-schema";
 import { PrItemExpand } from "./pr-item-expand";
 
 export type ItemField = FieldArrayWithId<PrFormValues, "items", "id">;

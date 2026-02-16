@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -14,7 +13,6 @@ import {
   useUpdatePr,
   useSplitPurchaseRequest,
   type CreatePurchaseRequestDto,
-  type PurchaseRequestDetailPayload,
   type WorkflowStageDetail,
   type ApproveDetail,
 } from "@/hooks/use-purchase-request";
@@ -25,7 +23,8 @@ import type {
 import { STAGE_ROLE } from "@/types/stage-role";
 import { type FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
-import { isoToDateInput } from "@/lib/date-utils";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Badge } from "@/components/reui/badge";
 import { PrGeneralFields } from "./pr-general-fields";
 import { PrItemFields } from "./pr-item-fields";
 import { PrCommentSheet } from "./pr-comment-sheet";
@@ -33,153 +32,15 @@ import { PrFormActions } from "./pr-form-actions";
 import { PrActionDialog } from "./pr-action-dialog";
 import { PrWorkflowStep } from "./pr-workflow-step";
 import { PrWorkflowHistory } from "./pr-workflow-history";
-import { Badge } from "@/components/reui/badge";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-
-const detailSchema = z.object({
-  id: z.string().optional(),
-  product_id: z.string().min(1, "Product is required").nullable(),
-  product_name: z.string(),
-  description: z.string(),
-  pricelist_price: z.coerce.number().min(0, "Unit price must be at least 0"),
-  vendor_id: z.string().nullable(),
-  vendor_name: z.string(),
-  current_stage_status: z.string(),
-  stage_status: z.string().optional(),
-  stage_message: z.string().optional(),
-  location_id: z.string().nullable(),
-  requested_qty: z.coerce.number().min(1, "Quantity must be at least 1"),
-  requested_unit_id: z.string().nullable(),
-  requested_unit_name: z.string(),
-  foc_qty: z.coerce.number().min(0),
-  foc_unit_id: z.string().nullable(),
-  foc_unit_name: z.string(),
-  approved_qty: z.coerce.number().min(0),
-  approved_unit_id: z.string().nullable(),
-  approved_unit_name: z.string(),
-  currency_id: z.string().nullable(),
-  delivery_point_id: z.string().nullable(),
-  delivery_date: z.string(),
-  pricelist_detail_id: z.string().nullable(),
-  pricelist_no: z.string().nullable(),
-  tax_profile_id: z.string().nullable().optional(),
-  tax_rate: z.coerce.number().optional(),
-  tax_amount: z.coerce.number().optional(),
-  discount_rate: z.coerce.number().optional(),
-  discount_amount: z.coerce.number().optional(),
-});
-
-const prSchema = z.object({
-  pr_date: z.string().min(1, "PR date is required"),
-  description: z.string(),
-  workflow_id: z.string(),
-  requestor_id: z.string(),
-  department_id: z.string().min(1, "Department is required"),
-  items: z.array(detailSchema),
-});
-
-export type PrFormValues = z.infer<typeof prSchema>;
-
-const EMPTY_FORM: PrFormValues = {
-  pr_date: "",
-  description: "",
-  workflow_id: "",
-  requestor_id: "",
-  department_id: "",
-  items: [],
-};
-
-function getDefaultValues(
-  purchaseRequest?: PurchaseRequest,
-  template?: PurchaseRequestTemplate,
-): PrFormValues {
-  if (purchaseRequest) {
-    return {
-      pr_date: isoToDateInput(purchaseRequest.pr_date),
-      description: purchaseRequest.description ?? "",
-      workflow_id: purchaseRequest.workflow_id ?? "",
-      requestor_id: purchaseRequest.requestor_id ?? "",
-      department_id: purchaseRequest.department_id ?? "",
-      items:
-        purchaseRequest.purchase_request_detail?.map((d) => ({
-          id: d.id,
-          product_id: d.product_id,
-          product_name: d.product_name,
-          description: d.description ?? "",
-          pricelist_price: d.pricelist_price,
-          vendor_id: d.vendor_id ?? "",
-          vendor_name: d.vendor_name ?? "",
-          current_stage_status: d.current_stage_status ?? "draft",
-          stage_status: d.stage_status ?? "",
-          stage_message: d.stage_message ?? "",
-          location_id: d.location_id ?? "",
-          requested_qty: d.requested_qty,
-          requested_unit_id: d.requested_unit_id ?? "",
-          requested_unit_name: d.requested_unit_name ?? "",
-          foc_qty: d.foc_qty ?? 0,
-          foc_unit_id: d.foc_unit_id ?? "",
-          foc_unit_name: d.foc_unit_name ?? "",
-          approved_qty: d.approved_qty ?? 0,
-          approved_unit_id: d.approved_unit_id ?? "",
-          approved_unit_name: d.approved_unit_name ?? "",
-          currency_id: d.currency_id ?? "",
-          delivery_point_id: d.delivery_point_id ?? "",
-          delivery_date: d.delivery_date ?? "",
-          pricelist_detail_id: d.pricelist_detail_id ?? null,
-          pricelist_no: d.pricelist_no ?? null,
-          tax_profile_id: d.tax_profile_id ?? null,
-          tax_rate: d.tax_rate ?? 0,
-          tax_amount: d.tax_amount ?? 0,
-          discount_rate: d.discount_rate ?? 0,
-          discount_amount: d.discount_amount ?? 0,
-        })) ?? [],
-    };
-  }
-  if (template) {
-    return {
-      ...EMPTY_FORM,
-      description: template.description ?? "",
-      workflow_id: template.workflow_id ?? "",
-      department_id: template.department_id ?? "",
-      items:
-        template.purchase_request_template_detail?.map((d) => ({
-          product_id: d.product_id,
-          product_name: d.product_name,
-          description: d.description ?? "",
-          pricelist_price: 0,
-          vendor_id: "",
-          vendor_name: "",
-          current_stage_status: "pending",
-          stage_status: "",
-          stage_message: "",
-          location_id: d.location_id ?? "",
-          requested_qty: d.requested_qty,
-          requested_unit_id: d.requested_unit_id ?? "",
-          requested_unit_name: d.requested_unit_name ?? "",
-          foc_qty: d.foc_qty ?? 0,
-          foc_unit_id: d.foc_unit_id ?? "",
-          foc_unit_name: d.foc_unit_name ?? "",
-          approved_qty: 0,
-          approved_unit_id: "",
-          approved_unit_name: "",
-          currency_id: d.currency_id ?? "",
-          delivery_point_id: "",
-          delivery_date: "",
-          pricelist_detail_id: null,
-          pricelist_no: null,
-          tax_profile_id: d.tax_profile_id ?? null,
-          tax_rate: d.tax_rate ?? 0,
-          tax_amount: d.tax_amount ?? 0,
-          discount_rate: d.discount_rate ?? 0,
-          discount_amount: d.discount_amount ?? 0,
-        })) ?? [],
-    };
-  }
-  return EMPTY_FORM;
-}
+import {
+  prSchema,
+  type PrFormValues,
+  getDefaultValues,
+  mapItemToPayload,
+} from "./pr-form-schema";
 
 type ActionDialogState = {
-  type: "reject" | "sendBack" | "review" | null;
+  type: "reject" | "send_back" | "review" | null;
 };
 
 interface PurchaseRequestFormProps {
@@ -209,7 +70,7 @@ export function PurchaseRequestForm({
   const approvePr = useUpdatePr("approve");
   const purchaseApprovePr = useUpdatePr("purchase");
   const rejectPr = useUpdatePr("reject");
-  const sendBackPr = useUpdatePr("send_back");
+  const send_backPr = useUpdatePr("send_back");
   const reviewPr = useUpdatePr("review");
   const splitPr = useSplitPurchaseRequest();
 
@@ -226,7 +87,7 @@ export function PurchaseRequestForm({
     approvePr.isPending ||
     purchaseApprovePr.isPending ||
     rejectPr.isPending ||
-    sendBackPr.isPending ||
+    send_backPr.isPending ||
     reviewPr.isPending ||
     splitPr.isPending;
 
@@ -241,35 +102,6 @@ export function PurchaseRequestForm({
   });
 
   // --- CRUD Handlers ---
-
-  const mapItemToPayload = (
-    item: PrFormValues["items"][number],
-  ): PurchaseRequestDetailPayload => ({
-    product_id: item.product_id,
-    description: item.description,
-    requested_qty: item.requested_qty,
-    requested_unit_id: item.requested_unit_id,
-    pricelist_price: item.pricelist_price,
-    vendor_id: item.vendor_id,
-    pricelist_detail_id: item.pricelist_detail_id,
-    current_stage_status:
-      item.current_stage_status && item.current_stage_status !== "draft"
-        ? item.current_stage_status
-        : "pending",
-    location_id: item.location_id,
-    delivery_point_id: item.delivery_point_id,
-    delivery_date: item.delivery_date,
-    currency_id: item.currency_id,
-    foc_qty: item.foc_qty ?? 0,
-    foc_unit_id: item.foc_unit_id,
-    approved_qty: item.approved_qty ?? 0,
-    approved_unit_id: item.approved_unit_id,
-    tax_profile_id: item.tax_profile_id,
-    tax_rate: item.tax_rate ?? 0,
-    tax_amount: item.tax_amount ?? 0,
-    discount_rate: item.discount_rate ?? 0,
-    discount_amount: item.discount_amount ?? 0,
-  });
 
   const onSubmit = (values: PrFormValues) => {
     const newItems = values.items.filter((item) => !item.id);
@@ -440,7 +272,7 @@ export function PurchaseRequestForm({
   };
 
   const handleReject = () => setActionDialog({ type: "reject" });
-  const handleSendBack = () => setActionDialog({ type: "sendBack" });
+  const handleSendBack = () => setActionDialog({ type: "send_back" });
   const handleReview = () => setActionDialog({ type: "review" });
 
   const handleActionConfirm = (message: string) => {
@@ -458,8 +290,8 @@ export function PurchaseRequestForm({
         mutation: rejectPr,
         successMsg: "Purchase request rejected",
       },
-      sendBack: {
-        mutation: sendBackPr,
+      send_back: {
+        mutation: send_backPr,
         successMsg: "Purchase request sent back",
       },
       review: {
@@ -500,7 +332,7 @@ export function PurchaseRequestForm({
       confirmLabel: "Reject",
       confirmVariant: "destructive" as const,
     },
-    sendBack: {
+    send_back: {
       title: "Send Back Purchase Request",
       description: "Please provide a reason for sending back this PR.",
       confirmLabel: "Send Back",
@@ -556,6 +388,14 @@ export function PurchaseRequestForm({
         />
       </div>
 
+      {purchaseRequest?.workflow_current_stage && (
+        <PrWorkflowStep
+          previousStage={purchaseRequest.workflow_previous_stage}
+          currentStage={purchaseRequest.workflow_current_stage}
+          nextStage={purchaseRequest.workflow_next_stage}
+        />
+      )}
+
       <form
         id="purchase-request-form"
         onSubmit={form.handleSubmit(onSubmit)}
@@ -587,14 +427,6 @@ export function PurchaseRequestForm({
           )}
         </Tabs>
       </form>
-
-      {purchaseRequest?.workflow_current_stage && (
-        <PrWorkflowStep
-          previousStage={purchaseRequest.workflow_previous_stage}
-          currentStage={purchaseRequest.workflow_current_stage}
-          nextStage={purchaseRequest.workflow_next_stage}
-        />
-      )}
 
       {purchaseRequest && (
         <DeleteDialog
