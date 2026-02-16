@@ -388,14 +388,6 @@ export function PurchaseRequestForm({
         />
       </div>
 
-      {purchaseRequest?.workflow_current_stage && (
-        <PrWorkflowStep
-          previousStage={purchaseRequest.workflow_previous_stage}
-          currentStage={purchaseRequest.workflow_current_stage}
-          nextStage={purchaseRequest.workflow_next_stage}
-        />
-      )}
-
       <form
         id="purchase-request-form"
         onSubmit={form.handleSubmit(onSubmit)}
@@ -427,6 +419,14 @@ export function PurchaseRequestForm({
           )}
         </Tabs>
       </form>
+
+      {purchaseRequest?.workflow_current_stage && (
+        <PrWorkflowStep
+          previousStage={purchaseRequest.workflow_previous_stage}
+          currentStage={purchaseRequest.workflow_current_stage}
+          nextStage={purchaseRequest.workflow_next_stage}
+        />
+      )}
 
       {purchaseRequest && (
         <DeleteDialog

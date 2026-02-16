@@ -221,19 +221,22 @@ export function PrItemFields({
                 <Plus /> Add Item
               </Button>
             )}
-            <Button
-              type="button"
-              size="xs"
-              disabled={isAllocating || itemFields.length === 0}
-              onClick={handleAutoAllocate}
-            >
-              {isAllocating ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                <RefreshCcw />
-              )}
-              Auto Allocate
-            </Button>
+
+            {role === STAGE_ROLE.PURCHASE && (
+              <Button
+                type="button"
+                size="xs"
+                disabled={isAllocating || itemFields.length === 0}
+                onClick={handleAutoAllocate}
+              >
+                {isAllocating ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <RefreshCcw />
+                )}
+                Auto Allocate
+              </Button>
+            )}
           </div>
           {selectedRows.length > 0 && canBulkAction && (
             <div className="flex items-center gap-1.5">
