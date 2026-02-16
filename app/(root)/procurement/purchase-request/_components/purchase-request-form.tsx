@@ -5,17 +5,7 @@ import { useForm, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import {
-  ArrowLeft,
-  Check,
-  MessageSquare,
-  Pencil,
-  Save,
-  SendHorizonal,
-  Trash2,
-  Undo2,
-  X,
-} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -34,6 +24,7 @@ import { isoToDateInput } from "@/lib/date-utils";
 import { PrGeneralFields } from "./pr-general-fields";
 import { PrItemFields } from "./pr-item-fields";
 import { PrCommentSheet } from "./pr-comment-sheet";
+import { PrFormActions } from "./pr-form-actions";
 import { Badge } from "@/components/reui/badge";
 
 const detailSchema = z.object({
@@ -265,69 +256,16 @@ export function PurchaseRequestForm({
             </div>
           )}
         </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                <X />
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="purchase-request-form"
-                disabled={isPending}
-              >
-                <Save />
-                Save
-              </Button>
-              <Button size="sm" variant="info">
-                <SendHorizonal />
-                Submit
-              </Button>
-              <Button size="sm" variant="success">
-                <Check />
-                Approve
-              </Button>
-              <Button size="sm" variant="destructive">
-                <X />
-                Reject
-              </Button>
-              <Button size="sm" variant="warning">
-                <Undo2 />
-                Send Back
-              </Button>
-            </>
-          )}
-          {isEdit && purchaseRequest && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deletePr.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-
-          <Button size="sm" onClick={() => setShowComment(true)}>
-            <MessageSquare />
-            Comment
-          </Button>
-        </div>
+        <PrFormActions
+          mode={mode}
+          isPending={isPending}
+          isDeletePending={deletePr.isPending}
+          hasRecord={!!purchaseRequest}
+          onEdit={() => setMode("edit")}
+          onCancel={handleCancel}
+          onDelete={() => setShowDelete(true)}
+          onComment={() => setShowComment(true)}
+        />
       </div>
 
       <form

@@ -29,6 +29,16 @@ import { usePrItemTable } from "./use-pr-item-table";
 import EmptyComponent from "@/components/empty-component";
 import { PR_ITEM } from "./pr-item.defaults";
 
+function getDeleteDescription(
+  index: number | null,
+  form: UseFormReturn<PrFormValues>,
+) {
+  if (index === null) return "";
+  const name = form.getValues(`items.${index}.product_name`);
+  const label = name || `Item #${index + 1}`;
+  return `Are you sure you want to remove "${label}"?`;
+}
+
 interface PrItemFieldsProps {
   form: UseFormReturn<PrFormValues>;
   disabled: boolean;
@@ -189,14 +199,15 @@ export function PrItemFields({ form, disabled }: PrItemFieldsProps) {
 
       <DeleteDialog
         open={deleteIndex !== null}
-        onOpenChange={(open) => !open && setDeleteIndex(null)}
+        onOpenChange={(o) => {
+          if (!o) setDeleteIndex(null);
+        }}
         title="Remove Item"
-        description={`Are you sure you want to remove "${deleteIndex !== null ? form.getValues(`items.${deleteIndex}.product_name`) || `Item #${deleteIndex + 1}` : ""}"?`}
+        description={getDeleteDescription(deleteIndex, form)}
         onConfirm={() => {
-          if (deleteIndex !== null) {
-            removeItem(deleteIndex);
-            setDeleteIndex(null);
-          }
+          if (deleteIndex === null) return;
+          removeItem(deleteIndex);
+          setDeleteIndex(null);
         }}
       />
     </div>
