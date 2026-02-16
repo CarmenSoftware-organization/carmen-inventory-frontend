@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   Select,
   SelectContent,
@@ -27,7 +28,10 @@ export function LookupVendor({
   size = "sm",
 }: LookupVendorProps) {
   const { data } = useVendor({ perpage: 9999 });
-  const vendors = data?.data?.filter((v) => v.is_active) ?? [];
+  const vendors = useMemo(
+    () => data?.data?.filter((v) => v.is_active) ?? [],
+    [data?.data],
+  );
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>

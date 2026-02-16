@@ -21,12 +21,12 @@ import {
   DataGridContainer,
 } from "@/components/reui/data-grid/data-grid";
 import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
-import { useProfile } from "@/hooks/use-profile";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { STAGE_ROLE } from "@/types/stage-role";
+import type { BusinessUnit } from "@/types/profile";
 import type { PrFormValues } from "./pr-form-schema";
 import { usePrItemTable } from "./pr-item-table";
 import { PrActionDialog } from "./pr-action-dialog";
@@ -50,6 +50,9 @@ interface PrItemFieldsProps {
   role?: string;
   prId?: string;
   prStatus?: string;
+  buCode?: string;
+  defaultBu?: BusinessUnit;
+  dateFormat: string;
   onSplit?: (detailIds: string[]) => void;
 }
 
@@ -59,9 +62,11 @@ export function PrItemFields({
   role,
   prId,
   prStatus,
+  buCode,
+  defaultBu,
+  dateFormat,
   onSplit,
 }: PrItemFieldsProps) {
-  const { buCode, defaultBu } = useProfile();
   const [isAllocating, setIsAllocating] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
   const [bulkAction, setBulkAction] = useState<"review" | "rejected" | null>(
@@ -98,6 +103,7 @@ export function PrItemFields({
     itemFields,
     disabled,
     prStatus,
+    dateFormat,
     onDelete: setDeleteIndex,
   });
 

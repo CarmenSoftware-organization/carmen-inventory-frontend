@@ -1,49 +1,31 @@
-import { useEffect } from "react";
 import { Controller, type UseFormReturn } from "react-hook-form";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { LookupWorkflow } from "@/components/lookup/lookup-workflow";
 import { WORKFLOW_TYPE } from "@/types/workflows";
-import { useProfile } from "@/hooks/use-profile";
-import { formatDate } from "@/lib/date-utils";
 import type { PrFormValues } from "./pr-form-schema";
 
 interface PrGeneralFieldsProps {
   form: UseFormReturn<PrFormValues>;
   disabled: boolean;
+  reqName: string;
+  departmentName: string;
+  prDateDisplay: string;
 }
 
-export function PrGeneralFields({ form, disabled }: PrGeneralFieldsProps) {
-  const { data: profile, defaultBu, dateFormat } = useProfile();
-
-  const requestorName = profile
-    ? `${profile.user_info.firstname} ${profile.user_info.lastname}`
-    : "";
-  const departmentName = defaultBu?.department.name ?? "";
-  const prDateDisplay = formatDate(
-    form.watch("pr_date") || new Date().toISOString(),
-    dateFormat,
-  );
-
-  useEffect(() => {
-    if (!form.getValues("pr_date")) {
-      form.setValue("pr_date", new Date().toISOString().split("T")[0]);
-    }
-    if (!profile || !defaultBu) return;
-    if (!form.getValues("requestor_id")) {
-      form.setValue("requestor_id", profile.id);
-    }
-    if (!form.getValues("department_id")) {
-      form.setValue("department_id", defaultBu.department.id);
-    }
-  }, [profile, defaultBu, form]);
-
+export function PrGeneralFields({
+  form,
+  disabled,
+  reqName,
+  departmentName,
+  prDateDisplay,
+}: PrGeneralFieldsProps) {
   return (
-    <div className="max-w-2xl space-y-4">
+    <div className="sticky top-0 z-10 bg-background pb-2 max-w-2xl space-y-4">
       {/* Read-only info strip */}
       <div className="grid grid-cols-3 gap-px">
         <InfoCell label="PR Date" value={prDateDisplay} />
-        <InfoCell label="Requestor" value={requestorName} />
+        <InfoCell label="Requestor" value={reqName} />
         <InfoCell label="Department" value={departmentName} />
       </div>
 
@@ -65,7 +47,6 @@ export function PrGeneralFields({ form, disabled }: PrGeneralFieldsProps) {
               )}
             />
           </Field>
-
         </div>
 
         <Field>

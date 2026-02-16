@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   Select,
   SelectContent,
@@ -27,7 +28,10 @@ export function LookupTaxProfile({
   size = "sm",
 }: LookupTaxProfileProps) {
   const { data } = useTaxProfile({ perpage: 9999 });
-  const taxProfiles = data?.data?.filter((t) => t.is_active) ?? [];
+  const taxProfiles = useMemo(
+    () => data?.data?.filter((t) => t.is_active) ?? [],
+    [data?.data],
+  );
 
   return (
     <Select

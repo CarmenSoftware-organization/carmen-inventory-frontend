@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   Select,
   SelectContent,
@@ -27,7 +28,10 @@ export function LookupLocation({
   size = "sm",
 }: LookupLocationProps) {
   const { data } = useLocation({ perpage: 9999 });
-  const locations = data?.data?.filter((l) => l.is_active) ?? [];
+  const locations = useMemo(
+    () => data?.data?.filter((l) => l.is_active) ?? [],
+    [data?.data],
+  );
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   Select,
   SelectContent,
@@ -27,7 +28,10 @@ export function LookupDeliveryPoint({
   size = "sm",
 }: LookupDeliveryPointProps) {
   const { data } = useDeliveryPoint({ perpage: 9999 });
-  const deliveryPoints = data?.data?.filter((d) => d.is_active) ?? [];
+  const deliveryPoints = useMemo(
+    () => data?.data?.filter((d) => d.is_active) ?? [],
+    [data?.data],
+  );
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>

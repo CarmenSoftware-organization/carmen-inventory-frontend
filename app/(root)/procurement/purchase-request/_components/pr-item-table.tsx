@@ -19,7 +19,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataGridTableRowSelect } from "@/components/reui/data-grid/data-grid-table";
-import { useProfile } from "@/hooks/use-profile";
 import { formatDate } from "@/lib/date-utils";
 import { DatePicker } from "@/components/ui/date-picker";
 import { LookupLocation } from "@/components/lookup/lookup-location";
@@ -134,6 +133,7 @@ interface UsePrItemTableOptions {
   itemFields: ItemField[];
   disabled: boolean;
   prStatus?: string;
+  dateFormat: string;
   onDelete: (index: number) => void;
 }
 
@@ -142,9 +142,9 @@ export function usePrItemTable({
   itemFields,
   disabled,
   prStatus,
+  dateFormat,
   onDelete,
 }: UsePrItemTableOptions) {
-  const { dateFormat } = useProfile();
   const [selectDialogOpen, setSelectDialogOpen] = useState(false);
 
   const allCount = itemFields.length;
@@ -152,6 +152,9 @@ export function usePrItemTable({
     const status = form.getValues(`items.${index}.current_stage_status`);
     return !status || status === "pending";
   }).length;
+
+  // Stable reference for DatePicker fromDate — avoids new Date() on every cell render
+  const today = useMemo(() => new Date(), []);
 
   // Memoize all columns — prevents React Table from rebuilding table structure on every render.
   // Only rebuilds when form mode (disabled), status (prStatus), or items change.
@@ -416,7 +419,7 @@ export function usePrItemTable({
                 <DatePicker
                   value={field.value}
                   onValueChange={field.onChange}
-                  fromDate={new Date()}
+                  fromDate={today}
                   className="w-full text-[11px]"
                   size="xs"
                 />
@@ -460,7 +463,7 @@ export function usePrItemTable({
         : dataColumns),
       ...(!disabled ? [actionColumn] : []),
     ];
-  }, [form, disabled, prStatus, dateFormat, itemFields, onDelete, setSelectDialogOpen]);
+  }, [form, disabled, prStatus, dateFormat, itemFields, onDelete, setSelectDialogOpen, today]);
 
   const table = useReactTable({
     data: itemFields,

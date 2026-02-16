@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -38,6 +38,8 @@ import {
   getDefaultValues,
   mapItemToPayload,
 } from "./pr-form-schema";
+import { useProfile } from "@/hooks/use-profile";
+import { formatDate } from "@/lib/date-utils";
 
 type ActionDialogState = {
   type: "reject" | "send_back" | "review" | null;
@@ -52,6 +54,8 @@ export function PurchaseRequestForm({
   purchaseRequest,
   template,
 }: PurchaseRequestFormProps) {
+  const { data: profile, defaultBu, buCode, dateFormat } = useProfile();
+
   const router = useRouter();
   const [mode, setMode] = useState<FormMode>(purchaseRequest ? "view" : "add");
   const isView = mode === "view";
@@ -101,6 +105,38 @@ export function PurchaseRequestForm({
     defaultValues,
   });
 
+  const requestorName = profile
+    ? `${profile.user_info.firstname} ${profile.user_info.lastname}`
+    : "";
+
+  const defaultRequestorName = purchaseRequest?.requestor_name;
+  const defaultRequestorId = profile?.id ?? "";
+  const defaultDefaultId = defaultBu?.department.id ?? "";
+  const defaultDepartmentName = purchaseRequest?.department_name;
+  const defaultPrDate = purchaseRequest?.pr_date;
+
+  const reqName = defaultRequestorName ?? requestorName;
+
+  const departmentName = defaultDepartmentName ?? defaultBu?.department.name;
+
+  const prDateDisplay = formatDate(
+    defaultPrDate || new Date().toISOString(),
+    dateFormat,
+  );
+
+  useEffect(() => {
+    if (!form.getValues("pr_date")) {
+      form.setValue("pr_date", new Date().toISOString().split("T")[0]);
+    }
+    if (!profile || !defaultBu) return;
+    if (!form.getValues("requestor_id")) {
+      form.setValue("requestor_id", defaultRequestorId);
+    }
+    if (!form.getValues("department_id")) {
+      form.setValue("department_id", defaultDefaultId);
+    }
+  }, [profile, defaultBu, form, defaultRequestorId, defaultDefaultId]);
+
   // --- CRUD Handlers ---
 
   const onSubmit = (values: PrFormValues) => {
@@ -112,8 +148,9 @@ export function PurchaseRequestForm({
     // Items in defaults but no longer in form → removed
     const currentIds = new Set(existingItems.map((item) => item.id));
     const removedItems = defaultValues.items
-      .filter((item): item is typeof item & { id: string } =>
-        !!item.id && !currentIds.has(item.id),
+      .filter(
+        (item): item is typeof item & { id: string } =>
+          !!item.id && !currentIds.has(item.id),
       )
       .map((item) => ({ id: item.id }));
 
@@ -410,7 +447,13 @@ export function PurchaseRequestForm({
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4"
       >
-        <PrGeneralFields form={form} disabled={isDisabled} />
+        <PrGeneralFields
+          form={form}
+          disabled={isDisabled}
+          reqName={reqName}
+          departmentName={departmentName ?? ""}
+          prDateDisplay={prDateDisplay}
+        />
 
         <Tabs defaultValue="items">
           <TabsList variant="line">
@@ -426,6 +469,9 @@ export function PurchaseRequestForm({
               role={role}
               prId={purchaseRequest?.id}
               prStatus={purchaseRequest?.pr_status}
+              buCode={buCode}
+              defaultBu={defaultBu}
+              dateFormat={dateFormat}
               onSplit={handleSplit}
             />
           </TabsContent>

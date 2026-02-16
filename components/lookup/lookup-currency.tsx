@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   Select,
   SelectContent,
@@ -27,7 +28,10 @@ export function LookupCurrency({
   size = "sm",
 }: LookupCurrencyProps) {
   const { data } = useCurrency({ perpage: 9999 });
-  const currencies = data?.data?.filter((c) => c.is_active) ?? [];
+  const currencies = useMemo(
+    () => data?.data?.filter((c) => c.is_active) ?? [],
+    [data?.data],
+  );
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
