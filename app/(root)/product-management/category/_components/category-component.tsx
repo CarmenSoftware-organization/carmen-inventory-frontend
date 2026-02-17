@@ -144,30 +144,48 @@ export default function CategoryComponent() {
       const isEdit = dialogMode === "edit";
       const ok = () => handleOpenChange(false);
       const opts = (label: string) => ({
-        onSuccess: () => { toast.success(`${label} ${isEdit ? "updated" : "created"}`); ok(); },
+        onSuccess: () => {
+          toast.success(`${label} ${isEdit ? "updated" : "created"}`);
+          ok();
+        },
         onError: (e: Error) => toast.error(e.message),
       });
 
       if (isEdit && selectedNode) {
         const payload = { id: selectedNode.id, ...data };
         const actions = {
-          [NODE_TYPE.CATEGORY]: () => updateCategory.mutate(payload, opts("Category")),
-          [NODE_TYPE.SUBCATEGORY]: () => updateSubCategory.mutate(
-            { ...payload, product_category_id: data.product_category_id ?? "" }, opts("Subcategory"),
-          ),
-          [NODE_TYPE.ITEM_GROUP]: () => updateItemGroup.mutate(
-            { ...payload, product_subcategory_id: data.product_subcategory_id ?? "" }, opts("Item group"),
-          ),
+          [NODE_TYPE.CATEGORY]: () =>
+            updateCategory.mutate(payload, opts("Category")),
+          [NODE_TYPE.SUBCATEGORY]: () =>
+            updateSubCategory.mutate(
+              {
+                ...payload,
+                product_category_id: data.product_category_id ?? "",
+              },
+              opts("Subcategory"),
+            ),
+          [NODE_TYPE.ITEM_GROUP]: () =>
+            updateItemGroup.mutate(
+              {
+                ...payload,
+                product_subcategory_id: data.product_subcategory_id ?? "",
+              },
+              opts("Item group"),
+            ),
         };
         actions[selectedNode.type]();
       } else if (parentNode) {
         const actions: Record<string, () => void> = {
-          [NODE_TYPE.CATEGORY]: () => createSubCategory.mutate(
-            { ...data, product_category_id: parentNode.id }, opts("Subcategory"),
-          ),
-          [NODE_TYPE.SUBCATEGORY]: () => createItemGroup.mutate(
-            { ...data, product_subcategory_id: parentNode.id }, opts("Item group"),
-          ),
+          [NODE_TYPE.CATEGORY]: () =>
+            createSubCategory.mutate(
+              { ...data, product_category_id: parentNode.id },
+              opts("Subcategory"),
+            ),
+          [NODE_TYPE.SUBCATEGORY]: () =>
+            createItemGroup.mutate(
+              { ...data, product_subcategory_id: parentNode.id },
+              opts("Item group"),
+            ),
         };
         actions[parentNode.type]?.();
       } else {
@@ -175,9 +193,16 @@ export default function CategoryComponent() {
       }
     },
     [
-      dialogMode, selectedNode, parentNode, handleOpenChange,
-      createCategory, updateCategory, createSubCategory,
-      updateSubCategory, createItemGroup, updateItemGroup,
+      dialogMode,
+      selectedNode,
+      parentNode,
+      handleOpenChange,
+      createCategory,
+      updateCategory,
+      createSubCategory,
+      updateSubCategory,
+      createItemGroup,
+      updateItemGroup,
     ],
   );
 
@@ -185,13 +210,18 @@ export default function CategoryComponent() {
   const handleConfirmDelete = useCallback(() => {
     if (!deleteTarget) return;
     const opts = {
-      onSuccess: () => { toast.success(`${NODE_LABELS[deleteTarget.type]} deleted`); setDeleteTarget(null); },
+      onSuccess: () => {
+        toast.success(`${NODE_LABELS[deleteTarget.type]} deleted`);
+        setDeleteTarget(null);
+      },
       onError: (e: Error) => toast.error(e.message),
     };
     const actions = {
       [NODE_TYPE.CATEGORY]: () => deleteCategory.mutate(deleteTarget.id, opts),
-      [NODE_TYPE.SUBCATEGORY]: () => deleteSubCategory.mutate(deleteTarget.id, opts),
-      [NODE_TYPE.ITEM_GROUP]: () => deleteItemGroup.mutate(deleteTarget.id, opts),
+      [NODE_TYPE.SUBCATEGORY]: () =>
+        deleteSubCategory.mutate(deleteTarget.id, opts),
+      [NODE_TYPE.ITEM_GROUP]: () =>
+        deleteItemGroup.mutate(deleteTarget.id, opts),
     };
     actions[deleteTarget.type]();
   }, [deleteTarget, deleteCategory, deleteSubCategory, deleteItemGroup]);
@@ -205,33 +235,20 @@ export default function CategoryComponent() {
           defaultValue={search}
           onSearch={setSearch}
           onInputChange={setSearch}
+          inputClassName="h-7 placeholder:text-xs"
         />
       }
       actions={
-        <div className="flex items-center gap-1">
-          <Button
-            onClick={expandAll}
-            size="sm"
-            variant="outline"
-            className="h-7 text-xs px-2"
-          >
+        <div className="flex items-center gap-1.5">
+          <Button onClick={expandAll} size="xs" variant="outline">
             <ChevronDown className="h-3 w-3" />
             Expand
           </Button>
-          <Button
-            onClick={collapseAll}
-            size="sm"
-            variant="outline"
-            className="h-7 text-xs px-2"
-          >
+          <Button onClick={collapseAll} size="xs" variant="outline">
             <ChevronUp className="h-3 w-3" />
             Collapse
           </Button>
-          <Button
-            onClick={() => handleAdd()}
-            size="sm"
-            className="h-7 text-xs px-2"
-          >
+          <Button onClick={() => handleAdd()} size="xs">
             <Plus className="h-3 w-3" />
             Add Category
           </Button>
