@@ -45,6 +45,9 @@ export const API_ENDPOINTS = {
   NOTIFICATIONS_MARK_ALL_READ: (userId: string) =>
     `/api/proxy/api/notifications/mark-all-read/${userId}`,
   USERS: (buCode: string) => `/api/proxy/api/${buCode}/users`,
+  DOCUMENTS: (buCode: string) => `/api/proxy/api/${buCode}/documents`,
+  USER_APPLICATION_ROLES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/user-application-roles`,
   LOGOUT: "/api/auth/logout",
   SWITCH_BU: "/api/proxy/api/business-unit/default",
 } as const;

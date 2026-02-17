@@ -25,6 +25,7 @@ export const QUERY_KEYS = {
   PURCHASE_REQUEST_TEMPLATES: "purchase-request-templates",
   PURCHASE_REQUEST_COMMENTS: "purchase-request-comments",
   USERS: "users",
+  DOCUMENTS: "documents",
 } as const;
 
 export type QueryKey = (typeof QUERY_KEYS)[keyof typeof QUERY_KEYS];

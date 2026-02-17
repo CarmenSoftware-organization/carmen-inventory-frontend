@@ -58,16 +58,6 @@ export function useWfTable({
       ),
       size: 180,
     },
-    {
-      accessorKey: "stages",
-      header: ({ column }) => (
-        <DataGridColumnHeader column={column} title="Stages" />
-      ),
-      cell: ({ row }) => (
-        <span className="text-xs">{row.getValue("stages")}</span>
-      ),
-      size: 100,
-    },
   ];
 
   return useConfigTable<WorkflowDto>({
