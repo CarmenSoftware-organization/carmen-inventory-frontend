@@ -1,6 +1,5 @@
 import { z } from "zod";
-import type { PurchaseOrder } from "@/types/purchase-order";
-import type { PoDetailPayload } from "@/hooks/use-purchase-order";
+import type { PurchaseOrder, PoDetailPayload } from "@/types/purchase-order";
 
 export const poDetailSchema = z.object({
   id: z.string().optional(),

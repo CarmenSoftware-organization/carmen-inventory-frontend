@@ -1,0 +1,108 @@
+"use no memo";
+
+import { useState } from "react";
+import { useFieldArray, type UseFormReturn } from "react-hook-form";
+import { BoxIcon, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DataGrid,
+  DataGridContainer,
+} from "@/components/reui/data-grid/data-grid";
+import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
+import { DeleteDialog } from "@/components/ui/delete-dialog";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import type { CnFormValues } from "./cn-form-schema";
+import { useCnItemTable } from "./cn-item-table";
+import { CN_ITEM } from "./cn-form-schema";
+import EmptyComponent from "@/components/empty-component";
+
+function getDeleteDescription(
+  index: number | null,
+  form: UseFormReturn<CnFormValues>,
+) {
+  if (index === null) return "";
+  const name = form.getValues(`items.${index}.item_name`);
+  const label = name || `Item #${index + 1}`;
+  return `Are you sure you want to remove "${label}"?`;
+}
+
+interface CnItemFieldsProps {
+  form: UseFormReturn<CnFormValues>;
+  disabled: boolean;
+}
+
+export function CnItemFields({ form, disabled }: CnItemFieldsProps) {
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+
+  const {
+    fields: itemFields,
+    append: appendItem,
+    remove: removeItem,
+  } = useFieldArray({ control: form.control, name: "items" });
+
+  const handleAddItem = () => {
+    appendItem({ ...CN_ITEM });
+  };
+
+  const { table } = useCnItemTable({
+    form,
+    itemFields,
+    disabled,
+    onDelete: setDeleteIndex,
+  });
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-semibold">Items</h2>
+        {!disabled && (
+          <Button type="button" size="xs" onClick={handleAddItem}>
+            <Plus /> Add Item
+          </Button>
+        )}
+      </div>
+
+      <DataGrid
+        table={table}
+        recordCount={itemFields.length}
+        tableLayout={{ dense: true }}
+        tableClassNames={{ base: "text-[11px]" }}
+        emptyMessage={
+          <EmptyComponent
+            icon={BoxIcon}
+            title="No Items Yet"
+            description="Add items to this credit note."
+            content={
+              !disabled && (
+                <Button type="button" size="xs" onClick={handleAddItem}>
+                  <Plus /> Add Item
+                </Button>
+              )
+            }
+          />
+        }
+      >
+        <DataGridContainer>
+          <ScrollArea className="w-full pb-4">
+            <DataGridTable />
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </DataGridContainer>
+      </DataGrid>
+
+      <DeleteDialog
+        open={deleteIndex !== null}
+        onOpenChange={(o) => {
+          if (!o) setDeleteIndex(null);
+        }}
+        title="Remove Item"
+        description={getDeleteDescription(deleteIndex, form)}
+        onConfirm={() => {
+          if (deleteIndex === null) return;
+          removeItem(deleteIndex);
+          setDeleteIndex(null);
+        }}
+      />
+    </div>
+  );
+}
