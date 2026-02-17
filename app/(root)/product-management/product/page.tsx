@@ -1,4 +1,4 @@
-import ProductComponent from "./_components/product-component";
+import ProductComponent from "./_components/pd-component";
 
 export default function ProductPage() {
   return <ProductComponent />;

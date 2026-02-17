@@ -8,12 +8,15 @@ import type {
   ProductUnitConversion,
 } from "@/types/product";
 
+type UnitPayload = Omit<ProductUnitConversion, "id">;
+
 export interface CreateProductDto {
   name: string;
   code: string;
   local_name: string;
   description: string;
   inventory_unit_id: string;
+  product_item_group_id: string;
   product_status_type: ProductStatusType;
   tax_profile_id: string;
   product_info: {
@@ -21,6 +24,7 @@ export interface CreateProductDto {
     is_sold_directly: boolean;
     barcode: string;
     sku: string;
+    price: number | null;
     price_deviation_limit: number | null;
     qty_deviation_limit: number | null;
     info: ProductInfoItem[];
@@ -30,11 +34,13 @@ export interface CreateProductDto {
     remove?: { location_id: string }[];
   };
   order_units: {
-    add?: Omit<ProductUnitConversion, "id">[];
+    add?: UnitPayload[];
+    update?: (UnitPayload & { id: string })[];
     remove?: { id: string }[];
   };
   ingredient_units: {
-    add?: Omit<ProductUnitConversion, "id">[];
+    add?: UnitPayload[];
+    update?: (UnitPayload & { id: string })[];
     remove?: { id: string }[];
   };
 }
@@ -43,6 +49,7 @@ const crud = createConfigCrud<ProductDetail, CreateProductDto>({
   queryKey: QUERY_KEYS.PRODUCTS,
   endpoint: API_ENDPOINTS.PRODUCTS,
   label: "product",
+  updateMethod: "PATCH",
 });
 
 export const useProduct = crud.useList;

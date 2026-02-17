@@ -71,4 +71,6 @@ export interface ItemGroupDto {
   tax_profile_id?: string;
   tax_profile_name?: string;
   tax_rate?: number;
+  sub_category?: { id: string; code: string; name: string };
+  category?: { id: string; code: string; name: string };
 }
