@@ -48,6 +48,8 @@ export const API_ENDPOINTS = {
   DOCUMENTS: (buCode: string) => `/api/proxy/api/${buCode}/documents`,
   USER_APPLICATION_ROLES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/user-application-roles`,
+  PURCHASE_ORDER: (buCode: string) =>
+    `/api/proxy/api/${buCode}/purchase-order`,
   LOGOUT: "/api/auth/logout",
   SWITCH_BU: "/api/proxy/api/business-unit/default",
 } as const;

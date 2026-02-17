@@ -24,6 +24,7 @@ export const QUERY_KEYS = {
   PURCHASE_REQUEST_WORKFLOW_STAGES: "purchase-request-workflow-stages",
   PURCHASE_REQUEST_TEMPLATES: "purchase-request-templates",
   PURCHASE_REQUEST_COMMENTS: "purchase-request-comments",
+  PURCHASE_ORDERS: "purchase-orders",
   USERS: "users",
   DOCUMENTS: "documents",
 } as const;

@@ -19,6 +19,7 @@ interface UseConfigTableOptions<T> {
   params: ParamsDto;
   tableConfig: ReturnType<typeof useDataGridState>["tableConfig"];
   onDelete: (item: T) => void;
+  hideStatus?: boolean;
 }
 
 export function useConfigTable<T>({
@@ -28,6 +29,7 @@ export function useConfigTable<T>({
   params,
   tableConfig,
   onDelete,
+  hideStatus,
 }: UseConfigTableOptions<T>) {
   // "use no memo" opts out of React Compiler's automatic memoization.
   // TanStack Table creates new column/row objects each render; memoizing them
@@ -38,7 +40,7 @@ export function useConfigTable<T>({
     selectColumn<T>(),
     indexColumn<T>(params),
     ...columns,
-    statusColumn<T>(),
+    ...(hideStatus ? [] : [statusColumn<T>()]),
     actionColumn<T>(onDelete),
   ];
 
