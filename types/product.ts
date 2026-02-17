@@ -39,8 +39,7 @@ export interface Product {
   name: string;
   local_name: string;
   product_status_type: ProductStatusType;
-  inventory_unit_id: string;
-  inventory_unit_name: string;
+  inventory_unit: { id: string; name: string };
   product_item_group: { id?: string; name: string } | null;
   product_sub_category: { id?: string; name: string } | null;
   product_category: { id?: string; name: string } | null;

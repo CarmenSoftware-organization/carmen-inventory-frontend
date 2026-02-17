@@ -132,9 +132,9 @@ export function usePurchaseRequestWorkflowStages() {
     queryKey: [QUERY_KEYS.PURCHASE_REQUEST_WORKFLOW_STAGES, buCode],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");
-      const url = buildUrl(API_ENDPOINTS.PURCHASE_REQUEST_WORKFLOW_STAGES, {
-        bu_code: buCode,
-      });
+      const url = buildUrl(
+        API_ENDPOINTS.PURCHASE_REQUEST_WORKFLOW_STAGES(buCode),
+      );
       const res = await httpClient.get(url);
       if (!res.ok) throw new Error("Failed to fetch workflow stages");
       const json = await res.json();

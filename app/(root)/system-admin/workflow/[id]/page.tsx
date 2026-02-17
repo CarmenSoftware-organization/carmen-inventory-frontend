@@ -34,8 +34,10 @@ export default function EditWorkflowPage({
         local_name: p.local_name,
         description: p.description,
         product_status_type: p.product_status_type,
-        inventory_unit_id: p.inventory_unit_id ?? "",
-        inventory_unit_name: p.inventory_unit_name ?? "",
+        inventory_unit: {
+          id: p.inventory_unit?.id ?? "",
+          name: p.inventory_unit?.name ?? "",
+        },
         product_item_group: {
           id: p.product_item_group?.id ?? "",
           name: p.product_item_group?.name ?? "",

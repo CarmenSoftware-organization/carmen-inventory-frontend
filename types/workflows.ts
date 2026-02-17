@@ -48,8 +48,7 @@ export interface Product {
   local_name?: string;
   description?: string | null;
   product_status_type?: string;
-  inventory_unit_id: string;
-  inventory_unit_name: string;
+  inventory_unit: { id: string; name: string };
   product_item_group: {
     id: string;
     name: string;
@@ -315,8 +314,7 @@ export const wfFormSchema = z.object({
           local_name: z.string().optional(),
           description: z.nullable(z.string()).optional(),
           product_status_type: z.string().optional(),
-          inventory_unit_id: z.string(),
-          inventory_unit_name: z.string(),
+          inventory_unit: z.object({ id: z.string(), name: z.string() }),
           isAssigned: z.boolean().optional(),
           product_item_group: z
             .object({

@@ -98,11 +98,11 @@ export default function PurchaseRequestComponent() {
             <Plus />
             Add Request
           </Button>
-          <Button size="sm" variant="outline" disabled title="Coming soon">
+          <Button size="sm" variant="outline">
             <Download />
             Export
           </Button>
-          <Button size="sm" variant="outline" disabled title="Coming soon">
+          <Button size="sm" variant="outline">
             <Printer />
             Print
           </Button>
