@@ -27,6 +27,9 @@ export const QUERY_KEYS = {
   PURCHASE_ORDERS: "purchase-orders",
   CREDIT_NOTES: "credit-notes",
   GOODS_RECEIVE_NOTES: "goods-receive-notes",
+  SPOT_CHECKS: "spot-checks",
+  PHYSICAL_COUNTS: "physical-counts",
+  PERIOD_ENDS: "period-ends",
   USERS: "users",
   DOCUMENTS: "documents",
 } as const;

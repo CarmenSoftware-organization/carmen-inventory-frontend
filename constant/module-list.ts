@@ -191,31 +191,31 @@ export const moduleList: ModuleDto[] = [
         path: "/inventory-management/period-end",
         icon: Calendar,
       },
-      {
-        name: "Stock Overview",
-        path: "/inventory-management/stock-overview",
-        icon: BarChart3,
-      },
-      {
-        name: "Inventory Balance",
-        path: "/inventory-management/inventory-balance",
-        icon: Calculator,
-      },
-      {
-        name: "Inventory Aging",
-        path: "/inventory-management/inventory-aging",
-        icon: Timer,
-      },
-      {
-        name: "Stock Card",
-        path: "/inventory-management/stock-card",
-        icon: FileText,
-      },
-      {
-        name: "Slow Moving",
-        path: "/inventory-management/slow-moving",
-        icon: AlertTriangle,
-      },
+      // {
+      //   name: "Stock Overview",
+      //   path: "/inventory-management/stock-overview",
+      //   icon: BarChart3,
+      // },
+      // {
+      //   name: "Inventory Balance",
+      //   path: "/inventory-management/inventory-balance",
+      //   icon: Calculator,
+      // },
+      // {
+      //   name: "Inventory Aging",
+      //   path: "/inventory-management/inventory-aging",
+      //   icon: Timer,
+      // },
+      // {
+      //   name: "Stock Card",
+      //   path: "/inventory-management/stock-card",
+      //   icon: FileText,
+      // },
+      // {
+      //   name: "Slow Moving",
+      //   path: "/inventory-management/slow-moving",
+      //   icon: AlertTriangle,
+      // },
     ],
   },
   {

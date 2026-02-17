@@ -54,6 +54,12 @@ export const API_ENDPOINTS = {
     `/api/proxy/api/${buCode}/credit-note`,
   GOODS_RECEIVE_NOTE: (buCode: string) =>
     `/api/proxy/api/${buCode}/goods-receive-note`,
+  SPOT_CHECK: (buCode: string) =>
+    `/api/proxy/api/${buCode}/spot-check`,
+  PHYSICAL_COUNT: (buCode: string) =>
+    `/api/proxy/api/${buCode}/physical-count`,
+  PERIOD_END: (buCode: string) =>
+    `/api/proxy/api/${buCode}/period-end`,
   LOGOUT: "/api/auth/logout",
   SWITCH_BU: "/api/proxy/api/business-unit/default",
 } as const;

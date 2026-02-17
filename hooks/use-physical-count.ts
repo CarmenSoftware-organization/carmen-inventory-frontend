@@ -1,0 +1,80 @@
+import { useQuery } from "@tanstack/react-query";
+import { useProfile } from "@/hooks/use-profile";
+import { useApiMutation } from "@/hooks/use-api-mutation";
+import { httpClient } from "@/lib/http-client";
+import { buildUrl } from "@/utils/build-query-string";
+import { API_ENDPOINTS } from "@/constant/api-endpoints";
+import { QUERY_KEYS } from "@/constant/query-keys";
+import type { PhysicalCount, CreatePhysicalCountDto } from "@/types/physical-count";
+import type { ParamsDto } from "@/types/params";
+
+interface PaginatedResponse {
+  data: PhysicalCount[];
+  paginate: {
+    total: number;
+    page: number;
+    perpage: number;
+    pages: number;
+  };
+}
+
+export function usePhysicalCount(params?: ParamsDto) {
+  const { buCode } = useProfile();
+
+  return useQuery<PaginatedResponse>({
+    queryKey: [QUERY_KEYS.PHYSICAL_COUNTS, buCode, params],
+    queryFn: async () => {
+      if (!buCode) throw new Error("Missing buCode");
+      const url = buildUrl(API_ENDPOINTS.PHYSICAL_COUNT(buCode), params);
+      const res = await httpClient.get(url);
+      if (!res.ok) throw new Error("Failed to fetch physical counts");
+      return res.json();
+    },
+    enabled: !!buCode,
+  });
+}
+
+export function usePhysicalCountById(id: string | undefined) {
+  const { buCode } = useProfile();
+
+  return useQuery<PhysicalCount>({
+    queryKey: [QUERY_KEYS.PHYSICAL_COUNTS, buCode, id],
+    queryFn: async () => {
+      if (!buCode) throw new Error("Missing buCode");
+      const res = await httpClient.get(
+        `${API_ENDPOINTS.PHYSICAL_COUNT(buCode)}/${id}`,
+      );
+      if (!res.ok) throw new Error("Failed to fetch physical count");
+      const json = await res.json();
+      return json.data;
+    },
+    enabled: !!buCode && !!id,
+  });
+}
+
+export function useCreatePhysicalCount() {
+  return useApiMutation<CreatePhysicalCountDto>({
+    mutationFn: (data, buCode) =>
+      httpClient.post(API_ENDPOINTS.PHYSICAL_COUNT(buCode), data),
+    invalidateKeys: [QUERY_KEYS.PHYSICAL_COUNTS],
+    errorMessage: "Failed to create physical count",
+  });
+}
+
+export function useUpdatePhysicalCount() {
+  return useApiMutation<CreatePhysicalCountDto & { id: string }>({
+    mutationFn: ({ id, ...data }, buCode) =>
+      httpClient.put(`${API_ENDPOINTS.PHYSICAL_COUNT(buCode)}/${id}`, data),
+    invalidateKeys: [QUERY_KEYS.PHYSICAL_COUNTS],
+    errorMessage: "Failed to update physical count",
+  });
+}
+
+export function useDeletePhysicalCount() {
+  return useApiMutation<string>({
+    mutationFn: (id, buCode) =>
+      httpClient.delete(`${API_ENDPOINTS.PHYSICAL_COUNT(buCode)}/${id}`),
+    invalidateKeys: [QUERY_KEYS.PHYSICAL_COUNTS],
+    errorMessage: "Failed to delete physical count",
+  });
+}
