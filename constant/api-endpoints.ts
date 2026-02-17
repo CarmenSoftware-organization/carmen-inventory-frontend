@@ -1,65 +1,66 @@
 export const API_ENDPOINTS = {
-  PROFILE: "/api/proxy/api/user/profile",
-  UNITS: (buCode: string) => `/api/proxy/api/config/${buCode}/units`,
-  DEPARTMENTS: (buCode: string) =>
-    `/api/proxy/api/config/${buCode}/departments`,
-  LOCATIONS: (buCode: string) => `/api/proxy/api/config/${buCode}/locations`,
-  DELIVERY_POINTS: (buCode: string) =>
-    `/api/proxy/api/config/${buCode}/delivery-point`,
-  CURRENCIES: (buCode: string) => `/api/proxy/api/config/${buCode}/currencies`,
-  TAX_PROFILES: (buCode: string) =>
-    `/api/proxy/api/config/${buCode}/tax-profile`,
-  EXTRA_COST_TYPES: (buCode: string) =>
-    `/api/proxy/api/config/${buCode}/extra-cost-type`,
-  VENDOR_BUSINESS_TYPES: (buCode: string) =>
-    `/api/proxy/api/config/${buCode}/vendor-business-type`,
   ADJUSTMENT_TYPES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/adjustment-type`,
+  APPLICATION_ROLES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/application-roles`,
+  CREDIT_NOTE: (buCode: string) => `/api/proxy/api/${buCode}/credit-note`,
+  CURRENCIES: (buCode: string) => `/api/proxy/api/config/${buCode}/currencies`,
+  DEPARTMENTS: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/departments`,
+  DELIVERY_POINTS: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/delivery-point`,
+  DOCUMENTS: (buCode: string) => `/api/proxy/api/${buCode}/documents`,
+  EXTRA_COST_TYPES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/extra-cost-type`,
+  GOODS_RECEIVE_NOTE: (buCode: string) =>
+    `/api/proxy/api/${buCode}/goods-receive-note`,
+  INVENTORY_ADJUSTMENTS: (buCode: string) =>
+    `/api/proxy/api/${buCode}/inventory-adjustment`,
+  LOCATIONS: (buCode: string) => `/api/proxy/api/config/${buCode}/locations`,
+  LOGOUT: "/api/auth/logout",
+  MY_PENDING_PURCHASE_REQUESTS: "/api/proxy/api/my-pending/purchase-request",
+  NOTIFICATIONS_MARK_ALL_READ: (userId: string) =>
+    `/api/proxy/api/notifications/mark-all-read/${userId}`,
+  PROFILE: "/api/proxy/api/user/profile",
   PRODUCTS: (buCode: string) => `/api/proxy/api/config/${buCode}/products`,
-  VENDORS: (buCode: string) => `/api/proxy/api/config/${buCode}/vendors`,
+  PRODUCT_CATEGORIES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/products/category`,
+  PRODUCT_SUB_CATEGORIES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/products/sub-category`,
+  PRODUCT_ITEM_GROUPS: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/products/item-group`,
   PRICE_LISTS: (buCode: string) => `/api/proxy/api/config/${buCode}/price-list`,
   PRICE_LIST_TEMPLATES: (buCode: string) =>
     `/api/proxy/api/${buCode}/price-list-template`,
-  REQUEST_PRICE_LISTS: (buCode: string) =>
-    `/api/proxy/api/${buCode}/request-for-pricing`,
-  INVENTORY_ADJUSTMENTS: (buCode: string) =>
-    `/api/proxy/api/${buCode}/inventory-adjustment`,
-  STOCK_IN: (buCode: string) => `/api/proxy/api/${buCode}/stock-in`,
-  STOCK_OUT: (buCode: string) => `/api/proxy/api/${buCode}/stock-out`,
-  PERMISSIONS: (buCode: string) =>
-    `/api/proxy/api/config/${buCode}/permissions`,
-  APPLICATION_ROLES: (buCode: string) =>
-    `/api/proxy/api/config/${buCode}/application-roles`,
-  STORE_REQUISITIONS: "/api/proxy/api/store-requisition",
-  STORE_REQUISITION: (buCode: string) =>
-    `/api/proxy/api/${buCode}/store-requisition`,
-  WORKFLOWS: (buCode: string) => `/api/proxy/api/config/${buCode}/workflows`,
   PURCHASE_REQUESTS: "/api/proxy/api/purchase-request",
   PURCHASE_REQUEST: (buCode: string) =>
     `/api/proxy/api/${buCode}/purchase-request`,
-  MY_PENDING_PURCHASE_REQUESTS: "/api/proxy/api/my-pending/purchase-request",
   PURCHASE_REQUEST_WORKFLOW_STAGES: (buCode: string) =>
     `/api/proxy/api/${buCode}/purchase-request/workflow-stages`,
   PURCHASE_REQUEST_TEMPLATES: (buCode: string) =>
     `/api/proxy/api/${buCode}/purchase-request-template`,
-  NOTIFICATIONS_MARK_ALL_READ: (userId: string) =>
-    `/api/proxy/api/notifications/mark-all-read/${userId}`,
+  PURCHASE_ORDER: (buCode: string) => `/api/proxy/api/${buCode}/purchase-order`,
+  PERMISSIONS: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/permissions`,
+  PHYSICAL_COUNT: (buCode: string) => `/api/proxy/api/${buCode}/physical-count`,
+  PERIOD_END: (buCode: string) => `/api/proxy/api/${buCode}/period-end`,
+  REQUEST_PRICE_LISTS: (buCode: string) =>
+    `/api/proxy/api/${buCode}/request-for-pricing`,
+  STOCK_IN: (buCode: string) => `/api/proxy/api/${buCode}/stock-in`,
+  STOCK_OUT: (buCode: string) => `/api/proxy/api/${buCode}/stock-out`,
+  STORE_REQUISITIONS: "/api/proxy/api/store-requisition",
+  STORE_REQUISITION: (buCode: string) =>
+    `/api/proxy/api/${buCode}/store-requisition`,
+  SPOT_CHECK: (buCode: string) => `/api/proxy/api/${buCode}/spot-check`,
+  SWITCH_BU: "/api/proxy/api/business-unit/default",
+  TAX_PROFILES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/tax-profile`,
+  VENDORS: (buCode: string) => `/api/proxy/api/config/${buCode}/vendors`,
+  UNITS: (buCode: string) => `/api/proxy/api/config/${buCode}/units`,
   USERS: (buCode: string) => `/api/proxy/api/${buCode}/users`,
-  DOCUMENTS: (buCode: string) => `/api/proxy/api/${buCode}/documents`,
   USER_APPLICATION_ROLES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/user-application-roles`,
-  PURCHASE_ORDER: (buCode: string) =>
-    `/api/proxy/api/${buCode}/purchase-order`,
-  CREDIT_NOTE: (buCode: string) =>
-    `/api/proxy/api/${buCode}/credit-note`,
-  GOODS_RECEIVE_NOTE: (buCode: string) =>
-    `/api/proxy/api/${buCode}/goods-receive-note`,
-  SPOT_CHECK: (buCode: string) =>
-    `/api/proxy/api/${buCode}/spot-check`,
-  PHYSICAL_COUNT: (buCode: string) =>
-    `/api/proxy/api/${buCode}/physical-count`,
-  PERIOD_END: (buCode: string) =>
-    `/api/proxy/api/${buCode}/period-end`,
-  LOGOUT: "/api/auth/logout",
-  SWITCH_BU: "/api/proxy/api/business-unit/default",
+  VENDOR_BUSINESS_TYPES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/vendor-business-type`,
+  WORKFLOWS: (buCode: string) => `/api/proxy/api/config/${buCode}/workflows`,
 } as const;
