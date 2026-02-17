@@ -26,6 +26,7 @@ export const QUERY_KEYS = {
   PURCHASE_REQUEST_COMMENTS: "purchase-request-comments",
   PURCHASE_ORDERS: "purchase-orders",
   CREDIT_NOTES: "credit-notes",
+  GOODS_RECEIVE_NOTES: "goods-receive-notes",
   USERS: "users",
   DOCUMENTS: "documents",
 } as const;
