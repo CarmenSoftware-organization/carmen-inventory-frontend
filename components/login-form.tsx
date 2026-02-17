@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { profileQueryKey } from "@/hooks/use-profile";
+import { httpClient } from "@/lib/http-client";
+import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,11 +27,7 @@ export default function LoginForm() {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(credentials),
-      });
+      const res = await httpClient.post(API_ENDPOINTS.LOGIN, credentials);
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));

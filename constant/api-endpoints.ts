@@ -17,6 +17,7 @@ export const API_ENDPOINTS = {
   INVENTORY_ADJUSTMENTS: (buCode: string) =>
     `/api/proxy/api/${buCode}/inventory-adjustment`,
   LOCATIONS: (buCode: string) => `/api/proxy/api/config/${buCode}/locations`,
+  LOGIN: "/api/auth/login",
   LOGOUT: "/api/auth/logout",
   MY_PENDING_PURCHASE_REQUESTS: "/api/proxy/api/my-pending/purchase-request",
   NOTIFICATIONS_MARK_ALL_READ: (userId: string) =>
