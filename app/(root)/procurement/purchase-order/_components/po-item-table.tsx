@@ -17,7 +17,7 @@ import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { LookupProductInLocation } from "@/components/lookup/lookup-product-in-location";
+import { LookupProduct } from "@/components/lookup/lookup-product";
 import { LookupProductUnit } from "@/components/lookup/lookup-product-unit";
 import { LookupTaxProfile } from "@/components/lookup/lookup-tax-profile";
 import type { Product } from "@/types/product";
@@ -37,10 +37,10 @@ const setProductToItem = (
       ? {
           product_name: product.name,
           product_local_name: product.local_name ?? "",
-          order_unit_id: product.inventory_unit.id,
-          order_unit_name: product.inventory_unit.name,
-          base_unit_id: product.inventory_unit.id,
-          base_unit_name: product.inventory_unit.name,
+          order_unit_id: product.inventory_unit?.id ?? null,
+          order_unit_name: product.inventory_unit?.name ?? "",
+          base_unit_id: product.inventory_unit?.id ?? null,
+          base_unit_name: product.inventory_unit?.name ?? "",
         }
       : {
           product_name: "",
@@ -69,8 +69,7 @@ const ProductCell = ({
       control={control}
       name={`items.${index}.product_id`}
       render={({ field }) => (
-        <LookupProductInLocation
-          locationId=""
+        <LookupProduct
           value={field.value ?? ""}
           onValueChange={(value, product) =>
             setProductToItem(form, index, value, product)
@@ -336,7 +335,7 @@ export function usePoItemTable({
                 checked={field.value}
                 onCheckedChange={field.onChange}
                 disabled={disabled}
-                className="size-3"
+                className="size-4"
               />
             )}
           />

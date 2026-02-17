@@ -37,9 +37,7 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
                 />
               )}
             />
-            <FieldError>
-              {form.formState.errors.vendor_id?.message}
-            </FieldError>
+            <FieldError>{form.formState.errors.vendor_id?.message}</FieldError>
           </Field>
 
           <Field data-invalid={!!form.formState.errors.order_date}>
@@ -57,9 +55,7 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
                 />
               )}
             />
-            <FieldError>
-              {form.formState.errors.order_date?.message}
-            </FieldError>
+            <FieldError>{form.formState.errors.order_date?.message}</FieldError>
           </Field>
         </div>
 
@@ -159,28 +155,6 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
             rows={2}
             disabled={disabled}
             {...form.register("description")}
-          />
-        </Field>
-
-        <Field>
-          <FieldLabel className="text-xs">Remarks</FieldLabel>
-          <Textarea
-            placeholder="Optional remarks"
-            className="text-sm"
-            rows={2}
-            disabled={disabled}
-            {...form.register("remarks")}
-          />
-        </Field>
-
-        <Field>
-          <FieldLabel className="text-xs">Note</FieldLabel>
-          <Textarea
-            placeholder="Optional note"
-            className="text-sm"
-            rows={2}
-            disabled={disabled}
-            {...form.register("note")}
           />
         </Field>
       </FieldGroup>

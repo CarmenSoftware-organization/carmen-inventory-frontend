@@ -23,9 +23,11 @@ import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
 import DisplayTemplate from "@/components/display-template";
 import { usePoTable } from "./use-po-table";
+import { CreatePODialog } from "./po-create-dialog";
 
 export default function PoComponent() {
   const router = useRouter();
+  const [createOpen, setCreateOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<PurchaseOrder | null>(null);
   const deletePo = useDeletePurchaseOrder();
   const { params, search, setSearch, filter, setFilter, tableConfig } =
@@ -61,7 +63,7 @@ export default function PoComponent() {
         <>
           <Button
             size="sm"
-            onClick={() => router.push("/procurement/purchase-order/new")}
+            onClick={() => setCreateOpen(true)}
           >
             <Plus />
             Add Purchase Order
@@ -89,6 +91,8 @@ export default function PoComponent() {
         </DataGridContainer>
         <DataGridPagination />
       </DataGrid>
+
+      <CreatePODialog open={createOpen} onOpenChange={setCreateOpen} />
 
       <DeleteDialog
         open={!!deleteTarget}
