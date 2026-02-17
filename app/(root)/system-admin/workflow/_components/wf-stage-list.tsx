@@ -22,15 +22,13 @@ import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Plus, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { UseFieldArrayReturn } from "react-hook-form";
+import { useWatch, type UseFormReturn, type UseFieldArrayReturn } from "react-hook-form";
 import type { WorkflowCreateModel, Stage } from "@/types/workflows";
 import { cn } from "@/lib/utils";
 
 interface WfStageListProps {
-  readonly fieldArray: UseFieldArrayReturn<
-    WorkflowCreateModel,
-    "data.stages"
-  >;
+  readonly form: UseFormReturn<WorkflowCreateModel>;
+  readonly fieldArray: UseFieldArrayReturn<WorkflowCreateModel, "data.stages">;
   readonly selectedIndex: number;
   readonly onSelect: (index: number) => void;
   readonly isDisabled: boolean;
@@ -158,6 +156,7 @@ function SortableStageItem({
 }
 
 export function WfStageList({
+  form,
   fieldArray,
   selectedIndex,
   onSelect,
@@ -165,6 +164,11 @@ export function WfStageList({
 }: WfStageListProps) {
   const { fields, move, insert } = fieldArray;
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
+
+  const watchedStages = useWatch({
+    control: form.control,
+    name: "data.stages",
+  });
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -201,9 +205,7 @@ export function WfStageList({
     onSelect(fields.length - 1);
   };
 
-  const activeDragIndex = activeDragId
-    ? stageIds.indexOf(activeDragId)
-    : -1;
+  const activeDragIndex = activeDragId ? stageIds.indexOf(activeDragId) : -1;
 
   return (
     <div className="space-y-1.5">
@@ -240,7 +242,7 @@ export function WfStageList({
                 key={field.id}
                 id={field.id}
                 index={index}
-                name={field.name}
+                name={watchedStages?.[index]?.name ?? field.name}
                 isSelected={selectedIndex === index}
                 isFirst={index === 0}
                 isLast={index === fields.length - 1}
@@ -254,7 +256,7 @@ export function WfStageList({
           {activeDragIndex >= 0 ? (
             <div className="flex items-center gap-1.5 rounded border bg-background px-1.5 py-1 text-[11px] shadow-md">
               <GripVertical className="size-3 text-muted-foreground" />
-              <span>{fields[activeDragIndex]?.name}</span>
+              <span>{watchedStages?.[activeDragIndex]?.name ?? fields[activeDragIndex]?.name}</span>
             </div>
           ) : null}
         </DragOverlay>

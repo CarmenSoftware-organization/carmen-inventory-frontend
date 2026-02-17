@@ -148,17 +148,14 @@ export function WfStageDetail({
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-medium">
-          {watchedStage?.name ?? "Stage"}
-        </span>
+      <div className="flex items-center justify-end">
         {isMiddle && !isDisabled && (
           <Button
             type="button"
             variant="destructive"
             size="xs"
             onClick={() => setShowDeleteAlert(true)}
-            className="h-6 text-[10px]"
+            className="h-7 text-[10px]"
           >
             <Trash2 className="size-2.5" />
             Delete

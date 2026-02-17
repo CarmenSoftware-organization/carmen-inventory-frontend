@@ -31,6 +31,7 @@ export function WfStages({
     <div className="flex gap-3 pt-3">
       <div className="w-48 shrink-0">
         <WfStageList
+          form={form}
           fieldArray={fieldArray}
           selectedIndex={safeIndex}
           onSelect={setSelectedIndex}
