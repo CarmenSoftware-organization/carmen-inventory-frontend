@@ -25,6 +25,7 @@ export enum enum_sla_unit {
   days = "days",
 }
 
+export type SlaUnit = `${enum_sla_unit}`;
 export type Role = "create" | "approve" | "purchase" | "issue";
 export type CreatorAccess = "only_creator" | "all_department";
 
@@ -114,9 +115,9 @@ export interface Stage {
   name: string;
   description?: string;
   sla: string;
-  sla_unit: string;
-  role: string;
-  creator_access?: string;
+  sla_unit: SlaUnit;
+  role: Role;
+  creator_access?: CreatorAccess;
   available_actions: AvailableActions;
   hide_fields: HideFields;
   assigned_users?: User[];
@@ -337,8 +338,7 @@ export const wfFormSchema = z.object({
             .optional(),
         }),
       ),
-    })
-    .optional(),
+    }),
   description: z.string().optional(),
 });
 

@@ -41,9 +41,9 @@ export interface Product {
   product_status_type: ProductStatusType;
   inventory_unit_id: string;
   inventory_unit_name: string;
-  product_item_group: { name: string } | null;
-  product_sub_category: { name: string } | null;
-  product_category: { name: string } | null;
+  product_item_group: { id?: string; name: string } | null;
+  product_sub_category: { id?: string; name: string } | null;
+  product_category: { id?: string; name: string } | null;
   created_at: string;
   updated_at: string;
 }

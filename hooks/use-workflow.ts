@@ -15,6 +15,12 @@ import type { ParamsDto } from "@/types/params";
 
 interface WorkflowListResponse {
   data: WorkflowDto[];
+  paginate?: {
+    total: number;
+    page: number;
+    perpage: number;
+    pages: number;
+  };
 }
 
 export function useWorkflow(params?: ParamsDto) {
