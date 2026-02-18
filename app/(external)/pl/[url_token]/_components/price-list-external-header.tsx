@@ -1,5 +1,5 @@
 import { formatDate } from "@/lib/date-utils";
-import type { PricelistExternalDto } from "./price-list-external.dto";
+import type { PricelistExternalDto } from "../../../../../types/price-list-external";
 import { Badge } from "@/components/ui/badge";
 
 const DATE_FORMAT = "yyyy-MM-dd";

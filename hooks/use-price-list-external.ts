@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { httpClient } from "@/lib/http-client";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
-import type { PricelistExternalDto } from "../app/(external)/pl/[url_token]/_components/price-list-external.dto";
+import type { PricelistExternalDto } from "../types/price-list-external";
 
 function buildPayload(formData: PricelistExternalDto) {
   return {

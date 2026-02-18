@@ -29,7 +29,7 @@ import MoqTiersSubTable from "./moq-tiers-sub-table";
 import type {
   PricelistExternalDto,
   PricelistExternalDetailDto,
-} from "./price-list-external.dto";
+} from "../../../../../types/price-list-external";
 
 // Type for grouped rows in view mode
 interface GroupedProductRow {
@@ -256,7 +256,11 @@ export default function PriceListExternalProductTable({
               type="number"
               value={row.original.lead_time_days}
               onChange={(e) =>
-                handleItemFieldChange(fieldIndex, "lead_time_days", Number(e.target.value))
+                handleItemFieldChange(
+                  fieldIndex,
+                  "lead_time_days",
+                  Number(e.target.value),
+                )
               }
               className="h-7 text-xs"
               min={0}
@@ -412,7 +416,10 @@ export default function PriceListExternalProductTable({
         cell: ({ row }) => (
           <div className="flex flex-col gap-0.5">
             {row.original.moq_qtys.map((moq, i) => (
-              <span key={`${row.original.product_id}-moq-${row.original.sequence_nos[i]}`} className="text-xs">
+              <span
+                key={`${row.original.product_id}-moq-${row.original.sequence_nos[i]}`}
+                className="text-xs"
+              >
                 {moq}+ {row.original.unit_names[i]}→{row.original.prices[i]}(
                 {row.original.lead_time_days_list[i]}d)
               </span>
@@ -429,7 +436,10 @@ export default function PriceListExternalProductTable({
         cell: ({ row }) => (
           <div className="flex flex-col gap-0.5">
             {row.original.prices_without_tax.map((p, i) => (
-              <span key={`${row.original.product_id}-pwt-${row.original.sequence_nos[i]}`} className="text-xs">
+              <span
+                key={`${row.original.product_id}-pwt-${row.original.sequence_nos[i]}`}
+                className="text-xs"
+              >
                 {p}
               </span>
             ))}
@@ -445,7 +455,10 @@ export default function PriceListExternalProductTable({
         cell: ({ row }) => (
           <div className="flex flex-col gap-0.5">
             {row.original.tax_amts.map((t, i) => (
-              <span key={`${row.original.product_id}-tax-${row.original.sequence_nos[i]}`} className="text-xs">
+              <span
+                key={`${row.original.product_id}-tax-${row.original.sequence_nos[i]}`}
+                className="text-xs"
+              >
                 {t}
               </span>
             ))}
@@ -465,7 +478,10 @@ export default function PriceListExternalProductTable({
         cell: ({ row }) => (
           <div className="flex flex-col gap-0.5">
             {row.original.tax_profile_names.map((t, i) => (
-              <span key={`${row.original.product_id}-taxprofile-${row.original.sequence_nos[i]}`} className="text-xs">
+              <span
+                key={`${row.original.product_id}-taxprofile-${row.original.sequence_nos[i]}`}
+                className="text-xs"
+              >
                 {t}
               </span>
             ))}
