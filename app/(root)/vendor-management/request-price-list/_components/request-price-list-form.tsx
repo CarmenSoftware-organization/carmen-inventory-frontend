@@ -11,8 +11,9 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FormToolbar } from "@/components/ui/form-toolbar";
 import { Input } from "@/components/ui/input";
 import {
   Field,
@@ -186,74 +187,19 @@ export function RequestPriceListForm({
     }
   };
 
-  const title = isAdd
-    ? "Add Request Price List"
-    : isEdit
-      ? "Edit Request Price List"
-      : "Request Price List";
-
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() =>
-              router.push("/vendor-management/request-price-list")
-            }
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="request-price-list-form"
-                disabled={isPending}
-              >
-                {isPending
-                  ? isEdit
-                    ? "Saving..."
-                    : "Creating..."
-                  : isEdit
-                    ? "Save"
-                    : "Create"}
-              </Button>
-            </>
-          )}
-          {isEdit && requestPriceList && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deleteRfp.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity="Request Price List"
+        mode={mode}
+        formId="request-price-list-form"
+        isPending={isPending}
+        onBack={() => router.push("/vendor-management/request-price-list")}
+        onCancel={handleCancel}
+        onEdit={() => setMode("edit")}
+        onDelete={() => setShowDelete(true)}
+        deleteIsPending={deleteRfp.isPending}
+      />
 
       <form
         id="request-price-list-form"

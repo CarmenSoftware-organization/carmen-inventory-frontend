@@ -5,8 +5,6 @@ import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -23,6 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { FormToolbar } from "@/components/ui/form-toolbar";
+import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { toast } from "sonner";
 import {
   useCreateAdjustmentType,
@@ -35,7 +35,6 @@ import {
   ADJUSTMENT_TYPE,
   ADJUSTMENT_TYPE_OPTIONS,
 } from "@/constant/adjustment-type";
-import { DeleteDialog } from "@/components/ui/delete-dialog";
 
 const adjustmentTypeSchema = z.object({
   code: z.string().min(1, "Code is required"),
@@ -138,72 +137,19 @@ export function AdjustmentTypeForm({
     }
   };
 
-  const title = isAdd
-    ? "Add Adjustment Type"
-    : isEdit
-      ? "Edit Adjustment Type"
-      : "Adjustment Type";
-
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => router.push("/config/adjustment-type")}
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="adjustment-type-form"
-                disabled={isPending}
-              >
-                {isPending
-                  ? isEdit
-                    ? "Saving..."
-                    : "Creating..."
-                  : isEdit
-                    ? "Save"
-                    : "Create"}
-              </Button>
-            </>
-          )}
-          {isEdit && adjustmentType && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deleteAdjustmentType.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity="Adjustment Type"
+        mode={mode}
+        formId="adjustment-type-form"
+        isPending={isPending}
+        onBack={() => router.push("/config/adjustment-type")}
+        onEdit={() => setMode("edit")}
+        onCancel={handleCancel}
+        onDelete={adjustmentType ? () => setShowDelete(true) : undefined}
+        deleteIsPending={deleteAdjustmentType.isPending}
+      />
 
       <form
         id="adjustment-type-form"

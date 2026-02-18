@@ -11,8 +11,9 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FormToolbar } from "@/components/ui/form-toolbar";
 import { Input } from "@/components/ui/input";
 import {
   Field,
@@ -192,74 +193,19 @@ export function PriceListTemplateForm({
     }
   };
 
-  const title = isAdd
-    ? "Add Price List Template"
-    : isEdit
-      ? "Edit Price List Template"
-      : "Price List Template";
-
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() =>
-              router.push("/vendor-management/price-list-template")
-            }
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="price-list-template-form"
-                disabled={isPending}
-              >
-                {isPending
-                  ? isEdit
-                    ? "Saving..."
-                    : "Creating..."
-                  : isEdit
-                    ? "Save"
-                    : "Create"}
-              </Button>
-            </>
-          )}
-          {isEdit && priceListTemplate && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deleteTemplate.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity="Price List Template"
+        mode={mode}
+        formId="price-list-template-form"
+        isPending={isPending}
+        onBack={() => router.push("/vendor-management/price-list-template")}
+        onCancel={handleCancel}
+        onEdit={() => setMode("edit")}
+        onDelete={() => setShowDelete(true)}
+        deleteIsPending={deleteTemplate.isPending}
+      />
 
       <form
         id="price-list-template-form"

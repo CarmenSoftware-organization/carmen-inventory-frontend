@@ -5,8 +5,6 @@ import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -17,6 +15,9 @@ import {
 } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { Transfer, type TransferItem } from "@/components/ui/transfer";
+import { FormToolbar } from "@/components/ui/form-toolbar";
+import { UserTable } from "@/components/ui/user-table";
+import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { toast } from "sonner";
 import {
   useCreateDepartment,
@@ -24,15 +25,9 @@ import {
   useDeleteDepartment,
 } from "@/hooks/use-department";
 import { useAllUsers } from "@/hooks/use-all-users";
-import { transferHandler } from "@/utils/transfer-handler";
-import type { Department, DepartmentUser } from "@/types/department";
+import { transferHandler, transferPayloadSchema } from "@/utils/transfer-handler";
+import type { Department } from "@/types/department";
 import type { FormMode } from "@/types/form";
-import { DeleteDialog } from "@/components/ui/delete-dialog";
-
-const transferPayloadSchema = z.object({
-  add: z.array(z.object({ id: z.string() })),
-  remove: z.array(z.object({ id: z.string() })),
-});
 
 const departmentSchema = z.object({
   code: z.string().min(1, "Code is required"),
@@ -191,72 +186,19 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
     }
   };
 
-  const title = isAdd
-    ? "Add Department"
-    : isEdit
-      ? "Edit Department"
-      : "Department";
-
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => router.push("/config/department")}
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="department-form"
-                disabled={isPending}
-              >
-                {isPending
-                  ? isEdit
-                    ? "Saving..."
-                    : "Creating..."
-                  : isEdit
-                    ? "Save"
-                    : "Create"}
-              </Button>
-            </>
-          )}
-          {isEdit && department && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deleteDepartment.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity="Department"
+        mode={mode}
+        formId="department-form"
+        isPending={isPending}
+        onBack={() => router.push("/config/department")}
+        onEdit={() => setMode("edit")}
+        onCancel={handleCancel}
+        onDelete={department ? () => setShowDelete(true) : undefined}
+        deleteIsPending={deleteDepartment.isPending}
+      />
 
       <form
         id="department-form"
@@ -336,7 +278,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
             )}
           </div>
           {isView ? (
-            <UserSection users={department?.department_users ?? []} />
+            <UserTable users={department?.department_users ?? []} className="max-w-2xl" />
           ) : (
             <Transfer
               dataSource={departmentUserSource}
@@ -359,7 +301,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
             )}
           </div>
           {isView ? (
-            <UserSection users={department?.hod_users ?? []} />
+            <UserTable users={department?.hod_users ?? []} className="max-w-2xl" />
           ) : (
             <Transfer
               dataSource={hodUserSource}
@@ -397,35 +339,3 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
   );
 }
 
-function UserSection({ users }: { users: DepartmentUser[] }) {
-  if (users.length === 0) {
-    return (
-      <p className="text-xs text-muted-foreground">No users assigned</p>
-    );
-  }
-
-  return (
-    <div className="max-w-2xl rounded-md border">
-      <table className="w-full text-xs">
-        <thead>
-          <tr className="border-b bg-muted/50">
-            <th className="px-3 py-1.5 text-left font-medium">Name</th>
-            <th className="px-3 py-1.5 text-left font-medium">Telephone</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id} className="border-b last:border-0">
-              <td className="px-3 py-1.5">
-                {user.firstname} {user.lastname}
-              </td>
-              <td className="px-3 py-1.5 text-muted-foreground">
-                {user.telephone}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}

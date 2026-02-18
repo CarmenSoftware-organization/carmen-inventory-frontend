@@ -5,8 +5,6 @@ import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -26,6 +24,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Transfer, type TransferItem } from "@/components/ui/transfer";
 import { TreeProductLookup } from "@/components/ui/tree-product-lookup";
+import { FormToolbar } from "@/components/ui/form-toolbar";
+import { UserTable } from "@/components/ui/user-table";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { toast } from "sonner";
 import {
@@ -35,10 +35,9 @@ import {
 } from "@/hooks/use-location";
 import { useAllUsers } from "@/hooks/use-all-users";
 import { useAllProducts } from "@/hooks/use-all-products";
-import { transferHandler } from "@/utils/transfer-handler";
+import { transferHandler, transferPayloadSchema } from "@/utils/transfer-handler";
 import type {
   Location,
-  UserLocation,
   ProductLocation,
   PhysicalCountType,
 } from "@/types/location";
@@ -48,11 +47,6 @@ import {
   INVENTORY_TYPE_OPTIONS,
   PHYSICAL_COUNT_TYPE_OPTIONS,
 } from "@/constant/location";
-
-const transferPayloadSchema = z.object({
-  add: z.array(z.object({ id: z.string() })),
-  remove: z.array(z.object({ id: z.string() })),
-});
 
 const locationSchema = z.object({
   code: z.string().min(1, "Code is required"),
@@ -232,72 +226,19 @@ export function LocationForm({ location }: LocationFormProps) {
     }
   };
 
-  const title = isAdd
-    ? "Add Store Location"
-    : isEdit
-      ? "Edit Store Location"
-      : "Store Location";
-
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => router.push("/config/location")}
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="location-form"
-                disabled={isPending}
-              >
-                {isPending
-                  ? isEdit
-                    ? "Saving..."
-                    : "Creating..."
-                  : isEdit
-                    ? "Save"
-                    : "Create"}
-              </Button>
-            </>
-          )}
-          {isEdit && location && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deleteLocation.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity="Store Location"
+        mode={mode}
+        formId="location-form"
+        isPending={isPending}
+        onBack={() => router.push("/config/location")}
+        onEdit={() => setMode("edit")}
+        onCancel={handleCancel}
+        onDelete={location ? () => setShowDelete(true) : undefined}
+        deleteIsPending={deleteLocation.isPending}
+      />
 
       <form
         id="location-form"
@@ -446,7 +387,7 @@ export function LocationForm({ location }: LocationFormProps) {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="users">
-                <UserLocationSection users={location.user_location} />
+                <UserTable users={location.user_location} />
               </TabsContent>
               <TabsContent value="products">
                 <ProductLocationSection
@@ -502,41 +443,6 @@ export function LocationForm({ location }: LocationFormProps) {
             });
           }}
         />
-      )}
-    </div>
-  );
-}
-
-function UserLocationSection({ users }: { users: UserLocation[] }) {
-  return (
-    <div>
-      {users.length === 0 ? (
-        <p className="text-xs text-muted-foreground">No users assigned</p>
-      ) : (
-        <div className="rounded-md border">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b bg-muted/50">
-                <th className="px-3 py-1.5 text-left font-medium">Name</th>
-                <th className="px-3 py-1.5 text-left font-medium">
-                  Telephone
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user.id} className="border-b last:border-0">
-                  <td className="px-3 py-1.5">
-                    {user.firstname} {user.lastname}
-                  </td>
-                  <td className="px-3 py-1.5 text-muted-foreground">
-                    {user.telephone}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
       )}
     </div>
   );

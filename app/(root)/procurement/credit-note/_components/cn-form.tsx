@@ -4,8 +4,7 @@ import { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { FormToolbar } from "@/components/ui/form-toolbar";
 import { toast } from "sonner";
 import {
   useCreateCreditNote,
@@ -13,7 +12,7 @@ import {
   useDeleteCreditNote,
 } from "@/hooks/use-credit-note";
 import type { CreditNote, CreateCnDto } from "@/types/credit-note";
-import { type FormMode, getModeLabels } from "@/types/form";
+import type { FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { CnGeneralFields } from "./cn-general-fields";
 import { CnItemFields } from "./cn-item-fields";
@@ -43,7 +42,6 @@ export function CnForm({ creditNote }: CnFormProps) {
   const [showDelete, setShowDelete] = useState(false);
   const isPending = createCn.isPending || updateCn.isPending;
   const isDisabled = isView || isPending;
-  const labels = getModeLabels(mode, "Credit Note");
 
   const defaultValues = getDefaultValues(creditNote, { defaultCurrencyId });
 
@@ -135,58 +133,17 @@ export function CnForm({ creditNote }: CnFormProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => router.push("/procurement/credit-note")}
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{labels.title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="cn-form"
-                disabled={isPending}
-              >
-                {isPending ? labels.pending : labels.submit}
-              </Button>
-            </>
-          )}
-          {isEdit && creditNote && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deleteCn.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity="Credit Note"
+        mode={mode}
+        formId="cn-form"
+        isPending={isPending}
+        onBack={() => router.push("/procurement/credit-note")}
+        onEdit={() => setMode("edit")}
+        onCancel={handleCancel}
+        onDelete={creditNote ? () => setShowDelete(true) : undefined}
+        deleteIsPending={deleteCn.isPending}
+      />
 
       <form
         id="cn-form"

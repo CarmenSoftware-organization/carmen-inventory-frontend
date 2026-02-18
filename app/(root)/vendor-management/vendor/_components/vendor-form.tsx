@@ -5,7 +5,7 @@ import { useForm, useFieldArray, Controller, type Resolver } from "react-hook-fo
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FormToolbar } from "@/components/ui/form-toolbar";
 import { toast } from "sonner";
 import {
   useCreateVendor,
@@ -224,72 +225,19 @@ export function VendorForm({ vendor }: VendorFormProps) {
     }
   };
 
-  const title = isAdd
-    ? "Add Vendor"
-    : isEdit
-      ? "Edit Vendor"
-      : "Vendor";
-
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => router.push("/vendor-management/vendor")}
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="vendor-form"
-                disabled={isPending}
-              >
-                {isPending
-                  ? isEdit
-                    ? "Saving..."
-                    : "Creating..."
-                  : isEdit
-                    ? "Save"
-                    : "Create"}
-              </Button>
-            </>
-          )}
-          {isEdit && vendor && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deleteVendor.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity="Vendor"
+        mode={mode}
+        formId="vendor-form"
+        isPending={isPending}
+        onBack={() => router.push("/vendor-management/vendor")}
+        onEdit={() => setMode("edit")}
+        onCancel={handleCancel}
+        onDelete={vendor ? () => setShowDelete(true) : undefined}
+        deleteIsPending={deleteVendor.isPending}
+      />
 
       <form
         id="vendor-form"

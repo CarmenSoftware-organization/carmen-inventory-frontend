@@ -4,16 +4,15 @@ import { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { FormToolbar } from "@/components/ui/form-toolbar";
 import {
   useCreatePeriodEnd,
   useUpdatePeriodEnd,
   useDeletePeriodEnd,
 } from "@/hooks/use-period-end";
 import type { PeriodEnd, CreatePeriodEndDto } from "@/types/period-end";
-import { type FormMode, getModeLabels } from "@/types/form";
+import type { FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { PeGeneralFields } from "./pe-general-fields";
 import {
@@ -39,7 +38,6 @@ export function PeForm({ periodEnd }: PeFormProps) {
   const [showDelete, setShowDelete] = useState(false);
   const isPending = createPe.isPending || updatePe.isPending;
   const isDisabled = isView || isPending;
-  const labels = getModeLabels(mode, "Period End");
 
   const defaultValues = getDefaultValues(periodEnd);
 
@@ -86,58 +84,17 @@ export function PeForm({ periodEnd }: PeFormProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => router.push("/inventory-management/period-end")}
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{labels.title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="pe-form"
-                disabled={isPending}
-              >
-                {isPending ? labels.pending : labels.submit}
-              </Button>
-            </>
-          )}
-          {isEdit && periodEnd && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deletePe.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity="Period End"
+        mode={mode}
+        formId="pe-form"
+        isPending={isPending}
+        onBack={() => router.push("/inventory-management/period-end")}
+        onCancel={handleCancel}
+        onEdit={() => setMode("edit")}
+        onDelete={periodEnd ? () => setShowDelete(true) : undefined}
+        deleteIsPending={deletePe.isPending}
+      />
 
       <form
         id="pe-form"

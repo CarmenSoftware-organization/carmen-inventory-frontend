@@ -11,7 +11,8 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
+import { FormToolbar } from "@/components/ui/form-toolbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -195,74 +196,23 @@ export function InventoryAdjustmentForm({
     }
   };
 
-  const title = isAdd
-    ? `Add ${typeLabel}`
-    : isEdit
-      ? `Edit ${typeLabel}`
-      : typeLabel;
-
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() =>
-              router.push("/inventory-management/inventory-adjustment")
-            }
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="inventory-adjustment-form"
-                disabled={isPending}
-              >
-                {isPending
-                  ? isEdit
-                    ? "Saving..."
-                    : "Creating..."
-                  : isEdit
-                    ? "Save"
-                    : "Create"}
-              </Button>
-            </>
-          )}
-          {isEdit && inventoryAdjustment && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deleteAdj.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity={typeLabel}
+        mode={mode}
+        formId="inventory-adjustment-form"
+        isPending={isPending}
+        onBack={() =>
+          router.push("/inventory-management/inventory-adjustment")
+        }
+        onCancel={handleCancel}
+        onEdit={() => setMode("edit")}
+        onDelete={
+          inventoryAdjustment ? () => setShowDelete(true) : undefined
+        }
+        deleteIsPending={deleteAdj.isPending}
+      />
 
       <form
         id="inventory-adjustment-form"

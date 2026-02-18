@@ -1,4 +1,12 @@
+import { z } from "zod";
 import type { UseFormReturn } from "react-hook-form";
+
+export const transferPayloadSchema = z.object({
+  add: z.array(z.object({ id: z.string() })),
+  remove: z.array(z.object({ id: z.string() })),
+});
+
+export type TransferPayload = z.infer<typeof transferPayloadSchema>;
 
 /**
  * Handles incremental add/remove logic for Transfer component.

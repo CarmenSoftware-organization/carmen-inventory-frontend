@@ -4,8 +4,7 @@ import { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { FormToolbar } from "@/components/ui/form-toolbar";
 import { toast } from "sonner";
 import {
   useCreateGoodsReceiveNote,
@@ -13,7 +12,7 @@ import {
   useDeleteGoodsReceiveNote,
 } from "@/hooks/use-goods-receive-note";
 import type { GoodsReceiveNote, CreateGrnDto } from "@/types/goods-receive-note";
-import { type FormMode, getModeLabels } from "@/types/form";
+import type { FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { GrnGeneralFields } from "./grn-general-fields";
 import { GrnItemFields } from "./grn-item-fields";
@@ -41,7 +40,6 @@ export function GrnForm({ goodsReceiveNote }: GrnFormProps) {
   const [showDelete, setShowDelete] = useState(false);
   const isPending = createGrn.isPending || updateGrn.isPending;
   const isDisabled = isView || isPending;
-  const labels = getModeLabels(mode, "Goods Receive Note");
 
   const defaultValues = getDefaultValues(goodsReceiveNote);
 
@@ -126,58 +124,17 @@ export function GrnForm({ goodsReceiveNote }: GrnFormProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => router.push("/procurement/goods-receive-note")}
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{labels.title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="grn-form"
-                disabled={isPending}
-              >
-                {isPending ? labels.pending : labels.submit}
-              </Button>
-            </>
-          )}
-          {isEdit && goodsReceiveNote && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deleteGrn.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity="Goods Receive Note"
+        mode={mode}
+        formId="grn-form"
+        isPending={isPending}
+        onBack={() => router.push("/procurement/goods-receive-note")}
+        onEdit={() => setMode("edit")}
+        onCancel={handleCancel}
+        onDelete={goodsReceiveNote ? () => setShowDelete(true) : undefined}
+        deleteIsPending={deleteGrn.isPending}
+      />
 
       <form
         id="grn-form"

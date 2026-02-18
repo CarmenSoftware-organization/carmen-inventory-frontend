@@ -11,7 +11,7 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -29,6 +29,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FormToolbar } from "@/components/ui/form-toolbar";
+import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { toast } from "sonner";
 import {
   useCreateStoreRequisition,
@@ -41,7 +43,6 @@ import { useLocation } from "@/hooks/use-location";
 import { useProduct } from "@/hooks/use-product";
 import type { StoreRequisition } from "@/types/store-requisition";
 import type { FormMode } from "@/types/form";
-import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { isoToDateInput } from "@/lib/date-utils";
 
 const detailSchema = z.object({
@@ -199,74 +200,19 @@ export function StoreRequisitionForm({
     }
   };
 
-  const title = isAdd
-    ? "Add Store Requisition"
-    : isEdit
-      ? "Edit Store Requisition"
-      : "Store Requisition";
-
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() =>
-              router.push("/store-operation/store-requisition")
-            }
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="store-requisition-form"
-                disabled={isPending}
-              >
-                {isPending
-                  ? isEdit
-                    ? "Saving..."
-                    : "Creating..."
-                  : isEdit
-                    ? "Save"
-                    : "Create"}
-              </Button>
-            </>
-          )}
-          {isEdit && storeRequisition && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deleteSr.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity="Store Requisition"
+        mode={mode}
+        formId="store-requisition-form"
+        isPending={isPending}
+        onBack={() => router.push("/store-operation/store-requisition")}
+        onEdit={() => setMode("edit")}
+        onCancel={handleCancel}
+        onDelete={storeRequisition ? () => setShowDelete(true) : undefined}
+        deleteIsPending={deleteSr.isPending}
+      />
 
       <form
         id="store-requisition-form"

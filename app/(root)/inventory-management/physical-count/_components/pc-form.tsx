@@ -4,16 +4,15 @@ import { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { FormToolbar } from "@/components/ui/form-toolbar";
 import {
   useCreatePhysicalCount,
   useUpdatePhysicalCount,
   useDeletePhysicalCount,
 } from "@/hooks/use-physical-count";
 import type { PhysicalCount, CreatePhysicalCountDto } from "@/types/physical-count";
-import { type FormMode, getModeLabels } from "@/types/form";
+import type { FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { PcGeneralFields } from "./pc-general-fields";
 import {
@@ -39,7 +38,6 @@ export function PcForm({ physicalCount }: PcFormProps) {
   const [showDelete, setShowDelete] = useState(false);
   const isPending = createPc.isPending || updatePc.isPending;
   const isDisabled = isView || isPending;
-  const labels = getModeLabels(mode, "Physical Count");
 
   const defaultValues = getDefaultValues(physicalCount);
 
@@ -86,58 +84,17 @@ export function PcForm({ physicalCount }: PcFormProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => router.push("/inventory-management/physical-count")}
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{labels.title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="pc-form"
-                disabled={isPending}
-              >
-                {isPending ? labels.pending : labels.submit}
-              </Button>
-            </>
-          )}
-          {isEdit && physicalCount && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deletePc.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity="Physical Count"
+        mode={mode}
+        formId="pc-form"
+        isPending={isPending}
+        onBack={() => router.push("/inventory-management/physical-count")}
+        onCancel={handleCancel}
+        onEdit={() => setMode("edit")}
+        onDelete={physicalCount ? () => setShowDelete(true) : undefined}
+        deleteIsPending={deletePc.isPending}
+      />
 
       <form
         id="pc-form"
