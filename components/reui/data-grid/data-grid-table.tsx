@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { CSSProperties, Fragment, ReactNode } from "react"
-import { useDataGrid } from "@/components/reui/data-grid/data-grid"
+import { CSSProperties, Fragment, ReactNode } from "react";
+import { useDataGrid } from "@/components/reui/data-grid/data-grid";
 import {
   Cell,
   Column,
@@ -9,42 +9,39 @@ import {
   Header,
   HeaderGroup,
   Row,
-} from "@tanstack/react-table"
-import { cva } from "class-variance-authority"
+} from "@tanstack/react-table";
+import { cva } from "class-variance-authority";
 
-import { cn } from "@/lib/utils"
-import { Checkbox } from "@/components/ui/checkbox"
+import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
+import EmptyComponent from "@/components/empty-component";
 
 const headerCellSpacingVariants = cva("", {
   variants: {
     size: {
-      dense:
-        "px-2 h-8",
-      default:
-        "px-3",
+      dense: "px-2 h-8",
+      default: "px-3",
     },
   },
   defaultVariants: {
     size: "default",
   },
-})
+});
 
 const bodyCellSpacingVariants = cva("", {
   variants: {
     size: {
-      dense:
-        "px-2 py-1.5",
-      default:
-        "px-3 py-2",
+      dense: "px-2 py-1.5",
+      default: "px-3 py-2",
     },
   },
   defaultVariants: {
     size: "default",
   },
-})
+});
 
 function getPinningStyles<TData>(column: Column<TData>): CSSProperties {
-  const isPinned = column.getIsPinned()
+  const isPinned = column.getIsPinned();
 
   return {
     left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
@@ -52,11 +49,11 @@ function getPinningStyles<TData>(column: Column<TData>): CSSProperties {
     position: isPinned ? "sticky" : "relative",
     width: column.getSize(),
     zIndex: isPinned ? 1 : 0,
-  }
+  };
 }
 
 function DataGridTableBase({ children }: { children: ReactNode }) {
-  const { props, table } = useDataGrid()
+  const { props, table } = useDataGrid();
 
   return (
     <table
@@ -67,7 +64,7 @@ function DataGridTableBase({ children }: { children: ReactNode }) {
         !props.tableLayout?.columnsResizable && "",
         !props.tableLayout?.columnsDraggable &&
           "border-separate border-spacing-0",
-        props.tableClassNames?.base
+        props.tableClassNames?.base,
       )}
       style={
         props.tableLayout?.columnsResizable
@@ -77,32 +74,32 @@ function DataGridTableBase({ children }: { children: ReactNode }) {
     >
       {children}
     </table>
-  )
+  );
 }
 
 function DataGridTableHead({ children }: { children: ReactNode }) {
-  const { props } = useDataGrid()
+  const { props } = useDataGrid();
 
   return (
     <thead
       className={cn(
         props.tableClassNames?.header,
-        props.tableLayout?.headerSticky && props.tableClassNames?.headerSticky
+        props.tableLayout?.headerSticky && props.tableClassNames?.headerSticky,
       )}
     >
       {children}
     </thead>
-  )
+  );
 }
 
 function DataGridTableHeadRow<TData>({
   children,
   headerGroup,
 }: {
-  children: ReactNode
-  headerGroup: HeaderGroup<TData>
+  children: ReactNode;
+  headerGroup: HeaderGroup<TData>;
 }) {
-  const { props } = useDataGrid()
+  const { props } = useDataGrid();
 
   return (
     <tr
@@ -113,12 +110,12 @@ function DataGridTableHeadRow<TData>({
         props.tableLayout?.cellBorder && "*:last:border-e-0",
         props.tableLayout?.stripped && "bg-transparent",
         props.tableLayout?.headerBackground === false && "bg-transparent",
-        props.tableClassNames?.headerRow
+        props.tableClassNames?.headerRow,
       )}
     >
       {children}
     </tr>
-  )
+  );
 }
 
 function DataGridTableHeadRowCell<TData>({
@@ -127,21 +124,22 @@ function DataGridTableHeadRowCell<TData>({
   dndRef,
   dndStyle,
 }: {
-  children: ReactNode
-  header: Header<TData, unknown>
-  dndRef?: React.Ref<HTMLTableCellElement>
-  dndStyle?: CSSProperties
+  children: ReactNode;
+  header: Header<TData, unknown>;
+  dndRef?: React.Ref<HTMLTableCellElement>;
+  dndStyle?: CSSProperties;
 }) {
-  const { props } = useDataGrid()
+  const { props } = useDataGrid();
 
-  const { column } = header
-  const isPinned = column.getIsPinned()
-  const isLastLeftPinned = isPinned === "left" && column.getIsLastColumn("left")
+  const { column } = header;
+  const isPinned = column.getIsPinned();
+  const isLastLeftPinned =
+    isPinned === "left" && column.getIsLastColumn("left");
   const isFirstRightPinned =
-    isPinned === "right" && column.getIsFirstColumn("right")
+    isPinned === "right" && column.getIsFirstColumn("right");
   const headerCellSpacing = headerCellSpacingVariants({
     size: props.tableLayout?.dense ? "dense" : "default",
-  })
+  });
 
   return (
     <th
@@ -175,20 +173,20 @@ function DataGridTableHeadRowCell<TData>({
         column.getIndex() === 0 ||
           column.getIndex() === header.headerGroup.headers.length - 1
           ? props.tableClassNames?.edgeCell
-          : ""
+          : "",
       )}
     >
       {children}
     </th>
-  )
+  );
 }
 
 function DataGridTableHeadRowCellResize<TData>({
   header,
 }: {
-  header: Header<TData, unknown>
+  header: Header<TData, unknown>;
 }) {
-  const { column } = header
+  const { column } = header;
 
   return (
     <div
@@ -200,34 +198,32 @@ function DataGridTableHeadRowCellResize<TData>({
           "absolute top-0 h-full w-4 cursor-col-resize user-select-none touch-none -end-2 z-10 flex justify-center before:absolute before:w-px before:inset-y-0 before:bg-border before:-translate-x-px",
       }}
     />
-  )
+  );
 }
 
 function DataGridTableRowSpacer() {
-  return <tbody aria-hidden="true" className="h-2"></tbody>
+  return <tbody aria-hidden="true" className="h-2"></tbody>;
 }
 
 function DataGridTableBody({ children }: { children: ReactNode }) {
-  const { props } = useDataGrid()
+  const { props } = useDataGrid();
 
   return (
     <tbody
       className={cn(
         "[&_tr:last-child]:border-0",
-        props.tableLayout?.rowRounded &&
-          "[&_td:first-child]:rounded-l-lg",
-        props.tableLayout?.rowRounded &&
-          "[&_td:last-child]:rounded-r-lg",
-        props.tableClassNames?.body
+        props.tableLayout?.rowRounded && "[&_td:first-child]:rounded-l-lg",
+        props.tableLayout?.rowRounded && "[&_td:last-child]:rounded-r-lg",
+        props.tableClassNames?.body,
       )}
     >
       {children}
     </tbody>
-  )
+  );
 }
 
 function DataGridTableBodyRowSkeleton({ children }: { children: ReactNode }) {
-  const { table, props } = useDataGrid()
+  const { table, props } = useDataGrid();
 
   return (
     <tr
@@ -241,25 +237,25 @@ function DataGridTableBodyRowSkeleton({ children }: { children: ReactNode }) {
         props.tableLayout?.stripped &&
           "odd:bg-muted/90 odd:hover:bg-muted hover:bg-transparent",
         table.options.enableRowSelection && "*:first:relative",
-        props.tableClassNames?.bodyRow
+        props.tableClassNames?.bodyRow,
       )}
     >
       {children}
     </tr>
-  )
+  );
 }
 
 function DataGridTableBodyRowSkeletonCell<TData>({
   children,
   column,
 }: {
-  children: ReactNode
-  column: Column<TData>
+  children: ReactNode;
+  column: Column<TData>;
 }) {
-  const { props, table } = useDataGrid()
+  const { props, table } = useDataGrid();
   const bodyCellSpacing = bodyCellSpacingVariants({
     size: props.tableLayout?.dense ? "dense" : "default",
-  })
+  });
 
   return (
     <td
@@ -282,12 +278,12 @@ function DataGridTableBodyRowSkeletonCell<TData>({
         column.getIndex() === 0 ||
           column.getIndex() === table.getVisibleFlatColumns().length - 1
           ? props.tableClassNames?.edgeCell
-          : ""
+          : "",
       )}
     >
       {children}
     </td>
-  )
+  );
 }
 
 function DataGridTableBodyRow<TData>({
@@ -296,12 +292,12 @@ function DataGridTableBodyRow<TData>({
   dndRef,
   dndStyle,
 }: {
-  children: ReactNode
-  row: Row<TData>
-  dndRef?: React.Ref<HTMLTableRowElement>
-  dndStyle?: CSSProperties
+  children: ReactNode;
+  row: Row<TData>;
+  dndRef?: React.Ref<HTMLTableRowElement>;
+  dndStyle?: CSSProperties;
 }) {
-  const { props, table } = useDataGrid()
+  const { props, table } = useDataGrid();
 
   return (
     <tr
@@ -323,21 +319,21 @@ function DataGridTableBodyRow<TData>({
         props.tableLayout?.stripped &&
           "odd:bg-muted/90 odd:hover:bg-muted hover:bg-transparent",
         table.options.enableRowSelection && "*:first:relative",
-        props.tableClassNames?.bodyRow
+        props.tableClassNames?.bodyRow,
       )}
     >
       {children}
     </tr>
-  )
+  );
 }
 
 function DataGridTableBodyRowExpandded<TData>({ row }: { row: Row<TData> }) {
-  const { props, table } = useDataGrid()
+  const { props, table } = useDataGrid();
 
   return (
     <tr
       className={cn(
-        props.tableLayout?.rowBorder && "[&:not(:last-child)>td]:border-b"
+        props.tableLayout?.rowBorder && "[&:not(:last-child)>td]:border-b",
       )}
     >
       <td colSpan={row.getVisibleCells().length}>
@@ -347,7 +343,7 @@ function DataGridTableBodyRowExpandded<TData>({ row }: { row: Row<TData> }) {
           ?.columnDef.meta?.expandedContent?.(row.original)}
       </td>
     </tr>
-  )
+  );
 }
 
 function DataGridTableBodyRowCell<TData>({
@@ -356,21 +352,22 @@ function DataGridTableBodyRowCell<TData>({
   dndRef,
   dndStyle,
 }: {
-  children: ReactNode
-  cell: Cell<TData, unknown>
-  dndRef?: React.Ref<HTMLTableCellElement>
-  dndStyle?: CSSProperties
+  children: ReactNode;
+  cell: Cell<TData, unknown>;
+  dndRef?: React.Ref<HTMLTableCellElement>;
+  dndStyle?: CSSProperties;
 }) {
-  const { props } = useDataGrid()
+  const { props } = useDataGrid();
 
-  const { column, row } = cell
-  const isPinned = column.getIsPinned()
-  const isLastLeftPinned = isPinned === "left" && column.getIsLastColumn("left")
+  const { column, row } = cell;
+  const isPinned = column.getIsPinned();
+  const isLastLeftPinned =
+    isPinned === "left" && column.getIsLastColumn("left");
   const isFirstRightPinned =
-    isPinned === "right" && column.getIsFirstColumn("right")
+    isPinned === "right" && column.getIsFirstColumn("right");
   const bodyCellSpacing = bodyCellSpacingVariants({
     size: props.tableLayout?.dense ? "dense" : "default",
-  })
+  });
 
   return (
     <td
@@ -404,17 +401,17 @@ function DataGridTableBodyRowCell<TData>({
         column.getIndex() === 0 ||
           column.getIndex() === row.getVisibleCells().length - 1
           ? props.tableClassNames?.edgeCell
-          : ""
+          : "",
       )}
     >
       {children}
     </td>
-  )
+  );
 }
 
 function DataGridTableEmpty() {
-  const { table, props } = useDataGrid()
-  const totalColumns = table.getAllColumns().length
+  const { table, props } = useDataGrid();
+  const totalColumns = table.getAllColumns().length;
 
   return (
     <tr>
@@ -422,14 +419,14 @@ function DataGridTableEmpty() {
         colSpan={totalColumns}
         className="text-muted-foreground text-sm py-6 text-center"
       >
-        {props.emptyMessage || "No data available"}
+        {props.emptyMessage || <EmptyComponent />}
       </td>
     </tr>
-  )
+  );
 }
 
 function DataGridTableLoader() {
-  const { props } = useDataGrid()
+  const { props } = useDataGrid();
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -457,7 +454,7 @@ function DataGridTableLoader() {
         {props.loadingMessage || "Loading..."}
       </div>
     </div>
-  )
+  );
 }
 
 function DataGridTableRowSelect<TData>({ row }: { row: Row<TData> }) {
@@ -466,7 +463,7 @@ function DataGridTableRowSelect<TData>({ row }: { row: Row<TData> }) {
       <div
         className={cn(
           "bg-primary absolute start-0 top-0 bottom-0 hidden w-[2px]",
-          row.getIsSelected() && "block"
+          row.getIsSelected() && "block",
         )}
       ></div>
       <Checkbox
@@ -476,14 +473,14 @@ function DataGridTableRowSelect<TData>({ row }: { row: Row<TData> }) {
         className="align-[inherit]"
       />
     </>
-  )
+  );
 }
 
 function DataGridTableRowSelectAll() {
-  const { table, recordCount, isLoading } = useDataGrid()
+  const { table, recordCount, isLoading } = useDataGrid();
 
-  const isAllSelected = table.getIsAllPageRowsSelected()
-  const isSomeSelected = table.getIsSomePageRowsSelected()
+  const isAllSelected = table.getIsAllPageRowsSelected();
+  const isSomeSelected = table.getIsSomePageRowsSelected();
 
   return (
     <Checkbox
@@ -495,12 +492,12 @@ function DataGridTableRowSelectAll() {
       aria-label="Select all"
       className="align-[inherit]"
     />
-  )
+  );
 }
 
 function DataGridTable<TData>() {
-  const { table, isLoading, props } = useDataGrid()
-  const pagination = table.getState().pagination
+  const { table, isLoading, props } = useDataGrid();
+  const pagination = table.getState().pagination;
 
   return (
     <DataGridTableBase>
@@ -511,7 +508,7 @@ function DataGridTable<TData>() {
             return (
               <DataGridTableHeadRow headerGroup={headerGroup} key={index}>
                 {headerGroup.headers.map((header, index) => {
-                  const { column } = header
+                  const { column } = header;
 
                   return (
                     <DataGridTableHeadRowCell header={header} key={index}>
@@ -519,17 +516,17 @@ function DataGridTable<TData>() {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                       {props.tableLayout?.columnsResizable &&
                         column.getCanResize() && (
                           <DataGridTableHeadRowCellResize header={header} />
                         )}
                     </DataGridTableHeadRowCell>
-                  )
+                  );
                 })}
               </DataGridTableHeadRow>
-            )
+            );
           })}
       </DataGridTableHead>
 
@@ -552,7 +549,7 @@ function DataGridTable<TData>() {
                   >
                     {column.columnDef.meta?.skeleton}
                   </DataGridTableBodyRowSkeletonCell>
-                )
+                );
               })}
             </DataGridTableBodyRowSkeleton>
           ))
@@ -598,24 +595,24 @@ function DataGridTable<TData>() {
                         <DataGridTableBodyRowCell cell={cell} key={colIndex}>
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext()
+                            cell.getContext(),
                           )}
                         </DataGridTableBodyRowCell>
-                      )
+                      );
                     })}
                 </DataGridTableBodyRow>
                 {row.getIsExpanded() && (
                   <DataGridTableBodyRowExpandded row={row} />
                 )}
               </Fragment>
-            )
+            );
           })
         ) : (
           <DataGridTableEmpty />
         )}
       </DataGridTableBody>
     </DataGridTableBase>
-  )
+  );
 }
 
 export {
@@ -636,4 +633,4 @@ export {
   DataGridTableRowSelect,
   DataGridTableRowSelectAll,
   DataGridTableRowSpacer,
-}
+};

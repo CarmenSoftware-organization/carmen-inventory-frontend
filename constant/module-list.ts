@@ -74,6 +74,16 @@ export const moduleList: ModuleDto[] = [
         icon: FileCheck,
       },
       {
+        name: "Credit Note",
+        path: "/procurement/credit-note",
+        icon: FileInput,
+      },
+      {
+        name: "Goods Receive Note",
+        path: "/procurement/goods-receive-note",
+        icon: PackageCheck,
+      },
+      {
         name: "Purchase Request",
         path: "/procurement/purchase-request",
         icon: FileText,
@@ -82,16 +92,6 @@ export const moduleList: ModuleDto[] = [
         name: "Purchase Order",
         path: "/procurement/purchase-order",
         icon: ClipboardList,
-      },
-      {
-        name: "Goods Receive Note",
-        path: "/procurement/goods-receive-note",
-        icon: PackageCheck,
-      },
-      {
-        name: "Credit Note",
-        path: "/procurement/credit-note",
-        icon: FileInput,
       },
       {
         name: "Purchase Request Template",
@@ -106,14 +106,14 @@ export const moduleList: ModuleDto[] = [
     icon: Package,
     subModules: [
       {
-        name: "Product",
-        path: "/product-management/product",
-        icon: Box,
-      },
-      {
         name: "Category",
         path: "/product-management/category",
         icon: Tag,
+      },
+      {
+        name: "Product",
+        path: "/product-management/product",
+        icon: Box,
       },
     ],
   },
@@ -122,11 +122,6 @@ export const moduleList: ModuleDto[] = [
     path: "/vendor-management",
     icon: Handshake,
     subModules: [
-      {
-        name: "Vendor",
-        path: "/vendor-management/vendor",
-        icon: Building2,
-      },
       {
         name: "Price List",
         path: "/vendor-management/price-list",
@@ -141,6 +136,11 @@ export const moduleList: ModuleDto[] = [
         name: "Request Price List",
         path: "/vendor-management/request-price-list",
         icon: FileSpreadsheet,
+      },
+      {
+        name: "Vendor",
+        path: "/vendor-management/vendor",
+        icon: Building2,
       },
     ],
   },
@@ -177,11 +177,6 @@ export const moduleList: ModuleDto[] = [
         icon: ArrowUpDown,
       },
       {
-        name: "Spot Check",
-        path: "/inventory-management/spot-check",
-        icon: Eye,
-      },
-      {
         name: "Physical Count",
         path: "/inventory-management/physical-count",
         icon: ClipboardCheck,
@@ -191,6 +186,12 @@ export const moduleList: ModuleDto[] = [
         path: "/inventory-management/period-end",
         icon: Calendar,
       },
+      {
+        name: "Spot Check",
+        path: "/inventory-management/spot-check",
+        icon: Eye,
+      },
+
       // {
       //   name: "Stock Overview",
       //   path: "/inventory-management/stock-overview",
@@ -224,10 +225,11 @@ export const moduleList: ModuleDto[] = [
     icon: Shield,
     subModules: [
       {
-        name: "Workflow",
-        path: "/system-admin/workflow",
-        icon: Network,
+        name: "Document",
+        path: "/system-admin/document-management",
+        icon: FileCheck,
       },
+
       {
         name: "Role",
         path: "/system-admin/role",
@@ -239,9 +241,9 @@ export const moduleList: ModuleDto[] = [
         icon: UserCheck,
       },
       {
-        name: "Document",
-        path: "/system-admin/document-management",
-        icon: FileCheck,
+        name: "Workflow",
+        path: "/system-admin/workflow",
+        icon: Network,
       },
     ],
   },
@@ -251,14 +253,20 @@ export const moduleList: ModuleDto[] = [
     icon: Settings2,
     subModules: [
       {
+        name: "Adjustment Type",
+        path: "/config/adjustment-type",
+        icon: SlidersHorizontal,
+      },
+
+      {
+        name: "Business Type",
+        path: "/config/business-type",
+        icon: Briefcase,
+      },
+      {
         name: "Currency",
         path: "/config/currency",
         icon: DollarSign,
-      },
-      {
-        name: "Exchange Rate",
-        path: "/config/exchange-rate",
-        icon: ArrowLeftRight,
       },
       {
         name: "Delivery Point",
@@ -266,19 +274,14 @@ export const moduleList: ModuleDto[] = [
         icon: MapPin,
       },
       {
-        name: "Store Location",
-        path: "/config/location",
-        icon: Building,
-      },
-      {
         name: "Department",
         path: "/config/department",
         icon: Warehouse,
       },
       {
-        name: "Tax Profile",
-        path: "/config/tax-profile",
-        icon: Receipt,
+        name: "Exchange Rate",
+        path: "/config/exchange-rate",
+        icon: ArrowLeftRight,
       },
       {
         name: "Extra Cost",
@@ -286,19 +289,19 @@ export const moduleList: ModuleDto[] = [
         icon: Coins,
       },
       {
-        name: "Business Type",
-        path: "/config/business-type",
-        icon: Briefcase,
+        name: "Store Location",
+        path: "/config/location",
+        icon: Building,
+      },
+      {
+        name: "Tax Profile",
+        path: "/config/tax-profile",
+        icon: Receipt,
       },
       {
         name: "Unit",
         path: "/config/unit",
         icon: Scale,
-      },
-      {
-        name: "Adjustment Type",
-        path: "/config/adjustment-type",
-        icon: SlidersHorizontal,
       },
     ],
   },

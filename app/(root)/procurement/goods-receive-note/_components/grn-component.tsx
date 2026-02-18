@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Download, Plus, Printer } from "lucide-react";
+import { BoxIcon, Download, Plus, Printer } from "lucide-react";
 import { toast } from "sonner";
 import {
   DataGrid,
@@ -23,10 +23,13 @@ import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
 import DisplayTemplate from "@/components/display-template";
 import { useGrnTable } from "./use-grn-table";
+import EmptyComponent from "@/components/empty-component";
 
 export default function GrnComponent() {
   const router = useRouter();
-  const [deleteTarget, setDeleteTarget] = useState<GoodsReceiveNote | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<GoodsReceiveNote | null>(
+    null,
+  );
   const deleteGrn = useDeleteGoodsReceiveNote();
   const { params, search, setSearch, filter, setFilter, tableConfig } =
     useDataGridState();
@@ -34,6 +37,17 @@ export default function GrnComponent() {
 
   const goodsReceiveNotes = data?.data ?? [];
   const totalRecords = data?.paginate?.total ?? 0;
+
+  const newgrn = () => {
+    router.push("/procurement/goods-receive-note/new");
+  };
+
+  const newGrnBtn = (
+    <Button size="sm" onClick={newgrn}>
+      <Plus />
+      Add Credit Note
+    </Button>
+  );
 
   const table = useGrnTable({
     goodsReceiveNotes,
@@ -83,6 +97,14 @@ export default function GrnComponent() {
         isLoading={isLoading}
         tableLayout={{ dense: true }}
         tableClassNames={{ base: "text-xs" }}
+        emptyMessage={
+          <EmptyComponent
+            icon={BoxIcon}
+            title="No Items Yet"
+            description="Add items to this credit note."
+            content={newGrnBtn}
+          />
+        }
       >
         <DataGridContainer>
           <DataGridTable />
