@@ -4,6 +4,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/reui/cell-action";
 import {
   selectColumn,
   indexColumn,
@@ -41,13 +42,9 @@ export function useUserTable({
         <DataGridColumnHeader column={column} title="First Name" />
       ),
       cell: ({ row }) => (
-        <button
-          type="button"
-          className="font-medium hover:underline text-left text-xs"
-          onClick={() => onEdit(row.original)}
-        >
+        <CellAction onClick={() => onEdit(row.original)}>
           {row.getValue("firstname")}
-        </button>
+        </CellAction>
       ),
     },
     {

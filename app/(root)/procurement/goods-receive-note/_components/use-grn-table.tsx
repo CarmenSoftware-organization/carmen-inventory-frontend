@@ -1,5 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/reui/cell-action";
 import { useConfigTable } from "@/lib/data-grid/use-config-table";
 import type { GoodsReceiveNote } from "@/types/goods-receive-note";
 import type { ParamsDto } from "@/types/params";
@@ -33,13 +34,9 @@ export function useGrnTable({
         <DataGridColumnHeader column={column} title="GRN No." />
       ),
       cell: ({ row }) => (
-        <button
-          type="button"
-          className="font-medium hover:underline text-left text-xs"
-          onClick={() => onEdit(row.original)}
-        >
+        <CellAction onClick={() => onEdit(row.original)}>
           {row.getValue("grn_number")}
-        </button>
+        </CellAction>
       ),
       size: 150,
     },

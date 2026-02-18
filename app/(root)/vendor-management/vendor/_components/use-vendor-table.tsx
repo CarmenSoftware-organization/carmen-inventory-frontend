@@ -1,5 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/reui/cell-action";
 import { useConfigTable } from "@/lib/data-grid/use-config-table";
 import { columnSkeletons } from "@/lib/data-grid/columns";
 import type { Vendor } from "@/types/vendor";
@@ -30,13 +31,9 @@ export function useVendorTable({
         <DataGridColumnHeader column={column} title="Code" />
       ),
       cell: ({ row }) => (
-        <button
-          type="button"
-          className="font-medium hover:underline text-left text-xs"
-          onClick={() => onEdit(row.original)}
-        >
+        <CellAction onClick={() => onEdit(row.original)}>
           {row.getValue("code")}
-        </button>
+        </CellAction>
       ),
       size: 120,
       meta: { skeleton: columnSkeletons.textShort },

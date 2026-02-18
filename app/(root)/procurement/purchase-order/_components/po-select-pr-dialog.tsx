@@ -22,6 +22,7 @@ import { usePurchaseRequest } from "@/hooks/use-purchase-request";
 import { useProfile } from "@/hooks/use-profile";
 import { formatDate } from "@/lib/date-utils";
 import type { PurchaseRequest } from "@/types/purchase-request";
+import { CellAction } from "@/components/reui/cell-action";
 import EmptyComponent from "@/components/empty-component";
 import { FileText } from "lucide-react";
 
@@ -47,13 +48,9 @@ export function SelectPRDialog({
       accessorKey: "pr_no",
       header: "PR No.",
       cell: ({ row }) => (
-        <button
-          type="button"
-          className="font-medium hover:underline text-left text-xs"
-          onClick={() => onSelect(row.original.id)}
-        >
+        <CellAction onClick={() => onSelect(row.original.id)}>
           {row.getValue("pr_no")}
-        </button>
+        </CellAction>
       ),
       size: 150,
     },

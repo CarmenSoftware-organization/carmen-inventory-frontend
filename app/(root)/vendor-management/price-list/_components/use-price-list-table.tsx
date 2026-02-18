@@ -3,6 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/reui/cell-action";
 import { Badge } from "@/components/reui/badge";
 import {
   selectColumn,
@@ -51,13 +52,9 @@ export function usePriceListTable({
         <DataGridColumnHeader column={column} title="No." />
       ),
       cell: ({ row }) => (
-        <button
-          type="button"
-          className="font-medium hover:underline text-left text-xs"
-          onClick={() => onEdit(row.original)}
-        >
+        <CellAction onClick={() => onEdit(row.original)}>
           {row.getValue("no")}
-        </button>
+        </CellAction>
       ),
       size: 160,
       meta: { skeleton: columnSkeletons.textShort },

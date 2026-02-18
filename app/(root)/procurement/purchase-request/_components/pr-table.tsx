@@ -3,6 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/reui/cell-action";
 import {
   selectColumn,
   indexColumn,
@@ -43,13 +44,9 @@ export function usePurchaseRequestTable({
         <DataGridColumnHeader column={column} title="PR No." />
       ),
       cell: ({ row }) => (
-        <button
-          type="button"
-          className="font-medium hover:underline text-left text-xs"
-          onClick={() => onEdit(row.original)}
-        >
+        <CellAction onClick={() => onEdit(row.original)}>
           {row.getValue("pr_no")}
-        </button>
+        </CellAction>
       ),
       size: 160,
       meta: { skeleton: columnSkeletons.text },

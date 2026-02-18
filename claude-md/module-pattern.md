@@ -194,6 +194,7 @@ export const useDeleteCategory = crud.useDelete;
 ```tsx
 import type { ColumnDef } from "@tanstack/react-table";
 import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/reui/cell-action";
 import { useConfigTable } from "@/lib/data-grid/use-config-table";
 import type { Category } from "@/types/category";
 import type { ParamsDto } from "@/types/params";
@@ -223,13 +224,9 @@ export function useCategoryTable({
         <DataGridColumnHeader column={column} title="Name" />
       ),
       cell: ({ row }) => (
-        <button
-          type="button"
-          className="font-medium hover:underline text-left text-xs"
-          onClick={() => onEdit(row.original)}
-        >
+        <CellAction onClick={() => onEdit(row.original)}>
           {row.getValue("name")}
-        </button>
+        </CellAction>
       ),
     },
     // ... เพิ่ม custom columns ตามที่ user ระบุ

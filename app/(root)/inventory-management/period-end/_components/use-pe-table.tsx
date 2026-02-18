@@ -1,5 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/reui/cell-action";
 import { useConfigTable } from "@/lib/data-grid/use-config-table";
 import type { PeriodEnd } from "@/types/period-end";
 import type { ParamsDto } from "@/types/params";
@@ -29,13 +30,9 @@ export function usePeriodEndTable({
         <DataGridColumnHeader column={column} title="PE No." />
       ),
       cell: ({ row }) => (
-        <button
-          type="button"
-          className="font-medium hover:underline text-left text-xs"
-          onClick={() => onEdit(row.original)}
-        >
+        <CellAction onClick={() => onEdit(row.original)}>
           {row.getValue("pe_no")}
-        </button>
+        </CellAction>
       ),
       size: 200,
     },
