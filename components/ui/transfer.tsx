@@ -81,7 +81,7 @@ export function Transfer({
   };
 
   return (
-    <div className="flex items-stretch gap-2">
+    <div className="flex items-stretch gap-3">
       <TransferPanel
         title={titles[0]}
         items={leftItems}
@@ -93,13 +93,14 @@ export function Transfer({
         loading={loading}
         totalCount={leftTotal}
       />
-      <div className="flex flex-col items-center justify-center gap-1">
+      <div className="flex flex-col items-center justify-center gap-1.5">
         <Button
           type="button"
           variant="outline"
           size="icon-xs"
           onClick={moveRight}
           disabled={disabled || leftChecked.size === 0}
+          title="Move selected to right"
         >
           <ChevronRight />
         </Button>
@@ -109,6 +110,7 @@ export function Transfer({
           size="icon-xs"
           onClick={moveLeft}
           disabled={disabled || rightChecked.size === 0}
+          title="Move selected to left"
         >
           <ChevronLeft />
         </Button>
@@ -169,59 +171,67 @@ function TransferPanel({
   };
 
   return (
-    <div className="flex-1 rounded-md border">
-      <div className="flex items-center gap-2 border-b px-3 py-2">
+    <div className="flex-1 overflow-hidden rounded-lg border border-border">
+      {/* Header — matches DataGrid header style */}
+      <div className="flex h-9 items-center gap-2 border-b bg-muted/40 px-3">
         <Checkbox
           checked={allChecked ? true : someChecked ? "indeterminate" : false}
           onCheckedChange={toggleAll}
           disabled={disabled || items.length === 0}
         />
         <span className="text-xs font-medium">{title}</span>
-        <span className="ml-auto text-xs text-muted-foreground">
-          {checkedKeys.size > 0 && `${checkedKeys.size}/`}
-          {totalCount}
+        <span className="ml-auto inline-flex h-4.5 min-w-5 items-center justify-center rounded bg-muted px-1 text-[10px] font-medium tabular-nums text-muted-foreground">
+          {checkedKeys.size > 0 ? `${checkedKeys.size}/${totalCount}` : totalCount}
         </span>
       </div>
-      <div className="border-b px-2 py-1.5">
+
+      {/* Search */}
+      <div className="border-b bg-background px-2 py-1.5">
         <div className="relative">
           <Search className="absolute left-2 top-1/2 size-3 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search"
+            placeholder="Search..."
             className="h-7 pl-7 text-xs"
             disabled={disabled}
           />
         </div>
       </div>
-      <ScrollArea className="h-[200px]">
+
+      {/* List — dense rows like DataGrid */}
+      <ScrollArea className="h-60">
         {loading ? (
-          <div className="flex h-full items-center justify-center py-8">
-            <span className="text-xs text-muted-foreground">Loading...</span>
+          <div className="flex items-center justify-center py-10">
+            <span className="text-[11px] text-muted-foreground">
+              Loading...
+            </span>
           </div>
         ) : items.length === 0 ? (
-          <div className="flex h-full items-center justify-center py-8">
-            <span className="text-xs text-muted-foreground">No items</span>
+          <div className="flex items-center justify-center py-10">
+            <span className="text-[11px] text-muted-foreground">
+              {search ? "No matches found" : "No items"}
+            </span>
           </div>
         ) : (
-          <div className="py-1">
-            {items.map((item) => (
-              <label
-                key={item.key}
-                className={cn(
-                  "flex cursor-pointer items-center gap-2 px-3 py-1 text-xs hover:bg-muted/50",
-                  disabled && "pointer-events-none opacity-50",
-                )}
-              >
-                <Checkbox
-                  checked={checkedKeys.has(item.key)}
-                  onCheckedChange={() => toggleItem(item.key)}
-                  disabled={disabled}
-                />
-                <span className="truncate">{item.title}</span>
-              </label>
-            ))}
-          </div>
+          items.map((item, index) => (
+            <label
+              key={item.key}
+              className={cn(
+                "flex cursor-pointer items-center gap-2 border-b border-border px-3 py-1.5 text-[11px] transition-colors hover:bg-muted/40",
+                index % 2 === 1 && "bg-muted/20",
+                checkedKeys.has(item.key) && "bg-primary/5",
+                disabled && "pointer-events-none opacity-50",
+              )}
+            >
+              <Checkbox
+                checked={checkedKeys.has(item.key)}
+                onCheckedChange={() => toggleItem(item.key)}
+                disabled={disabled}
+              />
+              <span className="truncate">{item.title}</span>
+            </label>
+          ))
         )}
       </ScrollArea>
     </div>

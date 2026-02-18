@@ -325,11 +325,16 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
         </FieldGroup>
       </form>
 
-      <div className="space-y-4 pt-4">
-        <div className="space-y-2">
-          <h3 className="text-xs font-medium text-muted-foreground">
-            Department Members
-          </h3>
+      <div className="space-y-6 pt-6">
+        <section>
+          <div className="mb-2 flex items-center gap-2">
+            <h3 className="text-sm font-semibold">Department Members</h3>
+            {isView && (
+              <span className="inline-flex h-4.5 min-w-5 items-center justify-center rounded bg-muted px-1 text-[10px] font-medium tabular-nums text-muted-foreground">
+                {department?.department_users.length ?? 0}
+              </span>
+            )}
+          </div>
           {isView ? (
             <UserSection users={department?.department_users ?? []} />
           ) : (
@@ -342,12 +347,17 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
               titles={["Available Users", "Department Members"]}
             />
           )}
-        </div>
+        </section>
 
-        <div className="space-y-2">
-          <h3 className="text-xs font-medium text-muted-foreground">
-            Head of Department
-          </h3>
+        <section>
+          <div className="mb-2 flex items-center gap-2">
+            <h3 className="text-sm font-semibold">Head of Department</h3>
+            {isView && (
+              <span className="inline-flex h-4.5 min-w-5 items-center justify-center rounded bg-muted px-1 text-[10px] font-medium tabular-nums text-muted-foreground">
+                {department?.hod_users.length ?? 0}
+              </span>
+            )}
+          </div>
           {isView ? (
             <UserSection users={department?.hod_users ?? []} />
           ) : (
@@ -360,7 +370,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
               titles={["Available Users", "HOD"]}
             />
           )}
-        </div>
+        </section>
       </div>
 
       {department && (

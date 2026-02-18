@@ -435,7 +435,7 @@ export function LocationForm({ location }: LocationFormProps) {
 
       {isView ? (
         location && (
-          <div className="max-w-2xl space-y-4 pt-4">
+          <div className="max-w-2xl space-y-4 pt-6">
             <Tabs defaultValue="users">
               <TabsList variant="line">
                 <TabsTrigger value="users" className="text-xs">
@@ -457,11 +457,9 @@ export function LocationForm({ location }: LocationFormProps) {
           </div>
         )
       ) : (
-        <div className="space-y-4 pt-4">
-          <div className="space-y-2">
-            <h3 className="text-xs font-medium text-muted-foreground">
-              Location Users
-            </h3>
+        <div className="space-y-6 pt-6">
+          <section>
+            <h3 className="mb-2 text-sm font-semibold">Location Users</h3>
             <Transfer
               dataSource={userSource}
               targetKeys={userTargetKeys}
@@ -470,12 +468,10 @@ export function LocationForm({ location }: LocationFormProps) {
               loading={isLoadingUsers}
               titles={["Available Users", "Location Users"]}
             />
-          </div>
+          </section>
 
-          <div className="space-y-2">
-            <h3 className="text-xs font-medium text-muted-foreground">
-              Products
-            </h3>
+          <section>
+            <h3 className="mb-2 text-sm font-semibold">Products</h3>
             <TreeProductLookup
               products={allProducts}
               selectedProductIds={selectedProductIds}
@@ -483,7 +479,7 @@ export function LocationForm({ location }: LocationFormProps) {
               disabled={isDisabled}
               loading={isLoadingProducts}
             />
-          </div>
+          </section>
         </div>
       )}
 

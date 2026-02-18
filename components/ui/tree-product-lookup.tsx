@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import { ChevronRight, Search } from "lucide-react";
+import { ChevronRight, Search, Folder, Box, Layers } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -115,6 +115,7 @@ export function TreeProductLookup({
 
   const tree = useMemo(() => buildTree(products), [products]);
   const filteredTree = useMemo(() => filterTree(tree, search), [tree, search]);
+  const totalProducts = products.length;
 
   const leafIdsMap = useMemo(() => {
     const map = new Map<string, string[]>();
@@ -185,56 +186,75 @@ export function TreeProductLookup({
   );
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-2">
-        <div className="relative max-w-sm flex-1">
+    <div className="overflow-hidden rounded-lg border border-border">
+      {/* Header — matches DataGrid style */}
+      <div className="flex h-9 items-center gap-2 border-b bg-muted/40 px-3">
+        <span className="text-xs font-medium">Product Catalog</span>
+        <span className="ml-auto inline-flex h-4.5 min-w-5 items-center justify-center rounded bg-muted px-1 text-[10px] font-medium tabular-nums text-muted-foreground">
+          {selectedProductIds.size}/{totalProducts}
+        </span>
+      </div>
+
+      {/* Search toolbar */}
+      <div className="border-b bg-background px-2 py-1.5">
+        <div className="relative max-w-sm">
           <Search className="absolute left-2 top-1/2 size-3 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search products..."
-            className="h-8 pl-7 text-xs"
+            placeholder="Search by code or name..."
+            className="h-7 pl-7 text-xs"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             disabled={disabled}
           />
         </div>
-        <span className="text-[10px] text-muted-foreground">
-          {selectedProductIds.size} selected
-        </span>
       </div>
 
-      <ScrollArea className="h-[300px] rounded border p-1.5">
+      {/* Tree content */}
+      <ScrollArea className="h-80">
         {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <span className="text-xs text-muted-foreground">Loading...</span>
+          <div className="flex items-center justify-center py-10">
+            <span className="text-[11px] text-muted-foreground">
+              Loading...
+            </span>
           </div>
         ) : filteredTree.length === 0 ? (
-          <div className="flex items-center justify-center py-8">
-            <span className="text-xs text-muted-foreground">
-              {search ? "No products match your search." : "No products available."}
+          <div className="flex items-center justify-center py-10">
+            <span className="text-[11px] text-muted-foreground">
+              {search
+                ? "No products match your search."
+                : "No products available."}
             </span>
           </div>
         ) : (
-          filteredTree.map((catNode) => (
-            <TreeNodeRow
-              key={catNode.id}
-              node={catNode}
-              depth={0}
-              expandedIds={expandedIds}
-              forceExpand={!!search}
-              onToggleExpand={toggleExpand}
-              onToggleProduct={toggleProduct}
-              onToggleGroup={toggleGroup}
-              getCheckState={getCheckState}
-              selectedProductIds={selectedProductIds}
-              disabled={disabled}
-              leafIdsMap={leafIdsMap}
-            />
-          ))
+          <div className="py-0.5">
+            {filteredTree.map((catNode) => (
+              <TreeNodeRow
+                key={catNode.id}
+                node={catNode}
+                depth={0}
+                expandedIds={expandedIds}
+                forceExpand={!!search}
+                onToggleExpand={toggleExpand}
+                onToggleProduct={toggleProduct}
+                onToggleGroup={toggleGroup}
+                getCheckState={getCheckState}
+                selectedProductIds={selectedProductIds}
+                disabled={disabled}
+                leafIdsMap={leafIdsMap}
+              />
+            ))}
+          </div>
         )}
       </ScrollArea>
     </div>
   );
 }
+
+const nodeIcons = {
+  category: Folder,
+  sub_category: Layers,
+  item_group: Box,
+} as const;
 
 interface TreeNodeRowProps {
   readonly node: TreeNode;
@@ -265,15 +285,18 @@ function TreeNodeRow({
 }: TreeNodeRowProps) {
   const isExpanded = forceExpand || expandedIds.has(node.id);
   const isProduct = node.type === "product";
-  const paddingLeft = depth * 16 + 4;
+  const paddingLeft = depth * 20 + 8;
 
   if (isProduct) {
     return (
       <div
-        className="flex items-center gap-1.5 rounded py-1.5 hover:bg-muted/50"
-        style={{ paddingLeft }}
+        className={cn(
+          "flex items-center gap-1.5 border-b border-border/50 py-1.5 transition-colors hover:bg-muted/40",
+          selectedProductIds.has(node.id) && "bg-primary/5",
+          disabled && "pointer-events-none opacity-50",
+        )}
+        style={{ paddingLeft: paddingLeft + 16 }}
       >
-        <div className="w-3" />
         <Checkbox
           checked={selectedProductIds.has(node.id)}
           onCheckedChange={() => onToggleProduct(node.id)}
@@ -285,11 +308,16 @@ function TreeNodeRow({
   }
 
   const checkState = getCheckState(node);
+  const Icon = nodeIcons[node.type as keyof typeof nodeIcons];
+  const leafCount = leafIdsMap.get(node.id)?.length ?? 0;
 
   return (
     <>
       <div
-        className="flex items-center gap-1.5 rounded py-1.5 hover:bg-muted/50"
+        className={cn(
+          "flex items-center gap-1.5 py-1.5 transition-colors hover:bg-muted/40",
+          depth === 0 && "bg-muted/20",
+        )}
         style={{ paddingLeft }}
       >
         <button
@@ -309,14 +337,17 @@ function TreeNodeRow({
           onCheckedChange={() => onToggleGroup(node)}
           disabled={disabled}
         />
+        {Icon && (
+          <Icon className="size-3 shrink-0 text-muted-foreground" />
+        )}
         <button
           type="button"
           className="flex flex-1 cursor-pointer items-center gap-1.5 text-left"
           onClick={() => onToggleExpand(node.id)}
         >
           <span className="text-[11px] font-medium">{node.name}</span>
-          <span className="text-[9px] text-muted-foreground">
-            ({leafIdsMap.get(node.id)?.length ?? 0})
+          <span className="inline-flex h-4 min-w-4 items-center justify-center rounded bg-muted px-1 text-[9px] font-medium tabular-nums text-muted-foreground">
+            {leafCount}
           </span>
         </button>
       </div>
