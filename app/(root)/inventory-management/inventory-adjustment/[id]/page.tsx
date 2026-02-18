@@ -1,18 +1,17 @@
 "use client";
 
-import { use } from "react";
+import { use, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useInventoryAdjustmentById } from "@/hooks/use-inventory-adjustment";
 import { InventoryAdjustmentForm } from "../_components/inventory-adjustment-form";
 import { ErrorState } from "@/components/ui/error-state";
 import type { InventoryAdjustmentType } from "@/types/inventory-adjustment";
 
-export default function EditInventoryAdjustmentPage({
-  params,
+function EditInventoryAdjustmentContent({
+  id,
 }: {
-  params: Promise<{ id: string }>;
+  id: string;
 }) {
-  const { id } = use(params);
   const searchParams = useSearchParams();
   const type = searchParams.get("type") as InventoryAdjustmentType | null;
 
@@ -51,5 +50,19 @@ function EditContent({
       adjustmentType={type}
       inventoryAdjustment={inventoryAdjustment}
     />
+  );
+}
+
+export default function EditInventoryAdjustmentPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
+
+  return (
+    <Suspense>
+      <EditInventoryAdjustmentContent id={id} />
+    </Suspense>
   );
 }

@@ -1,11 +1,12 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { InventoryAdjustmentForm } from "../_components/inventory-adjustment-form";
 import { ErrorState } from "@/components/ui/error-state";
 import type { InventoryAdjustmentType } from "@/types/inventory-adjustment";
 
-export default function NewInventoryAdjustmentPage() {
+function NewInventoryAdjustmentContent() {
   const searchParams = useSearchParams();
   const type = searchParams.get("type") as InventoryAdjustmentType | null;
 
@@ -14,4 +15,12 @@ export default function NewInventoryAdjustmentPage() {
   }
 
   return <InventoryAdjustmentForm adjustmentType={type} />;
+}
+
+export default function NewInventoryAdjustmentPage() {
+  return (
+    <Suspense>
+      <NewInventoryAdjustmentContent />
+    </Suspense>
+  );
 }
