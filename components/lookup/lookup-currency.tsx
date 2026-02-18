@@ -9,10 +9,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCurrency } from "@/hooks/use-currency";
+import type { Currency } from "@/types/currency";
 
 interface LookupCurrencyProps {
   readonly value: string;
   readonly onValueChange: (value: string) => void;
+  readonly onItemChange?: (currency: Currency) => void;
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
@@ -22,6 +24,7 @@ interface LookupCurrencyProps {
 export function LookupCurrency({
   value,
   onValueChange,
+  onItemChange,
   disabled,
   placeholder = "Select currency",
   className,
@@ -33,8 +36,16 @@ export function LookupCurrency({
     [data?.data],
   );
 
+  const handleChange = (id: string) => {
+    onValueChange(id);
+    if (onItemChange) {
+      const item = currencies.find((c) => c.id === id);
+      if (item) onItemChange(item);
+    }
+  };
+
   return (
-    <Select value={value} onValueChange={onValueChange} disabled={disabled}>
+    <Select value={value} onValueChange={handleChange} disabled={disabled}>
       <SelectTrigger align="end" size={size} className={className ?? "text-xs"}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

@@ -2,6 +2,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
 import { useConfigTable } from "@/components/ui/data-grid/use-config-table";
 import { useProfile } from "@/hooks/use-profile";
+import { formatExchangeRate } from "@/lib/currency-utils";
 import type { Currency } from "@/types/currency";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
@@ -75,20 +76,15 @@ export function useCurrencyTable({
           className="justify-end"
         />
       ),
-      cell: ({ row }) => {
-        const rate = row.getValue<number>("exchange_rate");
-        if (!rate) return <span>-</span>;
-        const convertedAmount = 1 / rate;
-        return (
-          <span>
-            {convertedAmount.toLocaleString(undefined, {
-              minimumFractionDigits: defaultCurrencyDecimalPlaces ?? 2,
-              maximumFractionDigits: defaultCurrencyDecimalPlaces ?? 4,
-            })}{" "}
-            {defaultCurrencyCode}
-          </span>
-        );
-      },
+      cell: ({ row }) => (
+        <span>
+          {formatExchangeRate(
+            row.getValue<number>("exchange_rate"),
+            defaultCurrencyDecimalPlaces,
+            defaultCurrencyCode,
+          )}
+        </span>
+      ),
       size: 120,
       meta: {
         cellClassName: "text-right",

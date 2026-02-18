@@ -43,6 +43,8 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
 
   const defaultValues = getDefaultValues(purchaseOrder);
 
+  const title = purchaseOrder?.po_no ?? "Purchase Order";
+
   const form = useForm<PoFormValues>({
     resolver: zodResolver(poSchema) as Resolver<PoFormValues>,
     defaultValues,
@@ -136,7 +138,7 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
   return (
     <div className="space-y-4">
       <FormToolbar
-        entity="Purchase Order"
+        entity={title}
         mode={mode}
         formId="po-form"
         isPending={isPending}
