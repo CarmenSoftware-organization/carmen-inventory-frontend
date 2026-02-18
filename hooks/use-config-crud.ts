@@ -1,19 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+  useQuery,
+  type UseQueryResult,
+  type UseMutationResult,
+} from "@tanstack/react-query";
 import { useProfile } from "@/hooks/use-profile";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
-import type { ParamsDto } from "@/types/params";
-
-interface PaginatedResponse<T> {
-  data: T[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
+import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
 interface ConfigCrudOptions {
   queryKey: string;
@@ -27,7 +21,13 @@ export function createConfigCrud<T, TCreate>({
   endpoint,
   label,
   updateMethod = "PUT",
-}: ConfigCrudOptions) {
+}: ConfigCrudOptions): {
+  useList: (params?: ParamsDto) => UseQueryResult<PaginatedResponse<T>>;
+  useById: (id: string | undefined) => UseQueryResult<T>;
+  useCreate: () => UseMutationResult<unknown, Error, TCreate>;
+  useUpdate: () => UseMutationResult<unknown, Error, TCreate & { id: string }>;
+  useDelete: () => UseMutationResult<unknown, Error, string>;
+} {
   function useList(params?: ParamsDto) {
     const { buCode } = useProfile();
 

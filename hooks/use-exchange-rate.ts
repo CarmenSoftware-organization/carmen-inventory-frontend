@@ -6,22 +6,12 @@ import { buildUrl } from "@/utils/build-query-string";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { ExchangeRateItem, ExchangeRateDto } from "@/types/exchange-rate";
-import type { ParamsDto } from "@/types/params";
-
-interface PaginatedResponse {
-  data: ExchangeRateItem[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
+import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
 export function useExchangeRateQuery(params?: ParamsDto) {
   const { buCode } = useProfile();
 
-  return useQuery<PaginatedResponse>({
+  return useQuery<PaginatedResponse<ExchangeRateItem>>({
     queryKey: [QUERY_KEYS.EXCHANGE_RATES, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");

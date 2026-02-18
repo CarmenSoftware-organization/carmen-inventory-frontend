@@ -6,22 +6,12 @@ import { buildUrl } from "@/utils/build-query-string";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { DocumentFile } from "@/types/document";
-import type { ParamsDto } from "@/types/params";
-
-interface DocumentListResponse {
-  data: DocumentFile[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
+import type { PaginatedResponse, ParamsDto } from "@/types/params";
 
 export function useDocument(params?: ParamsDto) {
   const { buCode } = useProfile();
 
-  return useQuery<DocumentListResponse>({
+  return useQuery<PaginatedResponse<DocumentFile>>({
     queryKey: [QUERY_KEYS.DOCUMENTS, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");
@@ -62,9 +52,7 @@ export function useUploadDocument() {
 export function useDeleteDocument() {
   return useApiMutation<string>({
     mutationFn: (fileToken, buCode) =>
-      httpClient.delete(
-        `${API_ENDPOINTS.DOCUMENTS(buCode)}/${fileToken}`,
-      ),
+      httpClient.delete(`${API_ENDPOINTS.DOCUMENTS(buCode)}/${fileToken}`),
     invalidateKeys: [QUERY_KEYS.DOCUMENTS],
     errorMessage: "Failed to delete document",
   });

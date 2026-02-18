@@ -6,22 +6,12 @@ import { buildUrl } from "@/utils/build-query-string";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { PhysicalCount, CreatePhysicalCountDto } from "@/types/physical-count";
-import type { ParamsDto } from "@/types/params";
-
-interface PaginatedResponse {
-  data: PhysicalCount[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
+import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
 export function usePhysicalCount(params?: ParamsDto) {
   const { buCode } = useProfile();
 
-  return useQuery<PaginatedResponse>({
+  return useQuery<PaginatedResponse<PhysicalCount>>({
     queryKey: [QUERY_KEYS.PHYSICAL_COUNTS, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");

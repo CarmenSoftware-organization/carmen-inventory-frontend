@@ -11,22 +11,12 @@ import {
   type WorkflowCreateModel,
   WORKFLOW_TYPE,
 } from "@/types/workflows";
-import type { ParamsDto } from "@/types/params";
-
-interface WorkflowListResponse {
-  data: WorkflowDto[];
-  paginate?: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
+import type { PaginatedResponse, ParamsDto } from "@/types/params";
 
 export function useWorkflow(params?: ParamsDto) {
   const { buCode } = useProfile();
 
-  return useQuery<WorkflowListResponse>({
+  return useQuery<PaginatedResponse<WorkflowDto>>({
     queryKey: [QUERY_KEYS.WORKFLOWS, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");

@@ -9,18 +9,7 @@ import type {
   InventoryAdjustment,
   InventoryAdjustmentType,
 } from "@/types/inventory-adjustment";
-import type { ParamsDto } from "@/types/params";
-
-interface PaginatedResponse {
-  data: InventoryAdjustment[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    totalStockIn: number;
-    totalStockOut: number;
-  };
-}
+import type { PaginatedResponse, ParamsDto } from "@/types/params";
 
 interface CreateInventoryAdjustmentDto {
   description: string;
@@ -51,7 +40,7 @@ function getEndpoint(type: InventoryAdjustmentType) {
 export function useInventoryAdjustment(params?: ParamsDto) {
   const { buCode } = useProfile();
 
-  return useQuery<PaginatedResponse>({
+  return useQuery<PaginatedResponse<InventoryAdjustment>>({
     queryKey: [QUERY_KEYS.INVENTORY_ADJUSTMENTS, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");

@@ -6,17 +6,7 @@ import { buildUrl } from "@/utils/build-query-string";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { PurchaseRequestTemplate } from "@/types/purchase-request";
-import type { ParamsDto } from "@/types/params";
-
-interface PaginatedResponse {
-  data: PurchaseRequestTemplate[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
+import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
 export interface PrtDetailPayload {
   location_id: string | null;
@@ -63,7 +53,7 @@ export interface CreatePrtDto {
 export function usePrt(params?: ParamsDto) {
   const { buCode } = useProfile();
 
-  return useQuery<PaginatedResponse>({
+  return useQuery<PaginatedResponse<PurchaseRequestTemplate>>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUEST_TEMPLATES, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");

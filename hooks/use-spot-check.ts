@@ -6,22 +6,12 @@ import { buildUrl } from "@/utils/build-query-string";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { SpotCheck, CreateSpotCheckDto } from "@/types/spot-check";
-import type { ParamsDto } from "@/types/params";
-
-interface PaginatedResponse {
-  data: SpotCheck[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
+import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
 export function useSpotCheck(params?: ParamsDto) {
   const { buCode } = useProfile();
 
-  return useQuery<PaginatedResponse>({
+  return useQuery<PaginatedResponse<SpotCheck>>({
     queryKey: [QUERY_KEYS.SPOT_CHECKS, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");

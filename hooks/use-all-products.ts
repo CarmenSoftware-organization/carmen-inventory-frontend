@@ -4,11 +4,7 @@ import { httpClient } from "@/lib/http-client";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { Product } from "@/types/product";
-
-interface PaginatedResponse {
-  data: Product[];
-  paginate: { total: number; page: number; perpage: number; pages: number };
-}
+import type { PaginatedResponse } from "@/types/params";
 
 export function useAllProducts() {
   const { buCode } = useProfile();
@@ -21,7 +17,7 @@ export function useAllProducts() {
         `${API_ENDPOINTS.PRODUCTS(buCode)}?perpage=-1`,
       );
       if (!res.ok) throw new Error("Failed to fetch products");
-      const json: PaginatedResponse = await res.json();
+      const json: PaginatedResponse<Product> = await res.json();
       return json.data;
     },
     enabled: !!buCode,

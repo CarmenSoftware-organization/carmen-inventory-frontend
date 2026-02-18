@@ -6,17 +6,7 @@ import { buildUrl } from "@/utils/build-query-string";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { StoreRequisition } from "@/types/store-requisition";
-import type { ParamsDto } from "@/types/params";
-
-interface PaginatedResponse {
-  data: StoreRequisition[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
+import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
 export interface CreateStoreRequisitionDto {
   state_role: string;
@@ -43,7 +33,7 @@ export interface CreateStoreRequisitionDto {
 export function useStoreRequisition(params?: ParamsDto) {
   const { buCode } = useProfile();
 
-  return useQuery<PaginatedResponse>({
+  return useQuery<PaginatedResponse<StoreRequisition>>({
     queryKey: [QUERY_KEYS.STORE_REQUISITIONS, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");

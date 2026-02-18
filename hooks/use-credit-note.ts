@@ -6,22 +6,12 @@ import { buildUrl } from "@/utils/build-query-string";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { CreditNote, CreateCnDto } from "@/types/credit-note";
-import type { ParamsDto } from "@/types/params";
-
-interface PaginatedResponse {
-  data: CreditNote[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
+import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
 export function useCreditNote(params?: ParamsDto) {
   const { buCode } = useProfile();
 
-  return useQuery<PaginatedResponse>({
+  return useQuery<PaginatedResponse<CreditNote>>({
     queryKey: [QUERY_KEYS.CREDIT_NOTES, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");

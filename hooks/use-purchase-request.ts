@@ -10,17 +10,7 @@ import type {
   PurchaseRequestTemplate,
 } from "@/types/purchase-request";
 import type { ActionPr } from "@/types/stage-role";
-import type { ParamsDto } from "@/types/params";
-
-interface PaginatedResponse {
-  data: PurchaseRequest[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
+import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
 export interface PurchaseRequestDetailPayload {
   product_id: string | null;
@@ -69,7 +59,7 @@ export interface CreatePurchaseRequestDto {
 export function usePurchaseRequest(params?: ParamsDto) {
   const { buCode } = useProfile();
 
-  return useQuery<PaginatedResponse>({
+  return useQuery<PaginatedResponse<PurchaseRequest>>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUESTS, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");
@@ -98,7 +88,7 @@ export function usePurchaseRequest(params?: ParamsDto) {
 export function useMyPendingPurchaseRequest(params?: ParamsDto) {
   const { buCode } = useProfile();
 
-  return useQuery<PaginatedResponse>({
+  return useQuery<PaginatedResponse<PurchaseRequest>>({
     queryKey: [QUERY_KEYS.MY_PENDING_PURCHASE_REQUESTS, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");

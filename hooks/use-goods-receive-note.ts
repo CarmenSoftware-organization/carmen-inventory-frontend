@@ -6,22 +6,12 @@ import { buildUrl } from "@/utils/build-query-string";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { GoodsReceiveNote, CreateGrnDto } from "@/types/goods-receive-note";
-import type { ParamsDto } from "@/types/params";
-
-interface PaginatedResponse {
-  data: GoodsReceiveNote[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
+import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
 export function useGoodsReceiveNote(params?: ParamsDto) {
   const { buCode } = useProfile();
 
-  return useQuery<PaginatedResponse>({
+  return useQuery<PaginatedResponse<GoodsReceiveNote>>({
     queryKey: [QUERY_KEYS.GOODS_RECEIVE_NOTES, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");

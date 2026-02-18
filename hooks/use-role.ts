@@ -11,16 +11,12 @@ import type {
   CreateRoleDto,
   UpdateRoleDto,
 } from "@/types/role";
-import type { ParamsDto } from "@/types/params";
-
-interface RoleListResponse {
-  data: Role[];
-}
+import type { PaginatedResponse, ParamsDto } from "@/types/params";
 
 export function useRole(params?: ParamsDto) {
   const { buCode } = useProfile();
 
-  return useQuery<RoleListResponse>({
+  return useQuery<PaginatedResponse<Role>>({
     queryKey: [QUERY_KEYS.APPLICATION_ROLES, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");
@@ -63,10 +59,7 @@ export function useCreateRole() {
 export function useUpdateRole() {
   return useApiMutation<UpdateRoleDto & { id: string }>({
     mutationFn: ({ id, ...data }, buCode) =>
-      httpClient.put(
-        `${API_ENDPOINTS.APPLICATION_ROLES(buCode)}/${id}`,
-        data,
-      ),
+      httpClient.put(`${API_ENDPOINTS.APPLICATION_ROLES(buCode)}/${id}`, data),
     invalidateKeys: [QUERY_KEYS.APPLICATION_ROLES],
     errorMessage: "Failed to update role",
   });
