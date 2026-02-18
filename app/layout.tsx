@@ -30,7 +30,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextTopLoader color={"var(--primary)"} height={3} />
+        <NextTopLoader
+          color={"var(--primary)"}
+          showSpinner={false}
+          height={3}
+        />
         <Providers>{children}</Providers>
         <Toaster richColors position="top-right" />
       </body>
