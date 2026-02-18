@@ -29,7 +29,7 @@ import MoqTiersSubTable from "./moq-tiers-sub-table";
 import type {
   PricelistExternalDto,
   PricelistExternalDetailDto,
-} from "../../../../../types/price-list-external";
+} from "@/types/price-list-external";
 
 // Type for grouped rows in view mode
 interface GroupedProductRow {

@@ -9,7 +9,7 @@ import {
   HttpError,
 } from "@/hooks/use-price-list-external";
 import { toast } from "sonner";
-import type { PricelistExternalDto } from "../../../../../types/price-list-external";
+import type { PricelistExternalDto } from "@/types/price-list-external";
 import { ErrorState } from "@/components/ui/error-state";
 import PriceListExternalHeader from "./price-list-external-header";
 import PriceListExternalProductTable from "./price-list-external-product-table";

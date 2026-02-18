@@ -18,7 +18,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
-import type { MoqTierDto } from "../../../../../types/price-list-external";
+import type { MoqTierDto } from "@/types/price-list-external";
 
 interface MoqTiersSubTableProps {
   tiers: MoqTierDto[];
