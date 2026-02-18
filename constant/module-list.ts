@@ -69,8 +69,8 @@ export const moduleList: ModuleDto[] = [
     icon: ShoppingCart,
     subModules: [
       {
-        name: "My Approval",
-        path: "/procurement/my-approval",
+        name: "Approval",
+        path: "/procurement/approval",
         icon: FileCheck,
       },
       {

@@ -1,5 +1,6 @@
 export const QUERY_KEYS = {
   ADJUSTMENT_TYPES: "adjustment-types",
+  APPROVAL_PENDING: "approval-pending",
   APPLICATION_ROLES: "application-roles",
   BUSINESS_TYPES: "business-types",
   CREDIT_NOTES: "credit-notes",
