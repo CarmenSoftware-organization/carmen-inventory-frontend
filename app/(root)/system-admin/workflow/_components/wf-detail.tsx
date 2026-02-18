@@ -3,14 +3,8 @@
 import { useState } from "react";
 import { useForm, useFieldArray, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUpdateWorkflow } from "@/hooks/use-workflow";
 import {
   wfFormSchema,
@@ -32,7 +26,6 @@ interface WfDetailProps {
 }
 
 export function WfDetail({ workflow, users, products }: WfDetailProps) {
-  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const updateWorkflow = useUpdateWorkflow();
   const isPending = updateWorkflow.isPending;
@@ -97,10 +90,7 @@ export function WfDetail({ workflow, users, products }: WfDetailProps) {
         formId="wf-detail-form"
       />
 
-      <form
-        id="wf-detail-form"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
+      <form id="wf-detail-form" onSubmit={form.handleSubmit(onSubmit)}>
         <Tabs defaultValue="general">
           <TabsList variant="line">
             <TabsTrigger value="general" className="text-[11px]">

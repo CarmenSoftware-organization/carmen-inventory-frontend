@@ -16,15 +16,17 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-  useSortable,
 } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, Plus, CheckCircle2 } from "lucide-react";
+import { GripVertical, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useWatch, type UseFormReturn, type UseFieldArrayReturn } from "react-hook-form";
+import {
+  useWatch,
+  type UseFormReturn,
+  type UseFieldArrayReturn,
+} from "react-hook-form";
 import type { WorkflowCreateModel, Stage } from "@/types/workflows";
-import { cn } from "@/lib/utils";
+import SortableStageItem from "./wf-sort-table-item";
 
 interface WfStageListProps {
   readonly form: UseFormReturn<WorkflowCreateModel>;
@@ -86,73 +88,6 @@ function buildNewStage(existingNames: string[]): Stage {
     assigned_users: [],
     is_hod: false,
   };
-}
-
-interface SortableStageItemProps {
-  readonly id: string;
-  readonly index: number;
-  readonly name: string;
-  readonly isSelected: boolean;
-  readonly isFirst: boolean;
-  readonly isLast: boolean;
-  readonly onClick: () => void;
-}
-
-function SortableStageItem({
-  id,
-  index,
-  name,
-  isSelected,
-  isFirst,
-  isLast,
-  onClick,
-}: SortableStageItemProps) {
-  const isDragDisabled = isFirst || isLast;
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id, disabled: isDragDisabled });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={cn(
-        "flex items-center gap-1.5 rounded border px-1.5 py-1 text-[11px] cursor-pointer",
-        isSelected && "border-primary bg-primary/5",
-        isDragging && "opacity-50",
-      )}
-      onClick={onClick}
-    >
-      {!isDragDisabled ? (
-        <button
-          type="button"
-          className="cursor-grab touch-none text-muted-foreground hover:text-foreground"
-          {...attributes}
-          {...listeners}
-        >
-          <GripVertical className="size-3" />
-        </button>
-      ) : (
-        <div className="w-3" />
-      )}
-      {isLast ? (
-        <CheckCircle2 className="size-3 text-green-600" />
-      ) : (
-        <span className="text-muted-foreground text-[10px]">{index + 1}.</span>
-      )}
-      <span className="truncate flex-1">{name}</span>
-    </div>
-  );
 }
 
 export function WfStageList({
@@ -256,7 +191,10 @@ export function WfStageList({
           {activeDragIndex >= 0 ? (
             <div className="flex items-center gap-1.5 rounded border bg-background px-1.5 py-1 text-[11px] shadow-md">
               <GripVertical className="size-3 text-muted-foreground" />
-              <span>{watchedStages?.[activeDragIndex]?.name ?? fields[activeDragIndex]?.name}</span>
+              <span>
+                {watchedStages?.[activeDragIndex]?.name ??
+                  fields[activeDragIndex]?.name}
+              </span>
             </div>
           ) : null}
         </DragOverlay>

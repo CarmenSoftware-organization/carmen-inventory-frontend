@@ -86,7 +86,7 @@ export function WfGeneral({ form, isDisabled }: WfGeneralProps) {
           <Textarea
             id="wf-description"
             placeholder="Optional description"
-            className="text-xs min-h-[60px]"
+            className="text-xs min-h-15"
             disabled={isDisabled}
             {...form.register("description")}
           />

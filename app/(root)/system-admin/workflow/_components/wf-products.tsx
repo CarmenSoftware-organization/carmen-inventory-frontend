@@ -215,7 +215,7 @@ export function WfProducts({ form, allProducts, isDisabled }: WfProductsProps) {
         </span>
       </div>
 
-      <div className="max-h-[420px] overflow-y-auto rounded border p-1.5">
+      <div className="max-h-105 overflow-y-auto rounded border p-1.5">
         {filteredTree.length === 0 ? (
           <p className="py-6 text-center text-[11px] text-muted-foreground">
             {search

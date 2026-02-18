@@ -225,7 +225,7 @@ export function WfRouting({
               <Field>
                 <FieldLabel className="text-[11px]">Description</FieldLabel>
                 <Textarea
-                  className="text-xs min-h-[48px]"
+                  className="text-xs min-h-12"
                   disabled={isDisabled}
                   placeholder="Optional"
                   {...form.register(
