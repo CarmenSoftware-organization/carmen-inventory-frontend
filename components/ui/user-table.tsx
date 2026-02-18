@@ -24,13 +24,17 @@ export function UserTable({ users, className }: UserTableProps) {
       <table className="w-full text-xs">
         <thead>
           <tr className="border-b bg-muted/50">
+            <th className="w-10 px-3 py-1.5 text-center font-medium">#</th>
             <th className="px-3 py-1.5 text-left font-medium">Name</th>
             <th className="px-3 py-1.5 text-left font-medium">Telephone</th>
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {users.map((user, index) => (
             <tr key={user.id} className="border-b last:border-0">
+              <td className="w-10 px-3 py-1.5 text-center text-muted-foreground">
+                {index + 1}
+              </td>
               <td className="px-3 py-1.5">
                 {user.firstname} {user.lastname}
               </td>

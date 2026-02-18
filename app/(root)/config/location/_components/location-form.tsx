@@ -26,6 +26,7 @@ import { Transfer, type TransferItem } from "@/components/ui/transfer";
 import { TreeProductLookup } from "@/components/ui/tree-product-lookup";
 import { FormToolbar } from "@/components/ui/form-toolbar";
 import { UserTable } from "@/components/ui/user-table";
+import { ProductTable } from "@/components/ui/product-table";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { toast } from "sonner";
 import {
@@ -36,11 +37,7 @@ import {
 import { useAllUsers } from "@/hooks/use-all-users";
 import { useAllProducts } from "@/hooks/use-all-products";
 import { transferHandler, transferPayloadSchema } from "@/utils/transfer-handler";
-import type {
-  Location,
-  ProductLocation,
-  PhysicalCountType,
-} from "@/types/location";
+import type { Location, PhysicalCountType } from "@/types/location";
 import type { FormMode } from "@/types/form";
 import {
   INVENTORY_TYPE,
@@ -246,91 +243,95 @@ export function LocationForm({ location }: LocationFormProps) {
         className="max-w-2xl space-y-4"
       >
         <FieldGroup className="gap-3">
-          <Field data-invalid={!!form.formState.errors.code}>
-            <FieldLabel htmlFor="location-code" className="text-xs">
-              Code
-            </FieldLabel>
-            <Input
-              id="location-code"
-              placeholder="e.g. M123D"
-              className="h-8 text-sm"
-              disabled={isDisabled}
-              {...form.register("code")}
-            />
-            <FieldError>{form.formState.errors.code?.message}</FieldError>
-          </Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field data-invalid={!!form.formState.errors.code}>
+              <FieldLabel htmlFor="location-code" className="text-xs">
+                Code
+              </FieldLabel>
+              <Input
+                id="location-code"
+                placeholder="e.g. M123D"
+                className="h-8 text-sm"
+                disabled={isDisabled}
+                {...form.register("code")}
+              />
+              <FieldError>{form.formState.errors.code?.message}</FieldError>
+            </Field>
 
-          <Field data-invalid={!!form.formState.errors.name}>
-            <FieldLabel htmlFor="location-name" className="text-xs">
-              Name
-            </FieldLabel>
-            <Input
-              id="location-name"
-              placeholder="e.g. BAR เหล้า"
-              className="h-8 text-sm"
-              disabled={isDisabled}
-              {...form.register("name")}
-            />
-            <FieldError>{form.formState.errors.name?.message}</FieldError>
-          </Field>
+            <Field data-invalid={!!form.formState.errors.name}>
+              <FieldLabel htmlFor="location-name" className="text-xs">
+                Name
+              </FieldLabel>
+              <Input
+                id="location-name"
+                placeholder="e.g. BAR เหล้า"
+                className="h-8 text-sm"
+                disabled={isDisabled}
+                {...form.register("name")}
+              />
+              <FieldError>{form.formState.errors.name?.message}</FieldError>
+            </Field>
+          </div>
 
-          <Field data-invalid={!!form.formState.errors.location_type}>
-            <FieldLabel className="text-xs">Location Type</FieldLabel>
-            <Controller
-              control={form.control}
-              name="location_type"
-              render={({ field }) => (
-                <Select
-                  value={field.value}
-                  onValueChange={field.onChange}
-                  disabled={isDisabled}
-                >
-                  <SelectTrigger className="h-8 w-full text-sm">
-                    <SelectValue placeholder="Select location type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {INVENTORY_TYPE_OPTIONS.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            <FieldError>
-              {form.formState.errors.location_type?.message}
-            </FieldError>
-          </Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field data-invalid={!!form.formState.errors.location_type}>
+              <FieldLabel className="text-xs">Location Type</FieldLabel>
+              <Controller
+                control={form.control}
+                name="location_type"
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={isDisabled}
+                  >
+                    <SelectTrigger className="h-8 w-full text-sm">
+                      <SelectValue placeholder="Select location type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {INVENTORY_TYPE_OPTIONS.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              <FieldError>
+                {form.formState.errors.location_type?.message}
+              </FieldError>
+            </Field>
 
-          <Field data-invalid={!!form.formState.errors.physical_count_type}>
-            <FieldLabel className="text-xs">Physical Count</FieldLabel>
-            <Controller
-              control={form.control}
-              name="physical_count_type"
-              render={({ field }) => (
-                <Select
-                  value={field.value}
-                  onValueChange={field.onChange}
-                  disabled={isDisabled}
-                >
-                  <SelectTrigger className="h-8 w-full text-sm">
-                    <SelectValue placeholder="Select physical count type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PHYSICAL_COUNT_TYPE_OPTIONS.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            <FieldError>
-              {form.formState.errors.physical_count_type?.message}
-            </FieldError>
-          </Field>
+            <Field data-invalid={!!form.formState.errors.physical_count_type}>
+              <FieldLabel className="text-xs">Physical Count</FieldLabel>
+              <Controller
+                control={form.control}
+                name="physical_count_type"
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={isDisabled}
+                  >
+                    <SelectTrigger className="h-8 w-full text-sm">
+                      <SelectValue placeholder="Select physical count type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PHYSICAL_COUNT_TYPE_OPTIONS.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              <FieldError>
+                {form.formState.errors.physical_count_type?.message}
+              </FieldError>
+            </Field>
+          </div>
 
           <Field>
             <FieldLabel htmlFor="location-description" className="text-xs">
@@ -390,9 +391,7 @@ export function LocationForm({ location }: LocationFormProps) {
                 <UserTable users={location.user_location} />
               </TabsContent>
               <TabsContent value="products">
-                <ProductLocationSection
-                  products={location.product_location}
-                />
+                <ProductTable products={location.product_location} />
               </TabsContent>
             </Tabs>
           </div>
@@ -448,37 +447,3 @@ export function LocationForm({ location }: LocationFormProps) {
   );
 }
 
-function ProductLocationSection({
-  products,
-}: {
-  products: ProductLocation[];
-}) {
-  const validProducts = products.filter((p) => p.code && p.name);
-
-  return (
-    <div>
-      {validProducts.length === 0 ? (
-        <p className="text-xs text-muted-foreground">No products assigned</p>
-      ) : (
-        <div className="rounded-md border">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b bg-muted/50">
-                <th className="px-3 py-1.5 text-left font-medium">Code</th>
-                <th className="px-3 py-1.5 text-left font-medium">Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {validProducts.map((product) => (
-                <tr key={product.id} className="border-b last:border-0">
-                  <td className="px-3 py-1.5 font-medium">{product.code}</td>
-                  <td className="px-3 py-1.5">{product.name}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
-  );
-}

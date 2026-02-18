@@ -25,7 +25,10 @@ import {
   useDeleteDepartment,
 } from "@/hooks/use-department";
 import { useAllUsers } from "@/hooks/use-all-users";
-import { transferHandler, transferPayloadSchema } from "@/utils/transfer-handler";
+import {
+  transferHandler,
+  transferPayloadSchema,
+} from "@/utils/transfer-handler";
 import type { Department } from "@/types/department";
 import type { FormMode } from "@/types/form";
 
@@ -69,7 +72,9 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
       department?.department_users.map((u) => u.user_id) ?? [],
     );
     return allUsers
-      .filter((user) => !user.department?.id || currentDeptUserIds.has(user.user_id))
+      .filter(
+        (user) => !user.department?.id || currentDeptUserIds.has(user.user_id),
+      )
       .map((user) => ({
         key: user.user_id,
         title: `${user.firstname} ${user.lastname}`,
@@ -176,9 +181,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
         department_users: { ...emptyTransfer },
         hod_users: { ...emptyTransfer },
       });
-      setDeptUserTargetKeys(
-        department.department_users.map((u) => u.user_id),
-      );
+      setDeptUserTargetKeys(department.department_users.map((u) => u.user_id));
       setHodUserTargetKeys(department.hod_users.map((u) => u.user_id));
       setMode("view");
     } else {
@@ -206,33 +209,35 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
         className="max-w-2xl space-y-4"
       >
         <FieldGroup className="gap-3">
-          <Field data-invalid={!!form.formState.errors.code}>
-            <FieldLabel htmlFor="department-code" className="text-xs">
-              Code
-            </FieldLabel>
-            <Input
-              id="department-code"
-              placeholder="e.g. IT, HR, FIN"
-              className="h-8 text-sm"
-              disabled={isDisabled}
-              {...form.register("code")}
-            />
-            <FieldError>{form.formState.errors.code?.message}</FieldError>
-          </Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field data-invalid={!!form.formState.errors.code}>
+              <FieldLabel htmlFor="department-code" className="text-xs">
+                Code
+              </FieldLabel>
+              <Input
+                id="department-code"
+                placeholder="e.g. IT, HR, FIN"
+                className="h-8 text-sm"
+                disabled={isDisabled}
+                {...form.register("code")}
+              />
+              <FieldError>{form.formState.errors.code?.message}</FieldError>
+            </Field>
 
-          <Field data-invalid={!!form.formState.errors.name}>
-            <FieldLabel htmlFor="department-name" className="text-xs">
-              Name
-            </FieldLabel>
-            <Input
-              id="department-name"
-              placeholder="e.g. Information Technology"
-              className="h-8 text-sm"
-              disabled={isDisabled}
-              {...form.register("name")}
-            />
-            <FieldError>{form.formState.errors.name?.message}</FieldError>
-          </Field>
+            <Field data-invalid={!!form.formState.errors.name}>
+              <FieldLabel htmlFor="department-name" className="text-xs">
+                Name
+              </FieldLabel>
+              <Input
+                id="department-name"
+                placeholder="e.g. Information Technology"
+                className="h-8 text-sm"
+                disabled={isDisabled}
+                {...form.register("name")}
+              />
+              <FieldError>{form.formState.errors.name?.message}</FieldError>
+            </Field>
+          </div>
 
           <Field>
             <FieldLabel htmlFor="department-description" className="text-xs">
@@ -278,7 +283,10 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
             )}
           </div>
           {isView ? (
-            <UserTable users={department?.department_users ?? []} className="max-w-2xl" />
+            <UserTable
+              users={department?.department_users ?? []}
+              className="max-w-2xl"
+            />
           ) : (
             <Transfer
               dataSource={departmentUserSource}
@@ -301,7 +309,10 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
             )}
           </div>
           {isView ? (
-            <UserTable users={department?.hod_users ?? []} className="max-w-2xl" />
+            <UserTable
+              users={department?.hod_users ?? []}
+              className="max-w-2xl"
+            />
           ) : (
             <Transfer
               dataSource={hodUserSource}
@@ -338,4 +349,3 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
     </div>
   );
 }
-
