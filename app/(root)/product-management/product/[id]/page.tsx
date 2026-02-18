@@ -1,16 +1,11 @@
 "use client";
 
-import { use } from "react";
+import { use, Suspense } from "react";
 import { useProductById } from "@/hooks/use-product";
 import { ProductForm } from "../_components/pd-form";
 import { ErrorState } from "@/components/ui/error-state";
 
-export default function EditProductPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
+function EditProductContent({ id }: { id: string }) {
   const { data: product, isLoading, error, refetch } = useProductById(id);
 
   if (isLoading)
@@ -20,4 +15,18 @@ export default function EditProductPage({
   if (!product) return <ErrorState message="Product not found" />;
 
   return <ProductForm product={product} />;
+}
+
+export default function EditProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
+
+  return (
+    <Suspense>
+      <EditProductContent id={id} />
+    </Suspense>
+  );
 }
