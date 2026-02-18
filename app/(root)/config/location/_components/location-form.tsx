@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,12 +23,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Transfer, type TransferItem } from "@/components/ui/transfer";
+import { TreeProductLookup } from "@/components/ui/tree-product-lookup";
+import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { toast } from "sonner";
 import {
   useCreateLocation,
   useUpdateLocation,
   useDeleteLocation,
 } from "@/hooks/use-location";
+import { useAllUsers } from "@/hooks/use-all-users";
+import { useAllProducts } from "@/hooks/use-all-products";
+import { transferHandler } from "@/utils/transfer-handler";
 import type {
   Location,
   UserLocation,
@@ -41,8 +48,11 @@ import {
   INVENTORY_TYPE_OPTIONS,
   PHYSICAL_COUNT_TYPE_OPTIONS,
 } from "@/constant/location";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DeleteDialog } from "@/components/ui/delete-dialog";
+
+const transferPayloadSchema = z.object({
+  add: z.array(z.object({ id: z.string() })),
+  remove: z.array(z.object({ id: z.string() })),
+});
 
 const locationSchema = z.object({
   code: z.string().min(1, "Code is required"),
@@ -55,9 +65,13 @@ const locationSchema = z.object({
   }),
   description: z.string(),
   is_active: z.boolean(),
+  users: transferPayloadSchema,
+  products: transferPayloadSchema,
 });
 
 type LocationFormValues = z.infer<typeof locationSchema>;
+
+const emptyTransfer = { add: [], remove: [] };
 
 interface LocationFormProps {
   readonly location?: Location;
@@ -77,6 +91,40 @@ export function LocationForm({ location }: LocationFormProps) {
   const isPending = createLocation.isPending || updateLocation.isPending;
   const isDisabled = isView || isPending;
 
+  // Fetch all users for Transfer
+  const { data: allUsers = [], isLoading: isLoadingUsers } = useAllUsers();
+
+  // Fetch all products for TreeProductLookup
+  const { data: allProducts = [], isLoading: isLoadingProducts } =
+    useAllProducts();
+
+  // Users source: all users (no filter for location)
+  const userSource: TransferItem[] = useMemo(
+    () =>
+      allUsers.map((user) => ({
+        key: user.user_id,
+        title: `${user.firstname} ${user.lastname}`,
+      })),
+    [allUsers],
+  );
+
+  // Initial keys from existing location data
+  const initialUserKeys = useMemo(
+    () => location?.user_location.map((u) => u.id) ?? [],
+    [location],
+  );
+  const initialProductIds = useMemo(
+    () => new Set(location?.product_location.map((p) => p.id) ?? []),
+    [location],
+  );
+
+  // Target keys state
+  const [userTargetKeys, setUserTargetKeys] =
+    useState<string[]>(initialUserKeys);
+  const [selectedProductIds, setSelectedProductIds] = useState<Set<string>>(
+    () => new Set(initialProductIds),
+  );
+
   const form = useForm<LocationFormValues>({
     resolver: zodResolver(locationSchema) as Resolver<LocationFormValues>,
     defaultValues: location
@@ -87,6 +135,8 @@ export function LocationForm({ location }: LocationFormProps) {
           physical_count_type: location.physical_count_type,
           description: location.description,
           is_active: location.is_active,
+          users: { ...emptyTransfer },
+          products: { ...emptyTransfer },
         }
       : {
           code: "",
@@ -95,8 +145,38 @@ export function LocationForm({ location }: LocationFormProps) {
           physical_count_type: "" as unknown as PhysicalCountType,
           description: "",
           is_active: true,
+          users: { ...emptyTransfer },
+          products: { ...emptyTransfer },
         },
   });
+
+  // Users Transfer onChange
+  const handleUsersChange = (
+    nextTargetKeys: string[],
+    direction: "left" | "right",
+    moveKeys: string[],
+  ) => {
+    setUserTargetKeys(nextTargetKeys);
+    transferHandler(form, "users", moveKeys, direction);
+  };
+
+  // Products TreeProductLookup onChange (snapshot diff)
+  const handleProductSelectionChange = useCallback(
+    (productIds: string[]) => {
+      const newIds = new Set(productIds);
+      setSelectedProductIds(newIds);
+
+      const toAdd = productIds
+        .filter((id) => !initialProductIds.has(id))
+        .map((id) => ({ id }));
+      const toRemove = Array.from(initialProductIds)
+        .filter((id) => !newIds.has(id))
+        .map((id) => ({ id }));
+
+      form.setValue("products", { add: toAdd, remove: toRemove });
+    },
+    [form, initialProductIds],
+  );
 
   const onSubmit = (values: LocationFormValues) => {
     const payload = {
@@ -106,6 +186,8 @@ export function LocationForm({ location }: LocationFormProps) {
       physical_count_type: values.physical_count_type,
       description: values.description ?? "",
       is_active: values.is_active,
+      users: values.users,
+      products: values.products,
     };
 
     if (isEdit && location) {
@@ -139,7 +221,11 @@ export function LocationForm({ location }: LocationFormProps) {
         physical_count_type: location.physical_count_type,
         description: location.description,
         is_active: location.is_active,
+        users: { ...emptyTransfer },
+        products: { ...emptyTransfer },
       });
+      setUserTargetKeys(initialUserKeys);
+      setSelectedProductIds(new Set(initialProductIds));
       setMode("view");
     } else {
       router.push("/config/location");
@@ -338,33 +424,66 @@ export function LocationForm({ location }: LocationFormProps) {
         </FieldGroup>
       </form>
 
-      {location && (
-        <div className="max-w-2xl space-y-4 pt-4">
-          {location.delivery_point && (
-            <div className="space-y-2">
-              <h3 className="text-xs font-medium text-muted-foreground">
-                Delivery Point
-              </h3>
-              <p className="text-xs">{location.delivery_point.name}</p>
-            </div>
-          )}
+      {location?.delivery_point && (
+        <div className="max-w-2xl space-y-2">
+          <h3 className="text-xs font-medium text-muted-foreground">
+            Delivery Point
+          </h3>
+          <p className="text-xs">{location.delivery_point.name}</p>
+        </div>
+      )}
 
-          <Tabs defaultValue="users">
-            <TabsList variant="line">
-              <TabsTrigger value="users" className="text-xs">
-                Location Users ({location.user_location.length})
-              </TabsTrigger>
-              <TabsTrigger value="products" className="text-xs">
-                Products ({location.product_location.length})
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="users">
-              <UserLocationSection users={location.user_location} />
-            </TabsContent>
-            <TabsContent value="products">
-              <ProductLocationSection products={location.product_location} />
-            </TabsContent>
-          </Tabs>
+      {isView ? (
+        location && (
+          <div className="max-w-2xl space-y-4 pt-4">
+            <Tabs defaultValue="users">
+              <TabsList variant="line">
+                <TabsTrigger value="users" className="text-xs">
+                  Location Users ({location.user_location.length})
+                </TabsTrigger>
+                <TabsTrigger value="products" className="text-xs">
+                  Products ({location.product_location.length})
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="users">
+                <UserLocationSection users={location.user_location} />
+              </TabsContent>
+              <TabsContent value="products">
+                <ProductLocationSection
+                  products={location.product_location}
+                />
+              </TabsContent>
+            </Tabs>
+          </div>
+        )
+      ) : (
+        <div className="space-y-4 pt-4">
+          <div className="space-y-2">
+            <h3 className="text-xs font-medium text-muted-foreground">
+              Location Users
+            </h3>
+            <Transfer
+              dataSource={userSource}
+              targetKeys={userTargetKeys}
+              onChange={handleUsersChange}
+              disabled={isDisabled}
+              loading={isLoadingUsers}
+              titles={["Available Users", "Location Users"]}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-xs font-medium text-muted-foreground">
+              Products
+            </h3>
+            <TreeProductLookup
+              products={allProducts}
+              selectedProductIds={selectedProductIds}
+              onSelectionChange={handleProductSelectionChange}
+              disabled={isDisabled}
+              loading={isLoadingProducts}
+            />
+          </div>
         </div>
       )}
 
@@ -403,7 +522,9 @@ function UserLocationSection({ users }: { users: UserLocation[] }) {
             <thead>
               <tr className="border-b bg-muted/50">
                 <th className="px-3 py-1.5 text-left font-medium">Name</th>
-                <th className="px-3 py-1.5 text-left font-medium">Telephone</th>
+                <th className="px-3 py-1.5 text-left font-medium">
+                  Telephone
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -425,7 +546,11 @@ function UserLocationSection({ users }: { users: UserLocation[] }) {
   );
 }
 
-function ProductLocationSection({ products }: { products: ProductLocation[] }) {
+function ProductLocationSection({
+  products,
+}: {
+  products: ProductLocation[];
+}) {
   const validProducts = products.filter((p) => p.code && p.name);
 
   return (
