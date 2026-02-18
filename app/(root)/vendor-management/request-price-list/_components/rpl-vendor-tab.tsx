@@ -28,7 +28,7 @@ import {
 import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
 import { LookupVendor } from "@/components/lookup/lookup-vendor";
 import type { RequestPriceListVendor } from "@/types/request-price-list";
-import { type RfpFormValues } from "./request-price-list-form-schema";
+import { type RfpFormValues } from "./rpl-form-schema";
 import EmptyComponent from "@/components/empty-component";
 
 type VendorAddItem = RfpFormValues["vendors"]["add"][number];
@@ -48,7 +48,7 @@ interface VendorsTabProps {
   onRemoveVendor: (vendorId: string) => void;
 }
 
-export default function VendorsTab({
+export default function RplVendorsTab({
   form,
   isDisabled,
   isAdding,
@@ -60,8 +60,6 @@ export default function VendorsTab({
   onRemoveVendor,
 }: VendorsTabProps) {
   const router = useRouter();
-
-  console.log("isDisabled", isDisabled);
 
   const updateAddField = useCallback(
     (fieldIndex: number, field: keyof VendorAddItem, value: string) => {

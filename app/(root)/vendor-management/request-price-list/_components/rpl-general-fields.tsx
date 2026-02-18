@@ -29,8 +29,8 @@ import {
 import { useProfile } from "@/hooks/use-profile";
 import { formatDate } from "@/lib/date-utils";
 import { usePriceListTemplate } from "@/hooks/use-price-list-template";
-import type { RfpFormValues } from "./request-price-list-form-schema";
-import { STATUS_OPTIONS } from "./request-price-list-form-schema";
+import type { RfpFormValues } from "./rpl-form-schema";
+import { STATUS_OPTIONS } from "./rpl-form-schema";
 
 interface Props {
   readonly form: UseFormReturn<RfpFormValues>;
@@ -124,8 +124,7 @@ export function RequestPriceListGeneralFields({ form, disabled }: Props) {
       {/* Date Range Picker - Calendar dual month */}
       <Field
         data-invalid={
-          !!form.formState.errors.start_date ||
-          !!form.formState.errors.end_date
+          !!form.formState.errors.start_date || !!form.formState.errors.end_date
         }
         className="col-span-2"
       >
@@ -147,9 +146,7 @@ export function RequestPriceListGeneralFields({ form, disabled }: Props) {
                     {formatDate(startDate, dateFormat || "yyyy-MM-dd")}
                   </span>
                   {" - "}
-                  <span>
-                    {formatDate(endDate, dateFormat || "yyyy-MM-dd")}
-                  </span>
+                  <span>{formatDate(endDate, dateFormat || "yyyy-MM-dd")}</span>
                 </>
               ) : (
                 <span>Pick a date range</span>
@@ -206,9 +203,7 @@ export function RequestPriceListGeneralFields({ form, disabled }: Props) {
             />
           </PopoverContent>
         </Popover>
-        <FieldError>
-          {form.formState.errors.start_date?.message}
-        </FieldError>
+        <FieldError>{form.formState.errors.start_date?.message}</FieldError>
         {form.formState.errors.end_date && (
           <p className="text-[0.8rem] font-medium text-destructive">
             {form.formState.errors.end_date.message as string}

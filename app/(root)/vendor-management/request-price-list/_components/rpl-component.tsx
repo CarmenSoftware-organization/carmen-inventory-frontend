@@ -21,12 +21,13 @@ import SearchInput from "@/components/search-input";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ErrorState } from "@/components/ui/error-state";
 import DisplayTemplate from "@/components/display-template";
-import { useRequestPriceListTable } from "./use-request-price-list-table";
+import { useRequestPriceListTable } from "./use-rpl-table";
 
 export default function RequestPriceListComponent() {
   const router = useRouter();
-  const [deleteTarget, setDeleteTarget] =
-    useState<RequestPriceList | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<RequestPriceList | null>(
+    null,
+  );
   const deleteRequestPriceList = useDeleteRequestPriceList();
   const { params, search, setSearch, tableConfig } = useDataGridState();
   const { data, isLoading, error, refetch } = useRequestPriceList(params);
@@ -51,9 +52,7 @@ export default function RequestPriceListComponent() {
     <DisplayTemplate
       title="Request Price List"
       description="Manage request price lists for your business."
-      toolbar={
-        <SearchInput defaultValue={search} onSearch={setSearch} />
-      }
+      toolbar={<SearchInput defaultValue={search} onSearch={setSearch} />}
       actions={
         <>
           <Button

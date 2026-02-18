@@ -26,9 +26,9 @@ import {
   rfpSchema,
   type RfpFormValues,
   getDefaultValues,
-} from "./request-price-list-form-schema";
-import { RequestPriceListGeneralFields } from "./request-price-list-general-fields";
-import VendorsTab from "./vendor-tab";
+} from "./rpl-form-schema";
+import { RequestPriceListGeneralFields } from "./rpl-general-fields";
+import RplVendorsTab from "./rpl-vendor-tab";
 
 const statusVariantMap: Record<
   StatusRfp,
@@ -283,7 +283,7 @@ export function RequestPriceListForm({
           </TabsContent>
 
           <TabsContent value="vendors">
-            <VendorsTab
+            <RplVendorsTab
               form={form}
               isDisabled={isDisabled}
               isAdding={isAdding}

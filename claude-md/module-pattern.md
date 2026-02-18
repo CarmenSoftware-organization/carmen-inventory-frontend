@@ -1052,3 +1052,4 @@ export default function EditCategoryPage({
   ```
 
 - **No array index as key** (SonarQube): ห้ามใช้ `key={i}` — ใช้ unique identifier จาก data เช่น `key={item.id}` หรือ composite key `key={`${item.user_id}-${item.action}-${i}`}`
+- **New row sentinel**: เมื่อมี inline add row ใน table ให้ประกาศ `const NEW_ROW_ID = "__new__"` ไว้นอก component (module-level) แล้วใช้เป็น sentinel value สำหรับ placeholder row — เช็คด้วย `v.id === NEW_ROW_ID` เพื่อแยก new row กับ data row จริง
