@@ -72,4 +72,9 @@ export const API_ENDPOINTS = {
   VENDOR_BUSINESS_TYPES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/vendor-business-type`,
   WORKFLOWS: (buCode: string) => `/api/proxy/api/config/${buCode}/workflows`,
+  // External (no auth)
+  PRICE_LIST_EXTERNAL_CHECK: (urlToken: string) =>
+    `/api/external/api/check-price-list/${urlToken}`,
+  PRICE_LIST_EXTERNAL: (urlToken: string) =>
+    `/api/external/api/price-list-external/${urlToken}`,
 } as const;

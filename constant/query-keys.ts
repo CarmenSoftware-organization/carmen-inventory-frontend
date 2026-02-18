@@ -39,6 +39,8 @@ export const QUERY_KEYS = {
   USERS: "users",
   VENDORS: "vendors",
   WORKFLOWS: "workflows",
+  // External
+  PRICE_LIST_EXTERNAL: "price-list-external",
 } as const;
 
 export type QueryKey = (typeof QUERY_KEYS)[keyof typeof QUERY_KEYS];

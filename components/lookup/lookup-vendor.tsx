@@ -18,10 +18,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useVendor } from "@/hooks/use-vendor";
+import type { Vendor } from "@/types/vendor";
 
 interface LookupVendorProps {
   readonly value: string;
   readonly onValueChange: (value: string) => void;
+  readonly onItemChange?: (vendor: Vendor) => void;
+  readonly excludeIds?: Set<string>;
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
@@ -30,12 +33,22 @@ interface LookupVendorProps {
 export function LookupVendor({
   value,
   onValueChange,
+  onItemChange,
+  excludeIds,
   disabled,
   placeholder = "Select vendor",
   className,
 }: LookupVendorProps) {
   const { data } = useVendor({ perpage: -1 });
-  const vendors = useMemo(
+  const vendors = useMemo(() => {
+    let list = data?.data?.filter((v) => v.is_active) ?? [];
+    if (excludeIds?.size) {
+      list = list.filter((v) => !excludeIds.has(v.id));
+    }
+    return list;
+  }, [data?.data, excludeIds]);
+
+  const allVendors = useMemo(
     () => data?.data?.filter((v) => v.is_active) ?? [],
     [data?.data],
   );
@@ -44,8 +57,8 @@ export function LookupVendor({
 
   const selectedName = useMemo(() => {
     if (!value) return null;
-    return vendors.find((v) => v.id === value)?.name ?? null;
-  }, [value, vendors]);
+    return allVendors.find((v) => v.id === value)?.name ?? null;
+  }, [value, allVendors]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -87,6 +100,7 @@ export function LookupVendor({
                   value={vendor.name}
                   onSelect={() => {
                     onValueChange(vendor.id);
+                    onItemChange?.(vendor);
                     setOpen(false);
                   }}
                   className="text-xs"

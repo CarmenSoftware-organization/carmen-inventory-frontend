@@ -1,18 +1,14 @@
 "use no memo";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
 import { CellAction } from "@/components/ui/cell-action";
-import {
-  selectColumn,
-  indexColumn,
-  actionColumn,
-  columnSkeletons,
-} from "@/components/ui/data-grid/columns";
+import { useConfigTable } from "@/components/ui/data-grid/use-config-table";
+import { columnSkeletons } from "@/components/ui/data-grid/columns";
+import { Badge } from "@/components/ui/badge";
 import { useProfile } from "@/hooks/use-profile";
 import { formatDate } from "@/lib/date-utils";
-import type { RequestPriceList } from "@/types/request-price-list";
+import type { RequestPriceList, StatusRfp } from "@/types/request-price-list";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
 
@@ -24,6 +20,25 @@ interface UseRequestPriceListTableOptions {
   onEdit: (item: RequestPriceList) => void;
   onDelete: (item: RequestPriceList) => void;
 }
+
+const statusVariantMap: Record<
+  StatusRfp,
+  "outline" | "success" | "info" | "destructive" | "secondary"
+> = {
+  draft: "outline",
+  active: "success",
+  submit: "info",
+  completed: "success",
+  inactive: "destructive",
+};
+
+const statusLabelMap: Record<StatusRfp, string> = {
+  draft: "Draft",
+  active: "Active",
+  submit: "Submit",
+  completed: "Completed",
+  inactive: "Inactive",
+};
 
 export function useRequestPriceListTable({
   items,
@@ -42,7 +57,7 @@ export function useRequestPriceListTable({
     return `${from} - ${to}`;
   };
 
-  const dataColumns: ColumnDef<RequestPriceList>[] = [
+  const columns: ColumnDef<RequestPriceList>[] = [
     {
       accessorKey: "name",
       header: ({ column }) => (
@@ -54,6 +69,24 @@ export function useRequestPriceListTable({
         </CellAction>
       ),
       meta: { skeleton: columnSkeletons.text },
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.getValue<string>("status") as StatusRfp | undefined;
+        if (!status) return "—";
+        return (
+          <Badge
+            size="sm"
+            variant={statusVariantMap[status] ?? "outline"}
+          >
+            {statusLabelMap[status] ?? status}
+          </Badge>
+        );
+      },
+      enableSorting: false,
+      meta: { skeleton: columnSkeletons.badge },
     },
     {
       id: "template_name",
@@ -77,18 +110,13 @@ export function useRequestPriceListTable({
     },
   ];
 
-  const allColumns: ColumnDef<RequestPriceList>[] = [
-    selectColumn<RequestPriceList>(),
-    indexColumn<RequestPriceList>(params),
-    ...dataColumns,
-    actionColumn<RequestPriceList>(onDelete),
-  ];
-
-  return useReactTable({
+  return useConfigTable<RequestPriceList>({
     data: items,
-    columns: allColumns,
-    getCoreRowModel: getCoreRowModel(),
-    ...tableConfig,
-    pageCount: Math.ceil(totalRecords / (Number(params.perpage) || 10)),
+    columns,
+    totalRecords,
+    params,
+    tableConfig,
+    onDelete,
+    hideStatus: true,
   });
 }

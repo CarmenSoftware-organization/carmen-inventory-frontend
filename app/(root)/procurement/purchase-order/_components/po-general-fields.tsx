@@ -38,7 +38,6 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
                 value={field.value}
                 onValueChange={field.onChange}
                 disabled={disabled}
-                size="sm"
               />
             )}
           />

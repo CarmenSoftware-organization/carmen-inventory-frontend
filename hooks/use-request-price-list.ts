@@ -5,10 +5,14 @@ import type { RequestPriceList } from "@/types/request-price-list";
 
 export interface CreateRequestPriceListDto {
   name: string;
-  pricelist_template_id: string;
+  status: string;
+  pricelist_template_id?: string;
   start_date: string;
   end_date: string;
-  custom_message: string;
+  custom_message?: string;
+  email_template_id?: string;
+  info?: string;
+  dimension?: unknown;
   vendors: {
     add?: {
       vendor_id: string;
@@ -21,6 +25,7 @@ export interface CreateRequestPriceListDto {
       dimension: string;
       id: string;
     }[];
+    remove?: string[];
   };
 }
 
@@ -28,6 +33,7 @@ const crud = createConfigCrud<RequestPriceList, CreateRequestPriceListDto>({
   queryKey: QUERY_KEYS.REQUEST_PRICE_LISTS,
   endpoint: API_ENDPOINTS.REQUEST_PRICE_LISTS,
   label: "request price list",
+  updateMethod: "PATCH",
 });
 
 export const useRequestPriceList = crud.useList;

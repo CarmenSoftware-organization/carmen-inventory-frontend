@@ -1,71 +1,55 @@
 "use client";
 
-import { useState } from "react";
-import {
-  useForm,
-  useFieldArray,
-  Controller,
-  type Resolver,
-  type UseFormReturn,
-} from "react-hook-form";
-import { z } from "zod";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { Plus, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { FormToolbar } from "@/components/ui/form-toolbar";
-import { Input } from "@/components/ui/input";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldError,
-} from "@/components/ui/field";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { FormToolbar } from "@/components/ui/form-toolbar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DeleteDialog } from "@/components/ui/delete-dialog";
 import {
   useCreateRequestPriceList,
   useUpdateRequestPriceList,
   useDeleteRequestPriceList,
   type CreateRequestPriceListDto,
 } from "@/hooks/use-request-price-list";
-import { usePriceListTemplate } from "@/hooks/use-price-list-template";
 import { useVendor } from "@/hooks/use-vendor";
-import type { RequestPriceList } from "@/types/request-price-list";
+import type {
+  RequestPriceList,
+  RequestPriceListVendor,
+  StatusRfp,
+} from "@/types/request-price-list";
 import type { FormMode } from "@/types/form";
-import { DeleteDialog } from "@/components/ui/delete-dialog";
-import { isoToDateInput } from "@/lib/date-utils";
+import {
+  rfpSchema,
+  type RfpFormValues,
+  getDefaultValues,
+} from "./request-price-list-form-schema";
+import { RequestPriceListGeneralFields } from "./request-price-list-general-fields";
+import VendorsTab from "./vendor-tab";
 
-const vendorSchema = z.object({
-  vendor_id: z.string().min(1, "Vendor is required"),
-  vendor_name: z.string(),
-  vendor_code: z.string(),
-  contact_person: z.string(),
-  contact_phone: z.string(),
-  contact_email: z.string(),
-  dimension: z.string(),
-});
+const statusVariantMap: Record<
+  StatusRfp,
+  "outline" | "success" | "info" | "destructive" | "secondary"
+> = {
+  draft: "outline",
+  active: "success",
+  submit: "info",
+  completed: "success",
+  inactive: "destructive",
+};
 
-const rfpSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  pricelist_template_id: z
-    .string()
-    .min(1, "Price list template is required"),
-  start_date: z.string().min(1, "Start date is required"),
-  end_date: z.string().min(1, "End date is required"),
-  custom_message: z.string(),
-  vendors: z.array(vendorSchema),
-});
+const statusLabelMap: Record<StatusRfp, string> = {
+  draft: "Draft",
+  active: "Active",
+  submit: "Submit",
+  completed: "Completed",
+  inactive: "Inactive",
+};
 
-type RfpFormValues = z.infer<typeof rfpSchema>;
+type VendorAddItem = RfpFormValues["vendors"]["add"][number];
 
 interface RequestPriceListFormProps {
   readonly requestPriceList?: RequestPriceList;
@@ -75,9 +59,7 @@ export function RequestPriceListForm({
   requestPriceList,
 }: RequestPriceListFormProps) {
   const router = useRouter();
-  const [mode, setMode] = useState<FormMode>(
-    requestPriceList ? "view" : "add",
-  );
+  const [mode, setMode] = useState<FormMode>(requestPriceList ? "view" : "add");
   const isView = mode === "view";
   const isEdit = mode === "edit";
   const isAdd = mode === "add";
@@ -89,70 +71,127 @@ export function RequestPriceListForm({
   const isPending = createRfp.isPending || updateRfp.isPending;
   const isDisabled = isView || isPending;
 
-  const { data: templateData } = usePriceListTemplate({ perpage: -1 });
-  const templates = templateData?.data ?? [];
-
   const { data: vendorData } = useVendor({ perpage: -1 });
-  const vendorList = vendorData?.data?.filter((v) => v.is_active) ?? [];
-
-  const defaultValues: RfpFormValues = requestPriceList
-    ? {
-        name: requestPriceList.name,
-        pricelist_template_id:
-          requestPriceList.pricelist_template?.id ?? "",
-        start_date: isoToDateInput(requestPriceList.start_date),
-        end_date: isoToDateInput(requestPriceList.end_date),
-        custom_message: requestPriceList.custom_message ?? "",
-        vendors:
-          requestPriceList.vendors?.map((v) => ({
-            vendor_id: v.vendor_id,
-            vendor_name: v.vendor_name,
-            vendor_code: v.vendor_code,
-            contact_person: v.contact_person ?? "",
-            contact_phone: v.contact_phone ?? "",
-            contact_email: v.contact_email ?? "",
-            dimension: v.dimension ?? "",
-          })) ?? [],
-      }
-    : {
-        name: "",
-        pricelist_template_id: "",
-        start_date: "",
-        end_date: "",
-        custom_message: "",
-        vendors: [],
-      };
+  const vendorList = useMemo(
+    () => vendorData?.data?.filter((v) => v.is_active) ?? [],
+    [vendorData?.data],
+  );
 
   const form = useForm<RfpFormValues>({
     resolver: zodResolver(rfpSchema) as Resolver<RfpFormValues>,
-    defaultValues,
+    defaultValues: getDefaultValues(requestPriceList),
   });
 
-  const {
-    fields: vendorFields,
-    append: appendVendor,
-    remove: removeVendor,
-  } = useFieldArray({ control: form.control, name: "vendors" });
+  useEffect(() => {
+    if (requestPriceList) {
+      form.reset(getDefaultValues(requestPriceList));
+    }
+  }, [requestPriceList, form]);
 
-  const onSubmit = (values: RfpFormValues) => {
+  /* ---- vendor diff state ---- */
+  const [isAdding, setIsAdding] = useState(false);
+  const addedVendors: VendorAddItem[] = form.watch("vendors.add") ?? [];
+  const removedIds: string[] = form.watch("vendors.remove") ?? [];
+  const removedVendorIds = useMemo(() => new Set(removedIds), [removedIds]);
+
+  const existingVendors = useMemo(
+    () =>
+      (requestPriceList?.vendors ?? []).filter(
+        (v) => !removedVendorIds.has(v.vendor_id),
+      ),
+    [requestPriceList?.vendors, removedVendorIds],
+  );
+
+  const displayVendors: (RequestPriceListVendor | VendorAddItem)[] = useMemo(
+    () => [...existingVendors, ...addedVendors],
+    [existingVendors, addedVendors],
+  );
+
+  const selectedVendorIds = useMemo(
+    () =>
+      new Set([
+        ...existingVendors.map((v) => v.vendor_id),
+        ...addedVendors.map((v) => v.vendor_id),
+      ]),
+    [existingVendors, addedVendors],
+  );
+
+  /* ---- vendor handlers ---- */
+  const handleAddVendor = useCallback(
+    (vendorId: string) => {
+      if (selectedVendorIds.has(vendorId)) {
+        toast.error("Vendor already added");
+        setIsAdding(false);
+        return;
+      }
+
+      const vendor = vendorList.find((v) => v.id === vendorId);
+      if (!vendor) return;
+
+      const currentAdd = form.getValues("vendors.add") ?? [];
+      form.setValue("vendors.add", [
+        ...currentAdd,
+        {
+          vendor_id: vendor.id,
+          vendor_name: vendor.name,
+          vendor_code: (vendor as unknown as { code?: string }).code ?? "",
+          contact_person: "",
+          contact_phone: "",
+          contact_email: "",
+          dimension: "",
+        },
+      ]);
+      setIsAdding(false);
+    },
+    [selectedVendorIds, vendorList, form],
+  );
+
+  const handleRemoveVendor = useCallback(
+    (vendorId: string) => {
+      const currentAdd = form.getValues("vendors.add") ?? [];
+      const addIndex = currentAdd.findIndex((v) => v.vendor_id === vendorId);
+
+      if (addIndex >= 0) {
+        const updated = [...currentAdd];
+        updated.splice(addIndex, 1);
+        form.setValue("vendors.add", updated);
+      } else {
+        const currentRemove = form.getValues("vendors.remove") ?? [];
+        form.setValue("vendors.remove", [...currentRemove, vendorId]);
+      }
+    },
+    [form],
+  );
+
+  /* ---- submit ---- */
+  function onSubmit(values: RfpFormValues) {
+    const vendorsAdd = (values.vendors?.add ?? []).map((v, i) => ({
+      vendor_id: v.vendor_id,
+      vendor_name: v.vendor_name,
+      vendor_code: v.vendor_code,
+      contact_person: v.contact_person,
+      contact_phone: v.contact_phone,
+      contact_email: v.contact_email,
+      sequence_no: existingVendors.length + i + 1,
+      dimension: v.dimension,
+      id: "",
+    }));
+
+    const vendorsRemove = values.vendors?.remove ?? [];
+
     const payload: CreateRequestPriceListDto = {
       name: values.name,
-      pricelist_template_id: values.pricelist_template_id,
-      start_date: new Date(values.start_date).toISOString(),
-      end_date: new Date(values.end_date).toISOString(),
-      custom_message: values.custom_message,
+      status: values.status,
+      pricelist_template_id: values.pricelist_template_id || undefined,
+      start_date: values.start_date,
+      end_date: values.end_date,
+      custom_message: values.custom_message ?? "",
+      email_template_id: values.email_template_id || undefined,
+      info: values.info || undefined,
+      dimension: values.dimension || undefined,
       vendors: {
-        add: values.vendors.map((v, i) => ({
-          vendor_id: v.vendor_id,
-          vendor_name: v.vendor_name,
-          vendor_code: v.vendor_code,
-          contact_person: v.contact_person,
-          contact_phone: v.contact_phone,
-          contact_email: v.contact_email,
-          sequence_no: i + 1,
-          dimension: v.dimension,
-          id: "",
-        })),
+        add: vendorsAdd.length > 0 ? vendorsAdd : undefined,
+        remove: vendorsRemove.length > 0 ? vendorsRemove : undefined,
       },
     };
 
@@ -162,7 +201,7 @@ export function RequestPriceListForm({
         {
           onSuccess: () => {
             toast.success("Request price list updated successfully");
-            router.push("/vendor-management/request-price-list");
+            setMode("view");
           },
           onError: (err) => toast.error(err.message),
         },
@@ -176,11 +215,12 @@ export function RequestPriceListForm({
         onError: (err) => toast.error(err.message),
       });
     }
-  };
+  }
 
   const handleCancel = () => {
     if (isEdit && requestPriceList) {
-      form.reset(defaultValues);
+      form.reset(getDefaultValues(requestPriceList));
+      setIsAdding(false);
       setMode("view");
     } else {
       router.push("/vendor-management/request-price-list");
@@ -197,9 +237,17 @@ export function RequestPriceListForm({
         onBack={() => router.push("/vendor-management/request-price-list")}
         onCancel={handleCancel}
         onEdit={() => setMode("edit")}
-        onDelete={() => setShowDelete(true)}
+        onDelete={requestPriceList ? () => setShowDelete(true) : undefined}
         deleteIsPending={deleteRfp.isPending}
       />
+      {isView && requestPriceList?.status && (
+        <Badge
+          size="sm"
+          variant={statusVariantMap[requestPriceList.status] ?? "outline"}
+        >
+          {statusLabelMap[requestPriceList.status] ?? requestPriceList.status}
+        </Badge>
+      )}
 
       <form
         id="request-price-list-form"
@@ -213,144 +261,31 @@ export function RequestPriceListForm({
             </TabsTrigger>
             <TabsTrigger value="vendors" className="text-xs">
               Vendors
+              {displayVendors.length > 0 && (
+                <span className="ml-1 inline-flex h-4.5 min-w-5 items-center justify-center rounded bg-muted px-1 text-[10px] font-medium tabular-nums text-muted-foreground">
+                  {displayVendors.length}
+                </span>
+              )}
             </TabsTrigger>
           </TabsList>
 
-          {/* Tab 1: General */}
           <TabsContent value="general">
-            <FieldGroup className="max-w-2xl gap-3 pt-4">
-              <Field data-invalid={!!form.formState.errors.name}>
-                <FieldLabel className="text-xs">Name</FieldLabel>
-                <Input
-                  placeholder="e.g. RFQ - Fresh Produce Feb 2026"
-                  className="h-8 text-sm"
-                  disabled={isDisabled}
-                  {...form.register("name")}
-                />
-                <FieldError>
-                  {form.formState.errors.name?.message}
-                </FieldError>
-              </Field>
-
-              <Field
-                data-invalid={
-                  !!form.formState.errors.pricelist_template_id
-                }
-              >
-                <FieldLabel className="text-xs">
-                  Price List Template
-                </FieldLabel>
-                <Controller
-                  control={form.control}
-                  name="pricelist_template_id"
-                  render={({ field }) => (
-                    <Select
-                      value={field.value}
-                      onValueChange={field.onChange}
-                      disabled={isDisabled}
-                    >
-                      <SelectTrigger className="h-8 w-full text-sm">
-                        <SelectValue placeholder="Select template" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {templates.map((t) => (
-                          <SelectItem key={t.id} value={t.id}>
-                            {t.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                <FieldError>
-                  {form.formState.errors.pricelist_template_id?.message}
-                </FieldError>
-              </Field>
-
-              <div className="grid grid-cols-2 gap-3">
-                <Field data-invalid={!!form.formState.errors.start_date}>
-                  <FieldLabel className="text-xs">Start Date</FieldLabel>
-                  <Input
-                    type="date"
-                    className="h-8 text-sm"
-                    disabled={isDisabled}
-                    {...form.register("start_date")}
-                  />
-                  <FieldError>
-                    {form.formState.errors.start_date?.message}
-                  </FieldError>
-                </Field>
-
-                <Field data-invalid={!!form.formState.errors.end_date}>
-                  <FieldLabel className="text-xs">End Date</FieldLabel>
-                  <Input
-                    type="date"
-                    className="h-8 text-sm"
-                    disabled={isDisabled}
-                    {...form.register("end_date")}
-                  />
-                  <FieldError>
-                    {form.formState.errors.end_date?.message}
-                  </FieldError>
-                </Field>
-              </div>
-
-              <Field>
-                <FieldLabel className="text-xs">Custom Message</FieldLabel>
-                <Textarea
-                  placeholder="Optional message for vendors"
-                  className="text-sm"
-                  disabled={isDisabled}
-                  {...form.register("custom_message")}
-                />
-              </Field>
-            </FieldGroup>
+            <RequestPriceListGeneralFields form={form} disabled={isDisabled} />
           </TabsContent>
 
-          {/* Tab 2: Vendors */}
           <TabsContent value="vendors">
-            <div className="space-y-3 pt-4">
-              {!isDisabled && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    appendVendor({
-                      vendor_id: "",
-                      vendor_name: "",
-                      vendor_code: "",
-                      contact_person: "",
-                      contact_phone: "",
-                      contact_email: "",
-                      dimension: "",
-                    })
-                  }
-                >
-                  <Plus />
-                  Add Vendor
-                </Button>
-              )}
-
-              {vendorFields.length === 0 ? (
-                <p className="text-xs text-muted-foreground">
-                  No vendors added
-                </p>
-              ) : (
-                <div className="space-y-3">
-                  {vendorFields.map((field, index) => (
-                    <VendorRow
-                      key={field.id}
-                      form={form}
-                      index={index}
-                      isDisabled={isDisabled}
-                      vendorList={vendorList}
-                      onRemove={() => removeVendor(index)}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+            <VendorsTab
+              form={form}
+              isView={isView}
+              isDisabled={isDisabled}
+              isAdding={isAdding}
+              setIsAdding={setIsAdding}
+              displayVendors={displayVendors}
+              addedVendors={addedVendors}
+              selectedVendorIds={selectedVendorIds}
+              onAddVendor={handleAddVendor}
+              onRemoveVendor={handleRemoveVendor}
+            />
           </TabsContent>
         </Tabs>
       </form>
@@ -367,9 +302,7 @@ export function RequestPriceListForm({
           onConfirm={() => {
             deleteRfp.mutate(requestPriceList.id, {
               onSuccess: () => {
-                toast.success(
-                  "Request price list deleted successfully",
-                );
+                toast.success("Request price list deleted successfully");
                 router.push("/vendor-management/request-price-list");
               },
               onError: (err) => toast.error(err.message),
@@ -377,136 +310,6 @@ export function RequestPriceListForm({
           }}
         />
       )}
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Vendor Row                                                          */
-/* ------------------------------------------------------------------ */
-
-interface VendorRowProps {
-  form: UseFormReturn<RfpFormValues>;
-  index: number;
-  isDisabled: boolean;
-  vendorList: { id: string; name: string; code?: string }[];
-  onRemove: () => void;
-}
-
-function VendorRow({
-  form,
-  index,
-  isDisabled,
-  vendorList,
-  onRemove,
-}: VendorRowProps) {
-  return (
-    <div className="rounded-md border p-3 space-y-2">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-muted-foreground">
-          Vendor #{index + 1}
-        </span>
-        {!isDisabled && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-xs"
-            onClick={onRemove}
-          >
-            <X />
-          </Button>
-        )}
-      </div>
-
-      <div className="grid grid-cols-2 gap-2">
-        <Field
-          data-invalid={
-            !!form.formState.errors.vendors?.[index]?.vendor_id
-          }
-          className="col-span-2"
-        >
-          <FieldLabel className="text-xs">Vendor</FieldLabel>
-          <Controller
-            control={form.control}
-            name={`vendors.${index}.vendor_id`}
-            render={({ field }) => (
-              <Select
-                value={field.value}
-                onValueChange={(value) => {
-                  field.onChange(value);
-                  const vendor = vendorList.find((v) => v.id === value);
-                  if (vendor) {
-                    form.setValue(
-                      `vendors.${index}.vendor_name`,
-                      vendor.name,
-                    );
-                    form.setValue(
-                      `vendors.${index}.vendor_code`,
-                      vendor.code ?? "",
-                    );
-                  }
-                }}
-                disabled={isDisabled}
-              >
-                <SelectTrigger className="h-8 w-full text-sm">
-                  <SelectValue placeholder="Select vendor" />
-                </SelectTrigger>
-                <SelectContent>
-                  {vendorList.map((v) => (
-                    <SelectItem key={v.id} value={v.id}>
-                      {v.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          />
-          <FieldError>
-            {form.formState.errors.vendors?.[index]?.vendor_id?.message}
-          </FieldError>
-        </Field>
-
-        <Field>
-          <FieldLabel className="text-xs">Contact Person</FieldLabel>
-          <Input
-            placeholder="e.g. John Anderson"
-            className="h-8 text-sm"
-            disabled={isDisabled}
-            {...form.register(`vendors.${index}.contact_person`)}
-          />
-        </Field>
-
-        <Field>
-          <FieldLabel className="text-xs">Contact Phone</FieldLabel>
-          <Input
-            placeholder="e.g. 081-234-5678"
-            className="h-8 text-sm"
-            disabled={isDisabled}
-            {...form.register(`vendors.${index}.contact_phone`)}
-          />
-        </Field>
-
-        <Field className="col-span-2">
-          <FieldLabel className="text-xs">Contact Email</FieldLabel>
-          <Input
-            type="email"
-            placeholder="e.g. contact@vendor.com"
-            className="h-8 text-sm"
-            disabled={isDisabled}
-            {...form.register(`vendors.${index}.contact_email`)}
-          />
-        </Field>
-
-        <Field className="col-span-2">
-          <FieldLabel className="text-xs">Dimension</FieldLabel>
-          <Input
-            placeholder="Optional"
-            className="h-8 text-sm"
-            disabled={isDisabled}
-            {...form.register(`vendors.${index}.dimension`)}
-          />
-        </Field>
-      </div>
     </div>
   );
 }
