@@ -15,6 +15,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Field,
   FieldGroup,
   FieldLabel,
@@ -23,13 +30,19 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useCreateCurrency, useUpdateCurrency } from "@/hooks/use-currency";
+import { useExternalExchangeRates } from "@/hooks/use-exchange-rate";
+import { useProfile } from "@/hooks/use-profile";
+import { currenciesIso } from "@/constant/currencies-iso";
 import type { Currency } from "@/types/currency";
 import { getModeLabels } from "@/types/form";
 
 const currencySchema = z.object({
   code: z.string().min(1, "Code is required"),
   name: z.string().min(1, "Name is required"),
-  symbol: z.string().min(1, "Symbol is required"),
+  symbol: z
+    .string()
+    .min(1, "Symbol is required")
+    .max(5, "Symbol max 5 characters"),
   exchange_rate: z.number().positive("Exchange rate must be greater than 0"),
   description: z.string(),
   is_active: z.boolean(),
@@ -54,18 +67,25 @@ export function CurrencyDialog({
   const isPending = createCurrency.isPending || updateCurrency.isPending;
   const labels = getModeLabels(isEdit ? "edit" : "add", "Currency");
 
+  const { defaultCurrencyCode } = useProfile();
+  const baseCurrency = defaultCurrencyCode ?? "THB";
+  const { data: exchangeRates } = useExternalExchangeRates(baseCurrency);
+
   const form = useForm<CurrencyFormValues>({
     resolver: zodResolver(currencySchema) as Resolver<CurrencyFormValues>,
     defaultValues: {
       code: "",
       name: "",
       symbol: "",
-      exchange_rate: 0,
+      exchange_rate: 0.01,
       description: "",
       is_active: true,
     },
   });
 
+  const watchedCode = form.watch("code");
+
+  // Reset form when dialog opens
   useEffect(() => {
     if (open) {
       form.reset(
@@ -78,10 +98,32 @@ export function CurrencyDialog({
               description: currency.description,
               is_active: currency.is_active,
             }
-          : { code: "", name: "", symbol: "", exchange_rate: 0, description: "", is_active: true },
+          : {
+              code: "",
+              name: "",
+              symbol: "",
+              exchange_rate: 0.01,
+              description: "",
+              is_active: true,
+            },
       );
     }
   }, [open, currency, form]);
+
+  // Auto-fill in ADD mode when code changes
+  useEffect(() => {
+    if (isEdit || !watchedCode) return;
+    const selected = currenciesIso.find((c) => c.code === watchedCode);
+    if (!selected) return;
+
+    form.setValue("name", selected.name);
+    form.setValue("symbol", selected.symbol);
+    form.setValue(
+      "exchange_rate",
+      exchangeRates?.[watchedCode] ?? 0.01,
+    );
+    form.setValue("description", `${selected.name} (${selected.country})`);
+  }, [watchedCode, isEdit, exchangeRates, form]);
 
   const onSubmit = (values: CurrencyFormValues) => {
     const payload = {
@@ -119,23 +161,34 @@ export function CurrencyDialog({
     <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
       <DialogContent className="sm:max-w-sm gap-3 p-4">
         <DialogHeader className="gap-0 pb-1">
-          <DialogTitle className="text-sm">
-            {labels.title}
-          </DialogTitle>
+          <DialogTitle className="text-sm">{labels.title}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
           <FieldGroup className="gap-3">
             <Field data-invalid={!!form.formState.errors.code}>
-              <FieldLabel htmlFor="currency-code" className="text-xs">
-                Code
-              </FieldLabel>
-              <Input
-                id="currency-code"
-                placeholder="e.g. USD, THB, EUR"
-                className="h-8 text-sm"
-                disabled={isPending}
-                {...form.register("code")}
+              <FieldLabel className="text-xs">Code</FieldLabel>
+              <Controller
+                control={form.control}
+                name="code"
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={isEdit || isPending}
+                  >
+                    <SelectTrigger className="h-8 w-full text-sm">
+                      <SelectValue placeholder="Select currency code" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {currenciesIso.map((c) => (
+                        <SelectItem key={c.code} value={c.code}>
+                          {c.code} — {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               />
               <FieldError>{form.formState.errors.code?.message}</FieldError>
             </Field>
@@ -162,7 +215,7 @@ export function CurrencyDialog({
                 id="currency-symbol"
                 placeholder="e.g. $, ฿, €"
                 className="h-8 text-sm"
-                disabled={isPending}
+                disabled
                 {...form.register("symbol")}
               />
               <FieldError>{form.formState.errors.symbol?.message}</FieldError>
@@ -178,7 +231,7 @@ export function CurrencyDialog({
                 step="any"
                 placeholder="e.g. 0.03195"
                 className="h-8 text-sm"
-                disabled={isPending}
+                disabled
                 {...form.register("exchange_rate", { valueAsNumber: true })}
               />
               <FieldError>
@@ -193,7 +246,7 @@ export function CurrencyDialog({
               <Textarea
                 id="currency-description"
                 placeholder="Optional"
-                className="h-8 text-sm"
+                className="text-sm"
                 disabled={isPending}
                 {...form.register("description")}
               />

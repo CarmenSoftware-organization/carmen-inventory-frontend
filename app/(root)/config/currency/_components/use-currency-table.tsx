@@ -29,18 +29,26 @@ export function useCurrencyTable({
     {
       accessorKey: "code",
       header: ({ column }) => (
-        <DataGridColumnHeader column={column} title="Code" />
+        <DataGridColumnHeader
+          column={column}
+          title="Code"
+          className="justify-center"
+        />
       ),
       cell: ({ row }) => (
         <button
           type="button"
-          className="font-medium hover:underline text-left text-xs"
+          className="font-medium hover:underline text-xs"
           onClick={() => onEdit(row.original)}
         >
           {row.getValue("code")}
         </button>
       ),
       size: 80,
+      meta: {
+        cellClassName: "text-center",
+        headerClassName: "text-center",
+      },
     },
     {
       accessorKey: "name",
@@ -50,10 +58,13 @@ export function useCurrencyTable({
     },
     {
       accessorKey: "symbol",
-      header: ({ column }) => (
-        <DataGridColumnHeader column={column} title="Symbol" />
-      ),
+      header: "Symbol",
       size: 80,
+      enableSorting: false,
+      meta: {
+        cellClassName: "text-center",
+        headerClassName: "text-center",
+      },
     },
     {
       accessorKey: "exchange_rate",

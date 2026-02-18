@@ -16,6 +16,7 @@ const crud = createConfigCrud<Currency, CreateCurrencyDto>({
   queryKey: QUERY_KEYS.CURRENCIES,
   endpoint: API_ENDPOINTS.CURRENCIES,
   label: "currency",
+  updateMethod: "PATCH",
 });
 
 export const useCurrency = crud.useList;
