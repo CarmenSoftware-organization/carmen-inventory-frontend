@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { type ColumnDef, getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
+import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
 import { useProfile } from "@/hooks/use-profile";
 import type { ExchangeRateItem } from "@/types/exchange-rate";
 import type { ParamsDto } from "@/types/params";

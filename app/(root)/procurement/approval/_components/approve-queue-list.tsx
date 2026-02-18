@@ -3,7 +3,7 @@ import { PR_STATUS_CONFIG } from "@/constant/purchase-request";
 import { ApprovalItem } from "@/types/approval";
 import { Clock } from "lucide-react";
 import { formatDate } from "@/lib/date-utils";
-import { Badge } from "@/components/reui/badge";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 interface ApprovalQueueListProps {

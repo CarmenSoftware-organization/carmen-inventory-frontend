@@ -24,7 +24,7 @@ import { STAGE_ROLE } from "@/types/stage-role";
 import { type FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Badge } from "@/components/reui/badge";
+import { Badge } from "@/components/ui/badge";
 import { PR_STATUS_CONFIG } from "@/constant/purchase-request";
 import { PrGeneralFields } from "./pr-general-fields";
 import { PrItemFields } from "./pr-item-fields";

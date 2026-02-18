@@ -1,7 +1,7 @@
 "use client";
 
 import React, { ReactNode } from "react";
-import { useDataGrid } from "@/components/reui/data-grid/data-grid";
+import { useDataGrid } from "@/components/ui/data-grid/data-grid";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

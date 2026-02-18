@@ -1,7 +1,7 @@
 "use client";
 
 import { HTMLAttributes, memo, ReactNode, useMemo } from "react";
-import { useDataGrid } from "@/components/reui/data-grid/data-grid";
+import { useDataGrid } from "@/components/ui/data-grid/data-grid";
 import { Column } from "@tanstack/react-table";
 
 import { cn } from "@/lib/utils";

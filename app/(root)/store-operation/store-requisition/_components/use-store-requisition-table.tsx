@@ -2,15 +2,15 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
-import { CellAction } from "@/components/reui/cell-action";
+import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/ui/cell-action";
 import {
   selectColumn,
   indexColumn,
   actionColumn,
   columnSkeletons,
-} from "@/lib/data-grid/columns";
-import { Badge } from "@/components/reui/badge";
+} from "@/components/ui/data-grid/columns";
+import { Badge } from "@/components/ui/badge";
 import { useProfile } from "@/hooks/use-profile";
 import { formatDate } from "@/lib/date-utils";
 import type { StoreRequisition, StoreRequisitionStatus } from "@/types/store-requisition";

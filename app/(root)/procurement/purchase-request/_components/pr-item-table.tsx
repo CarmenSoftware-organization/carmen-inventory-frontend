@@ -18,7 +18,7 @@ import { ChevronDown, ChevronRight, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DataGridTableRowSelect } from "@/components/reui/data-grid/data-grid-table";
+import { DataGridTableRowSelect } from "@/components/ui/data-grid/data-grid-table";
 import { formatDate } from "@/lib/date-utils";
 import { DatePicker } from "@/components/ui/date-picker";
 import { LookupLocation } from "@/components/lookup/lookup-location";

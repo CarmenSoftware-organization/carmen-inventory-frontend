@@ -1,7 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
-import { CellAction } from "@/components/reui/cell-action";
-import { useConfigTable } from "@/lib/data-grid/use-config-table";
+import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/ui/cell-action";
+import { useConfigTable } from "@/components/ui/data-grid/use-config-table";
 import { Badge } from "@/components/ui/badge";
 import type { WorkflowDto } from "@/types/workflows";
 import type { ParamsDto } from "@/types/params";

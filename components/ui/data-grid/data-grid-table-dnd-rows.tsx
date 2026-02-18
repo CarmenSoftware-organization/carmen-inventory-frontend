@@ -8,7 +8,7 @@ import {
   useMemo,
   useRef,
 } from "react"
-import { useDataGrid } from "@/components/reui/data-grid/data-grid"
+import { useDataGrid } from "@/components/ui/data-grid/data-grid"
 import {
   DataGridTableBase,
   DataGridTableBody,
@@ -22,7 +22,7 @@ import {
   DataGridTableHeadRowCell,
   DataGridTableHeadRowCellResize,
   DataGridTableRowSpacer,
-} from "@/components/reui/data-grid/data-grid-table"
+} from "@/components/ui/data-grid/data-grid-table"
 import {
   closestCenter,
   DndContext,

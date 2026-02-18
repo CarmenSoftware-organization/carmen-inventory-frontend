@@ -11,12 +11,12 @@ import {
   FileArchive,
   FileCode,
 } from "lucide-react";
-import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
+import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
 import {
   selectColumn,
   indexColumn,
   actionColumn,
-} from "@/lib/data-grid/columns";
+} from "@/components/ui/data-grid/columns";
 import type { DocumentFile } from "@/types/document";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";

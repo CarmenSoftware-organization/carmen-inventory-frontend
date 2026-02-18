@@ -16,13 +16,13 @@ import {
 import {
   DataGrid,
   DataGridContainer,
-} from "@/components/reui/data-grid/data-grid";
-import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
 import { usePurchaseRequest } from "@/hooks/use-purchase-request";
 import { useProfile } from "@/hooks/use-profile";
 import { formatDate } from "@/lib/date-utils";
 import type { PurchaseRequest } from "@/types/purchase-request";
-import { CellAction } from "@/components/reui/cell-action";
+import { CellAction } from "@/components/ui/cell-action";
 import EmptyComponent from "@/components/empty-component";
 import { FileText } from "lucide-react";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { CSSProperties, Fragment, ReactNode } from "react";
-import { useDataGrid } from "@/components/reui/data-grid/data-grid";
+import { useDataGrid } from "@/components/ui/data-grid/data-grid";
 import {
   Cell,
   Column,

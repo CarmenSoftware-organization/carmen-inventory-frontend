@@ -1,6 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
-import { useConfigTable } from "@/lib/data-grid/use-config-table";
+import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
+import { useConfigTable } from "@/components/ui/data-grid/use-config-table";
 import { useProfile } from "@/hooks/use-profile";
 import type { Currency } from "@/types/currency";
 import type { ParamsDto } from "@/types/params";

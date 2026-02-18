@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/reui/badge";
+import { Badge } from "@/components/ui/badge";
 import { PR_WORKFLOW_ACTION_VARIANT } from "@/constant/purchase-request";
 import type { WorkflowHistoryEntry } from "@/types/purchase-request";
 

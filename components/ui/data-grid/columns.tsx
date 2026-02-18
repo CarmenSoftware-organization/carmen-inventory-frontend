@@ -2,10 +2,10 @@ import type { ColumnDef } from "@tanstack/react-table";
 import {
   DataGridTableRowSelect,
   DataGridTableRowSelectAll,
-} from "@/components/reui/data-grid/data-grid-table";
-import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
-import { Badge } from "@/components/reui/badge";
-import { DataGridRowActions } from "@/components/reui/data-grid/data-grid-row-actions";
+} from "@/components/ui/data-grid/data-grid-table";
+import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
+import { Badge } from "@/components/ui/badge";
+import { DataGridRowActions } from "@/components/ui/data-grid/data-grid-row-actions";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { ParamsDto } from "@/types/params";
 

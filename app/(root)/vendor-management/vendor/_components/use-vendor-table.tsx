@@ -1,8 +1,8 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
-import { CellAction } from "@/components/reui/cell-action";
-import { useConfigTable } from "@/lib/data-grid/use-config-table";
-import { columnSkeletons } from "@/lib/data-grid/columns";
+import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/ui/cell-action";
+import { useConfigTable } from "@/components/ui/data-grid/use-config-table";
+import { columnSkeletons } from "@/components/ui/data-grid/columns";
 import type { Vendor } from "@/types/vendor";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";

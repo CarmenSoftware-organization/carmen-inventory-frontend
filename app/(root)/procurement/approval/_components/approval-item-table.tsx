@@ -2,14 +2,14 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { Badge } from "@/components/reui/badge";
+import { Badge } from "@/components/ui/badge";
 import { PR_ITEM_STATUS_CONFIG } from "@/constant/purchase-request";
 import type { PurchaseRequestDetail } from "@/types/purchase-request";
 import {
   DataGrid,
   DataGridContainer,
-} from "@/components/reui/data-grid/data-grid";
-import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface ApprovalItemTableProps {
@@ -129,6 +129,7 @@ export function ApprovalItemTable({ details }: ApprovalItemTableProps) {
   return (
     <DataGrid
       table={table}
+      recordCount={details.length}
       tableLayout={{ dense: true }}
       tableClassNames={{ base: "text-xs" }}
     >

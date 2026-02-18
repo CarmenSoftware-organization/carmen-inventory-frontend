@@ -3,13 +3,13 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
-import { CellAction } from "@/components/reui/cell-action";
+import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/ui/cell-action";
 import {
   selectColumn,
   indexColumn,
   actionColumn,
-} from "@/lib/data-grid/columns";
+} from "@/components/ui/data-grid/columns";
 import type { User } from "@/types/workflows";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
