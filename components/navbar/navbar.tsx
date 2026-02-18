@@ -5,6 +5,7 @@ import { UserProfile } from "./user-profile";
 import PathBreadcrumb from "./path-breadcrumb";
 import ModuleApp from "./module-app";
 import Notification from "./notification";
+import { SwitchTheme } from "../switch-theme";
 
 export function Navbar() {
   return (
@@ -14,6 +15,7 @@ export function Navbar() {
         <PathBreadcrumb />
         <div className="ml-auto flex items-center gap-1">
           <ModuleApp />
+          <SwitchTheme />
           <Notification />
           <UserProfile />
         </div>
