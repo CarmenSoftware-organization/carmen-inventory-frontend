@@ -1,11 +1,9 @@
 "use client";
 
 import { use } from "react";
-import { useSearchParams } from "next/navigation";
 import { useInventoryAdjustmentById } from "@/hooks/use-inventory-adjustment";
 import { InventoryAdjustmentForm } from "../_components/inventory-adjustment-form";
 import { ErrorState } from "@/components/ui/error-state";
-import type { InventoryAdjustmentType } from "@/types/inventory-adjustment";
 
 export default function EditInventoryAdjustmentPage({
   params,
@@ -13,29 +11,12 @@ export default function EditInventoryAdjustmentPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const searchParams = useSearchParams();
-  const type = searchParams.get("type") as InventoryAdjustmentType | null;
-
-  if (!type || (type !== "stock-in" && type !== "stock-out")) {
-    return <ErrorState message="Invalid adjustment type. Use ?type=stock-in or ?type=stock-out" />;
-  }
-
-  return <EditContent id={id} type={type} />;
-}
-
-function EditContent({
-  id,
-  type,
-}: {
-  id: string;
-  type: InventoryAdjustmentType;
-}) {
   const {
     data: inventoryAdjustment,
     isLoading,
     error,
     refetch,
-  } = useInventoryAdjustmentById(id, type);
+  } = useInventoryAdjustmentById(id);
 
   if (isLoading)
     return (
@@ -48,7 +29,7 @@ function EditContent({
 
   return (
     <InventoryAdjustmentForm
-      adjustmentType={type}
+      adjustmentType={inventoryAdjustment.type}
       inventoryAdjustment={inventoryAdjustment}
     />
   );

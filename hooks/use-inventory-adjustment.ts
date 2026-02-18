@@ -53,24 +53,33 @@ export function useInventoryAdjustment(params?: ParamsDto) {
   });
 }
 
-export function useInventoryAdjustmentById(
-  id: string | undefined,
-  type: InventoryAdjustmentType | undefined,
-) {
+export function useInventoryAdjustmentById(id: string | undefined) {
   const { buCode } = useProfile();
 
   return useQuery<InventoryAdjustment>({
-    queryKey: [QUERY_KEYS.INVENTORY_ADJUSTMENTS, buCode, type, id],
+    queryKey: [QUERY_KEYS.INVENTORY_ADJUSTMENTS, buCode, id],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");
-      if (!type) throw new Error("Missing type");
-      const endpoint = getEndpoint(type);
-      const res = await httpClient.get(`${endpoint(buCode)}/${id}`);
-      if (!res.ok) throw new Error("Failed to fetch inventory adjustment");
-      const json = await res.json();
-      return json.data;
+
+      const stockInRes = await httpClient.get(
+        `${API_ENDPOINTS.STOCK_IN(buCode)}/${id}`,
+      );
+      if (stockInRes.ok) {
+        const json = await stockInRes.json();
+        return { ...json.data, type: "stock-in" as InventoryAdjustmentType };
+      }
+
+      const stockOutRes = await httpClient.get(
+        `${API_ENDPOINTS.STOCK_OUT(buCode)}/${id}`,
+      );
+      if (stockOutRes.ok) {
+        const json = await stockOutRes.json();
+        return { ...json.data, type: "stock-out" as InventoryAdjustmentType };
+      }
+
+      throw new Error("Failed to fetch inventory adjustment");
     },
-    enabled: !!buCode && !!id && !!type,
+    enabled: !!buCode && !!id,
   });
 }
 
@@ -96,7 +105,7 @@ export function useUpdateInventoryAdjustment() {
   >({
     mutationFn: ({ id, type, ...data }, buCode) => {
       const endpoint = getEndpoint(type);
-      return httpClient.put(`${endpoint(buCode)}/${id}`, data);
+      return httpClient.patch(`${endpoint(buCode)}/${id}`, data);
     },
     invalidateKeys: [QUERY_KEYS.INVENTORY_ADJUSTMENTS],
     errorMessage: "Failed to update inventory adjustment",
