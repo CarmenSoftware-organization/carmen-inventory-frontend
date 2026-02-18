@@ -34,25 +34,20 @@ export function useProductTable({
 
   const dataColumns: ColumnDef<Product>[] = [
     {
-      accessorKey: "code",
-      header: ({ column }) => (
-        <DataGridColumnHeader column={column} title="Code" />
-      ),
-      cell: ({ row }) => (
-        <CellAction onClick={() => onEdit(row.original)}>
-          {row.getValue("code")}
-        </CellAction>
-      ),
-      size: 130,
-      meta: { skeleton: columnSkeletons.textShort },
-    },
-    {
       accessorKey: "name",
       header: ({ column }) => (
         <DataGridColumnHeader column={column} title="Name" />
       ),
-      size: 300,
-      meta: { skeleton: columnSkeletons.text },
+      cell: ({ row }) => (
+        <CellAction onClick={() => onEdit(row.original)}>
+          <Badge size={"xs"} variant={"secondary"}>
+            {row.original.code}
+          </Badge>{" "}
+          - {row.original.name}
+        </CellAction>
+      ),
+      size: 350,
+      meta: { skeleton: columnSkeletons.textShort },
     },
     {
       accessorKey: "local_name",
