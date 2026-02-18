@@ -44,18 +44,21 @@ export function TreeNode({
     const regex = new RegExp(`(${escaped})`, "gi");
     const parts = text.split(regex);
     if (parts.length === 1) return text;
-    return parts.map((part, i) =>
-      regex.test(part) ? (
+    let offset = 0;
+    return parts.map((part) => {
+      const key = offset;
+      offset += part.length;
+      return regex.test(part) ? (
         <mark
-          key={i}
+          key={key}
           className="bg-yellow-200/80 dark:bg-yellow-800/40 rounded-sm px-px"
         >
           {part}
         </mark>
       ) : (
-        <span key={i}>{part}</span>
-      ),
-    );
+        <span key={key}>{part}</span>
+      );
+    });
   };
 
   const iconCls = "h-3 w-3 text-muted-foreground/60 shrink-0";

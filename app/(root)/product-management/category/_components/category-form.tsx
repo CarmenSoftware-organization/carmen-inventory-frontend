@@ -53,7 +53,9 @@ export function CategoryForm({
   isPending,
 }: CategoryFormProps) {
   const [showConfirm, setShowConfirm] = useState(false);
-  const [pendingData, setPendingData] = useState<CategoryFormValues | null>(null);
+  const [pendingData, setPendingData] = useState<CategoryFormValues | null>(
+    null,
+  );
 
   const parentDisplay = useMemo(() => {
     if (type === "category") return "";
@@ -67,15 +69,30 @@ export function CategoryForm({
       name: selectedNode?.name ?? "",
       description: selectedNode?.description ?? "",
       is_active: selectedNode?.is_active ?? true,
-      price_deviation_limit: selectedNode?.price_deviation_limit ?? parentNode?.price_deviation_limit ?? 0,
-      qty_deviation_limit: selectedNode?.qty_deviation_limit ?? parentNode?.qty_deviation_limit ?? 0,
-      is_used_in_recipe: selectedNode?.is_used_in_recipe ?? parentNode?.is_used_in_recipe ?? false,
-      is_sold_directly: selectedNode?.is_sold_directly ?? parentNode?.is_sold_directly ?? false,
-      tax_profile_id: selectedNode?.tax_profile_id ?? parentNode?.tax_profile_id ?? "",
+      price_deviation_limit:
+        selectedNode?.price_deviation_limit ??
+        parentNode?.price_deviation_limit ??
+        0,
+      qty_deviation_limit:
+        selectedNode?.qty_deviation_limit ??
+        parentNode?.qty_deviation_limit ??
+        0,
+      is_used_in_recipe:
+        selectedNode?.is_used_in_recipe ??
+        parentNode?.is_used_in_recipe ??
+        false,
+      is_sold_directly:
+        selectedNode?.is_sold_directly ?? parentNode?.is_sold_directly ?? false,
+      tax_profile_id:
+        selectedNode?.tax_profile_id ?? parentNode?.tax_profile_id ?? "",
       tax_rate: selectedNode?.tax_rate ?? parentNode?.tax_rate ?? 0,
     };
-    if (type === "subcategory") base.product_category_id = selectedNode?.product_category_id ?? parentNode?.id ?? "";
-    if (type === "itemgroup") base.product_subcategory_id = selectedNode?.product_subcategory_id ?? parentNode?.id ?? "";
+    if (type === "subcategory")
+      base.product_category_id =
+        selectedNode?.product_category_id ?? parentNode?.id ?? "";
+    if (type === "itemgroup")
+      base.product_subcategory_id =
+        selectedNode?.product_subcategory_id ?? parentNode?.id ?? "";
     return base;
   }, [type, selectedNode, parentNode]);
 
@@ -84,11 +101,14 @@ export function CategoryForm({
     defaultValues,
   });
 
-  useEffect(() => { form.reset(defaultValues); }, [defaultValues, form]);
+  useEffect(() => {
+    form.reset(defaultValues);
+  }, [defaultValues, form]);
 
   const handleFormSubmit = (data: CategoryFormValues) => {
     if (
-      mode === "edit" && selectedNode &&
+      mode === "edit" &&
+      selectedNode &&
       (selectedNode.is_used_in_recipe !== data.is_used_in_recipe ||
         selectedNode.is_sold_directly !== data.is_sold_directly)
     ) {
@@ -99,47 +119,86 @@ export function CategoryForm({
     onSubmit(data);
   };
 
-  const parentLabel = type === "subcategory" ? "Category" : type === "itemgroup" ? "Subcategory" : "";
+  const PARENT_LABELS: Record<CategoryType, string> = {
+    category: "",
+    subcategory: "Category",
+    itemgroup: "Subcategory",
+  };
+  const parentLabel = PARENT_LABELS[type];
 
   return (
     <>
-      <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-2">
+      <form
+        onSubmit={form.handleSubmit(handleFormSubmit)}
+        className="space-y-2"
+      >
         {/* Parent reference */}
         {type !== "category" && (
           <div className="space-y-0.5">
-            <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{parentLabel}</label>
-            <Input value={parentDisplay} disabled className="h-7 text-xs bg-muted/50 font-mono" />
+            <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+              {parentLabel}
+            </span>
+            <Input
+              value={parentDisplay}
+              disabled
+              className="h-7 text-xs bg-muted/50 font-mono"
+            />
           </div>
         )}
 
         {/* Code + Name row */}
         <div className="grid grid-cols-[100px_1fr] gap-1.5">
           <div className="space-y-0.5">
-            <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Code *</label>
-            <Input className="h-7 text-xs font-mono" maxLength={5} disabled={isPending} {...form.register("code")} />
+            <label htmlFor="code" className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+              Code *
+            </label>
+            <Input
+              id="code"
+              className="h-7 text-xs font-mono"
+              maxLength={5}
+              disabled={isPending}
+              {...form.register("code")}
+            />
             {form.formState.errors.code && (
-              <p className="text-[10px] text-destructive">{form.formState.errors.code.message}</p>
+              <p className="text-[10px] text-destructive">
+                {form.formState.errors.code.message}
+              </p>
             )}
           </div>
           <div className="space-y-0.5">
-            <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Name *</label>
-            <Input className="h-7 text-xs" maxLength={100} disabled={isPending} {...form.register("name")} />
+            <label htmlFor="name" className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+              Name *
+            </label>
+            <Input
+              id="name"
+              className="h-7 text-xs"
+              maxLength={100}
+              disabled={isPending}
+              {...form.register("name")}
+            />
             {form.formState.errors.name && (
-              <p className="text-[10px] text-destructive">{form.formState.errors.name.message}</p>
+              <p className="text-[10px] text-destructive">
+                {form.formState.errors.name.message}
+              </p>
             )}
           </div>
         </div>
 
         {/* Tax Profile */}
         <div className="space-y-0.5">
-          <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Tax Profile</label>
+          <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+            Tax Profile
+          </span>
           <Controller
             control={form.control}
             name="tax_profile_id"
             render={({ field }) => (
               <LookupTaxProfile
                 value={field.value ?? ""}
-                onValueChange={(id, taxRate) => { field.onChange(id); form.setValue("tax_rate", taxRate); }}
+                onValueChange={(id, taxRate) => {
+                  field.onChange(id);
+                  form.setValue("tax_rate", taxRate);
+                }}
                 disabled={isPending}
                 size="xs"
               />
@@ -150,21 +209,39 @@ export function CategoryForm({
         {/* Deviation limits */}
         <div className="grid grid-cols-2 gap-1.5">
           <div className="space-y-0.5">
-            <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Qty Dev. %</label>
+            <label htmlFor="qty_deviation_limit" className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+              Qty Dev. %
+            </label>
             <div className="relative">
               <Input
-                type="number" className="h-7 text-xs pr-6 font-mono" min={0} max={100}
-                disabled={isPending} {...form.register("qty_deviation_limit", { valueAsNumber: true })}
+                id="qty_deviation_limit"
+                type="number"
+                className="h-7 text-xs pr-6 font-mono"
+                min={0}
+                max={100}
+                disabled={isPending}
+                {...form.register("qty_deviation_limit", {
+                  valueAsNumber: true,
+                })}
               />
               <Percent className="absolute right-1.5 top-1/2 -translate-y-1/2 h-2.5 w-2.5 text-muted-foreground/50" />
             </div>
           </div>
           <div className="space-y-0.5">
-            <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Price Dev. %</label>
+            <label htmlFor="price_deviation_limit" className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+              Price Dev. %
+            </label>
             <div className="relative">
               <Input
-                type="number" className="h-7 text-xs pr-6 font-mono" min={0} max={100}
-                disabled={isPending} {...form.register("price_deviation_limit", { valueAsNumber: true })}
+                id="price_deviation_limit"
+                type="number"
+                className="h-7 text-xs pr-6 font-mono"
+                min={0}
+                max={100}
+                disabled={isPending}
+                {...form.register("price_deviation_limit", {
+                  valueAsNumber: true,
+                })}
               />
               <Percent className="absolute right-1.5 top-1/2 -translate-y-1/2 h-2.5 w-2.5 text-muted-foreground/50" />
             </div>
@@ -173,46 +250,113 @@ export function CategoryForm({
 
         {/* Flags row */}
         <div className="flex items-center gap-4 py-1 border-y border-dashed border-border/60">
-          <label className="flex items-center gap-1.5 text-xs">
-            <Controller control={form.control} name="is_used_in_recipe"
-              render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={isPending} className="h-3.5 w-3.5" />} />
-            Recipe
-          </label>
-          <label className="flex items-center gap-1.5 text-xs">
-            <Controller control={form.control} name="is_sold_directly"
-              render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={isPending} className="h-3.5 w-3.5" />} />
-            Sold Directly
-          </label>
-          <label className="flex items-center gap-1.5 text-xs ml-auto">
-            <Controller control={form.control} name="is_active"
-              render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={isPending} className="h-3.5 w-3.5" />} />
-            Active
-          </label>
+          <span className="flex items-center gap-1.5 text-xs">
+            <Controller
+              control={form.control}
+              name="is_used_in_recipe"
+              render={({ field }) => (
+                <Checkbox
+                  id="is_used_in_recipe"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={isPending}
+                  className="h-3.5 w-3.5"
+                />
+              )}
+            />
+            <label htmlFor="is_used_in_recipe">Recipe</label>
+          </span>
+          <span className="flex items-center gap-1.5 text-xs">
+            <Controller
+              control={form.control}
+              name="is_sold_directly"
+              render={({ field }) => (
+                <Checkbox
+                  id="is_sold_directly"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={isPending}
+                  className="h-3.5 w-3.5"
+                />
+              )}
+            />
+            <label htmlFor="is_sold_directly">Sold Directly</label>
+          </span>
+          <span className="flex items-center gap-1.5 text-xs ml-auto">
+            <Controller
+              control={form.control}
+              name="is_active"
+              render={({ field }) => (
+                <Checkbox
+                  id="is_active"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={isPending}
+                  className="h-3.5 w-3.5"
+                />
+              )}
+            />
+            <label htmlFor="is_active">Active</label>
+          </span>
         </div>
 
         {/* Description */}
         <div className="space-y-0.5">
-          <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Description</label>
-          <Textarea className="text-xs min-h-[48px] resize-none" rows={2} maxLength={256} disabled={isPending} {...form.register("description")} />
+          <label htmlFor="description" className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+            Description
+          </label>
+          <Textarea
+            id="description"
+            className="text-xs min-h-12 resize-none"
+            rows={2}
+            maxLength={256}
+            disabled={isPending}
+            {...form.register("description")}
+          />
         </div>
 
         {/* Actions */}
         <div className="flex justify-end gap-1.5 pt-1">
-          <Button type="button" variant="outline" size="sm" onClick={onCancel} disabled={isPending} className="h-7 text-xs px-3">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={onCancel}
+            disabled={isPending}
+            className="h-7 text-xs px-3"
+          >
             Cancel
           </Button>
-          <Button type="submit" size="sm" disabled={isPending} className="h-7 text-xs px-3">
-            {isPending ? "Saving..." : mode === "edit" ? "Save" : "Create"}
+          <Button
+            type="submit"
+            size="sm"
+            disabled={isPending}
+            className="h-7 text-xs px-3"
+          >
+            {isPending && "Saving..."}
+            {!isPending && mode === "edit" && "Save"}
+            {!isPending && mode !== "edit" && "Create"}
           </Button>
         </div>
       </form>
 
       <DeleteDialog
         open={showConfirm}
-        onOpenChange={(open) => { if (!open) { setShowConfirm(false); setPendingData(null); } }}
+        onOpenChange={(open) => {
+          if (!open) {
+            setShowConfirm(false);
+            setPendingData(null);
+          }
+        }}
         title="Confirm Changes"
         description='Changing "Recipe" or "Sold Directly" flags may affect child items. Continue?'
-        onConfirm={() => { if (pendingData) { onSubmit(pendingData); setShowConfirm(false); setPendingData(null); } }}
+        onConfirm={() => {
+          if (pendingData) {
+            onSubmit(pendingData);
+            setShowConfirm(false);
+            setPendingData(null);
+          }
+        }}
       />
     </>
   );

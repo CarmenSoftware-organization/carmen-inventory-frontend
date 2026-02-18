@@ -30,7 +30,11 @@ const TYPE_LABELS: Record<CategoryType, string> = {
   itemgroup: "Item Group",
 };
 
-function getCategoryType(mode: FormMode, selectedNode?: CategoryNode, parentNode?: CategoryNode): CategoryType {
+function getCategoryType(
+  mode: FormMode,
+  selectedNode?: CategoryNode,
+  parentNode?: CategoryNode,
+): CategoryType {
   if (mode === "edit" && selectedNode) {
     if (selectedNode.type === NODE_TYPE.CATEGORY) return "category";
     if (selectedNode.type === NODE_TYPE.SUBCATEGORY) return "subcategory";
@@ -55,7 +59,7 @@ export function CategoryDialog({
 
   return (
     <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
-      <DialogContent className="sm:max-w-[380px] gap-2 p-3">
+      <DialogContent className="sm:max-w-95 gap-2 p-3">
         <DialogHeader className="gap-0 pb-0">
           <DialogTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             {title}

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
 import type { CategoryNode } from "@/types/category";
 import type { FormMode } from "@/types/form";
 
@@ -14,41 +14,45 @@ export function useCategoryDialog({
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<FormMode>("add");
   const [selectedNode, setSelectedNode] = useState<CategoryNode | undefined>();
-  const [parentNode, setParentNode] = useState<CategoryNode | undefined>();
+  const [addParentNode, setAddParentNode] = useState<
+    CategoryNode | undefined
+  >();
 
-  // Auto-resolve parent node when editing subcategory or itemGroup
-  useEffect(() => {
-    if (mode !== "edit" || !selectedNode || !categoryData.length) return;
+  const resolvedParentNode = useMemo(() => {
+    if (mode !== "edit" || !selectedNode || !categoryData.length)
+      return undefined;
 
     if (
       selectedNode.type === "subcategory" &&
       selectedNode.product_category_id
     ) {
-      const parent = categoryData.find(
-        (c) => c.id === selectedNode.product_category_id
+      return categoryData.find(
+        (c) => c.id === selectedNode.product_category_id,
       );
-      if (parent) setParentNode(parent);
-    } else if (
+    }
+
+    if (
       selectedNode.type === "itemGroup" &&
       selectedNode.product_subcategory_id
     ) {
       for (const cat of categoryData) {
         const parent = cat.children?.find(
-          (s) => s.id === selectedNode.product_subcategory_id
+          (s) => s.id === selectedNode.product_subcategory_id,
         );
-        if (parent) {
-          setParentNode(parent);
-          break;
-        }
+        if (parent) return parent;
       }
     }
+
+    return undefined;
   }, [mode, selectedNode, categoryData]);
+
+  const parentNode = mode === "edit" ? resolvedParentNode : addParentNode;
 
   const handleOpenChange = useCallback((isOpen: boolean) => {
     setOpen(isOpen);
     if (!isOpen) {
       setSelectedNode(undefined);
-      setParentNode(undefined);
+      setAddParentNode(undefined);
     }
   }, []);
 
@@ -60,7 +64,7 @@ export function useCategoryDialog({
 
   const handleAdd = useCallback((parent?: CategoryNode) => {
     setMode("add");
-    setParentNode(parent);
+    setAddParentNode(parent);
     setSelectedNode(undefined);
     setOpen(true);
   }, []);
@@ -69,7 +73,7 @@ export function useCategoryDialog({
     (data: Record<string, unknown>) => {
       onSubmit(data);
     },
-    [onSubmit]
+    [onSubmit],
   );
 
   return {

@@ -26,9 +26,9 @@ export default function TreeContent({
   if (isLoading) {
     return (
       <div className="p-1 space-y-px">
-        {Array.from({ length: 6 }).map((_, i) => (
+        {["cat", "sub-1", "item-1", "cat-2", "sub-2", "item-2"].map((id, i) => (
           <div
-            key={i}
+            key={id}
             className="flex items-center h-7 gap-2"
             style={{ paddingLeft: `${(i % 3) * 20 + 4}px` }}
           >

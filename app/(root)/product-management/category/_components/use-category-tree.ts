@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import {
   NODE_TYPE,
   type CategoryDto,
@@ -20,11 +20,11 @@ export function useCategoryTree({
   itemGroups,
   isLoading,
 }: UseCategoryTreeProps) {
-  const [categoryData, setCategoryData] = useState<CategoryNode[]>([]);
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [userToggles, setUserToggles] = useState<Record<string, boolean>>({});
+  const [overrideAll, setOverrideAll] = useState<boolean | null>(null);
 
-  const buildCategoryTree = useCallback(() => {
-    if (!categories || !subCategories || !itemGroups) return [];
+  const categoryData = useMemo<CategoryNode[]>(() => {
+    if (isLoading || !categories || !subCategories || !itemGroups) return [];
 
     const mapItemGroups = (subcategoryId: string): CategoryNode[] => {
       const parentSub = subCategories.find((s) => s.id === subcategoryId);
@@ -92,38 +92,50 @@ export function useCategoryTree({
       tax_profile_name: cat.tax_profile_name,
       tax_rate: Number(cat.tax_rate ?? 0),
     }));
-  }, [categories, subCategories, itemGroups]);
+  }, [isLoading, categories, subCategories, itemGroups]);
 
-  useEffect(() => {
-    if (isLoading) return;
-    const tree = buildCategoryTree();
-    setCategoryData(tree);
-
-    const initialExpanded: Record<string, boolean> = {};
-    for (const cat of tree) {
-      initialExpanded[cat.id] = true;
+  // Derive expanded: default top-level expanded, user toggles override, expandAll/collapseAll override all
+  const expanded = useMemo(() => {
+    const result: Record<string, boolean> = {};
+    // Default: top-level categories expanded
+    for (const cat of categoryData) {
+      result[cat.id] = true;
     }
-    setExpanded(initialExpanded);
-  }, [isLoading, buildCategoryTree]);
+
+    if (overrideAll !== null) {
+      // expandAll or collapseAll was called
+      if (overrideAll) {
+        const walk = (nodes: CategoryNode[]) => {
+          for (const node of nodes) {
+            result[node.id] = true;
+            if (node.children?.length) walk(node.children);
+          }
+        };
+        walk(categoryData);
+      } else {
+        for (const key of Object.keys(result)) {
+          result[key] = false;
+        }
+      }
+    }
+
+    // User toggles take priority
+    return { ...result, ...userToggles };
+  }, [categoryData, userToggles, overrideAll]);
 
   const expandAll = useCallback(() => {
-    const all: Record<string, boolean> = {};
-    const walk = (nodes: CategoryNode[]) => {
-      for (const node of nodes) {
-        all[node.id] = true;
-        if (node.children?.length) walk(node.children);
-      }
-    };
-    walk(categoryData);
-    setExpanded(all);
-  }, [categoryData]);
+    setOverrideAll(true);
+    setUserToggles({});
+  }, []);
 
   const collapseAll = useCallback(() => {
-    setExpanded({});
+    setOverrideAll(false);
+    setUserToggles({});
   }, []);
 
   const toggleExpand = useCallback((id: string) => {
-    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+    setOverrideAll(null);
+    setUserToggles((prev) => ({ ...prev, [id]: !prev[id] }));
   }, []);
 
   return { categoryData, expanded, expandAll, collapseAll, toggleExpand };
