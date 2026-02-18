@@ -27,6 +27,7 @@ interface LookupVendorProps {
   readonly excludeIds?: Set<string>;
   readonly disabled?: boolean;
   readonly placeholder?: string;
+  readonly defaultLabel?: string;
   readonly className?: string;
 }
 
@@ -37,6 +38,7 @@ export function LookupVendor({
   excludeIds,
   disabled,
   placeholder = "Select vendor",
+  defaultLabel,
   className,
 }: LookupVendorProps) {
   const { data } = useVendor({ perpage: -1 });
@@ -57,7 +59,7 @@ export function LookupVendor({
 
   const selectedName = useMemo(() => {
     if (!value) return null;
-    return allVendors.find((v) => v.id === value)?.name ?? null;
+    return allVendors.find((v) => v.id === value)?.name ?? defaultLabel ?? null;
   }, [value, allVendors]);
 
   return (

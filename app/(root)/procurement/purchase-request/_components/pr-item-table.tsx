@@ -41,7 +41,8 @@ function StatusCell({
   const status =
     useWatch({ control, name: `items.${index}.current_stage_status` }) ||
     "pending";
-  const { variant, label } = PR_ITEM_STATUS_CONFIG[status] ?? PR_ITEM_STATUS_CONFIG.pending;
+  const { variant, label } =
+    PR_ITEM_STATUS_CONFIG[status] ?? PR_ITEM_STATUS_CONFIG.pending;
   return (
     <Badge variant={variant} className="text-[11px]">
       {label}
@@ -82,7 +83,6 @@ function ProductCell({
           }}
           disabled={disabled}
           className="w-full text-[11px]"
-          size="xs"
         />
       )}
     />
@@ -119,7 +119,6 @@ function WatchedProductUnit({
           }}
           disabled={disabled}
           className="w-full text-[11px]"
-          size="xs"
         />
       )}
     />
@@ -253,7 +252,6 @@ export function usePrItemTable({
                 onValueChange={field.onChange}
                 disabled={disabled}
                 className="w-full text-[11px]"
-                size="xs"
               />
             )}
           />
@@ -394,7 +392,6 @@ export function usePrItemTable({
                 onValueChange={field.onChange}
                 disabled={disabled}
                 className="w-full text-[11px]"
-                size="xs"
               />
             )}
           />
@@ -466,7 +463,17 @@ export function usePrItemTable({
         : dataColumns),
       ...(!disabled ? [actionColumn] : []),
     ];
-  }, [form, disabled, prStatus, dateFormat, buCode, itemFields, onDelete, setSelectDialogOpen, today]);
+  }, [
+    form,
+    disabled,
+    prStatus,
+    dateFormat,
+    buCode,
+    itemFields,
+    onDelete,
+    setSelectDialogOpen,
+    today,
+  ]);
 
   const table = useReactTable({
     data: itemFields,

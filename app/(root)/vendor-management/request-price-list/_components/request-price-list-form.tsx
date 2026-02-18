@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { useForm, type Resolver } from "react-hook-form";
+import { useForm, useWatch, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -88,11 +88,22 @@ export function RequestPriceListForm({
     }
   }, [requestPriceList, form]);
 
-  /* ---- vendor diff state ---- */
   const [isAdding, setIsAdding] = useState(false);
-  const addedVendors: VendorAddItem[] = form.watch("vendors.add") ?? [];
-  const removedIds: string[] = form.watch("vendors.remove") ?? [];
-  const removedVendorIds = useMemo(() => new Set(removedIds), [removedIds]);
+
+  const watchedAdd = useWatch({ control: form.control, name: "vendors.add" });
+  const addedVendors: VendorAddItem[] = useMemo(
+    () => watchedAdd ?? [],
+    [watchedAdd],
+  );
+
+  const removedIds = useWatch({
+    control: form.control,
+    name: "vendors.remove",
+  });
+  const removedVendorIds = useMemo(
+    () => new Set(removedIds ?? []),
+    [removedIds],
+  );
 
   const existingVendors = useMemo(
     () =>
@@ -116,7 +127,6 @@ export function RequestPriceListForm({
     [existingVendors, addedVendors],
   );
 
-  /* ---- vendor handlers ---- */
   const handleAddVendor = useCallback(
     (vendorId: string) => {
       if (selectedVendorIds.has(vendorId)) {
@@ -163,8 +173,7 @@ export function RequestPriceListForm({
     [form],
   );
 
-  /* ---- submit ---- */
-  function onSubmit(values: RfpFormValues) {
+  const onSubmit = (values: RfpFormValues) => {
     const vendorsAdd = (values.vendors?.add ?? []).map((v, i) => ({
       vendor_id: v.vendor_id,
       vendor_name: v.vendor_name,
@@ -215,7 +224,7 @@ export function RequestPriceListForm({
         onError: (err) => toast.error(err.message),
       });
     }
-  }
+  };
 
   const handleCancel = () => {
     if (isEdit && requestPriceList) {
@@ -276,7 +285,6 @@ export function RequestPriceListForm({
           <TabsContent value="vendors">
             <VendorsTab
               form={form}
-              isView={isView}
               isDisabled={isDisabled}
               isAdding={isAdding}
               setIsAdding={setIsAdding}
