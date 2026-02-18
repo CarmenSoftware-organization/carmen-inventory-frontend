@@ -5,7 +5,11 @@ export const API_ENDPOINTS = {
   APPROVAL_ACTION: (buCode: string) => `/api/proxy/api/${buCode}/pprove`,
   APPLICATION_ROLES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/application-roles`,
+  CN_REASONS: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/credit-note-reason`,
   CREDIT_NOTE: (buCode: string) => `/api/proxy/api/${buCode}/credit-note`,
+  CREDIT_TERMS: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/credit-term`,
   CURRENCIES: (buCode: string) => `/api/proxy/api/config/${buCode}/currencies`,
   EXCHANGE_RATES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/exchange-rate`,

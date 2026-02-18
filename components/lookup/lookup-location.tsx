@@ -1,13 +1,22 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useLocation } from "@/hooks/use-location";
 
 interface LookupLocationProps {
@@ -16,7 +25,6 @@ interface LookupLocationProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
-  readonly size?: "xs" | "sm" | "default";
 }
 
 export function LookupLocation({
@@ -25,7 +33,6 @@ export function LookupLocation({
   disabled,
   placeholder = "Select location",
   className,
-  size = "sm",
 }: LookupLocationProps) {
   const { data } = useLocation({ perpage: -1 });
   const locations = useMemo(
@@ -33,18 +40,70 @@ export function LookupLocation({
     [data?.data],
   );
 
+  const [open, setOpen] = useState(false);
+
+  const selectedName = useMemo(() => {
+    if (!value) return null;
+    return locations.find((l) => l.id === value)?.name ?? null;
+  }, [value, locations]);
+
   return (
-    <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger size={size} className={className ?? "text-xs w-full"}>
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {locations.map((location) => (
-          <SelectItem key={location.id} value={location.id} className="text-xs">
-            {location.name}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          aria-expanded={open}
+          className={cn(
+            "h-8 flex justify-between items-center pl-3 pr-1 text-sm",
+            className,
+          )}
+          disabled={disabled}
+        >
+          <span className={cn(!selectedName && "text-muted-foreground")}>
+            {selectedName ?? placeholder}
+          </span>
+          <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+
+      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+        <Command
+          filter={(value, search) => {
+            if (!search) return 1;
+            if (value.toLowerCase().includes(search.toLowerCase())) return 1;
+            return 0;
+          }}
+        >
+          <CommandInput
+            placeholder="Search location..."
+            className="placeholder:text-xs"
+          />
+          <CommandList>
+            <CommandEmpty>No locations found.</CommandEmpty>
+            <CommandGroup>
+              {locations.map((location) => (
+                <CommandItem
+                  key={location.id}
+                  value={location.name}
+                  onSelect={() => {
+                    onValueChange(location.id);
+                    setOpen(false);
+                  }}
+                  className="text-xs"
+                >
+                  {location.name}
+                  <Check
+                    className={cn(
+                      "ml-auto h-4 w-4",
+                      value === location.id ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }

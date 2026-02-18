@@ -1,15 +1,23 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useProfile } from "@/hooks/use-profile";
 import { httpClient } from "@/lib/http-client";
 
@@ -26,7 +34,6 @@ interface LookupProductUnitProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
-  readonly size?: "xs" | "sm" | "default";
 }
 
 export function LookupProductUnit({
@@ -36,7 +43,6 @@ export function LookupProductUnit({
   disabled,
   placeholder = "Select unit",
   className,
-  size = "sm",
 }: LookupProductUnitProps) {
   const { buCode } = useProfile();
 
@@ -60,26 +66,74 @@ export function LookupProductUnit({
     }
   }, [units, value, onValueChange]);
 
+  const [open, setOpen] = useState(false);
+
+  const selectedName = useMemo(() => {
+    if (!value) return null;
+    return units.find((u) => u.id === value)?.name ?? null;
+  }, [value, units]);
+
   return (
-    <Select
-      value={value}
-      onValueChange={onValueChange}
-      disabled={disabled || !productId}
-    >
-      <SelectTrigger size={size} align="end" className={className ?? "text-xs"}>
-        {isLoading ? (
-          <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
-        ) : (
-          <SelectValue placeholder={placeholder} />
-        )}
-      </SelectTrigger>
-      <SelectContent>
-        {units.map((unit) => (
-          <SelectItem key={unit.id} value={unit.id} className="text-xs">
-            {unit.name}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          aria-expanded={open}
+          className={cn(
+            "h-8 flex justify-between items-center pl-3 pr-1 text-sm",
+            className,
+          )}
+          disabled={disabled || !productId}
+        >
+          {isLoading ? (
+            <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
+          ) : (
+            <span className={cn(!selectedName && "text-muted-foreground")}>
+              {selectedName ?? placeholder}
+            </span>
+          )}
+          <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+
+      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+        <Command
+          filter={(value, search) => {
+            if (!search) return 1;
+            if (value.toLowerCase().includes(search.toLowerCase())) return 1;
+            return 0;
+          }}
+        >
+          <CommandInput
+            placeholder="Search unit..."
+            className="placeholder:text-xs"
+          />
+          <CommandList>
+            <CommandEmpty>No units found.</CommandEmpty>
+            <CommandGroup>
+              {units.map((unit) => (
+                <CommandItem
+                  key={unit.id}
+                  value={unit.name}
+                  onSelect={() => {
+                    onValueChange(unit.id);
+                    setOpen(false);
+                  }}
+                  className="text-xs"
+                >
+                  {unit.name}
+                  <Check
+                    className={cn(
+                      "ml-auto h-4 w-4",
+                      value === unit.id ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }
