@@ -5,6 +5,8 @@ export const API_ENDPOINTS = {
     `/api/proxy/api/config/${buCode}/application-roles`,
   CREDIT_NOTE: (buCode: string) => `/api/proxy/api/${buCode}/credit-note`,
   CURRENCIES: (buCode: string) => `/api/proxy/api/config/${buCode}/currencies`,
+  EXCHANGE_RATES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/exchange-rate`,
   DEPARTMENTS: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/departments`,
   DELIVERY_POINTS: (buCode: string) =>
