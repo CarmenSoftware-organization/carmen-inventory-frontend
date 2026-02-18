@@ -45,13 +45,13 @@ export default function CategoryComponent() {
 
   // Data
   const { data: catData, isLoading: catLoading } = useCategory({
-    perpage: 9999,
+    perpage: -1,
   });
   const { data: subData, isLoading: subLoading } = useSubCategory({
-    perpage: 9999,
+    perpage: -1,
   });
   const { data: igData, isLoading: igLoading } = useItemGroup({
-    perpage: 9999,
+    perpage: -1,
   });
   const isLoading = catLoading || subLoading || igLoading;
 

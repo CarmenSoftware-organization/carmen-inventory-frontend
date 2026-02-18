@@ -41,7 +41,7 @@ export default function GeneralTab({
     "—";
 
   /* ---- Resolve default order unit name ---- */
-  const { data: unitData } = useUnit({ perpage: 9999 });
+  const { data: unitData } = useUnit({ perpage: -1 });
   const units = useMemo(() => unitData?.data ?? [], [unitData?.data]);
   const defaultOrderUnit = watchedOrderUnits.find((u) => u.is_default);
   const defaultOrderUnitName = defaultOrderUnit

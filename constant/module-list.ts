@@ -226,7 +226,7 @@ export const moduleList: ModuleDto[] = [
     subModules: [
       {
         name: "Document",
-        path: "/system-admin/document-management",
+        path: "/system-admin/document",
         icon: FileCheck,
       },
 

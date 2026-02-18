@@ -92,10 +92,10 @@ export function InventoryAdjustmentForm({
   const isPending = createAdj.isPending || updateAdj.isPending;
   const isDisabled = isView || isPending;
 
-  const { data: productData } = useProduct({ perpage: 9999 });
+  const { data: productData } = useProduct({ perpage: -1 });
   const products = productData?.data ?? [];
 
-  const { data: locData } = useLocation({ perpage: 9999 });
+  const { data: locData } = useLocation({ perpage: -1 });
   const locations = locData?.data?.filter((l) => l.is_active) ?? [];
 
   const defaultValues: AdjFormValues = inventoryAdjustment

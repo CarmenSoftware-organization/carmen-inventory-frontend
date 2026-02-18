@@ -40,7 +40,7 @@ export function SelectPRDialog({
   "use no memo";
 
   const { dateFormat } = useProfile();
-  const { data, isLoading } = usePurchaseRequest({ perpage: 9999 });
+  const { data, isLoading } = usePurchaseRequest({ perpage: -1 });
   const purchaseRequests = data?.data ?? [];
 
   const columns: ColumnDef<PurchaseRequest>[] = [

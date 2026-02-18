@@ -89,15 +89,15 @@ export function StoreRequisitionForm({
   const isPending = createSr.isPending || updateSr.isPending;
   const isDisabled = isView || isPending;
 
-  const { data: deptData } = useDepartment({ perpage: 9999 });
+  const { data: deptData } = useDepartment({ perpage: -1 });
   const departments =
     deptData?.data?.filter((d) => d.is_active) ?? [];
 
-  const { data: locData } = useLocation({ perpage: 9999 });
+  const { data: locData } = useLocation({ perpage: -1 });
   const locations =
     locData?.data?.filter((l) => l.is_active) ?? [];
 
-  const { data: productData } = useProduct({ perpage: 9999 });
+  const { data: productData } = useProduct({ perpage: -1 });
   const products = productData?.data ?? [];
 
   const defaultValues: SrFormValues = storeRequisition

@@ -192,7 +192,7 @@ export function ProductForm({ product }: ProductFormProps) {
   const isPending = createProduct.isPending || updateProduct.isPending;
   const isDisabled = mode === "view" || isPending;
 
-  const { data: locationData } = useLocation({ perpage: 9999 });
+  const { data: locationData } = useLocation({ perpage: -1 });
   const allLocations = locationData?.data?.filter((l) => l.is_active) ?? [];
 
   const form = useForm<ProductFormValues>({

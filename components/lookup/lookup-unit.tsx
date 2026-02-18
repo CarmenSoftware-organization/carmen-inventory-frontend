@@ -26,7 +26,7 @@ export function LookupUnit({
   className,
   size = "sm",
 }: LookupUnitProps) {
-  const { data } = useUnit({ perpage: 9999 });
+  const { data } = useUnit({ perpage: -1 });
   const units = data?.data?.filter((u) => u.is_active) ?? [];
 
   return (

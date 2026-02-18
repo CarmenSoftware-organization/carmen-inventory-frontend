@@ -93,7 +93,7 @@ export function VendorForm({ vendor }: VendorFormProps) {
   const isPending = createVendor.isPending || updateVendor.isPending;
   const isDisabled = isView || isPending;
 
-  const { data: btData } = useBusinessType({ perpage: 9999 });
+  const { data: btData } = useBusinessType({ perpage: -1 });
   const allBusinessTypes = btData?.data?.filter((bt) => bt.is_active) ?? [];
 
   const defaultValues: VendorFormValues = vendor

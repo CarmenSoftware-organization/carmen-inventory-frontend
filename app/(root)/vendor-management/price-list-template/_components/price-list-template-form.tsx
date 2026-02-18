@@ -91,13 +91,13 @@ export function PriceListTemplateForm({
   const isPending = createTemplate.isPending || updateTemplate.isPending;
   const isDisabled = isView || isPending;
 
-  const { data: currencyData } = useCurrency({ perpage: 9999 });
+  const { data: currencyData } = useCurrency({ perpage: -1 });
   const currencies = currencyData?.data?.filter((c) => c.is_active) ?? [];
 
-  const { data: productData } = useProduct({ perpage: 9999 });
+  const { data: productData } = useProduct({ perpage: -1 });
   const productList = productData?.data ?? [];
 
-  const { data: unitData } = useUnit({ perpage: 9999 });
+  const { data: unitData } = useUnit({ perpage: -1 });
   const units = unitData?.data?.filter((u) => u.is_active) ?? [];
 
   const defaultValues: TemplateFormValues = priceListTemplate

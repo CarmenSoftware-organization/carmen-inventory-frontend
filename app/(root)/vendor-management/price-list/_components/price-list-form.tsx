@@ -97,16 +97,16 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
   const isPending = createPriceList.isPending || updatePriceList.isPending;
   const isDisabled = isView || isPending;
 
-  const { data: vendorData } = useVendor({ perpage: 9999 });
+  const { data: vendorData } = useVendor({ perpage: -1 });
   const vendors = vendorData?.data?.filter((v) => v.is_active) ?? [];
 
-  const { data: currencyData } = useCurrency({ perpage: 9999 });
+  const { data: currencyData } = useCurrency({ perpage: -1 });
   const currencies = currencyData?.data?.filter((c) => c.is_active) ?? [];
 
-  const { data: productData } = useProduct({ perpage: 9999 });
+  const { data: productData } = useProduct({ perpage: -1 });
   const products = productData?.data ?? [];
 
-  const { data: taxProfileData } = useTaxProfile({ perpage: 9999 });
+  const { data: taxProfileData } = useTaxProfile({ perpage: -1 });
   const taxProfiles = taxProfileData?.data?.filter((tp) => tp.is_active) ?? [];
 
   const dates = priceList

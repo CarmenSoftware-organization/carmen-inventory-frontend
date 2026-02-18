@@ -27,7 +27,7 @@ export function LookupLocation({
   className,
   size = "sm",
 }: LookupLocationProps) {
-  const { data } = useLocation({ perpage: 9999 });
+  const { data } = useLocation({ perpage: -1 });
   const locations = useMemo(
     () => data?.data?.filter((l) => l.is_active) ?? [],
     [data?.data],

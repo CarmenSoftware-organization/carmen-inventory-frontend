@@ -30,7 +30,7 @@ export default function UnitConversionTab({
   const isUsedInRecipe = form.watch("is_used_in_recipe");
 
   /* ---- Resolve unit names for preview ---- */
-  const { data: unitData } = useUnit({ perpage: 9999 });
+  const { data: unitData } = useUnit({ perpage: -1 });
   const unitMap = useMemo(() => {
     const m = new Map<string, string>();
     for (const u of unitData?.data ?? []) {

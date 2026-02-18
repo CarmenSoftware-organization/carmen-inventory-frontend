@@ -38,16 +38,14 @@ export default function SortableStageItem({
   };
 
   return (
-    <button
-      type="button"
+    <div
       ref={setNodeRef}
       style={style}
       className={cn(
-        "flex w-full items-center gap-1.5 rounded border px-1.5 py-1 text-[11px] cursor-pointer text-left bg-transparent",
+        "flex items-center gap-1.5 rounded border px-1.5 py-1 text-[11px]",
         isSelected && "border-primary bg-primary/5",
         isDragging && "opacity-50",
       )}
-      onClick={onClick}
     >
       {isDragDisabled ? (
         <span className="w-3" />
@@ -57,17 +55,22 @@ export default function SortableStageItem({
           className="cursor-grab touch-none text-muted-foreground hover:text-foreground"
           {...attributes}
           {...listeners}
-          onClick={(e) => e.stopPropagation()}
         >
           <GripVertical className="size-3" />
         </button>
       )}
-      {isLast ? (
-        <CheckCircle2 className="size-3 text-green-600" />
-      ) : (
-        <span className="text-muted-foreground text-[10px]">{index + 1}.</span>
-      )}
-      <span className="truncate flex-1">{name}</span>
-    </button>
+      <button
+        type="button"
+        className="flex flex-1 items-center gap-1.5 cursor-pointer bg-transparent text-left"
+        onClick={onClick}
+      >
+        {isLast ? (
+          <CheckCircle2 className="size-3 text-green-600" />
+        ) : (
+          <span className="text-muted-foreground text-[10px]">{index + 1}.</span>
+        )}
+        <span className="truncate flex-1">{name}</span>
+      </button>
+    </div>
   );
 }

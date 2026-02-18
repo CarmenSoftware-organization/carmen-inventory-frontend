@@ -27,7 +27,7 @@ export function LookupDeliveryPoint({
   className,
   size = "sm",
 }: LookupDeliveryPointProps) {
-  const { data } = useDeliveryPoint({ perpage: 9999 });
+  const { data } = useDeliveryPoint({ perpage: -1 });
   const deliveryPoints = useMemo(
     () => data?.data?.filter((d) => d.is_active) ?? [],
     [data?.data],

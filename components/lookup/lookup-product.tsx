@@ -28,7 +28,7 @@ export function LookupProduct({
   className,
   size = "sm",
 }: LookupProductProps) {
-  const { data } = useProduct({ perpage: 9999 });
+  const { data } = useProduct({ perpage: -1 });
   const products = useMemo(
     () =>
       data?.data?.filter((p) => p.product_status_type === "active") ?? [],

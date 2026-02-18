@@ -27,7 +27,7 @@ export function LookupCurrency({
   className,
   size = "sm",
 }: LookupCurrencyProps) {
-  const { data } = useCurrency({ perpage: 9999 });
+  const { data } = useCurrency({ perpage: -1 });
   const currencies = useMemo(
     () => data?.data?.filter((c) => c.is_active) ?? [],
     [data?.data],

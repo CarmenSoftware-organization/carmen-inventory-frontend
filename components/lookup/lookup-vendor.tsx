@@ -27,7 +27,7 @@ export function LookupVendor({
   className,
   size = "sm",
 }: LookupVendorProps) {
-  const { data } = useVendor({ perpage: 9999 });
+  const { data } = useVendor({ perpage: -1 });
   const vendors = useMemo(
     () => data?.data?.filter((v) => v.is_active) ?? [],
     [data?.data],

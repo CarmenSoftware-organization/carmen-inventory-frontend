@@ -28,7 +28,7 @@ export function LookupItemGroup({
   className,
   size = "sm",
 }: LookupItemGroupProps) {
-  const { data } = useItemGroup({ perpage: 9999 });
+  const { data } = useItemGroup({ perpage: -1 });
   const itemGroups = useMemo(
     () => data?.data?.filter((g) => g.is_active) ?? [],
     [data?.data],

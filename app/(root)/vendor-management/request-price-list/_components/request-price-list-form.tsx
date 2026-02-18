@@ -89,10 +89,10 @@ export function RequestPriceListForm({
   const isPending = createRfp.isPending || updateRfp.isPending;
   const isDisabled = isView || isPending;
 
-  const { data: templateData } = usePriceListTemplate({ perpage: 9999 });
+  const { data: templateData } = usePriceListTemplate({ perpage: -1 });
   const templates = templateData?.data ?? [];
 
-  const { data: vendorData } = useVendor({ perpage: 9999 });
+  const { data: vendorData } = useVendor({ perpage: -1 });
   const vendorList = vendorData?.data?.filter((v) => v.is_active) ?? [];
 
   const defaultValues: RfpFormValues = requestPriceList
