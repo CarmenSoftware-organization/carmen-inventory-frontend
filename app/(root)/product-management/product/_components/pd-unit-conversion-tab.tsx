@@ -41,9 +41,7 @@ export default function UnitConversionTab({
 
   /* ---- Add disabled conditions ---- */
   const addDisabled =
-    isDisabled ||
-    !inventoryUnitId ||
-    (!isOrder && !isUsedInRecipe);
+    isDisabled || !inventoryUnitId || (!isOrder && !isUsedInRecipe);
 
   /* ---- Handle default (radio-like) ---- */
   const handleDefaultChange = (index: number, checked: boolean) => {
@@ -123,7 +121,8 @@ export default function UnitConversionTab({
 
       {!isOrder && !isUsedInRecipe && (
         <p className="text-xs text-muted-foreground">
-          Enable &quot;Used in Recipe&quot; in Product Info to add ingredient units.
+          Enable &quot;Used in Recipe&quot; in Product Info to add ingredient
+          units.
         </p>
       )}
 
@@ -138,7 +137,7 @@ export default function UnitConversionTab({
               <tr className="border-b bg-muted/50">
                 <th className="px-3 py-1.5 text-left font-medium w-12">#</th>
                 <th className="px-3 py-1.5 text-left font-medium">
-                  {isOrder ? "From Unit" : "From Unit"}
+                  {isOrder ?? "From Unit"}
                 </th>
                 <th className="px-3 py-1.5 text-left font-medium w-20">
                   From Qty

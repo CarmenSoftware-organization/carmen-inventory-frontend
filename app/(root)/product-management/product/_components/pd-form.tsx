@@ -27,11 +27,7 @@ import ProductInfoTab from "./pd-info-tab";
 import LocationsTab from "./pd-location-tab";
 import UnitConversionTab from "./pd-unit-conversion-tab";
 
-/* ------------------------------------------------------------------ */
-/* Default values                                                      */
-/* ------------------------------------------------------------------ */
-
-function getDefaultValues(product?: ProductDetail): ProductFormValues {
+const getDefaultValues = (product?: ProductDetail): ProductFormValues => {
   if (!product) {
     return {
       name: "",
@@ -77,20 +73,16 @@ function getDefaultValues(product?: ProductDetail): ProductFormValues {
     order_units: product.order_units ?? [],
     ingredient_units: product.ingredient_units ?? [],
   };
-}
+};
 
-/* ------------------------------------------------------------------ */
-/* Diff-based payload builder                                          */
-/* ------------------------------------------------------------------ */
-
-function diffUnits(
+const diffUnits = (
   original: ProductUnitConversion[],
   current: ProductUnitConversion[],
-) {
+) => {
   const origIds = new Set(original.map((u) => u.id).filter(Boolean));
   const currIds = new Set(current.map((u) => u.id).filter(Boolean));
 
-  const stripId = ({ id: _id, ...rest }: ProductUnitConversion) => rest;
+  const stripId = ({ ...rest }: ProductUnitConversion) => rest;
 
   const add = current.filter((u) => !u.id).map(stripId);
 
@@ -103,12 +95,12 @@ function diffUnits(
     .map((u) => ({ id: u.id! }));
 
   return { add, update, remove };
-}
+};
 
-function buildPayload(
+const buildPayload = (
   values: ProductFormValues,
   product?: ProductDetail,
-): CreateProductDto {
+): CreateProductDto => {
   const origLocIds = new Set(
     (product?.locations ?? []).map((l) => l.location_id),
   );
@@ -165,11 +157,7 @@ function buildPayload(
       }),
     },
   };
-}
-
-/* ------------------------------------------------------------------ */
-/* Component                                                           */
-/* ------------------------------------------------------------------ */
+};
 
 interface ProductFormProps {
   readonly product?: ProductDetail;
@@ -296,11 +284,7 @@ export function ProductForm({ product }: ProductFormProps) {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="general">
-            <GeneralTab
-              form={form}
-              isDisabled={isDisabled}
-              product={product}
-            />
+            <GeneralTab form={form} isDisabled={isDisabled} product={product} />
           </TabsContent>
           <TabsContent value="product-info">
             <ProductInfoTab form={form} isDisabled={isDisabled} />

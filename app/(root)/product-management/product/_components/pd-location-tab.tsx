@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, X, Search } from "lucide-react";
+import { X, Search } from "lucide-react";
 import { INVENTORY_TYPE } from "@/constant/location";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 
@@ -202,9 +202,7 @@ export default function LocationsTab({
                   </td>
                   <td className="px-3 py-1.5 text-center">
                     {loc ? (
-                      <Badge
-                        variant={loc.is_active ? "success" : "secondary"}
-                      >
+                      <Badge variant={loc.is_active ? "success" : "secondary"}>
                         {loc.is_active ? "Active" : "Inactive"}
                       </Badge>
                     ) : (

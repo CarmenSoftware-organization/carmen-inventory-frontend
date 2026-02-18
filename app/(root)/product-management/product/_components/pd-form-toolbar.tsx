@@ -35,12 +35,12 @@ export default function FormToolbar({
   const isEdit = mode === "edit";
   const badge = MODE_BADGE[mode];
 
-  const title =
-    mode === "view" && product
-      ? `${product.code} — ${product.name}`
-      : mode === "edit"
-        ? "Edit Product"
-        : "Add Product";
+  const TITLES: Record<FormMode, string> = {
+    view: product ? `${product.code} — ${product.name}` : "Product",
+    edit: "Edit Product",
+    add: "Add Product",
+  };
+  const title = TITLES[mode];
 
   return (
     <div className="sticky top-0 z-10 flex items-center justify-between bg-background py-2">
@@ -79,13 +79,10 @@ export default function FormToolbar({
               form="product-form"
               disabled={isPending}
             >
-              {isPending
-                ? isEdit
-                  ? "Saving..."
-                  : "Creating..."
-                : isEdit
-                  ? "Save"
-                  : "Create"}
+              {isPending && isEdit && "Saving..."}
+              {isPending && !isEdit && "Creating..."}
+              {!isPending && isEdit && "Save"}
+              {!isPending && !isEdit && "Create"}
             </Button>
           </>
         )}

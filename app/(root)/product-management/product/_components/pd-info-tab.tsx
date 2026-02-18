@@ -48,10 +48,7 @@ export default function ProductInfoTab({
                 />
               )}
             />
-            <FieldLabel
-              htmlFor="product-is-used-in-recipe"
-              className="text-xs"
-            >
+            <FieldLabel htmlFor="product-is-used-in-recipe" className="text-xs">
               Used in Recipe
             </FieldLabel>
           </Field>
@@ -69,10 +66,7 @@ export default function ProductInfoTab({
                 />
               )}
             />
-            <FieldLabel
-              htmlFor="product-is-sold-directly"
-              className="text-xs"
-            >
+            <FieldLabel htmlFor="product-is-sold-directly" className="text-xs">
               Sold Directly
             </FieldLabel>
           </Field>
@@ -123,7 +117,9 @@ export default function ProductInfoTab({
         {/* Deviation limits with % */}
         <div className="grid grid-cols-2 gap-3">
           <Field>
-            <FieldLabel className="text-xs">Price Deviation Limit (%)</FieldLabel>
+            <FieldLabel className="text-xs">
+              Price Deviation Limit (%)
+            </FieldLabel>
             <div className="relative">
               <Input
                 type="number"
@@ -186,9 +182,11 @@ export default function ProductInfoTab({
           )}
         </div>
 
-        {infoFields.length === 0 ? (
+        {infoFields.length === 0 && (
           <p className="text-xs text-muted-foreground">No additional info</p>
-        ) : isView ? (
+        )}
+
+        {infoFields.length > 0 && isView && (
           /* View mode: read-only grid */
           <div className="grid grid-cols-2 gap-x-6 gap-y-2">
             {infoFields.map((field, index) => {
@@ -197,7 +195,7 @@ export default function ProductInfoTab({
               return (
                 <div key={field.id} className="flex items-baseline gap-2">
                   <span className="text-xs font-medium capitalize">
-                    {label.replace(/_/g, " ")}:
+                    {label.replaceAll("_", " ")}:
                   </span>
                   <span className="text-xs text-muted-foreground">
                     {value || "—"}
@@ -206,7 +204,9 @@ export default function ProductInfoTab({
               );
             })}
           </div>
-        ) : (
+        )}
+
+        {infoFields.length > 0 && !isView && (
           /* Edit mode: editable table */
           <div className="rounded-md border">
             <table className="w-full text-xs">
@@ -240,7 +240,7 @@ export default function ProductInfoTab({
                             <SelectContent>
                               {PRODUCT_ATTRIBUTE_LABELS.map((lbl) => (
                                 <SelectItem key={lbl} value={lbl}>
-                                  {lbl.replace(/_/g, " ")}
+                                  {lbl.replaceAll("_", " ")}
                                 </SelectItem>
                               ))}
                               <SelectItem value="custom">Custom...</SelectItem>
