@@ -1,5 +1,5 @@
 FROM node:20-slim AS base
-RUN corepack enable && corepack prepare pnpm@latest --activate || npm install -g bun
+RUN npm install -g bun
 
 # ─── Dependencies ────────────────────────────────────────────────────────────
 FROM base AS deps
