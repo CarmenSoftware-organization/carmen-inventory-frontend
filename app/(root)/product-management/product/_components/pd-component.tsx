@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Download, Plus, Printer } from "lucide-react";
+import { BoxIcon, Download, Plus, Printer } from "lucide-react";
 import { toast } from "sonner";
 import {
   DataGrid,
@@ -20,6 +20,8 @@ import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
 import DisplayTemplate from "@/components/display-template";
 import { useProductTable } from "./use-product-table";
+import EmptyComponent from "@/components/empty-component";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 const PRODUCT_STATUS_OPTIONS = [
   { label: "Active", value: "product_status_type|str:active" },
@@ -50,6 +52,17 @@ export default function ProductComponent() {
   if (error)
     return <ErrorState message={error.message} onRetry={() => refetch()} />;
 
+  const handleAddItem = () => {
+    router.push("/product-management/product/new");
+  };
+
+  const addNewBtn = (
+    <Button size="sm" onClick={handleAddItem}>
+      <Plus />
+      Add New
+    </Button>
+  );
+
   return (
     <DisplayTemplate
       title="Product"
@@ -66,13 +79,7 @@ export default function ProductComponent() {
       }
       actions={
         <>
-          <Button
-            size="sm"
-            onClick={() => router.push("/product-management/product/new")}
-          >
-            <Plus />
-            Add Product
-          </Button>
+          {addNewBtn}
           <Button size="sm" variant="outline">
             <Download />
             Export
@@ -87,12 +94,23 @@ export default function ProductComponent() {
       <DataGrid
         table={table}
         recordCount={totalRecords}
+        tableLayout={{ dense: true }}
+        tableClassNames={{ base: "text-[11px]" }}
         isLoading={isLoading}
-        tableLayout={{ dense: true, width: "auto" }}
-        tableClassNames={{ base: "text-xs" }}
+        emptyMessage={
+          <EmptyComponent
+            icon={BoxIcon}
+            title="No Items Yet"
+            description="Add items to this purchase order."
+            content={addNewBtn}
+          />
+        }
       >
         <DataGridContainer>
-          <DataGridTable />
+          <ScrollArea className="w-full pb-4">
+            <DataGridTable />
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         </DataGridContainer>
         <DataGridPagination />
       </DataGrid>

@@ -57,7 +57,7 @@ const getDefaultValues = (product?: ProductDetail): ProductFormValues => {
     code: product.code,
     local_name: product.local_name ?? "",
     description: product.description ?? "",
-    inventory_unit_id: product.inventory_unit?.id ?? "",
+    inventory_unit_id: product.inventory_unit_id ?? "",
     product_item_group_id: product.product_item_group?.id ?? "",
     product_status_type: product.product_status_type,
     tax_profile_id: product.tax_profile_id ?? "",

@@ -43,7 +43,7 @@ export function useProductTable({
           {row.getValue("code")}
         </CellAction>
       ),
-      size: 120,
+      size: 130,
       meta: { skeleton: columnSkeletons.textShort },
     },
     {
@@ -51,17 +51,19 @@ export function useProductTable({
       header: ({ column }) => (
         <DataGridColumnHeader column={column} title="Name" />
       ),
+      size: 300,
       meta: { skeleton: columnSkeletons.text },
     },
     {
       accessorKey: "local_name",
       header: "Local Name",
       enableSorting: false,
+      size: 300,
       meta: { skeleton: columnSkeletons.text },
     },
     {
       id: "inventory_unit_name",
-      accessorFn: (row) => row.inventory_unit?.name ?? "",
+      accessorFn: (row) => row.inventory_unit_name ?? "",
       header: ({ column }) => (
         <DataGridColumnHeader column={column} title="Unit" />
       ),
@@ -71,6 +73,13 @@ export function useProductTable({
       id: "product_item_group_name",
       accessorFn: (row) => row.product_item_group?.name ?? "",
       header: "Item Group",
+      enableSorting: false,
+      meta: { skeleton: columnSkeletons.text },
+    },
+    {
+      id: "product_sub_category",
+      accessorFn: (row) => row.product_sub_category?.name ?? "",
+      header: "Sub Category",
       enableSorting: false,
       meta: { skeleton: columnSkeletons.text },
     },
