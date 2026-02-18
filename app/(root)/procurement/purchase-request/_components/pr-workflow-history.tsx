@@ -23,9 +23,9 @@ export function PrWorkflowHistory({ history }: PrWorkflowHistoryProps) {
         const variant = PR_WORKFLOW_ACTION_VARIANT[entry.action] ?? "outline";
 
         return (
-          <div key={i} className="relative flex gap-3 pb-4">
+          <div key={`${entry.user.id}-${entry.action}-${i}`} className="relative flex gap-3 pb-4">
             {!isLast && (
-              <div className="absolute left-[7px] top-4 h-full w-px bg-border" />
+              <div className="absolute left-1.75 top-4 h-full w-px bg-border" />
             )}
             <div
               className={cn(

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { usePurchaseRequestTemplates } from "@/hooks/use-purchase-request";
+import EmptyComponent from "@/components/empty-component";
 
 interface CreatePRDialogProps {
   open: boolean;
@@ -87,11 +88,14 @@ export function CreatePRDialog({ open, onOpenChange }: CreatePRDialogProps) {
               </DialogDescription>
             </DialogHeader>
             <div className="max-h-80 overflow-auto space-y-2">
-              {isLoading ? (
+              {isLoading && (
                 <div className="flex items-center justify-center py-8">
                   <Loader2 className="size-6 animate-spin text-muted-foreground" />
                 </div>
-              ) : templates && templates.length > 0 ? (
+              )}
+              {!isLoading &&
+                templates &&
+                templates.length > 0 &&
                 templates.map((template) => (
                   <button
                     key={template.id}
@@ -108,11 +112,12 @@ export function CreatePRDialog({ open, onOpenChange }: CreatePRDialogProps) {
                       </span>
                     </div>
                   </button>
-                ))
-              ) : (
-                <p className="py-8 text-center text-sm text-muted-foreground">
-                  No templates available.
-                </p>
+                ))}
+              {!isLoading && (!templates || templates.length === 0) && (
+                <EmptyComponent
+                  title="No Templates Available"
+                  description="Create a template to prefill your purchase request."
+                />
               )}
             </div>
           </>

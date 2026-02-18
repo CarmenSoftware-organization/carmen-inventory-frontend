@@ -1004,8 +1004,8 @@ export default function EditCategoryPage({
 | `hooks/use-api-mutation.ts` | Generic mutation helper (buCode, error handling, invalidation) |
 | `hooks/use-data-grid-state.ts` | Pagination, sorting, search, filter state via URL params |
 | `hooks/use-profile.ts` | User profile + buCode |
-| `lib/data-grid/use-config-table.ts` | Shared table helper — เพิ่ม select, index, status, action columns อัตโนมัติ |
-| `lib/data-grid/columns.tsx` | Shared column definitions (selectColumn, indexColumn, statusColumn, actionColumn) |
+| `components/ui/data-grid/use-config-table.ts` | Shared table helper — เพิ่ม select, index, status, action columns อัตโนมัติ |
+| `components/ui/data-grid/columns.tsx` | Shared column definitions (selectColumn, indexColumn, statusColumn, actionColumn) |
 | `lib/http-client.ts` | HTTP client wrapper (get, post, put, patch, delete) |
 | `components/display-template.tsx` | Page layout (title, description, toolbar, actions, children) |
 | `components/search-input.tsx` | Search input with Enter key + clear button |
@@ -1013,7 +1013,8 @@ export default function EditCategoryPage({
 | `components/ui/delete-dialog.tsx` | Confirmation dialog with isPending support |
 | `components/ui/error-state.tsx` | Error display with retry button |
 | `components/ui/field.tsx` | Field, FieldGroup, FieldLabel, FieldError components |
-| `components/reui/data-grid/*` | DataGrid, DataGridTable, DataGridPagination, DataGridColumnHeader, etc. |
+| `components/ui/data-grid/*` | DataGrid, DataGridTable, DataGridPagination, DataGridColumnHeader, etc. |
+| `components/ui/cell-action.tsx` | CellAction button component for table cells |
 | `utils/build-query-string.ts` | URL query string builder |
 | `types/params.ts` | ParamsDto interface |
 | `types/form.ts` | `FormMode` type + `getModeLabels(mode, entity)` helper สำหรับ title/button labels |
@@ -1038,3 +1039,16 @@ export default function EditCategoryPage({
 - **Next.js 15 params** (Variant B): `params` เป็น `Promise` ใช้ `use(params)` เพื่อ unwrap
 - **zodResolver type assertion**: `zodResolver(schema) as Resolver<FormValues>` — จำเป็นเพราะ `@hookform/resolvers` กับ `react-hook-form` export `Resolver` type คนละตัว ต้อง import `type Resolver` จาก `react-hook-form` แล้ว cast
 - **Mode labels**: ใช้ `getModeLabels(mode, "Entity")` จาก `@/types/form` แทน nested ternary — ใช้ได้ทั้ง Dialog (`isEdit ? "edit" : "add"`) และ Page-based (`mode`)
+- **No nested ternary** (SonarQube): ห้ามใช้ nested ternary (`a ? x : b ? y : z`) — ใช้ `&&` pattern แทน:
+
+  ```tsx
+  // Bad — nested ternary
+  {isLoading ? <Spinner /> : data.length > 0 ? <List /> : <Empty />}
+
+  // Good — independent statements
+  {isLoading && <Spinner />}
+  {!isLoading && data.length > 0 && <List />}
+  {!isLoading && data.length === 0 && <Empty />}
+  ```
+
+- **No array index as key** (SonarQube): ห้ามใช้ `key={i}` — ใช้ unique identifier จาก data เช่น `key={item.id}` หรือ composite key `key={`${item.user_id}-${item.action}-${i}`}`

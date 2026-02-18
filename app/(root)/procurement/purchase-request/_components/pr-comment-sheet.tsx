@@ -6,9 +6,7 @@ import {
   Loader2,
   MessageCircle,
   Paperclip,
-  Pencil,
   Send,
-  Trash2,
   User,
   X,
 } from "lucide-react";
@@ -112,9 +110,7 @@ export function PrCommentSheet({
     setIsUploading(true);
     try {
       const uploaded = await Promise.all(
-        validFiles.map((file) =>
-          uploadCommentAttachment(buCode, prId, file),
-        ),
+        validFiles.map((file) => uploadCommentAttachment(buCode, prId, file)),
       );
       setPendingFiles((prev) => [...prev, ...uploaded]);
     } catch {

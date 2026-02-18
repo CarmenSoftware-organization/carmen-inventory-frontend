@@ -226,8 +226,6 @@ export function PurchaseRequestForm({
     }
   };
 
-  // --- Workflow Action Handlers ---
-
   const prepareStageDetails = (
     defaultMessage: string = "",
   ): WorkflowStageDetail[] => {
@@ -419,8 +417,14 @@ export function PurchaseRequestForm({
               <h1 className="font-semibold text-lg">
                 {purchaseRequest?.pr_no}
               </h1>
-              <Badge variant={PR_STATUS_CONFIG[purchaseRequest?.pr_status ?? "draft"]?.variant}>
-                {PR_STATUS_CONFIG[purchaseRequest?.pr_status ?? "draft"]?.label ?? purchaseRequest?.pr_status}
+              <Badge
+                variant={
+                  PR_STATUS_CONFIG[purchaseRequest?.pr_status ?? "draft"]
+                    ?.variant
+                }
+              >
+                {PR_STATUS_CONFIG[purchaseRequest?.pr_status ?? "draft"]
+                  ?.label ?? purchaseRequest?.pr_status}
               </Badge>
             </div>
           )}
