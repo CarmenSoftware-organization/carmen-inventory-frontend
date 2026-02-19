@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, useFieldArray, Controller, type Resolver } from "react-hook-form";
+import { useForm, useFieldArray, useWatch, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -157,7 +157,7 @@ export function VendorForm({ vendor }: VendorFormProps) {
     remove: removeContact,
   } = useFieldArray({ control: form.control, name: "vendor_contact" });
 
-  const watchedBtIds = form.watch("business_type_ids");
+  const watchedBtIds = useWatch({ control: form.control, name: "business_type_ids" });
   const availableBusinessTypes = allBusinessTypes.filter(
     (bt) => !watchedBtIds.includes(bt.id),
   );

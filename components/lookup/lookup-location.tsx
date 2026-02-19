@@ -25,6 +25,7 @@ interface LookupLocationProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
+  readonly excludeIds?: string[];
 }
 
 export function LookupLocation({
@@ -33,12 +34,15 @@ export function LookupLocation({
   disabled,
   placeholder = "Select location",
   className,
+  excludeIds,
 }: LookupLocationProps) {
   const { data } = useLocation({ perpage: -1 });
-  const locations = useMemo(
-    () => data?.data?.filter((l) => l.is_active) ?? [],
-    [data?.data],
-  );
+  const locations = useMemo(() => {
+    const active = data?.data?.filter((l) => l.is_active) ?? [];
+    if (!excludeIds || excludeIds.length === 0) return active;
+    const excluded = new Set(excludeIds);
+    return active.filter((l) => !excluded.has(l.id));
+  }, [data?.data, excludeIds]);
 
   const [open, setOpen] = useState(false);
 

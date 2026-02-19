@@ -134,22 +134,25 @@ export function CategoryForm({
       >
         {/* Parent reference */}
         {type !== "category" && (
-          <div className="space-y-0.5">
-            <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+          <div>
+            <span className="text-xs font-medium text-muted-foreground tracking-wider">
               {parentLabel}
             </span>
             <Input
               value={parentDisplay}
               disabled
-              className="h-7 text-xs bg-muted/50 font-mono"
+              className="h-7 text-xs bg-muted/50"
             />
           </div>
         )}
 
         {/* Code + Name row */}
         <div className="grid grid-cols-[100px_1fr] gap-1.5">
-          <div className="space-y-0.5">
-            <label htmlFor="code" className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+          <div>
+            <label
+              htmlFor="code"
+              className="text-xs font-medium text-muted-foreground tracking-wider"
+            >
               Code *
             </label>
             <Input
@@ -165,8 +168,11 @@ export function CategoryForm({
               </p>
             )}
           </div>
-          <div className="space-y-0.5">
-            <label htmlFor="name" className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+          <div>
+            <label
+              htmlFor="name"
+              className="text-xs font-medium text-muted-foreground tracking-wider"
+            >
               Name *
             </label>
             <Input
@@ -185,8 +191,8 @@ export function CategoryForm({
         </div>
 
         {/* Tax Profile */}
-        <div className="space-y-0.5">
-          <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+        <div>
+          <span className="text-xs font-medium text-muted-foreground tracking-wider">
             Tax Profile
           </span>
           <Controller
@@ -208,15 +214,18 @@ export function CategoryForm({
 
         {/* Deviation limits */}
         <div className="grid grid-cols-2 gap-1.5">
-          <div className="space-y-0.5">
-            <label htmlFor="qty_deviation_limit" className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+          <div>
+            <label
+              htmlFor="qty_deviation_limit"
+              className="text-xs font-medium text-muted-foreground tracking-wider"
+            >
               Qty Dev. %
             </label>
             <div className="relative">
               <Input
                 id="qty_deviation_limit"
                 type="number"
-                className="h-7 text-xs pr-6 font-mono"
+                className="h-7 text-xs pr-6 text-right"
                 min={0}
                 max={100}
                 disabled={isPending}
@@ -227,15 +236,18 @@ export function CategoryForm({
               <Percent className="absolute right-1.5 top-1/2 -translate-y-1/2 h-2.5 w-2.5 text-muted-foreground/50" />
             </div>
           </div>
-          <div className="space-y-0.5">
-            <label htmlFor="price_deviation_limit" className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+          <div>
+            <label
+              htmlFor="price_deviation_limit"
+              className="text-xs font-medium text-muted-foreground tracking-wider"
+            >
               Price Dev. %
             </label>
             <div className="relative">
               <Input
                 id="price_deviation_limit"
                 type="number"
-                className="h-7 text-xs pr-6 font-mono"
+                className="h-7 text-xs pr-6 text-right"
                 min={0}
                 max={100}
                 disabled={isPending}
@@ -301,8 +313,11 @@ export function CategoryForm({
         </div>
 
         {/* Description */}
-        <div className="space-y-0.5">
-          <label htmlFor="description" className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+        <div>
+          <label
+            htmlFor="description"
+            className="text-xs font-medium text-muted-foreground tracking-wider"
+          >
             Description
           </label>
           <Textarea

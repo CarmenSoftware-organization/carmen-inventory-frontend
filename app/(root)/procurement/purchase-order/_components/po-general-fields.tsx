@@ -1,6 +1,6 @@
 "use client";
 
-import { Controller, type UseFormReturn } from "react-hook-form";
+import { Controller, useWatch, type UseFormReturn } from "react-hook-form";
 import {
   Field,
   FieldGroup,
@@ -23,7 +23,7 @@ interface PoGeneralFieldsProps {
 
 export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
   const { defaultCurrencyCode, defaultCurrencyDecimalPlaces } = useProfile();
-  const exchangeRate = form.watch("exchange_rate");
+  const exchangeRate = useWatch({ control: form.control, name: "exchange_rate" });
 
   return (
     <FieldGroup className="gap-2">

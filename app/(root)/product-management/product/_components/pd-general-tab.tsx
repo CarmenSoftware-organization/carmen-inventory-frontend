@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Controller } from "react-hook-form";
+import { Controller, useWatch } from "react-hook-form";
 import { LookupUnit } from "@/components/lookup/lookup-unit";
 import { LookupItemGroup } from "@/components/lookup/lookup-item-group";
 import { LookupTaxProfile } from "@/components/lookup/lookup-tax-profile";
@@ -27,25 +27,28 @@ export default function GeneralTab({
   product,
 }: GeneralTabProps) {
   /* ---- Watchers ---- */
-  const watchedOrderUnits = form.watch("order_units");
+  const watchedOrderUnits = useWatch({
+    control: form.control,
+    name: "order_units",
+  });
 
   /* ---- Sub Category & Category from selected item group ---- */
-  const [selectedGroup, setSelectedGroup] = useState<ItemGroupDto | undefined>();
+  const [selectedGroup, setSelectedGroup] = useState<
+    ItemGroupDto | undefined
+  >();
   const subCategoryName =
     selectedGroup?.sub_category?.name ??
     product?.product_sub_category?.name ??
     "—";
   const categoryName =
-    selectedGroup?.category?.name ??
-    product?.product_category?.name ??
-    "—";
+    selectedGroup?.category?.name ?? product?.product_category?.name ?? "—";
 
   /* ---- Resolve default order unit name ---- */
   const { data: unitData } = useUnit({ perpage: -1 });
   const units = useMemo(() => unitData?.data ?? [], [unitData?.data]);
   const defaultOrderUnit = watchedOrderUnits.find((u) => u.is_default);
   const defaultOrderUnitName = defaultOrderUnit
-    ? units.find((u) => u.id === defaultOrderUnit.from_unit_id)?.name ?? "—"
+    ? (units.find((u) => u.id === defaultOrderUnit.from_unit_id)?.name ?? "—")
     : "No order unit set";
 
   /* ---- Item Group auto-fill ---- */
@@ -110,9 +113,7 @@ export default function GeneralTab({
               disabled={isDisabled}
               {...form.register("local_name")}
             />
-            <FieldError>
-              {form.formState.errors.local_name?.message}
-            </FieldError>
+            <FieldError>{form.formState.errors.local_name?.message}</FieldError>
           </Field>
         </div>
 

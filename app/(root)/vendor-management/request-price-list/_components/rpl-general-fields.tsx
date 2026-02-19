@@ -1,6 +1,6 @@
 "use client";
 
-import { Controller, type UseFormReturn } from "react-hook-form";
+import { Controller, useWatch, type UseFormReturn } from "react-hook-form";
 import { isSameDay } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -42,8 +42,8 @@ export function RequestPriceListGeneralFields({ form, disabled }: Props) {
   const templates = templateData?.data ?? [];
   const { dateFormat } = useProfile();
 
-  const startDate = form.watch("start_date");
-  const endDate = form.watch("end_date");
+  const startDate = useWatch({ control: form.control, name: "start_date" });
+  const endDate = useWatch({ control: form.control, name: "end_date" });
 
   return (
     <FieldGroup className="max-w-2xl gap-3 pt-4">

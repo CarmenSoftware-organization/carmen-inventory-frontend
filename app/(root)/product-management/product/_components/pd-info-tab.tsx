@@ -81,7 +81,7 @@ export default function ProductInfoTab({
               step="any"
               min="0"
               placeholder="0.00"
-              className="h-8 text-sm"
+              className="h-8 text-sm text-right"
               disabled={isDisabled}
               {...form.register("price")}
             />
@@ -127,7 +127,7 @@ export default function ProductInfoTab({
                 min="0"
                 max="100"
                 placeholder="0"
-                className="h-8 text-sm pr-8"
+                className="h-8 text-sm pr-8 text-right"
                 disabled={isDisabled}
                 {...form.register("price_deviation_limit")}
               />
@@ -146,7 +146,7 @@ export default function ProductInfoTab({
                 min="0"
                 max="100"
                 placeholder="0"
-                className="h-8 text-sm pr-8"
+                className="h-8 text-sm pr-8 text-right"
                 disabled={isDisabled}
                 {...form.register("qty_deviation_limit")}
               />

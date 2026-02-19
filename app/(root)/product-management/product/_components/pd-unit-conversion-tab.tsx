@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Controller, useFieldArray } from "react-hook-form";
+import { Controller, useFieldArray, useWatch } from "react-hook-form";
 import type { ProductFormInstance } from "@/types/product";
 import { Button } from "@/components/ui/button";
 import { Plus, X } from "lucide-react";
@@ -26,8 +26,8 @@ export default function UnitConversionTab({
   });
 
   const isOrder = name === "order_units";
-  const inventoryUnitId = form.watch("inventory_unit_id");
-  const isUsedInRecipe = form.watch("is_used_in_recipe");
+  const inventoryUnitId = useWatch({ control: form.control, name: "inventory_unit_id" });
+  const isUsedInRecipe = useWatch({ control: form.control, name: "is_used_in_recipe" });
 
   /* ---- Resolve unit names for preview ---- */
   const { data: unitData } = useUnit({ perpage: -1 });
@@ -189,7 +189,6 @@ export default function UnitConversionTab({
                                 handleFromUnitChange(index, v)
                               }
                               disabled={isDisabled}
-                              size="sm"
                             />
                           )}
                         />
@@ -229,7 +228,6 @@ export default function UnitConversionTab({
                                 handleToUnitChange(index, v)
                               }
                               disabled={isDisabled}
-                              size="sm"
                             />
                           )}
                         />

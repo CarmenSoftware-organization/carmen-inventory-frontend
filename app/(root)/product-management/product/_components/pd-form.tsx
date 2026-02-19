@@ -12,7 +12,6 @@ import {
   useDeleteProduct,
   type CreateProductDto,
 } from "@/hooks/use-product";
-import { useLocation } from "@/hooks/use-location";
 import {
   type ProductDetail,
   type ProductFormValues,
@@ -180,9 +179,6 @@ export function ProductForm({ product }: ProductFormProps) {
   const isPending = createProduct.isPending || updateProduct.isPending;
   const isDisabled = mode === "view" || isPending;
 
-  const { data: locationData } = useLocation({ perpage: -1 });
-  const allLocations = locationData?.data?.filter((l) => l.is_active) ?? [];
-
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema) as Resolver<ProductFormValues>,
     defaultValues: getDefaultValues(product),
@@ -293,7 +289,6 @@ export function ProductForm({ product }: ProductFormProps) {
             <LocationsTab
               form={form}
               isDisabled={isDisabled}
-              allLocations={allLocations}
             />
           </TabsContent>
           <TabsContent value="order-units">

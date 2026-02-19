@@ -4,29 +4,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import type { ProductFormInstance } from "@/types/product";
-import type { Location } from "@/types/location";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { X, Search } from "lucide-react";
-import { INVENTORY_TYPE } from "@/constant/location";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
+import { LookupLocation } from "@/components/lookup/lookup-location";
+import { useLocation } from "@/hooks/use-location";
 
 interface LocationsTabProps {
   form: ProductFormInstance;
   isDisabled: boolean;
-  allLocations: Location[];
 }
 
 export default function LocationsTab({
   form,
   isDisabled,
-  allLocations,
 }: LocationsTabProps) {
+  const { data: locationData } = useLocation({ perpage: -1 });
+  const allLocations = useMemo(
+    () => locationData?.data?.filter((l) => l.is_active) ?? [],
+    [locationData?.data],
+  );
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "locations",
@@ -34,34 +30,6 @@ export default function LocationsTab({
 
   const [search, setSearch] = useState("");
   const [deleteIdx, setDeleteIdx] = useState<number | null>(null);
-
-  const isUsedInRecipe = form.watch("is_used_in_recipe");
-  const isSoldDirectly = form.watch("is_sold_directly");
-
-  /* ---- Filter locations by product flags ---- */
-  const filteredLocations = useMemo(() => {
-    const assignedIds = new Set(fields.map((f) => f.location_id));
-
-    return allLocations.filter((loc) => {
-      if (assignedIds.has(loc.id)) return false;
-
-      if (isUsedInRecipe && loc.location_type !== INVENTORY_TYPE.INVENTORY) {
-        return false;
-      }
-      if (
-        isSoldDirectly &&
-        ![
-          INVENTORY_TYPE.DIRECT,
-          INVENTORY_TYPE.CONSIGNMENT,
-          INVENTORY_TYPE.INVENTORY,
-        ].includes(loc.location_type)
-      ) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [allLocations, fields, isUsedInRecipe, isSoldDirectly]);
 
   /* ---- Build display rows (new on top, then existing) ---- */
   const displayRows = useMemo(() => {
@@ -87,8 +55,13 @@ export default function LocationsTab({
     });
   }, [displayRows, search]);
 
+  const assignedIds = useMemo(
+    () => fields.map((f) => f.location_id),
+    [fields],
+  );
+
   const addLocation = (locationId: string) => {
-    if (locationId === "none") return;
+    if (!locationId || assignedIds.includes(locationId)) return;
     append({ location_id: locationId });
   };
 
@@ -139,24 +112,13 @@ export default function LocationsTab({
             />
           </div>
           {!isDisabled && (
-            <Select onValueChange={addLocation}>
-              <SelectTrigger className="h-8 w-60 text-sm">
-                <SelectValue placeholder="Add location..." />
-              </SelectTrigger>
-              <SelectContent>
-                {filteredLocations.length === 0 ? (
-                  <SelectItem value="none" disabled>
-                    No locations available
-                  </SelectItem>
-                ) : (
-                  filteredLocations.map((loc) => (
-                    <SelectItem key={loc.id} value={loc.id}>
-                      {loc.code} — {loc.name}
-                    </SelectItem>
-                  ))
-                )}
-              </SelectContent>
-            </Select>
+            <LookupLocation
+              value=""
+              onValueChange={addLocation}
+              excludeIds={assignedIds}
+              placeholder="Add location..."
+              className="w-60"
+            />
           )}
         </div>
       </div>
