@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, Warehouse } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +18,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useLocation } from "@/hooks/use-location";
+import EmptyComponent from "../empty-component";
 
 interface LookupLocationProps {
   readonly value: string;
@@ -37,6 +38,7 @@ export function LookupLocation({
   excludeIds,
 }: LookupLocationProps) {
   const { data } = useLocation({ perpage: -1 });
+
   const locations = useMemo(() => {
     const active = data?.data?.filter((l) => l.is_active) ?? [];
     if (!excludeIds || excludeIds.length === 0) return active;
@@ -63,7 +65,9 @@ export function LookupLocation({
           )}
           disabled={disabled}
         >
-          <span className={cn(!selectedName && "text-muted-foreground")}>
+          <span
+            className={cn(!selectedName && "text-muted-foreground text-xs")}
+          >
             {selectedName ?? placeholder}
           </span>
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
@@ -83,7 +87,13 @@ export function LookupLocation({
             className="placeholder:text-xs"
           />
           <CommandList>
-            <CommandEmpty>No locations found.</CommandEmpty>
+            <CommandEmpty>
+              <EmptyComponent
+                icon={Warehouse}
+                title="No locations"
+                description="No locations defined"
+              />
+            </CommandEmpty>
             <CommandGroup>
               {locations.map((location) => (
                 <CommandItem

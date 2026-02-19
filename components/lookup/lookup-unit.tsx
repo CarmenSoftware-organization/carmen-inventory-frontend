@@ -26,6 +26,7 @@ interface LookupUnitProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
+  readonly excludeIds?: string[];
 }
 
 export function LookupUnit({
@@ -34,12 +35,15 @@ export function LookupUnit({
   disabled,
   placeholder = "Select unit",
   className,
+  excludeIds,
 }: LookupUnitProps) {
   const { data, isLoading } = useUnit({ perpage: -1 });
-  const units = useMemo(
-    () => data?.data?.filter((u) => u.is_active) ?? [],
-    [data],
-  );
+  const units = useMemo(() => {
+    const active = data?.data?.filter((u) => u.is_active) ?? [];
+    if (!excludeIds || excludeIds.length === 0) return active;
+    const excluded = new Set(excludeIds);
+    return active.filter((u) => !excluded.has(u.id));
+  }, [data, excludeIds]);
 
   const [open, setOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -62,7 +66,9 @@ export function LookupUnit({
             )}
             disabled={disabled}
           >
-            <span className={cn(!selectedName && "text-muted-foreground")}>
+            <span
+              className={cn(!selectedName && "text-muted-foreground text-xs")}
+            >
               {selectedName ?? placeholder}
             </span>
             <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />

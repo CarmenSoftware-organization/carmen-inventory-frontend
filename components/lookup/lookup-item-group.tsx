@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/popover";
 import { useItemGroup } from "@/hooks/use-item-group";
 import type { ItemGroupDto } from "@/types/category";
+import { Badge } from "../ui/badge";
+import EmptyComponent from "../empty-component";
 
 interface LookupItemGroupProps {
   readonly value: string;
@@ -46,7 +48,7 @@ export function LookupItemGroup({
   const selectedLabel = useMemo(() => {
     if (!value) return null;
     const found = itemGroups.find((g) => g.id === value);
-    return found ? `${found.code} — ${found.name}` : null;
+    return found ? `${found.name}` : null;
   }, [value, itemGroups]);
 
   return (
@@ -61,7 +63,9 @@ export function LookupItemGroup({
           )}
           disabled={disabled}
         >
-          <span className={cn(!selectedLabel && "text-muted-foreground")}>
+          <span
+            className={cn(!selectedLabel && "text-muted-foreground text-xs")}
+          >
             {selectedLabel ?? placeholder}
           </span>
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
@@ -81,7 +85,12 @@ export function LookupItemGroup({
             className="placeholder:text-xs"
           />
           <CommandList>
-            <CommandEmpty>No item groups found.</CommandEmpty>
+            <CommandEmpty>
+              <EmptyComponent
+                title="No item groups"
+                description="No item groups defined"
+              />
+            </CommandEmpty>
             <CommandGroup>
               <CommandItem
                 value="__none__"
@@ -95,7 +104,7 @@ export function LookupItemGroup({
                 <Check
                   className={cn(
                     "ml-auto h-4 w-4",
-                    !value ? "opacity-100" : "opacity-0",
+                    value ? "opacity-0" : "opacity-100",
                   )}
                 />
               </CommandItem>
@@ -109,7 +118,10 @@ export function LookupItemGroup({
                   }}
                   className="text-xs"
                 >
-                  {g.code} — {g.name}
+                  <Badge size={"xs"} variant={"secondary"}>
+                    {g.code}
+                  </Badge>
+                  - {g.name}
                   <Check
                     className={cn(
                       "ml-auto h-4 w-4",

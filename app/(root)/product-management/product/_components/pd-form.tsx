@@ -56,7 +56,7 @@ const getDefaultValues = (product?: ProductDetail): ProductFormValues => {
     code: product.code,
     local_name: product.local_name ?? "",
     description: product.description ?? "",
-    inventory_unit_id: product.inventory_unit_id ?? "",
+    inventory_unit_id: product.inventory_unit.id ?? "",
     product_item_group_id: product.product_item_group?.id ?? "",
     product_status_type: product.product_status_type,
     tax_profile_id: product.tax_profile_id ?? "",
@@ -286,10 +286,7 @@ export function ProductForm({ product }: ProductFormProps) {
             <ProductInfoTab form={form} isDisabled={isDisabled} />
           </TabsContent>
           <TabsContent value="locations">
-            <LocationsTab
-              form={form}
-              isDisabled={isDisabled}
-            />
+            <LocationsTab form={form} isDisabled={isDisabled} />
           </TabsContent>
           <TabsContent value="order-units">
             <UnitConversionTab

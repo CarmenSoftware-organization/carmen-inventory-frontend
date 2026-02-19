@@ -1,4 +1,7 @@
-import type { ProductFormInstance } from "@/types/product";
+"use no memo";
+
+import { useState, useMemo } from "react";
+import type { ProductFormInstance, ProductFormValues } from "@/types/product";
 import { PRODUCT_ATTRIBUTE_LABELS } from "@/types/product";
 import {
   Select,
@@ -8,11 +11,30 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Controller, useFieldArray } from "react-hook-form";
+import {
+  Controller,
+  useFieldArray,
+  type FieldArrayWithId,
+} from "react-hook-form";
+import {
+  type ColumnDef,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, X } from "lucide-react";
+import { Info, Plus, X } from "lucide-react";
+import {
+  DataGrid,
+  DataGridContainer,
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
+import { DeleteDialog } from "@/components/ui/delete-dialog";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import EmptyComponent from "@/components/empty-component";
+
+type InfoField = FieldArrayWithId<ProductFormValues, "info", "id">;
 
 interface ProductInfoTabProps {
   form: ProductFormInstance;
@@ -29,11 +51,235 @@ export default function ProductInfoTab({
     remove: removeInfo,
   } = useFieldArray({ control: form.control, name: "info" });
 
-  const isView = isDisabled;
+  const [deleteIdx, setDeleteIdx] = useState<number | null>(null);
+
+  const confirmDelete = () => {
+    if (deleteIdx !== null) {
+      removeInfo(deleteIdx);
+      setDeleteIdx(null);
+    }
+  };
+
+  /* ---- Column definitions for Additional Info ---- */
+  const columns = useMemo<ColumnDef<InfoField>[]>(() => {
+    const indexCol: ColumnDef<InfoField> = {
+      id: "index",
+      header: "#",
+      cell: ({ row }) => row.index + 1,
+      enableSorting: false,
+      size: 32,
+      meta: {
+        headerClassName: "text-center",
+        cellClassName: "text-center text-muted-foreground",
+      },
+    };
+
+    const dataCols: ColumnDef<InfoField>[] = [
+      {
+        accessorKey: "label",
+        header: "Label",
+        cell: ({ row }) => (
+          <Controller
+            control={form.control}
+            name={`info.${row.index}.label`}
+            render={({ field: labelField }) => (
+              <Select
+                value={labelField.value || "custom"}
+                onValueChange={(v) =>
+                  labelField.onChange(v === "custom" ? "" : v)
+                }
+                disabled={isDisabled}
+              >
+                <SelectTrigger className="h-6 text-[11px] border-0 shadow-none bg-transparent">
+                  <SelectValue placeholder="Select label" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PRODUCT_ATTRIBUTE_LABELS.map((lbl) => (
+                    <SelectItem key={lbl} value={lbl}>
+                      {lbl.replaceAll("_", " ")}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value="custom">Custom...</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
+        ),
+        size: 180,
+      },
+      {
+        accessorKey: "value",
+        header: "Value",
+        cell: ({ row }) => (
+          <Input
+            placeholder="Value"
+            className="h-6 text-[11px] md:text-[11px] border-0 shadow-none bg-transparent px-1"
+            disabled={isDisabled}
+            {...form.register(`info.${row.index}.value`)}
+          />
+        ),
+        size: 200,
+      },
+      {
+        accessorKey: "data_type",
+        header: "Type",
+        cell: ({ row }) => (
+          <Controller
+            control={form.control}
+            name={`info.${row.index}.data_type`}
+            render={({ field: dtField }) => (
+              <Select
+                value={dtField.value}
+                onValueChange={dtField.onChange}
+                disabled={isDisabled}
+              >
+                <SelectTrigger className="h-6 text-[11px] border-0 shadow-none bg-transparent">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="string">String</SelectItem>
+                  <SelectItem value="number">Number</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
+        ),
+        size: 100,
+      },
+    ];
+
+    const actionCol: ColumnDef<InfoField> = {
+      id: "action",
+      header: () => "",
+      cell: ({ row }) => (
+        <Button
+          type="button"
+          variant="ghost"
+          size="xs"
+          onClick={() => setDeleteIdx(row.index)}
+        >
+          <X />
+        </Button>
+      ),
+      enableSorting: false,
+      size: 40,
+      meta: {
+        headerClassName: "text-right",
+        cellClassName: "text-right",
+      },
+    };
+
+    return [indexCol, ...dataCols, ...(isDisabled ? [] : [actionCol])];
+  }, [form, isDisabled]);
+
+  const table = useReactTable({
+    data: infoFields,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
-    <div className="max-w-2xl space-y-4">
-      <FieldGroup className="gap-3">
+    <div className="max-w-2xl space-y-6">
+      {/* ── Pricing & Identification ── */}
+      <section className="space-y-2">
+        <h2 className="text-sm font-semibold">Pricing & Identification</h2>
+        <FieldGroup className="gap-3">
+          <div className="grid grid-cols-3 gap-3">
+            <Field>
+              <FieldLabel className="text-xs">Price</FieldLabel>
+              <Input
+                type="number"
+                step="any"
+                min="0"
+                placeholder="0.00"
+                className="h-8 text-sm text-right"
+                disabled={isDisabled}
+                {...form.register("price")}
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="product-barcode" className="text-xs">
+                Barcode
+              </FieldLabel>
+              <Input
+                id="product-barcode"
+                placeholder="e.g. 8851234567890"
+                className="h-8 text-sm"
+                disabled={isDisabled}
+                {...form.register("barcode")}
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="product-sku" className="text-xs">
+                SKU
+              </FieldLabel>
+              <Input
+                id="product-sku"
+                placeholder="e.g. ESP-250G-TH"
+                className="h-8 text-sm"
+                disabled={isDisabled}
+                {...form.register("sku")}
+              />
+            </Field>
+          </div>
+        </FieldGroup>
+      </section>
+
+      {/* ── Quality Control ── */}
+      <section className="space-y-2">
+        <h2 className="text-sm font-semibold">Quality Control</h2>
+        <FieldGroup className="gap-3">
+          <div className="grid grid-cols-2 gap-3">
+            <Field>
+              <FieldLabel className="text-xs">
+                Price Deviation Limit (%)
+              </FieldLabel>
+              <div className="relative">
+                <Input
+                  type="number"
+                  step="any"
+                  min="0"
+                  max="100"
+                  placeholder="0"
+                  className="h-8 text-sm pr-8 text-right"
+                  disabled={isDisabled}
+                  {...form.register("price_deviation_limit")}
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                  %
+                </span>
+              </div>
+            </Field>
+
+            <Field>
+              <FieldLabel className="text-xs">
+                Qty Deviation Limit (%)
+              </FieldLabel>
+              <div className="relative">
+                <Input
+                  type="number"
+                  step="any"
+                  min="0"
+                  max="100"
+                  placeholder="0"
+                  className="h-8 text-sm pr-8 text-right"
+                  disabled={isDisabled}
+                  {...form.register("qty_deviation_limit")}
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                  %
+                </span>
+              </div>
+            </Field>
+          </div>
+        </FieldGroup>
+      </section>
+
+      {/* ── Product Flags ── */}
+      <section className="space-y-2">
+        <h2 className="text-sm font-semibold">Product Flags</h2>
         <div className="flex items-center gap-6">
           <Field orientation="horizontal">
             <Controller
@@ -48,7 +294,10 @@ export default function ProductInfoTab({
                 />
               )}
             />
-            <FieldLabel htmlFor="product-is-used-in-recipe" className="text-xs">
+            <FieldLabel
+              htmlFor="product-is-used-in-recipe"
+              className="text-xs"
+            >
               Used in Recipe
             </FieldLabel>
           </Field>
@@ -66,100 +315,18 @@ export default function ProductInfoTab({
                 />
               )}
             />
-            <FieldLabel htmlFor="product-is-sold-directly" className="text-xs">
+            <FieldLabel
+              htmlFor="product-is-sold-directly"
+              className="text-xs"
+            >
               Sold Directly
             </FieldLabel>
           </Field>
         </div>
+      </section>
 
-        {/* Price, Barcode, SKU */}
-        <div className="grid grid-cols-3 gap-3">
-          <Field>
-            <FieldLabel className="text-xs">Price</FieldLabel>
-            <Input
-              type="number"
-              step="any"
-              min="0"
-              placeholder="0.00"
-              className="h-8 text-sm text-right"
-              disabled={isDisabled}
-              {...form.register("price")}
-            />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="product-barcode" className="text-xs">
-              Barcode
-            </FieldLabel>
-            <Input
-              id="product-barcode"
-              placeholder="e.g. 8851234567890"
-              className="h-8 text-sm"
-              disabled={isDisabled}
-              {...form.register("barcode")}
-            />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="product-sku" className="text-xs">
-              SKU
-            </FieldLabel>
-            <Input
-              id="product-sku"
-              placeholder="e.g. ESP-250G-TH"
-              className="h-8 text-sm"
-              disabled={isDisabled}
-              {...form.register("sku")}
-            />
-          </Field>
-        </div>
-
-        {/* Deviation limits with % */}
-        <div className="grid grid-cols-2 gap-3">
-          <Field>
-            <FieldLabel className="text-xs">
-              Price Deviation Limit (%)
-            </FieldLabel>
-            <div className="relative">
-              <Input
-                type="number"
-                step="any"
-                min="0"
-                max="100"
-                placeholder="0"
-                className="h-8 text-sm pr-8 text-right"
-                disabled={isDisabled}
-                {...form.register("price_deviation_limit")}
-              />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                %
-              </span>
-            </div>
-          </Field>
-
-          <Field>
-            <FieldLabel className="text-xs">Qty Deviation Limit (%)</FieldLabel>
-            <div className="relative">
-              <Input
-                type="number"
-                step="any"
-                min="0"
-                max="100"
-                placeholder="0"
-                className="h-8 text-sm pr-8 text-right"
-                disabled={isDisabled}
-                {...form.register("qty_deviation_limit")}
-              />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                %
-              </span>
-            </div>
-          </Field>
-        </div>
-      </FieldGroup>
-
-      {/* Additional Info Section */}
-      <div className="space-y-2">
+      {/* ── Additional Info ── */}
+      <section className="space-y-2">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold">
             Additional Info{" "}
@@ -170,7 +337,6 @@ export default function ProductInfoTab({
           {!isDisabled && (
             <Button
               type="button"
-              variant="outline"
               size="xs"
               onClick={() =>
                 appendInfo({ label: "", value: "", data_type: "string" })
@@ -182,12 +348,7 @@ export default function ProductInfoTab({
           )}
         </div>
 
-        {infoFields.length === 0 && (
-          <p className="text-xs text-muted-foreground">No additional info</p>
-        )}
-
-        {infoFields.length > 0 && isView && (
-          /* View mode: read-only grid */
+        {isDisabled && infoFields.length > 0 ? (
           <div className="grid grid-cols-2 gap-x-6 gap-y-2">
             {infoFields.map((field, index) => {
               const label = form.getValues(`info.${index}.label`);
@@ -204,95 +365,37 @@ export default function ProductInfoTab({
               );
             })}
           </div>
+        ) : (
+          <DataGrid
+            table={table}
+            recordCount={infoFields.length}
+            tableLayout={{ dense: true }}
+            tableClassNames={{ base: "text-[11px]" }}
+            emptyMessage={
+              <EmptyComponent
+                icon={Info}
+                title="No additional info"
+                description="No additional info defined"
+              />
+            }
+          >
+            <DataGridContainer>
+              <ScrollArea className="w-full pb-4">
+                <DataGridTable />
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
+            </DataGridContainer>
+          </DataGrid>
         )}
+      </section>
 
-        {infoFields.length > 0 && !isView && (
-          /* Edit mode: editable table */
-          <div className="rounded-md border">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b bg-muted/50">
-                  <th className="px-3 py-1.5 text-left font-medium">Label</th>
-                  <th className="px-3 py-1.5 text-left font-medium">Value</th>
-                  <th className="px-3 py-1.5 text-left font-medium w-28">
-                    Type
-                  </th>
-                  <th className="px-3 py-1.5 w-10" />
-                </tr>
-              </thead>
-              <tbody>
-                {infoFields.map((field, index) => (
-                  <tr key={field.id} className="border-b last:border-0">
-                    <td className="px-2 py-1">
-                      <Controller
-                        control={form.control}
-                        name={`info.${index}.label`}
-                        render={({ field: labelField }) => (
-                          <Select
-                            value={labelField.value || "custom"}
-                            onValueChange={(v) =>
-                              labelField.onChange(v === "custom" ? "" : v)
-                            }
-                          >
-                            <SelectTrigger className="h-7 text-xs border-0 shadow-none bg-transparent">
-                              <SelectValue placeholder="Select label" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {PRODUCT_ATTRIBUTE_LABELS.map((lbl) => (
-                                <SelectItem key={lbl} value={lbl}>
-                                  {lbl.replaceAll("_", " ")}
-                                </SelectItem>
-                              ))}
-                              <SelectItem value="custom">Custom...</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        )}
-                      />
-                    </td>
-                    <td className="px-2 py-1">
-                      <Input
-                        placeholder="Value"
-                        className="h-7 text-xs border-0 shadow-none bg-transparent px-1"
-                        {...form.register(`info.${index}.value`)}
-                      />
-                    </td>
-                    <td className="px-2 py-1">
-                      <Controller
-                        control={form.control}
-                        name={`info.${index}.data_type`}
-                        render={({ field: dtField }) => (
-                          <Select
-                            value={dtField.value}
-                            onValueChange={dtField.onChange}
-                          >
-                            <SelectTrigger className="h-7 text-xs border-0 shadow-none bg-transparent">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="string">String</SelectItem>
-                              <SelectItem value="number">Number</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        )}
-                      />
-                    </td>
-                    <td className="px-2 py-1">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon-xs"
-                        onClick={() => removeInfo(index)}
-                      >
-                        <X />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+      <DeleteDialog
+        open={deleteIdx !== null}
+        onOpenChange={(open) => !open && setDeleteIdx(null)}
+        title="Remove Info"
+        description="Are you sure you want to remove this info entry?"
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }

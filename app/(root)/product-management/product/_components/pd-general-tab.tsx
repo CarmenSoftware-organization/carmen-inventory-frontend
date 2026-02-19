@@ -75,8 +75,8 @@ export default function GeneralTab({
         {/* Row 1: Code | Name | Local Name */}
         <div className="grid grid-cols-3 gap-3">
           <Field data-invalid={!!form.formState.errors.code}>
-            <FieldLabel htmlFor="product-code" className="text-xs">
-              Code *
+            <FieldLabel htmlFor="product-code" className="text-xs" required>
+              Code
             </FieldLabel>
             <Input
               id="product-code"
@@ -89,8 +89,8 @@ export default function GeneralTab({
           </Field>
 
           <Field data-invalid={!!form.formState.errors.name}>
-            <FieldLabel htmlFor="product-name" className="text-xs">
-              Name *
+            <FieldLabel htmlFor="product-name" className="text-xs" required>
+              Name
             </FieldLabel>
             <Input
               id="product-name"
@@ -104,7 +104,7 @@ export default function GeneralTab({
 
           <Field data-invalid={!!form.formState.errors.local_name}>
             <FieldLabel htmlFor="product-local-name" className="text-xs">
-              Local Name *
+              Local Name
             </FieldLabel>
             <Input
               id="product-local-name"
@@ -120,7 +120,9 @@ export default function GeneralTab({
         {/* Row 2: Item Group | Sub Category (readonly) | Category (readonly) */}
         <div className="grid grid-cols-3 gap-3">
           <Field data-invalid={!!form.formState.errors.product_item_group_id}>
-            <FieldLabel className="text-xs">Item Group *</FieldLabel>
+            <FieldLabel className="text-xs" required>
+              Item Group
+            </FieldLabel>
             <Controller
               control={form.control}
               name="product_item_group_id"
@@ -161,7 +163,9 @@ export default function GeneralTab({
         {/* Row 3: Inventory Unit | Tax Profile | Default Order Unit (readonly) */}
         <div className="grid grid-cols-3 gap-3">
           <Field data-invalid={!!form.formState.errors.inventory_unit_id}>
-            <FieldLabel className="text-xs">Inventory Unit *</FieldLabel>
+            <FieldLabel className="text-xs" required>
+              Inventory Unit
+            </FieldLabel>
             <Controller
               control={form.control}
               name="inventory_unit_id"
@@ -179,7 +183,9 @@ export default function GeneralTab({
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">Tax Profile</FieldLabel>
+            <FieldLabel className="text-xs" required>
+              Tax Profile
+            </FieldLabel>
             <Controller
               control={form.control}
               name="tax_profile_id"
