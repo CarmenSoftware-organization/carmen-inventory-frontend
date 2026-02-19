@@ -51,8 +51,6 @@ export function PrtForm({ template }: PrtFormProps) {
     defaultValues,
   });
 
-  console.log(form.getValues());
-
   const onSubmit = (values: PrtFormValues) => {
     const newItems = values.items.filter((item) => !item.id);
     const existingItems = values.items.filter(

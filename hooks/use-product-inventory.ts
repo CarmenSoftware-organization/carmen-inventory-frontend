@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { httpClient } from "@/lib/http-client";
+import { API_ENDPOINTS } from "@/constant/api-endpoints";
+import { QUERY_KEYS } from "@/constant/query-keys";
 
 export interface InventoryBalance {
   on_hand_qty: number;
@@ -14,10 +16,12 @@ export function useProductInventory(
   productId: string | undefined,
 ) {
   return useQuery<InventoryBalance>({
-    queryKey: ["product-inventory", buCode, locationId, productId],
+    queryKey: [QUERY_KEYS.PRODUCT_INVENTORY, buCode, locationId, productId],
     queryFn: async () => {
+      if (!buCode || !locationId || !productId)
+        throw new Error("Missing buCode, locationId or productId");
       const res = await httpClient.get(
-        `/api/proxy/api/${buCode}/locations/${locationId}/product/${productId}/inventory`,
+        API_ENDPOINTS.PRODUCT_INVENTORY(buCode, locationId, productId),
       );
       if (!res.ok) throw new Error("Failed to fetch inventory");
       const json = await res.json();

@@ -1,0 +1,41 @@
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+const API_KEY = process.env.EXCHANGE_RATE_API_KEY;
+
+export async function GET(request: NextRequest) {
+  const baseCurrency = request.nextUrl.searchParams.get("base");
+
+  if (!baseCurrency) {
+    return NextResponse.json(
+      { error: "Missing 'base' query parameter" },
+      { status: 400 },
+    );
+  }
+
+  if (!API_KEY) {
+    return NextResponse.json(
+      { error: "Exchange rate API key is not configured" },
+      { status: 500 },
+    );
+  }
+
+  const res = await fetch(
+    `https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${baseCurrency}`,
+  );
+
+  if (!res.ok) {
+    return NextResponse.json(
+      { error: `Exchange rate API returned ${res.status}` },
+      { status: res.status },
+    );
+  }
+
+  const data = await res.json();
+
+  return NextResponse.json(data, {
+    headers: {
+      "Cache-Control": "public, s-maxage=300, stale-while-revalidate=60",
+    },
+  });
+}

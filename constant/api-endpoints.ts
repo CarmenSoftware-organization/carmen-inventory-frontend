@@ -32,6 +32,16 @@ export const API_ENDPOINTS = {
     `/api/proxy/api/notifications/mark-all-read/${userId}`,
   PROFILE: "/api/proxy/api/user/profile",
   PRODUCTS: (buCode: string) => `/api/proxy/api/config/${buCode}/products`,
+  PRODUCTS_BY_LOCATION: (buCode: string, locationId: string) =>
+    `/api/proxy/api/${buCode}/products/locations/${locationId}`,
+  PRODUCT_UNITS_FOR_ORDER: (buCode: string, productId: string) =>
+    `/api/proxy/api/${buCode}/unit/order/product/${productId}`,
+  PRODUCT_INVENTORY: (
+    buCode: string,
+    locationId: string,
+    productId: string,
+  ) =>
+    `/api/proxy/api/${buCode}/locations/${locationId}/product/${productId}/inventory`,
   PRODUCT_CATEGORIES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/products/category`,
   PRODUCT_SUB_CATEGORIES: (buCode: string) =>
@@ -44,6 +54,13 @@ export const API_ENDPOINTS = {
   PURCHASE_REQUESTS: "/api/proxy/api/purchase-request",
   PURCHASE_REQUEST: (buCode: string) =>
     `/api/proxy/api/${buCode}/purchase-request`,
+  PURCHASE_REQUEST_COMMENT: (buCode: string) =>
+    `/api/proxy/api/${buCode}/purchase-request-comment`,
+  PURCHASE_REQUEST_COMMENT_ATTACHMENT: (
+    buCode: string,
+    prId: string,
+  ) =>
+    `/api/proxy/api/${buCode}/purchase-request-comment/${prId}/attachment`,
   PURCHASE_REQUEST_WORKFLOW_STAGES: (buCode: string) =>
     `/api/proxy/api/${buCode}/purchase-request/workflow-stages`,
   PURCHASE_REQUEST_TEMPLATES: (buCode: string) =>
@@ -71,6 +88,8 @@ export const API_ENDPOINTS = {
     `/api/proxy/api/config/${buCode}/user-application-roles`,
   VENDOR_BUSINESS_TYPES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/vendor-business-type`,
+  WORKFLOW_BY_TYPE: (buCode: string, type: string) =>
+    `/api/proxy/api/${buCode}/workflow/type/${type}`,
   WORKFLOWS: (buCode: string) => `/api/proxy/api/config/${buCode}/workflows`,
   // External (no auth)
   PRICE_LIST_EXTERNAL_CHECK: (urlToken: string) =>

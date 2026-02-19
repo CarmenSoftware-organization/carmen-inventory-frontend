@@ -37,7 +37,7 @@ export function useWorkflowTypeQuery(type: WORKFLOW_TYPE) {
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");
       const res = await httpClient.get(
-        `/api/proxy/api/${buCode}/workflow/type/${type}`,
+        API_ENDPOINTS.WORKFLOW_BY_TYPE(buCode, type),
       );
       if (!res.ok) throw new Error("Failed to fetch workflows by type");
       const json = await res.json();

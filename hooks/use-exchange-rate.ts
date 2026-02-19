@@ -56,13 +56,11 @@ interface ExternalRateResponse {
 }
 
 export function useExternalExchangeRates(baseCurrency: string) {
-  const apiKey = process.env.NEXT_PUBLIC_EXCHANGE_RATE_API_KEY;
-
   return useQuery<Record<string, number>>({
     queryKey: ["exchangeRates", baseCurrency],
     queryFn: async () => {
       const res = await fetch(
-        `https://v6.exchangerate-api.com/v6/${apiKey}/latest/${baseCurrency}`,
+        `/api/exchange-rate?base=${encodeURIComponent(baseCurrency)}`,
       );
       if (!res.ok)
         throw new Error(`Failed to fetch exchange rates: ${res.status}`);
@@ -71,7 +69,7 @@ export function useExternalExchangeRates(baseCurrency: string) {
         throw new Error("Exchange rate API returned an error");
       return data.conversion_rates;
     },
-    enabled: !!baseCurrency && !!apiKey,
+    enabled: !!baseCurrency,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,

@@ -161,7 +161,7 @@ export function usePurchaseRequestById(id: string | undefined) {
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");
       const res = await httpClient.get(
-        `/api/proxy/api/${buCode}/purchase-request/${id}`,
+        `${API_ENDPOINTS.PURCHASE_REQUEST(buCode)}/${id}`,
       );
       if (!res.ok) throw new Error("Failed to fetch purchase request");
       const json = await res.json();
@@ -215,7 +215,7 @@ export function usePurchaseRequestComments(prId: string | undefined) {
     queryFn: async () => {
       if (!buCode || !prId) throw new Error("Missing buCode or prId");
       const res = await httpClient.get(
-        `/api/proxy/api/${buCode}/purchase-request/${prId}/comment`,
+        `${API_ENDPOINTS.PURCHASE_REQUEST(buCode)}/${prId}/comment`,
       );
       if (!res.ok) throw new Error("Failed to fetch comments");
       const json = await res.json();
@@ -236,7 +236,7 @@ export function useCreatePurchaseRequestComment() {
   return useApiMutation<CreatePurchaseRequestCommentDto>({
     mutationFn: (data, buCode) =>
       httpClient.post(
-        `/api/proxy/api/${buCode}/purchase-request-comment`,
+        API_ENDPOINTS.PURCHASE_REQUEST_COMMENT(buCode),
         data,
       ),
     invalidateKeys: [QUERY_KEYS.PURCHASE_REQUEST_COMMENTS],
@@ -252,7 +252,7 @@ export function useUpdatePurchaseRequestComment() {
   }>({
     mutationFn: ({ id, ...data }, buCode) =>
       httpClient.patch(
-        `/api/proxy/api/${buCode}/purchase-request-comment/${id}`,
+        `${API_ENDPOINTS.PURCHASE_REQUEST_COMMENT(buCode)}/${id}`,
         data,
       ),
     invalidateKeys: [QUERY_KEYS.PURCHASE_REQUEST_COMMENTS],
@@ -264,7 +264,7 @@ export function useDeletePurchaseRequestComment() {
   return useApiMutation<string>({
     mutationFn: (id, buCode) =>
       httpClient.delete(
-        `/api/proxy/api/${buCode}/purchase-request-comment/${id}`,
+        `${API_ENDPOINTS.PURCHASE_REQUEST_COMMENT(buCode)}/${id}`,
       ),
     invalidateKeys: [QUERY_KEYS.PURCHASE_REQUEST_COMMENTS],
     errorMessage: "Failed to delete comment",
@@ -280,7 +280,7 @@ export async function uploadCommentAttachment(
   formData.append("file", file);
 
   const res = await fetch(
-    `/api/proxy/api/${buCode}/purchase-request-comment/${prId}/attachment`,
+    API_ENDPOINTS.PURCHASE_REQUEST_COMMENT_ATTACHMENT(buCode, prId),
     { method: "POST", body: formData },
   );
 
