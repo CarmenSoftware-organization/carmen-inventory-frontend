@@ -134,9 +134,14 @@ export function useCategoryTree({
   }, []);
 
   const toggleExpand = useCallback((id: string) => {
+    if (overrideAll !== null) {
+      // Bake current expanded state into userToggles before clearing overrideAll
+      setUserToggles({ ...expanded, [id]: !expanded[id] });
+    } else {
+      setUserToggles((prev) => ({ ...prev, [id]: !(expanded[id] ?? false) }));
+    }
     setOverrideAll(null);
-    setUserToggles((prev) => ({ ...prev, [id]: !prev[id] }));
-  }, []);
+  }, [expanded, overrideAll]);
 
   return { categoryData, expanded, expandAll, collapseAll, toggleExpand };
 }

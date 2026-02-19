@@ -89,7 +89,7 @@ export function TreeNode({
           {hasChildren ? (
             <ChevronRight
               className={cn(
-                "h-3 w-3 text-muted-foreground transition-transform duration-150",
+                "h-3 w-3 cursor-pointer text-muted-foreground transition-transform duration-150",
                 isExpanded && "rotate-90",
               )}
             />
@@ -131,19 +131,12 @@ export function TreeNode({
           </span>
         )}
 
-        {/* Child count */}
-        {hasChildren && (
-          <span className="text-[10px] text-muted-foreground/50 tabular-nums mr-1">
-            {node.children?.length}
-          </span>
-        )}
-
         {/* Actions - visible on hover */}
-        <div className="hidden items-center group-hover/node:flex ml-auto pr-1">
+        <div className="hidden items-center group-hover/node:flex ml-auto pr-2">
           {node.type !== NODE_TYPE.ITEM_GROUP && (
             <button
               type="button"
-              className="p-0.5 rounded hover:bg-primary/10 hover:text-primary transition-colors"
+              className="p-1 rounded hover:bg-primary/10 hover:text-primary transition-colors"
               onClick={() => onAdd(node)}
               title="Add child"
             >
@@ -152,7 +145,7 @@ export function TreeNode({
           )}
           <button
             type="button"
-            className="p-0.5 rounded hover:bg-primary/10 hover:text-primary transition-colors"
+            className="p-1 rounded hover:bg-primary/10 hover:text-primary transition-colors"
             onClick={() => onEdit(node)}
             title="Edit"
           >
@@ -160,7 +153,7 @@ export function TreeNode({
           </button>
           <button
             type="button"
-            className="p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-colors"
+            className="p-1 rounded hover:bg-destructive/10 hover:text-destructive transition-colors"
             onClick={() => onDelete(node)}
             title="Delete"
           >

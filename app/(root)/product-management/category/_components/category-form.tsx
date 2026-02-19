@@ -206,7 +206,7 @@ export function CategoryForm({
                   form.setValue("tax_rate", taxRate);
                 }}
                 disabled={isPending}
-                size="xs"
+                className="w-full"
               />
             )}
           />

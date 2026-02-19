@@ -54,7 +54,7 @@ export default function TreeContent({
   }
 
   return (
-    <div>
+    <div className="py-2">
       {filteredData.map((cat) => (
         <TreeNode
           key={cat.id}
