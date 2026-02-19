@@ -3,7 +3,7 @@ import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { CreditTerm } from "@/types/credit-term";
 
-const crud = createConfigCrud<CreditTerm>({
+const crud = createConfigCrud<CreditTerm, never>({
   queryKey: QUERY_KEYS.CREDIT_TERMS,
   endpoint: API_ENDPOINTS.CREDIT_TERMS,
   label: "credit term",

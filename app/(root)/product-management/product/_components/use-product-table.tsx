@@ -58,7 +58,7 @@ export function useProductTable({
     },
     {
       id: "inventory_unit_name",
-      accessorFn: (row) => row.inventory_unit_name ?? "",
+      accessorFn: (row) => row.inventory_unit?.name ?? "",
       header: ({ column }) => (
         <DataGridColumnHeader column={column} title="Unit" />
       ),

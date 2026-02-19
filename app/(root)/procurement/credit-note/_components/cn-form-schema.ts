@@ -15,7 +15,7 @@ export const cnItemSchema = z.object({
 
 export const cnSchema = z.object({
   credit_note_type: z.enum(["quantity_return", "amount_discount"], {
-    required_error: "Credit note type is required",
+    error: "Credit note type is required",
   }),
   grn_id: z.string().min(1, "GRN is required"),
   vendor_id: z.string().min(1, "Vendor is required"),

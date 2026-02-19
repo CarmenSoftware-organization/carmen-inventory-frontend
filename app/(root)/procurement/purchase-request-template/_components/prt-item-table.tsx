@@ -84,7 +84,6 @@ const ProductCell = ({
           }
           disabled={disabled}
           className="w-full text-[11px]"
-          size="xs"
         />
       )}
     />
@@ -120,7 +119,6 @@ const WatchedProductUnit = ({
           }}
           disabled={disabled}
           className="w-full text-[11px]"
-          size="xs"
         />
       )}
     />
@@ -218,7 +216,6 @@ export function usePrtItemTable({
                 onValueChange={field.onChange}
                 disabled={disabled}
                 className="w-full text-[11px]"
-                size="xs"
               />
             )}
           />
@@ -238,7 +235,6 @@ export function usePrtItemTable({
                 onValueChange={field.onChange}
                 disabled={disabled}
                 className="w-full text-[11px]"
-                size="xs"
               />
             )}
           />
@@ -324,7 +320,6 @@ export function usePrtItemTable({
                 onValueChange={field.onChange}
                 disabled={disabled}
                 className="w-full text-[11px]"
-                size="xs"
               />
             )}
           />
@@ -347,7 +342,6 @@ export function usePrtItemTable({
                 }}
                 disabled={disabled}
                 className="w-full text-[11px]"
-                size="xs"
               />
             )}
           />

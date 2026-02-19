@@ -372,7 +372,6 @@ export function usePrItemTable({
                 onValueChange={field.onChange}
                 disabled={disabled}
                 className="w-full text-[11px]"
-                size="xs"
               />
             )}
           />

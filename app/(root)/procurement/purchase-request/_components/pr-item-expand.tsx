@@ -208,7 +208,6 @@ export function PrItemExpand({
                 }}
                 disabled={disabled}
                 className="w-full text-[11px]"
-                size="xs"
               />
             )}
           />

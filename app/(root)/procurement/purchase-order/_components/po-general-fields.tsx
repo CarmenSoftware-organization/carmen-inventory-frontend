@@ -97,7 +97,6 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
                   form.setValue("exchange_rate", currency.exchange_rate);
                 }}
                 disabled={disabled}
-                size="sm"
               />
             )}
           />

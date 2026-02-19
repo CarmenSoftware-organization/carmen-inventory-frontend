@@ -76,7 +76,6 @@ const ProductCell = ({
           }
           disabled={disabled}
           className="w-full text-[11px]"
-          size="xs"
         />
       )}
     />
@@ -105,7 +104,6 @@ const WatchedProductUnit = ({
           onValueChange={field.onChange}
           disabled={disabled}
           className="w-full text-[11px]"
-          size="xs"
         />
       )}
     />
@@ -264,7 +262,6 @@ export function usePoItemTable({
                 }}
                 disabled={disabled}
                 className="w-full text-[11px]"
-                size="xs"
               />
             )}
           />
