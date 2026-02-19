@@ -195,7 +195,7 @@ export default function WorkflowNewForm() {
             size="sm"
             onClick={() => router.push("/system-admin/workflow")}
             disabled={isPending}
-            className="h-7 text-xs"
+            className="text-xs"
           >
             Cancel
           </Button>
@@ -204,7 +204,7 @@ export default function WorkflowNewForm() {
             size="sm"
             form="new-workflow-form"
             disabled={isPending}
-            className="h-7 text-xs"
+            className="text-xs"
           >
             {isPending ? "Creating..." : "Create Workflow"}
           </Button>
@@ -225,7 +225,7 @@ export default function WorkflowNewForm() {
               <Input
                 id="wf-name"
                 placeholder="e.g. Purchase Request Approval"
-                className="h-8 text-xs placeholder:text-xs"
+                className="h-8 text-sm"
                 disabled={isPending}
                 {...form.register("name")}
               />

@@ -138,14 +138,16 @@ export function PrItemExpand({
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
                 disabled={disabled}
-                size="xs"
                 className="w-full text-[11px]"
               />
             )}
           />
         </div>
         <div className="col-span-2">
-          <label htmlFor={`items-${index}-pricelist-price`} className="text-[10px] text-muted-foreground">
+          <label
+            htmlFor={`items-${index}-pricelist-price`}
+            className="text-[10px] text-muted-foreground"
+          >
             Unit Price
           </label>
           <Input
@@ -180,9 +182,7 @@ export function PrItemExpand({
           </div>
         </div>
         <div className="col-span-2">
-          <span className="text-[10px] text-muted-foreground">
-            Net Amount
-          </span>
+          <span className="text-[10px] text-muted-foreground">Net Amount</span>
           <div className="h-6 leading-6 text-[11px] text-right font-medium tabular-nums">
             {netAmount.toLocaleString(undefined, {
               minimumFractionDigits: 2,
@@ -195,9 +195,7 @@ export function PrItemExpand({
       {/* Row 2: Tax Profile | Tax % | Tax Amt [✓] | Disc % | Disc Amt [✓] | Total */}
       <div className="grid grid-cols-12 gap-2 items-end">
         <div className="col-span-3">
-          <span className="text-[10px] text-muted-foreground">
-            Tax Profile
-          </span>
+          <span className="text-[10px] text-muted-foreground">Tax Profile</span>
           <Controller
             control={form.control}
             name={`items.${index}.tax_profile_id`}
@@ -216,7 +214,12 @@ export function PrItemExpand({
           />
         </div>
         <div className="col-span-1">
-          <label htmlFor={`items-${index}-tax-rate`} className="text-[10px] text-muted-foreground">Tax %</label>
+          <label
+            htmlFor={`items-${index}-tax-rate`}
+            className="text-[10px] text-muted-foreground"
+          >
+            Tax %
+          </label>
           <Input
             id={`items-${index}-tax-rate`}
             type="number"
@@ -260,7 +263,12 @@ export function PrItemExpand({
           />
         </div>
         <div className="col-span-1">
-          <label htmlFor={`items-${index}-discount-rate`} className="text-[10px] text-muted-foreground">Disc %</label>
+          <label
+            htmlFor={`items-${index}-discount-rate`}
+            className="text-[10px] text-muted-foreground"
+          >
+            Disc %
+          </label>
           <Input
             id={`items-${index}-discount-rate`}
             type="number"
@@ -276,9 +284,7 @@ export function PrItemExpand({
         </div>
         <div className="col-span-2">
           <div className="flex items-center gap-1">
-            <span className="text-[10px] text-muted-foreground">
-              Disc Amt
-            </span>
+            <span className="text-[10px] text-muted-foreground">Disc Amt</span>
             <Controller
               control={form.control}
               name={`items.${index}.is_discount_adjustment`}

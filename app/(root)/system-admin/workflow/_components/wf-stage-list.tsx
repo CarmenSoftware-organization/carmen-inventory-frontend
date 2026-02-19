@@ -152,7 +152,7 @@ export function WfStageList({
             variant="outline"
             size="xs"
             onClick={handleAddStage}
-            className="h-6 text-[10px] px-1.5"
+            className="h-6 text-xs px-1.5"
           >
             <Plus className="size-2.5" />
             Add
