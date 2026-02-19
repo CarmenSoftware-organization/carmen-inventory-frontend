@@ -68,9 +68,9 @@ export function PrtForm({ template }: PrtFormProps) {
       .map((item) => ({ id: item.id }));
 
     const updatedItems = existingItems.filter((item) => {
-      const original = defaultValues.items.find((d) => d.id === item.id);
-      if (!original) return false;
-      return JSON.stringify(item) !== JSON.stringify(original);
+      const idx = values.items.findIndex((v) => v.id === item.id);
+      const dirty = form.formState.dirtyFields.items?.[idx];
+      return dirty != null && Object.keys(dirty).length > 0;
     });
 
     const purchase_request_template_detail: CreatePrtDto["purchase_request_template_detail"] =
