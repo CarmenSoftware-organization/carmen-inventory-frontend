@@ -34,12 +34,18 @@ export function useNotification(userId: string | undefined) {
     if (!userId || !WS_URL) return;
 
     let unmounted = false;
+    let activeWs: WebSocket | null = null;
+    reconnectAttempt.current = 0;
 
     function connect() {
       const ws = new WebSocket(WS_URL!);
+      activeWs = ws;
 
       ws.onopen = () => {
-        if (unmounted) { ws.close(); return; }
+        if (unmounted) {
+          ws.close();
+          return;
+        }
         reconnectAttempt.current = 0;
         setIsConnected(true);
         setSocket(ws);
@@ -52,8 +58,8 @@ export function useNotification(userId: string | undefined) {
           if (message.type === "notification") {
             setNotifications((prev) => [message.data, ...prev]);
           }
-        } catch (error) {
-          console.error("Failed to parse notification message:", error);
+        } catch {
+          // ignore malformed messages
         }
       };
 
@@ -67,21 +73,17 @@ export function useNotification(userId: string | undefined) {
         }
       };
 
-      ws.onerror = (error) => {
-        console.error("WebSocket error:", error);
+      ws.onerror = () => {
+        // Connection will be retried via the onclose handler.
       };
-
-      return ws;
     }
 
-    const ws = connect();
+    connect();
 
     return () => {
       unmounted = true;
       clearTimeout(reconnectTimer.current);
-      if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
-        ws.close();
-      }
+      activeWs?.close();
     };
   }, [userId]);
 
