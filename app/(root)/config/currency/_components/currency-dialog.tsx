@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, Controller, type Resolver } from "react-hook-form";
+import { useForm, useWatch, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -83,7 +83,7 @@ export function CurrencyDialog({
     },
   });
 
-  const watchedCode = form.watch("code");
+  const watchedCode = useWatch({ control: form.control, name: "code" });
 
   // Reset form when dialog opens
   useEffect(() => {

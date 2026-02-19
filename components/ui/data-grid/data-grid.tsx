@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, ReactNode, useContext } from "react"
+import { createContext, ReactNode, useContext, useMemo } from "react"
 import {
   ColumnFiltersState,
   RowData,
@@ -111,15 +111,18 @@ function DataGridProvider<TData extends object>({
   table,
   ...props
 }: DataGridProps<TData> & { table: Table<TData> }) {
+  const contextValue = useMemo(
+    () => ({
+      props,
+      table,
+      recordCount: props.recordCount,
+      isLoading: props.isLoading || false,
+    }),
+    [props, table],
+  )
+
   return (
-    <DataGridContext.Provider
-      value={{
-        props,
-        table,
-        recordCount: props.recordCount,
-        isLoading: props.isLoading || false,
-      }}
-    >
+    <DataGridContext.Provider value={contextValue}>
       {children}
     </DataGridContext.Provider>
   )

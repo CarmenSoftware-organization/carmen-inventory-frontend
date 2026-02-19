@@ -13,7 +13,7 @@ import {
   getExpandedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useState, useMemo } from "react";
+import { memo, useState, useMemo } from "react";
 import { ChevronDown, ChevronRight, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +31,7 @@ import type { PrFormValues } from "./pr-form-schema";
 import { PrItemExpand } from "./pr-item-expand";
 import { Badge } from "@/components/ui/badge";
 
-function StatusCell({
+const StatusCell = memo(function StatusCell({
   control,
   index,
 }: {
@@ -48,10 +48,10 @@ function StatusCell({
       {label}
     </Badge>
   );
-}
+});
 
 /** Watches location_id via useWatch — only re-renders when location changes, not on every form change */
-function ProductCell({
+const ProductCell = memo(function ProductCell({
   control,
   form,
   index,
@@ -87,10 +87,10 @@ function ProductCell({
       )}
     />
   );
-}
+});
 
 /** Watches product_id via useWatch — only re-renders when product changes */
-function WatchedProductUnit({
+const WatchedProductUnit = memo(function WatchedProductUnit({
   control,
   index,
   unitField,
@@ -123,7 +123,7 @@ function WatchedProductUnit({
       )}
     />
   );
-}
+});
 
 export type ItemField = FieldArrayWithId<PrFormValues, "items", "id">;
 

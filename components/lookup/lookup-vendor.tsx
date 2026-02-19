@@ -42,25 +42,22 @@ export function LookupVendor({
   className,
 }: LookupVendorProps) {
   const { data } = useVendor({ perpage: -1 });
-  const vendors = useMemo(() => {
-    let list = data?.data?.filter((v) => v.is_active) ?? [];
-    if (excludeIds?.size) {
-      list = list.filter((v) => !excludeIds.has(v.id));
-    }
-    return list;
-  }, [data?.data, excludeIds]);
-
-  const allVendors = useMemo(
+  const activeVendors = useMemo(
     () => data?.data?.filter((v) => v.is_active) ?? [],
     [data?.data],
   );
+
+  const vendors = useMemo(() => {
+    if (!excludeIds?.size) return activeVendors;
+    return activeVendors.filter((v) => !excludeIds.has(v.id));
+  }, [activeVendors, excludeIds]);
 
   const [open, setOpen] = useState(false);
 
   const selectedName = useMemo(() => {
     if (!value) return null;
-    return allVendors.find((v) => v.id === value)?.name ?? defaultLabel ?? null;
-  }, [value, allVendors]);
+    return activeVendors.find((v) => v.id === value)?.name ?? defaultLabel ?? null;
+  }, [value, activeVendors, defaultLabel]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

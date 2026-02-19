@@ -11,7 +11,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,7 +33,7 @@ const setProductToItem = (
   });
 };
 
-const ProductCell = ({
+const ProductCell = memo(function ProductCell({
   control,
   form,
   index,
@@ -43,7 +43,7 @@ const ProductCell = ({
   form: UseFormReturn<GrnFormValues>;
   index: number;
   disabled: boolean;
-}) => {
+}) {
   return (
     <Controller
       control={control}
@@ -60,7 +60,7 @@ const ProductCell = ({
       )}
     />
   );
-};
+});
 
 export type GrnItemField = FieldArrayWithId<GrnFormValues, "items", "id">;
 

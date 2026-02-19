@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { httpClient } from "@/lib/http-client";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import type { Notification } from "@/types/notification";
@@ -27,39 +27,59 @@ export function useNotification(userId: string | undefined) {
     };
   }, []);
 
+  const reconnectAttempt = useRef(0);
+  const reconnectTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
   useEffect(() => {
     if (!userId || !WS_URL) return;
 
-    const ws = new WebSocket(WS_URL);
+    let unmounted = false;
 
-    ws.onopen = () => {
-      setIsConnected(true);
-      setSocket(ws);
-      ws.send(JSON.stringify({ type: "register", user_id: userId }));
-    };
+    function connect() {
+      const ws = new WebSocket(WS_URL!);
 
-    ws.onmessage = (event) => {
-      try {
-        const message = JSON.parse(event.data);
-        if (message.type === "notification") {
-          setNotifications((prev) => [message.data, ...prev]);
+      ws.onopen = () => {
+        if (unmounted) { ws.close(); return; }
+        reconnectAttempt.current = 0;
+        setIsConnected(true);
+        setSocket(ws);
+        ws.send(JSON.stringify({ type: "register", user_id: userId }));
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const message = JSON.parse(event.data);
+          if (message.type === "notification") {
+            setNotifications((prev) => [message.data, ...prev]);
+          }
+        } catch (error) {
+          console.error("Failed to parse notification message:", error);
         }
-      } catch (error) {
-        console.error("Failed to parse notification message:", error);
-      }
-    };
+      };
 
-    ws.onclose = () => {
-      setIsConnected(false);
-      setSocket(null);
-    };
+      ws.onclose = () => {
+        setIsConnected(false);
+        setSocket(null);
+        if (!unmounted) {
+          const delay = Math.min(1000 * 2 ** reconnectAttempt.current, 30000);
+          reconnectAttempt.current += 1;
+          reconnectTimer.current = setTimeout(connect, delay);
+        }
+      };
 
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
+      ws.onerror = (error) => {
+        console.error("WebSocket error:", error);
+      };
+
+      return ws;
+    }
+
+    const ws = connect();
 
     return () => {
-      if (ws.readyState === WebSocket.OPEN) {
+      unmounted = true;
+      clearTimeout(reconnectTimer.current);
+      if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) {
         ws.close();
       }
     };

@@ -132,14 +132,14 @@ export function TreeProductLookup({
     return map;
   }, [tree]);
 
-  const toggleExpand = (id: string) => {
+  const toggleExpand = useCallback((id: string) => {
     setExpandedIds((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
       return next;
     });
-  };
+  }, []);
 
   const toggleProduct = useCallback(
     (productId: string) => {

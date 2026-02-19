@@ -12,7 +12,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,7 +53,7 @@ const setProductToItem = (
   });
 };
 
-const ProductCell = ({
+const ProductCell = memo(function ProductCell({
   control,
   form,
   index,
@@ -63,7 +63,7 @@ const ProductCell = ({
   form: UseFormReturn<PoFormValues>;
   index: number;
   disabled: boolean;
-}) => {
+}) {
   return (
     <Controller
       control={control}
@@ -80,9 +80,9 @@ const ProductCell = ({
       )}
     />
   );
-};
+});
 
-const WatchedProductUnit = ({
+const WatchedProductUnit = memo(function WatchedProductUnit({
   control,
   index,
   disabled,
@@ -90,7 +90,7 @@ const WatchedProductUnit = ({
   control: Control<PoFormValues>;
   index: number;
   disabled: boolean;
-}) => {
+}) {
   const productId =
     useWatch({ control, name: `items.${index}.product_id` }) ?? "";
   return (
@@ -108,9 +108,9 @@ const WatchedProductUnit = ({
       )}
     />
   );
-};
+});
 
-const AdjustableAmountCell = ({
+const AdjustableAmountCell = memo(function AdjustableAmountCell({
   control,
   form,
   index,
@@ -124,7 +124,7 @@ const AdjustableAmountCell = ({
   disabled: boolean;
   toggleField: "is_tax_adjustment" | "is_discount_adjustment";
   amountField: "tax_amount" | "discount_amount";
-}) => {
+}) {
   const isManual =
     useWatch({ control, name: `items.${index}.${toggleField}` }) ?? false;
   return (
@@ -157,7 +157,7 @@ const AdjustableAmountCell = ({
       />
     </div>
   );
-};
+});
 
 export type PoItemField = FieldArrayWithId<PoFormValues, "items", "id">;
 

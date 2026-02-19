@@ -41,6 +41,7 @@ export function createConfigCrud<T, TCreate>({
         return res.json();
       },
       enabled: !!buCode,
+      staleTime: 5 * 60 * 1000, // 5 minutes
     });
   }
 
@@ -57,6 +58,7 @@ export function createConfigCrud<T, TCreate>({
         return json.data;
       },
       enabled: !!buCode && !!id,
+      staleTime: 5 * 60 * 1000, // 5 minutes
     });
   }
 
