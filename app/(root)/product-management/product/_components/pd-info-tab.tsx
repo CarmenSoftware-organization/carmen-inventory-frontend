@@ -186,7 +186,9 @@ export default function ProductInfoTab({
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-3 gap-3">
             <Field>
-              <FieldLabel className="text-xs">Price</FieldLabel>
+              <FieldLabel className="text-xs" required>
+                Price
+              </FieldLabel>
               <Input
                 type="number"
                 step="any"
@@ -199,7 +201,11 @@ export default function ProductInfoTab({
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="product-barcode" className="text-xs">
+              <FieldLabel
+                htmlFor="product-barcode"
+                className="text-xs"
+                required
+              >
                 Barcode
               </FieldLabel>
               <Input
@@ -212,7 +218,7 @@ export default function ProductInfoTab({
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="product-sku" className="text-xs">
+              <FieldLabel htmlFor="product-sku" className="text-xs" required>
                 SKU
               </FieldLabel>
               <Input
@@ -233,7 +239,7 @@ export default function ProductInfoTab({
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-3">
             <Field>
-              <FieldLabel className="text-xs">
+              <FieldLabel className="text-xs" required>
                 Price Deviation Limit (%)
               </FieldLabel>
               <div className="relative">
@@ -254,7 +260,7 @@ export default function ProductInfoTab({
             </Field>
 
             <Field>
-              <FieldLabel className="text-xs">
+              <FieldLabel className="text-xs" required>
                 Qty Deviation Limit (%)
               </FieldLabel>
               <div className="relative">
@@ -294,10 +300,7 @@ export default function ProductInfoTab({
                 />
               )}
             />
-            <FieldLabel
-              htmlFor="product-is-used-in-recipe"
-              className="text-xs"
-            >
+            <FieldLabel htmlFor="product-is-used-in-recipe" className="text-xs">
               Used in Recipe
             </FieldLabel>
           </Field>
@@ -315,10 +318,7 @@ export default function ProductInfoTab({
                 />
               )}
             />
-            <FieldLabel
-              htmlFor="product-is-sold-directly"
-              className="text-xs"
-            >
+            <FieldLabel htmlFor="product-is-sold-directly" className="text-xs">
               Sold Directly
             </FieldLabel>
           </Field>

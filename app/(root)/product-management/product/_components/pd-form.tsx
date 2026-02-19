@@ -41,9 +41,9 @@ const getDefaultValues = (product?: ProductDetail): ProductFormValues => {
       is_sold_directly: false,
       barcode: "",
       sku: "",
-      price: null,
-      price_deviation_limit: null,
-      qty_deviation_limit: null,
+      price: 0,
+      price_deviation_limit: 0,
+      qty_deviation_limit: 0,
       info: [],
       locations: [],
       order_units: [],
@@ -64,9 +64,9 @@ const getDefaultValues = (product?: ProductDetail): ProductFormValues => {
     is_sold_directly: product.product_info?.is_sold_directly ?? false,
     barcode: product.product_info?.barcode ?? "",
     sku: product.product_info?.sku ?? "",
-    price: product.product_info?.price ?? null,
-    price_deviation_limit: product.product_info?.price_deviation_limit ?? null,
-    qty_deviation_limit: product.product_info?.qty_deviation_limit ?? null,
+    price: product.product_info?.price ?? 0,
+    price_deviation_limit: product.product_info?.price_deviation_limit ?? 0,
+    qty_deviation_limit: product.product_info?.qty_deviation_limit ?? 0,
     info: product.product_info?.info ?? [],
     locations: product.locations ?? [],
     order_units: product.order_units ?? [],
@@ -78,15 +78,32 @@ const diffUnits = (
   original: ProductUnitConversion[],
   current: ProductUnitConversion[],
 ) => {
-  const origIds = new Set(original.map((u) => u.id).filter(Boolean));
+  const origMap = new Map(
+    original.filter((u) => u.id).map((u) => [u.id!, u]),
+  );
   const currIds = new Set(current.map((u) => u.id).filter(Boolean));
 
-  const stripId = ({ ...rest }: ProductUnitConversion) => rest;
+  const stripId = ({
+    id: _id,
+    ...rest
+  }: ProductUnitConversion): Omit<ProductUnitConversion, "id"> => rest;
 
   const add = current.filter((u) => !u.id).map(stripId);
 
   const update = current
-    .filter((u) => u.id && origIds.has(u.id))
+    .filter((u) => {
+      if (!u.id || !origMap.has(u.id)) return false;
+      const orig = origMap.get(u.id)!;
+      return (
+        u.from_unit_id !== orig.from_unit_id ||
+        u.from_unit_qty !== orig.from_unit_qty ||
+        u.to_unit_id !== orig.to_unit_id ||
+        u.to_unit_qty !== orig.to_unit_qty ||
+        u.description !== orig.description ||
+        u.is_default !== orig.is_default ||
+        u.is_active !== orig.is_active
+      );
+    })
     .map((u) => ({ ...stripId(u), id: u.id! }));
 
   const remove = original
@@ -127,6 +144,8 @@ const buildPayload = (
     product_item_group_id: values.product_item_group_id,
     product_status_type: values.product_status_type,
     tax_profile_id: values.tax_profile_id || "",
+    price_deviation_limit: values.price_deviation_limit || 0,
+    qty_deviation_limit: values.qty_deviation_limit || 0,
     product_info: {
       is_used_in_recipe: values.is_used_in_recipe,
       is_sold_directly: values.is_sold_directly,
@@ -137,24 +156,39 @@ const buildPayload = (
       qty_deviation_limit: values.qty_deviation_limit,
       info: values.info,
     },
-    locations: {
-      ...(locationsAdd.length > 0 && { add: locationsAdd }),
-      ...(locationsRemove.length > 0 && { remove: locationsRemove }),
-    },
-    order_units: {
-      ...(orderDiff.add.length > 0 && { add: orderDiff.add }),
-      ...(orderDiff.update.length > 0 && { update: orderDiff.update }),
-      ...(orderDiff.remove.length > 0 && { remove: orderDiff.remove }),
-    },
-    ingredient_units: {
-      ...(ingredientDiff.add.length > 0 && { add: ingredientDiff.add }),
-      ...(ingredientDiff.update.length > 0 && {
-        update: ingredientDiff.update,
-      }),
-      ...(ingredientDiff.remove.length > 0 && {
-        remove: ingredientDiff.remove,
-      }),
-    },
+    ...((locationsAdd.length > 0 || locationsRemove.length > 0) && {
+      locations: {
+        ...(locationsAdd.length > 0 && { add: locationsAdd }),
+        ...(locationsRemove.length > 0 && { remove: locationsRemove }),
+      },
+    }),
+    ...((orderDiff.add.length > 0 || orderDiff.update.length > 0 || orderDiff.remove.length > 0) && {
+      order_units: {
+        ...(orderDiff.add.length > 0 && { add: orderDiff.add }),
+        ...(orderDiff.update.length > 0 && {
+          update: orderDiff.update.map(({ id, ...rest }) => ({
+            ...rest,
+            product_order_unit_id: id,
+          })),
+        }),
+        ...(orderDiff.remove.length > 0 && {
+          remove: orderDiff.remove.map(({ id }) => ({
+            product_order_unit_id: id,
+          })),
+        }),
+      },
+    }),
+    ...((ingredientDiff.add.length > 0 || ingredientDiff.update.length > 0 || ingredientDiff.remove.length > 0) && {
+      ingredient_units: {
+        ...(ingredientDiff.add.length > 0 && { add: ingredientDiff.add }),
+        ...(ingredientDiff.update.length > 0 && {
+          update: ingredientDiff.update,
+        }),
+        ...(ingredientDiff.remove.length > 0 && {
+          remove: ingredientDiff.remove,
+        }),
+      },
+    }),
   };
 };
 

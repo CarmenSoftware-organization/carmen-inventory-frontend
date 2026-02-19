@@ -22,6 +22,8 @@ import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
 import DisplayTemplate from "@/components/display-template";
+import EmptyComponent from "@/components/empty-component";
+import { Settings } from "lucide-react";
 import { useAdjustmentTypeTable } from "./use-adjustment-type-table";
 
 export default function AdjustmentTypeComponent() {
@@ -86,6 +88,13 @@ export default function AdjustmentTypeComponent() {
         isLoading={isLoading}
         tableLayout={{ dense: true }}
         tableClassNames={{ base: "text-xs" }}
+        emptyMessage={
+          <EmptyComponent
+            icon={Settings}
+            title="No Adjustment Types"
+            description="No adjustment types found."
+          />
+        }
       >
         <DataGridContainer>
           <DataGridTable />

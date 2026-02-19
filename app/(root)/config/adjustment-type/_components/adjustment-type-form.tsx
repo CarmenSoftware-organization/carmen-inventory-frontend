@@ -69,7 +69,9 @@ export function AdjustmentTypeForm({
   const isDisabled = isView || isPending;
 
   const form = useForm<AdjustmentTypeFormValues>({
-    resolver: zodResolver(adjustmentTypeSchema) as Resolver<AdjustmentTypeFormValues>,
+    resolver: zodResolver(
+      adjustmentTypeSchema,
+    ) as Resolver<AdjustmentTypeFormValues>,
     defaultValues: adjustmentType
       ? {
           code: adjustmentType.code,
@@ -158,7 +160,11 @@ export function AdjustmentTypeForm({
       >
         <FieldGroup className="gap-3">
           <Field data-invalid={!!form.formState.errors.code}>
-            <FieldLabel htmlFor="adjustment-type-code" className="text-xs">
+            <FieldLabel
+              htmlFor="adjustment-type-code"
+              className="text-xs"
+              required
+            >
               Code
             </FieldLabel>
             <Input
@@ -172,7 +178,11 @@ export function AdjustmentTypeForm({
           </Field>
 
           <Field data-invalid={!!form.formState.errors.name}>
-            <FieldLabel htmlFor="adjustment-type-name" className="text-xs">
+            <FieldLabel
+              htmlFor="adjustment-type-name"
+              className="text-xs"
+              required
+            >
               Name
             </FieldLabel>
             <Input
@@ -186,7 +196,9 @@ export function AdjustmentTypeForm({
           </Field>
 
           <Field data-invalid={!!form.formState.errors.type}>
-            <FieldLabel className="text-xs">Type</FieldLabel>
+            <FieldLabel className="text-xs" required>
+              Type
+            </FieldLabel>
             <Controller
               control={form.control}
               name="type"
@@ -223,21 +235,9 @@ export function AdjustmentTypeForm({
               id="adjustment-type-description"
               placeholder="Optional"
               className="text-sm"
+              rows={2}
               disabled={isDisabled}
               {...form.register("description")}
-            />
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="adjustment-type-note" className="text-xs">
-              Note
-            </FieldLabel>
-            <Textarea
-              id="adjustment-type-note"
-              placeholder="Optional"
-              className="text-sm"
-              disabled={isDisabled}
-              {...form.register("note")}
             />
           </Field>
 
@@ -254,10 +254,7 @@ export function AdjustmentTypeForm({
                 />
               )}
             />
-            <FieldLabel
-              htmlFor="adjustment-type-is-active"
-              className="text-xs"
-            >
+            <FieldLabel htmlFor="adjustment-type-is-active" className="text-xs">
               Active
             </FieldLabel>
           </Field>

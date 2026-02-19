@@ -19,6 +19,8 @@ export interface CreateProductDto {
   product_item_group_id: string;
   product_status_type: ProductStatusType;
   tax_profile_id: string;
+  price_deviation_limit: number | null;
+  qty_deviation_limit: number | null;
   product_info: {
     is_used_in_recipe: boolean;
     is_sold_directly: boolean;
@@ -29,16 +31,16 @@ export interface CreateProductDto {
     qty_deviation_limit: number | null;
     info: ProductInfoItem[];
   };
-  locations: {
+  locations?: {
     add?: { location_id: string }[];
     remove?: { location_id: string }[];
   };
-  order_units: {
+  order_units?: {
     add?: UnitPayload[];
-    update?: (UnitPayload & { id: string })[];
-    remove?: { id: string }[];
+    update?: (UnitPayload & { product_order_unit_id: string })[];
+    remove?: { product_order_unit_id: string }[];
   };
-  ingredient_units: {
+  ingredient_units?: {
     add?: UnitPayload[];
     update?: (UnitPayload & { id: string })[];
     remove?: { id: string }[];

@@ -38,11 +38,10 @@
 
 ## Card
 
-| ส่วน | Class |
-|------|-------|
-| Card | `gap-6 py-6` |
-| CardHeader | `gap-2 px-6` |
-| CardContent | `px-6` |
+> **ห้ามใช้ Card** — User กลุ่มเป้าหมายอายุเยอะ ต้องการ clarity ไม่ใช่ decoration
+>
+> - ใช้ spacing + section header (`<h2>`) แทน
+> - Card = visual noise ดูรกตา อ่านยากขึ้น
 
 ## DataGrid / Table
 
@@ -65,6 +64,7 @@
 - Cell text: `text-xs` หรือ `text-[11px]`
 - Inline input ใน table: `h-6 text-[11px]` หรือ `h-7 text-xs`
 - Lookup ใน table: `text-[11px]` หรือ `text-xs`
+- **emptyMessage**: ทุก DataGrid ต้องใช้ `<EmptyComponent>` จาก `@/components/empty-component` เสมอ ห้ามใช้ string หรือ inline JSX
 
 ## Font Size
 

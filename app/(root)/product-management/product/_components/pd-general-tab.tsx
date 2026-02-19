@@ -70,10 +70,11 @@ export default function GeneralTab({
   };
 
   return (
-    <div className="space-y-4">
-      <FieldGroup className="gap-3">
-        {/* Row 1: Code | Name | Local Name */}
-        <div className="grid grid-cols-3 gap-3">
+    <div className="space-y-6">
+      {/* ── Product Identification ── */}
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold">Product Identification</h2>
+        <FieldGroup className="gap-3">
           <Field data-invalid={!!form.formState.errors.code}>
             <FieldLabel htmlFor="product-code" className="text-xs" required>
               Code
@@ -115,118 +116,125 @@ export default function GeneralTab({
             />
             <FieldError>{form.formState.errors.local_name?.message}</FieldError>
           </Field>
-        </div>
 
-        {/* Row 2: Item Group | Sub Category (readonly) | Category (readonly) */}
-        <div className="grid grid-cols-3 gap-3">
-          <Field data-invalid={!!form.formState.errors.product_item_group_id}>
-            <FieldLabel className="text-xs" required>
-              Item Group
+          <Field>
+            <FieldLabel htmlFor="product-description" className="text-xs">
+              Description
             </FieldLabel>
-            <Controller
-              control={form.control}
-              name="product_item_group_id"
-              render={({ field }) => (
-                <LookupItemGroup
-                  value={field.value}
-                  onValueChange={handleItemGroupChange}
-                  disabled={isDisabled}
-                />
-              )}
-            />
-            <FieldError>
-              {form.formState.errors.product_item_group_id?.message}
-            </FieldError>
-          </Field>
-
-          <Field>
-            <FieldLabel className="text-xs">Sub Category</FieldLabel>
-            <Input
-              className="h-8 text-sm bg-muted"
-              disabled
-              value={subCategoryName}
-              readOnly
+            <Textarea
+              id="product-description"
+              placeholder="Optional"
+              className="text-sm"
+              rows={2}
+              disabled={isDisabled}
+              {...form.register("description")}
             />
           </Field>
+        </FieldGroup>
+      </section>
 
-          <Field>
-            <FieldLabel className="text-xs">Category</FieldLabel>
-            <Input
-              className="h-8 text-sm bg-muted"
-              disabled
-              value={categoryName}
-              readOnly
-            />
-          </Field>
-        </div>
+      {/* ── Classification ── */}
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold">Classification</h2>
+        <FieldGroup className="gap-3">
+          <div className="grid grid-cols-3 gap-3">
+            <Field data-invalid={!!form.formState.errors.product_item_group_id}>
+              <FieldLabel className="text-xs" required>
+                Item Group
+              </FieldLabel>
+              <Controller
+                control={form.control}
+                name="product_item_group_id"
+                render={({ field }) => (
+                  <LookupItemGroup
+                    value={field.value}
+                    onValueChange={handleItemGroupChange}
+                    disabled={isDisabled}
+                  />
+                )}
+              />
+              <FieldError>
+                {form.formState.errors.product_item_group_id?.message}
+              </FieldError>
+            </Field>
 
-        {/* Row 3: Inventory Unit | Tax Profile | Default Order Unit (readonly) */}
-        <div className="grid grid-cols-3 gap-3">
-          <Field data-invalid={!!form.formState.errors.inventory_unit_id}>
-            <FieldLabel className="text-xs" required>
-              Inventory Unit
-            </FieldLabel>
-            <Controller
-              control={form.control}
-              name="inventory_unit_id"
-              render={({ field }) => (
-                <LookupUnit
-                  value={field.value}
-                  onValueChange={field.onChange}
-                  disabled={isDisabled}
-                />
-              )}
-            />
-            <FieldError>
-              {form.formState.errors.inventory_unit_id?.message}
-            </FieldError>
-          </Field>
+            <Field>
+              <FieldLabel className="text-xs">Sub Category</FieldLabel>
+              <Input
+                className="h-8 text-sm bg-muted"
+                disabled
+                value={subCategoryName}
+                readOnly
+              />
+            </Field>
 
-          <Field>
-            <FieldLabel className="text-xs" required>
-              Tax Profile
-            </FieldLabel>
-            <Controller
-              control={form.control}
-              name="tax_profile_id"
-              render={({ field }) => (
-                <LookupTaxProfile
-                  value={field.value}
-                  onValueChange={(v) => field.onChange(v)}
-                  disabled={isDisabled}
-                  size="sm"
-                  className="h-8 w-full text-sm"
-                />
-              )}
-            />
-          </Field>
+            <Field>
+              <FieldLabel className="text-xs">Category</FieldLabel>
+              <Input
+                className="h-8 text-sm bg-muted"
+                disabled
+                value={categoryName}
+                readOnly
+              />
+            </Field>
+          </div>
+        </FieldGroup>
+      </section>
 
-          <Field>
-            <FieldLabel className="text-xs">Default Order Unit</FieldLabel>
-            <Input
-              className="h-8 text-sm bg-muted"
-              disabled
-              value={defaultOrderUnitName}
-              readOnly
-            />
-          </Field>
-        </div>
+      {/* ── Unit & Tax ── */}
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold">Unit & Tax</h2>
+        <FieldGroup className="gap-3">
+          <div className="grid grid-cols-3 gap-3">
+            <Field data-invalid={!!form.formState.errors.inventory_unit_id}>
+              <FieldLabel className="text-xs" required>
+                Inventory Unit
+              </FieldLabel>
+              <Controller
+                control={form.control}
+                name="inventory_unit_id"
+                render={({ field }) => (
+                  <LookupUnit
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={isDisabled}
+                  />
+                )}
+              />
+              <FieldError>
+                {form.formState.errors.inventory_unit_id?.message}
+              </FieldError>
+            </Field>
 
-        {/* Row 4: Description (full width) */}
-        <Field>
-          <FieldLabel htmlFor="product-description" className="text-xs">
-            Description
-          </FieldLabel>
-          <Textarea
-            id="product-description"
-            placeholder="Optional"
-            className="text-sm"
-            rows={2}
-            disabled={isDisabled}
-            {...form.register("description")}
-          />
-        </Field>
-      </FieldGroup>
+            <Field>
+              <FieldLabel className="text-xs" required>
+                Tax Profile
+              </FieldLabel>
+              <Controller
+                control={form.control}
+                name="tax_profile_id"
+                render={({ field }) => (
+                  <LookupTaxProfile
+                    value={field.value}
+                    onValueChange={(v) => field.onChange(v)}
+                    disabled={isDisabled}
+                  />
+                )}
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel className="text-xs">Default Order Unit</FieldLabel>
+              <Input
+                className="h-8 text-sm bg-muted"
+                disabled
+                value={defaultOrderUnitName}
+                readOnly
+              />
+            </Field>
+          </div>
+        </FieldGroup>
+      </section>
     </div>
   );
 }

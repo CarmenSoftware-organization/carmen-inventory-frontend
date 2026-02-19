@@ -5,6 +5,7 @@ import { useConfigTable } from "@/components/ui/data-grid/use-config-table";
 import type { Department } from "@/types/department";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
+import { Badge } from "@/components/ui/badge";
 
 interface UseDepartmentTableOptions {
   departments: Department[];
@@ -25,21 +26,17 @@ export function useDepartmentTable({
 }: UseDepartmentTableOptions) {
   const columns: ColumnDef<Department>[] = [
     {
-      accessorKey: "code",
-      header: ({ column }) => (
-        <DataGridColumnHeader column={column} title="Code" />
-      ),
-      cell: ({ row }) => (
-        <CellAction onClick={() => onEdit(row.original)}>
-          {row.getValue("code")}
-        </CellAction>
-      ),
-      size: 120,
-    },
-    {
       accessorKey: "name",
       header: ({ column }) => (
         <DataGridColumnHeader column={column} title="Name" />
+      ),
+      cell: ({ row }) => (
+        <CellAction onClick={() => onEdit(row.original)}>
+          <Badge variant={"secondary"} size={"xs"}>
+            {row.original.code}
+          </Badge>
+          - {row.original.name}
+        </CellAction>
       ),
     },
   ];

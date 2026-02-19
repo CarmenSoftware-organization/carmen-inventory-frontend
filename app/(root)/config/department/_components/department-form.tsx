@@ -211,7 +211,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!form.formState.errors.code}>
-              <FieldLabel htmlFor="department-code" className="text-xs">
+              <FieldLabel htmlFor="department-code" className="text-xs" required>
                 Code
               </FieldLabel>
               <Input
@@ -225,7 +225,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
             </Field>
 
             <Field data-invalid={!!form.formState.errors.name}>
-              <FieldLabel htmlFor="department-name" className="text-xs">
+              <FieldLabel htmlFor="department-name" className="text-xs" required>
                 Name
               </FieldLabel>
               <Input
