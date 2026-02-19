@@ -58,7 +58,6 @@ export function AdjustmentTypeForm({
   const [mode, setMode] = useState<FormMode>(adjustmentType ? "view" : "add");
   const isView = mode === "view";
   const isEdit = mode === "edit";
-  const isAdd = mode === "add";
 
   const createAdjustmentType = useCreateAdjustmentType();
   const updateAdjustmentType = useUpdateAdjustmentType();
@@ -112,7 +111,7 @@ export function AdjustmentTypeForm({
           onError: (err) => toast.error(err.message),
         },
       );
-    } else if (isAdd) {
+    } else {
       createAdjustmentType.mutate(payload, {
         onSuccess: () => {
           toast.success("Adjustment type created successfully");
@@ -122,6 +121,10 @@ export function AdjustmentTypeForm({
       });
     }
   };
+
+  const handleBack = () => router.push("/config/adjustment-type");
+
+  const handleEdit = () => setMode("edit");
 
   const handleCancel = () => {
     if (isEdit && adjustmentType) {
@@ -139,6 +142,17 @@ export function AdjustmentTypeForm({
     }
   };
 
+  const handleDelete = () => {
+    if (!adjustmentType) return;
+    deleteAdjustmentType.mutate(adjustmentType.id, {
+      onSuccess: () => {
+        toast.success("Adjustment type deleted successfully");
+        router.push("/config/adjustment-type");
+      },
+      onError: (err) => toast.error(err.message),
+    });
+  };
+
   return (
     <div className="space-y-4">
       <FormToolbar
@@ -146,8 +160,8 @@ export function AdjustmentTypeForm({
         mode={mode}
         formId="adjustment-type-form"
         isPending={isPending}
-        onBack={() => router.push("/config/adjustment-type")}
-        onEdit={() => setMode("edit")}
+        onBack={handleBack}
+        onEdit={handleEdit}
         onCancel={handleCancel}
         onDelete={adjustmentType ? () => setShowDelete(true) : undefined}
         deleteIsPending={deleteAdjustmentType.isPending}
@@ -241,6 +255,23 @@ export function AdjustmentTypeForm({
             />
           </Field>
 
+          <Field>
+            <FieldLabel
+              htmlFor="adjustment-type-note"
+              className="text-xs"
+            >
+              Note
+            </FieldLabel>
+            <Textarea
+              id="adjustment-type-note"
+              placeholder="Optional"
+              className="text-sm"
+              rows={2}
+              disabled={isDisabled}
+              {...form.register("note")}
+            />
+          </Field>
+
           <Field orientation="horizontal">
             <Controller
               control={form.control}
@@ -270,15 +301,7 @@ export function AdjustmentTypeForm({
           title="Delete Adjustment Type"
           description={`Are you sure you want to delete adjustment type "${adjustmentType.name}"? This action cannot be undone.`}
           isPending={deleteAdjustmentType.isPending}
-          onConfirm={() => {
-            deleteAdjustmentType.mutate(adjustmentType.id, {
-              onSuccess: () => {
-                toast.success("Adjustment type deleted successfully");
-                router.push("/config/adjustment-type");
-              },
-              onError: (err) => toast.error(err.message),
-            });
-          }}
+          onConfirm={handleDelete}
         />
       )}
     </div>
