@@ -5,6 +5,7 @@ import { useConfigTable } from "@/components/ui/data-grid/use-config-table";
 import type { Location } from "@/types/location";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
+import { Badge } from "@/components/ui/badge";
 
 interface UseLocationTableOptions {
   locations: Location[];
@@ -25,21 +26,17 @@ export function useLocationTable({
 }: UseLocationTableOptions) {
   const columns: ColumnDef<Location>[] = [
     {
-      accessorKey: "code",
-      header: ({ column }) => (
-        <DataGridColumnHeader column={column} title="Code" />
-      ),
-      cell: ({ row }) => (
-        <CellAction onClick={() => onEdit(row.original)}>
-          {row.getValue("code")}
-        </CellAction>
-      ),
-      size: 120,
-    },
-    {
       accessorKey: "name",
       header: ({ column }) => (
         <DataGridColumnHeader column={column} title="Name" />
+      ),
+      cell: ({ row }) => (
+        <CellAction onClick={() => onEdit(row.original)}>
+          <Badge variant={"secondary"} size={"xs"}>
+            {row.original.code}
+          </Badge>
+          - {row.original.name}
+        </CellAction>
       ),
     },
   ];

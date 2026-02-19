@@ -245,7 +245,7 @@ export function LocationForm({ location }: LocationFormProps) {
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!form.formState.errors.code}>
-              <FieldLabel htmlFor="location-code" className="text-xs">
+              <FieldLabel htmlFor="location-code" className="text-xs" required>
                 Code
               </FieldLabel>
               <Input
@@ -259,7 +259,7 @@ export function LocationForm({ location }: LocationFormProps) {
             </Field>
 
             <Field data-invalid={!!form.formState.errors.name}>
-              <FieldLabel htmlFor="location-name" className="text-xs">
+              <FieldLabel htmlFor="location-name" className="text-xs" required>
                 Name
               </FieldLabel>
               <Input
@@ -275,7 +275,7 @@ export function LocationForm({ location }: LocationFormProps) {
 
           <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!form.formState.errors.location_type}>
-              <FieldLabel className="text-xs">Location Type</FieldLabel>
+              <FieldLabel className="text-xs" required>Location Type</FieldLabel>
               <Controller
                 control={form.control}
                 name="location_type"
@@ -304,7 +304,7 @@ export function LocationForm({ location }: LocationFormProps) {
             </Field>
 
             <Field data-invalid={!!form.formState.errors.physical_count_type}>
-              <FieldLabel className="text-xs">Physical Count</FieldLabel>
+              <FieldLabel className="text-xs" required>Physical Count</FieldLabel>
               <Controller
                 control={form.control}
                 name="physical_count_type"
