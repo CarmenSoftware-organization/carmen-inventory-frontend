@@ -4,19 +4,13 @@ import { useMemo, useState } from "react";
 import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { Command, CommandInput } from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { VirtualCommandList } from "@/components/ui/virtual-command-list";
 import { usePriceList } from "@/hooks/use-price-list";
 
 interface LookupPriceListProps {
@@ -41,6 +35,17 @@ export function LookupPriceList({
   );
 
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const filteredPriceLists = useMemo(() => {
+    if (!search) return priceLists;
+    const q = search.toLowerCase();
+    return priceLists.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.vendor.name.toLowerCase().includes(q),
+    );
+  }, [priceLists, search]);
 
   const selectedLabel = useMemo(() => {
     if (!value) return null;
@@ -49,7 +54,7 @@ export function LookupPriceList({
   }, [value, priceLists]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={(o) => { setOpen(o); if (!o) setSearch(""); }}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -68,49 +73,47 @@ export function LookupPriceList({
       </PopoverTrigger>
 
       <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-        <Command
-          filter={(value, search) => {
-            if (!search) return 1;
-            if (value.toLowerCase().includes(search.toLowerCase())) return 1;
-            return 0;
-          }}
-        >
+        <Command shouldFilter={false}>
           <CommandInput
             placeholder="Search price list..."
             className="placeholder:text-xs"
+            value={search}
+            onValueChange={setSearch}
           />
-          <CommandList>
-            {isLoading ? (
-              <div className="flex items-center justify-center py-3">
-                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-              </div>
-            ) : (
-              <>
-                <CommandEmpty>No price lists found.</CommandEmpty>
-                <CommandGroup>
-                  {priceLists.map((pl) => (
-                    <CommandItem
-                      key={pl.id}
-                      value={`${pl.name} ${pl.vendor.name}`}
-                      onSelect={() => {
-                        onValueChange(pl.id);
-                        setOpen(false);
-                      }}
-                      className="text-xs"
-                    >
-                      {pl.name} — {pl.vendor.name}
-                      <Check
-                        className={cn(
-                          "ml-auto h-4 w-4",
-                          value === pl.id ? "opacity-100" : "opacity-0",
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </>
-            )}
-          </CommandList>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-3">
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            </div>
+          ) : (
+            <VirtualCommandList
+              items={filteredPriceLists}
+              emptyMessage="No price lists found."
+            >
+              {(pl) => (
+                <div
+                  role="option"
+                  aria-selected={value === pl.id}
+                  data-value={`${pl.name} ${pl.vendor.name}`}
+                  className={cn(
+                    "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
+                    "hover:bg-accent hover:text-accent-foreground",
+                  )}
+                  onClick={() => {
+                    onValueChange(pl.id);
+                    setOpen(false);
+                  }}
+                >
+                  {pl.name} — {pl.vendor.name}
+                  <Check
+                    className={cn(
+                      "ml-auto h-4 w-4",
+                      value === pl.id ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                </div>
+              )}
+            </VirtualCommandList>
+          )}
         </Command>
       </PopoverContent>
     </Popover>

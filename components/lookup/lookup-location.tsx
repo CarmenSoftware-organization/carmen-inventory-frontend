@@ -4,19 +4,13 @@ import { useMemo, useState } from "react";
 import { Check, ChevronsUpDown, Warehouse } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { Command, CommandInput } from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { VirtualCommandList } from "@/components/ui/virtual-command-list";
 import { useLocation } from "@/hooks/use-location";
 import EmptyComponent from "../empty-component";
 
@@ -47,6 +41,13 @@ export function LookupLocation({
   }, [data?.data, excludeIds]);
 
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const filteredLocations = useMemo(() => {
+    if (!search) return locations;
+    const q = search.toLowerCase();
+    return locations.filter((l) => l.name.toLowerCase().includes(q));
+  }, [locations, search]);
 
   const selectedName = useMemo(() => {
     if (!value) return null;
@@ -54,7 +55,7 @@ export function LookupLocation({
   }, [value, locations]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={(o) => { setOpen(o); if (!o) setSearch(""); }}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -75,47 +76,47 @@ export function LookupLocation({
       </PopoverTrigger>
 
       <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-        <Command
-          filter={(value, search) => {
-            if (!search) return 1;
-            if (value.toLowerCase().includes(search.toLowerCase())) return 1;
-            return 0;
-          }}
-        >
+        <Command shouldFilter={false}>
           <CommandInput
             placeholder="Search location..."
             className="placeholder:text-xs"
+            value={search}
+            onValueChange={setSearch}
           />
-          <CommandList>
-            <CommandEmpty>
+          <VirtualCommandList
+            items={filteredLocations}
+            emptyMessage={
               <EmptyComponent
                 icon={Warehouse}
                 title="No locations"
                 description="No locations defined"
               />
-            </CommandEmpty>
-            <CommandGroup>
-              {locations.map((location) => (
-                <CommandItem
-                  key={location.id}
-                  value={location.name}
-                  onSelect={() => {
-                    onValueChange(location.id);
-                    setOpen(false);
-                  }}
-                  className="text-xs"
-                >
-                  {location.name}
-                  <Check
-                    className={cn(
-                      "ml-auto h-4 w-4",
-                      value === location.id ? "opacity-100" : "opacity-0",
-                    )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
+            }
+          >
+            {(location) => (
+              <div
+                role="option"
+                aria-selected={value === location.id}
+                data-value={location.name}
+                className={cn(
+                  "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
+                  "hover:bg-accent hover:text-accent-foreground",
+                )}
+                onClick={() => {
+                  onValueChange(location.id);
+                  setOpen(false);
+                }}
+              >
+                {location.name}
+                <Check
+                  className={cn(
+                    "ml-auto h-4 w-4",
+                    value === location.id ? "opacity-100" : "opacity-0",
+                  )}
+                />
+              </div>
+            )}
+          </VirtualCommandList>
         </Command>
       </PopoverContent>
     </Popover>

@@ -4,19 +4,13 @@ import { useMemo, useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { Command, CommandInput } from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { VirtualCommandList } from "@/components/ui/virtual-command-list";
 import { useVendor } from "@/hooks/use-vendor";
 import type { Vendor } from "@/types/vendor";
 
@@ -53,6 +47,13 @@ export function LookupVendor({
   }, [activeVendors, excludeIds]);
 
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const filteredVendors = useMemo(() => {
+    if (!search) return vendors;
+    const q = search.toLowerCase();
+    return vendors.filter((v) => v.name.toLowerCase().includes(q));
+  }, [vendors, search]);
 
   const selectedName = useMemo(() => {
     if (!value) return null;
@@ -60,7 +61,7 @@ export function LookupVendor({
   }, [value, activeVendors, defaultLabel]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={(o) => { setOpen(o); if (!o) setSearch(""); }}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -79,42 +80,42 @@ export function LookupVendor({
       </PopoverTrigger>
 
       <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-        <Command
-          filter={(value, search) => {
-            if (!search) return 1;
-            if (value.toLowerCase().includes(search.toLowerCase())) return 1;
-            return 0;
-          }}
-        >
+        <Command shouldFilter={false}>
           <CommandInput
             placeholder="Search vendor..."
             className="placeholder:text-xs"
+            value={search}
+            onValueChange={setSearch}
           />
-          <CommandList>
-            <CommandEmpty>No vendors found.</CommandEmpty>
-            <CommandGroup>
-              {vendors.map((vendor) => (
-                <CommandItem
-                  key={vendor.id}
-                  value={vendor.name}
-                  onSelect={() => {
-                    onValueChange(vendor.id);
-                    onItemChange?.(vendor);
-                    setOpen(false);
-                  }}
-                  className="text-xs"
-                >
-                  {vendor.name}
-                  <Check
-                    className={cn(
-                      "ml-auto h-4 w-4",
-                      value === vendor.id ? "opacity-100" : "opacity-0",
-                    )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
+          <VirtualCommandList
+            items={filteredVendors}
+            emptyMessage="No vendors found."
+          >
+            {(vendor) => (
+              <div
+                role="option"
+                aria-selected={value === vendor.id}
+                data-value={vendor.name}
+                className={cn(
+                  "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
+                  "hover:bg-accent hover:text-accent-foreground",
+                )}
+                onClick={() => {
+                  onValueChange(vendor.id);
+                  onItemChange?.(vendor);
+                  setOpen(false);
+                }}
+              >
+                {vendor.name}
+                <Check
+                  className={cn(
+                    "ml-auto h-4 w-4",
+                    value === vendor.id ? "opacity-100" : "opacity-0",
+                  )}
+                />
+              </div>
+            )}
+          </VirtualCommandList>
         </Command>
       </PopoverContent>
     </Popover>

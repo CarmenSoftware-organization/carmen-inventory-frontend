@@ -39,25 +39,44 @@ export function PrItemExpand({
   const [showPricelist, setShowPricelist] = useState(false);
 
   const i = Math.max(index, 0);
-  const watched = useWatch({ control: form.control, name: `items.${i}` });
-  const watchPrice = watched?.pricelist_price ?? 0;
-  const watchQty = watched?.requested_qty ?? 0;
-  const watchTaxRate = watched?.tax_rate ?? 0;
-  const watchIsTaxAdj = watched?.is_tax_adjustment ?? false;
-  const watchTaxAmt = watched?.tax_amount ?? 0;
-  const watchDiscRate = watched?.discount_rate ?? 0;
-  const watchIsDiscAdj = watched?.is_discount_adjustment ?? false;
-  const watchDiscAmt = watched?.discount_amount ?? 0;
+
+  const [
+    watchPrice,
+    watchQty,
+    watchTaxRate,
+    watchIsTaxAdj,
+    watchTaxAmt,
+    watchDiscRate,
+    watchIsDiscAdj,
+    watchDiscAmt,
+  ] = useWatch({
+    control: form.control,
+    name: [
+      `items.${i}.pricelist_price`,
+      `items.${i}.requested_qty`,
+      `items.${i}.tax_rate`,
+      `items.${i}.is_tax_adjustment`,
+      `items.${i}.tax_amount`,
+      `items.${i}.discount_rate`,
+      `items.${i}.is_discount_adjustment`,
+      `items.${i}.discount_amount`,
+    ] as const,
+  });
+
+  const price = watchPrice ?? 0;
+  const qty = watchQty ?? 0;
+  const taxRate = watchTaxRate ?? 0;
+  const isTaxAdj = watchIsTaxAdj ?? false;
+  const taxAmt = watchTaxAmt ?? 0;
+  const discRate = watchDiscRate ?? 0;
+  const isDiscAdj = watchIsDiscAdj ?? false;
+  const discAmt = watchDiscAmt ?? 0;
 
   const { discountAmount, netAmount, taxAmount, totalPrice } = useMemo(() => {
-    const sub = round2(watchPrice * watchQty);
-    const disc = watchIsDiscAdj
-      ? watchDiscAmt
-      : round2((sub * watchDiscRate) / 100);
+    const sub = round2(price * qty);
+    const disc = isDiscAdj ? discAmt : round2((sub * discRate) / 100);
     const net = round2(sub - disc);
-    const tax = watchIsTaxAdj
-      ? watchTaxAmt
-      : round2((net * watchTaxRate) / 100);
+    const tax = isTaxAdj ? taxAmt : round2((net * taxRate) / 100);
     const total = round2(net + tax);
     return {
       discountAmount: disc,
@@ -65,24 +84,15 @@ export function PrItemExpand({
       taxAmount: tax,
       totalPrice: total,
     };
-  }, [
-    watchPrice,
-    watchQty,
-    watchDiscRate,
-    watchIsDiscAdj,
-    watchDiscAmt,
-    watchTaxRate,
-    watchIsTaxAdj,
-    watchTaxAmt,
-  ]);
+  }, [price, qty, discRate, isDiscAdj, discAmt, taxRate, isTaxAdj, taxAmt]);
 
   // Sync computed values back to form
   useEffect(() => {
     if (index === -1) return;
-    if (!watchIsDiscAdj) {
+    if (!isDiscAdj) {
       form.setValue(`items.${index}.discount_amount`, discountAmount);
     }
-    if (!watchIsTaxAdj) {
+    if (!isTaxAdj) {
       form.setValue(`items.${index}.tax_amount`, taxAmount);
     }
     form.setValue(`items.${index}.net_amount`, netAmount);
@@ -93,8 +103,8 @@ export function PrItemExpand({
     taxAmount,
     netAmount,
     totalPrice,
-    watchIsDiscAdj,
-    watchIsTaxAdj,
+    isDiscAdj,
+    isTaxAdj,
     form,
   ]);
 
@@ -255,7 +265,7 @@ export function PrItemExpand({
             step="0.01"
             placeholder="0.00"
             className="h-6 text-[11px] md:text-[11px] text-right"
-            disabled={disabled || !watchIsTaxAdj}
+            disabled={disabled || !isTaxAdj}
             {...form.register(`items.${index}.tax_amount`, {
               valueAsNumber: true,
             })}
@@ -304,7 +314,7 @@ export function PrItemExpand({
             step="0.01"
             placeholder="0.00"
             className="h-6 text-[11px] md:text-[11px] text-right"
-            disabled={disabled || !watchIsDiscAdj}
+            disabled={disabled || !isDiscAdj}
             {...form.register(`items.${index}.discount_amount`, {
               valueAsNumber: true,
             })}
