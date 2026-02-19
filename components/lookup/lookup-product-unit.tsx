@@ -1,31 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { Command, CommandInput } from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useProfile } from "@/hooks/use-profile";
-import { httpClient } from "@/lib/http-client";
-
-interface ProductUnit {
-  id: string;
-  name: string;
-  conversion: number;
-}
+import { VirtualCommandList } from "@/components/ui/virtual-command-list";
+import { useProductUnits } from "@/hooks/use-product-units";
 
 interface LookupProductUnitProps {
   readonly productId: string;
@@ -44,21 +30,9 @@ export function LookupProductUnit({
   placeholder = "Select unit",
   className,
 }: LookupProductUnitProps) {
-  const { buCode } = useProfile();
-
-  const { data: units = [], isLoading } = useQuery<ProductUnit[]>({
-    queryKey: ["product-units", buCode, productId],
-    queryFn: async () => {
-      if (!buCode || !productId) return [];
-      const res = await httpClient.get(
-        `/api/proxy/api/${buCode}/unit/order/product/${productId}`,
-      );
-      if (!res.ok) throw new Error("Failed to fetch product units");
-      const json = await res.json();
-      return json.data ?? [];
-    },
-    enabled: !!buCode && !!productId,
-  });
+  const { data: units = [], isLoading } = useProductUnits(
+    productId || undefined,
+  );
 
   useEffect(() => {
     if (units.length > 0 && !value) {
@@ -67,6 +41,13 @@ export function LookupProductUnit({
   }, [units, value, onValueChange]);
 
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const filteredUnits = useMemo(() => {
+    if (!search) return units;
+    const q = search.toLowerCase();
+    return units.filter((u) => u.name.toLowerCase().includes(q));
+  }, [units, search]);
 
   const selectedName = useMemo(() => {
     if (!value) return null;
@@ -74,7 +55,13 @@ export function LookupProductUnit({
   }, [value, units]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        if (!o) setSearch("");
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -97,29 +84,36 @@ export function LookupProductUnit({
       </PopoverTrigger>
 
       <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-        <Command
-          filter={(value, search) => {
-            if (!search) return 1;
-            if (value.toLowerCase().includes(search.toLowerCase())) return 1;
-            return 0;
-          }}
-        >
+        <Command shouldFilter={false}>
           <CommandInput
             placeholder="Search unit..."
             className="placeholder:text-xs"
+            value={search}
+            onValueChange={setSearch}
           />
-          <CommandList>
-            <CommandEmpty>No units found.</CommandEmpty>
-            <CommandGroup>
-              {units.map((unit) => (
-                <CommandItem
-                  key={unit.id}
-                  value={unit.name}
-                  onSelect={() => {
+          {isLoading ? (
+            <div className="flex items-center justify-center py-3">
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            </div>
+          ) : (
+            <VirtualCommandList
+              items={filteredUnits}
+              emptyMessage="No units found."
+            >
+              {(unit) => (
+                <button
+                  type="button"
+                  aria-pressed={value === unit.id}
+                  data-value={unit.name}
+                  className={cn(
+                    "relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
+                    "hover:bg-accent hover:text-accent-foreground",
+                    "focus:bg-accent focus:text-accent-foreground focus:outline-none",
+                  )}
+                  onClick={() => {
                     onValueChange(unit.id);
                     setOpen(false);
                   }}
-                  className="text-xs"
                 >
                   {unit.name}
                   <Check
@@ -128,10 +122,10 @@ export function LookupProductUnit({
                       value === unit.id ? "opacity-100" : "opacity-0",
                     )}
                   />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
+                </button>
+              )}
+            </VirtualCommandList>
+          )}
         </Command>
       </PopoverContent>
     </Popover>

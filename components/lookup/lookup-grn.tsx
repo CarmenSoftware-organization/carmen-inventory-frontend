@@ -82,13 +82,14 @@ export function LookupGrn({
               emptyMessage="No GRNs found."
             >
               {(grn) => (
-                <div
-                  role="option"
-                  aria-selected={value === grn.id}
+                <button
+                  type="button"
+                  aria-pressed={value === grn.id}
                   data-value={grn.grn_number}
                   className={cn(
-                    "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
+                    "relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
                     "hover:bg-accent hover:text-accent-foreground",
+                    "focus:bg-accent focus:text-accent-foreground focus:outline-none",
                   )}
                   onClick={() => {
                     onValueChange(grn.id);
@@ -102,7 +103,7 @@ export function LookupGrn({
                       value === grn.id ? "opacity-100" : "opacity-0",
                     )}
                   />
-                </div>
+                </button>
               )}
             </VirtualCommandList>
           )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { Download, Plus, Printer } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -17,7 +18,9 @@ import SearchInput from "@/components/search-input";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
-import { TaxProfileDialog } from "./tax-profile-dialog";
+const TaxProfileDialog = dynamic(() =>
+  import("./tax-profile-dialog").then((mod) => mod.TaxProfileDialog),
+);
 import DisplayTemplate from "@/components/display-template";
 import { useTaxProfileTable } from "./use-tax-profile-table";
 

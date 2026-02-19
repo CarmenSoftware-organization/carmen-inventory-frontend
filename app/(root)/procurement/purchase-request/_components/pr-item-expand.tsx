@@ -5,6 +5,7 @@ import {
   type UseFormReturn,
   type FieldArrayWithId,
 } from "react-hook-form";
+import dynamic from "next/dynamic";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,8 +13,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { LookupVendor } from "@/components/lookup/lookup-vendor";
 import { LookupTaxProfile } from "@/components/lookup/lookup-tax-profile";
 import type { PrFormValues } from "./pr-form-schema";
-import { PrPricelistDialog, type PricelistEntry } from "./pr-pricelist-dialog";
+import type { PricelistEntry } from "./pr-pricelist-dialog";
 import InventoryRow from "./inventory-row";
+
+const PrPricelistDialog = dynamic(() =>
+  import("./pr-pricelist-dialog").then((mod) => mod.PrPricelistDialog),
+);
 
 const round2 = (n: number): number =>
   Number(Math.round(Number.parseFloat(n + "e2")) + "e-2");

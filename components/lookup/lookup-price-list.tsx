@@ -90,13 +90,14 @@ export function LookupPriceList({
               emptyMessage="No price lists found."
             >
               {(pl) => (
-                <div
-                  role="option"
-                  aria-selected={value === pl.id}
+                <button
+                  type="button"
+                  aria-pressed={value === pl.id}
                   data-value={`${pl.name} ${pl.vendor.name}`}
                   className={cn(
-                    "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
+                    "relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
                     "hover:bg-accent hover:text-accent-foreground",
+                    "focus:bg-accent focus:text-accent-foreground focus:outline-none",
                   )}
                   onClick={() => {
                     onValueChange(pl.id);
@@ -110,7 +111,7 @@ export function LookupPriceList({
                       value === pl.id ? "opacity-100" : "opacity-0",
                     )}
                   />
-                </div>
+                </button>
               )}
             </VirtualCommandList>
           )}

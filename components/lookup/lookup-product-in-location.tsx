@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -12,8 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { VirtualCommandList } from "@/components/ui/virtual-command-list";
-import { useProfile } from "@/hooks/use-profile";
-import { httpClient } from "@/lib/http-client";
+import { useProductsByLocation } from "@/hooks/use-products-by-location";
 import type { Product } from "@/types/product";
 
 interface LookupProductInLocationProps {
@@ -33,21 +31,7 @@ export function LookupProductInLocation({
   placeholder = "Select product",
   className,
 }: LookupProductInLocationProps) {
-  const { buCode } = useProfile();
-
-  const { data: products = [] } = useQuery<Product[]>({
-    queryKey: ["products-in-location", buCode, locationId],
-    queryFn: async () => {
-      if (!buCode || !locationId) return [];
-      const res = await httpClient.get(
-        `/api/proxy/api/${buCode}/products/locations/${locationId}`,
-      );
-      if (!res.ok) throw new Error("Failed to fetch products");
-      const json = await res.json();
-      return json.data ?? [];
-    },
-    enabled: !!buCode && !!locationId,
-  });
+  const { data: products = [] } = useProductsByLocation(locationId || undefined);
 
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -64,7 +48,13 @@ export function LookupProductInLocation({
   }, [value, products]);
 
   return (
-    <Popover open={open} onOpenChange={(o) => { setOpen(o); if (!o) setSearch(""); }}>
+    <Popover
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        if (!o) setSearch("");
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -82,7 +72,7 @@ export function LookupProductInLocation({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+      <PopoverContent className="p-0 w-90">
         <Command shouldFilter={false}>
           <CommandInput
             placeholder="Search product..."
@@ -95,13 +85,14 @@ export function LookupProductInLocation({
             emptyMessage="No products found."
           >
             {(product) => (
-              <div
-                role="option"
-                aria-selected={value === product.id}
+              <button
+                type="button"
+                aria-pressed={value === product.id}
                 data-value={product.name}
                 className={cn(
-                  "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
+                  "relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
                   "hover:bg-accent hover:text-accent-foreground",
+                  "focus:bg-accent focus:text-accent-foreground focus:outline-none",
                 )}
                 onClick={() => {
                   onValueChange(product.id, product);
@@ -115,7 +106,7 @@ export function LookupProductInLocation({
                     value === product.id ? "opacity-100" : "opacity-0",
                   )}
                 />
-              </div>
+              </button>
             )}
           </VirtualCommandList>
         </Command>

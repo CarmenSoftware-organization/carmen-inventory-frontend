@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { Download, Plus, Printer } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -20,7 +21,9 @@ import SearchInput from "@/components/search-input";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
-import { BusinessTypeDialog } from "./business-type-dialog";
+const BusinessTypeDialog = dynamic(() =>
+  import("./business-type-dialog").then((mod) => mod.BusinessTypeDialog),
+);
 import DisplayTemplate from "@/components/display-template";
 import { useBusinessTypeTable } from "./use-business-type-table";
 

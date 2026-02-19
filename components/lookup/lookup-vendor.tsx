@@ -92,13 +92,14 @@ export function LookupVendor({
             emptyMessage="No vendors found."
           >
             {(vendor) => (
-              <div
-                role="option"
-                aria-selected={value === vendor.id}
+              <button
+                type="button"
+                aria-pressed={value === vendor.id}
                 data-value={vendor.name}
                 className={cn(
-                  "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
+                  "relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
                   "hover:bg-accent hover:text-accent-foreground",
+                  "focus:bg-accent focus:text-accent-foreground focus:outline-none",
                 )}
                 onClick={() => {
                   onValueChange(vendor.id);
@@ -113,7 +114,7 @@ export function LookupVendor({
                     value === vendor.id ? "opacity-100" : "opacity-0",
                   )}
                 />
-              </div>
+              </button>
             )}
           </VirtualCommandList>
         </Command>

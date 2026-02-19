@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { Download, Plus, Printer } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -17,7 +18,9 @@ import SearchInput from "@/components/search-input";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
-import { CurrencyDialog } from "./currency-dialog";
+const CurrencyDialog = dynamic(() =>
+  import("./currency-dialog").then((mod) => mod.CurrencyDialog),
+);
 import DisplayTemplate from "@/components/display-template";
 import { useCurrencyTable } from "./use-currency-table";
 

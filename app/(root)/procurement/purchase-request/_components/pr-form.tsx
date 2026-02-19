@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -28,7 +29,9 @@ import { Badge } from "@/components/ui/badge";
 import { PR_STATUS_CONFIG } from "@/constant/purchase-request";
 import { PrGeneralFields } from "./pr-general-fields";
 import { PrItemFields } from "./pr-item-fields";
-import { PrCommentSheet } from "./pr-comment-sheet";
+const PrCommentSheet = dynamic(() =>
+  import("./pr-comment-sheet").then((mod) => mod.PrCommentSheet),
+);
 import { PrFormActions } from "./pr-form-actions";
 import { PrActionDialog } from "./pr-action-dialog";
 import { PrWorkflowStep } from "./pr-workflow-step";
