@@ -1036,7 +1036,7 @@ export default function EditCategoryPage({
 - **React Compiler**: `"use no memo"` อยู่ใน `useConfigTable` แล้ว ไม่ต้องใส่เอง
 - **Dense DataGrid**: `tableLayout={{ dense: true }}` + `tableClassNames={{ base: "text-xs" }}`
 - **Query invalidation**: อัตโนมัติผ่าน `createConfigCrud` → `useApiMutation` → `invalidateKeys`
-- **Next.js 15 params** (Variant B): `params` เป็น `Promise` ใช้ `use(params)` เพื่อ unwrap
+- **Next.js 16 params** (Variant B): `params` เป็น `Promise` ใช้ `use(params)` เพื่อ unwrap
 - **zodResolver type assertion**: `zodResolver(schema) as Resolver<FormValues>` — จำเป็นเพราะ `@hookform/resolvers` กับ `react-hook-form` export `Resolver` type คนละตัว ต้อง import `type Resolver` จาก `react-hook-form` แล้ว cast
 - **Mode labels**: ใช้ `getModeLabels(mode, "Entity")` จาก `@/types/form` แทน nested ternary — ใช้ได้ทั้ง Dialog (`isEdit ? "edit" : "add"`) และ Page-based (`mode`)
 - **No nested ternary** (SonarQube): ห้ามใช้ nested ternary (`a ? x : b ? y : z`) — ใช้ `&&` pattern แทน:
