@@ -1,12 +1,21 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
 import { CellAction } from "@/components/ui/cell-action";
+import { Badge } from "@/components/ui/badge";
+import type { BadgeProps } from "@/components/ui/badge";
 import { useConfigTable } from "@/components/ui/data-grid/use-config-table";
 import type { GoodsReceiveNote } from "@/types/goods-receive-note";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
 import { useProfile } from "@/hooks/use-profile";
 import { formatDate } from "@/lib/date-utils";
+
+const STATUS_VARIANT: Record<string, BadgeProps["variant"]> = {
+  draft: "secondary",
+  pending: "warning",
+  approved: "success",
+  cancelled: "destructive",
+};
 
 interface UseGrnTableOptions {
   goodsReceiveNotes: GoodsReceiveNote[];
@@ -29,13 +38,13 @@ export function useGrnTable({
 
   const columns: ColumnDef<GoodsReceiveNote>[] = [
     {
-      accessorKey: "grn_number",
+      accessorKey: "invoice_no",
       header: ({ column }) => (
-        <DataGridColumnHeader column={column} title="GRN No." />
+        <DataGridColumnHeader column={column} title="Invoice No." />
       ),
       cell: ({ row }) => (
         <CellAction onClick={() => onEdit(row.original)}>
-          {row.getValue("grn_number")}
+          {row.getValue("invoice_no") || row.original.id.slice(0, 8)}
         </CellAction>
       ),
       size: 150,
@@ -43,7 +52,11 @@ export function useGrnTable({
     {
       accessorKey: "grn_date",
       header: ({ column }) => (
-        <DataGridColumnHeader column={column} title="Date" className="justify-center" />
+        <DataGridColumnHeader
+          column={column}
+          title="GRN Date"
+          className="justify-center"
+        />
       ),
       cell: ({ row }) => formatDate(row.getValue("grn_date"), dateFormat),
       meta: {
@@ -57,24 +70,26 @@ export function useGrnTable({
       ),
     },
     {
-      accessorKey: "total_amount",
+      accessorKey: "doc_status",
       header: ({ column }) => (
-        <DataGridColumnHeader column={column} title="Total Amount" className="justify-end" />
+        <DataGridColumnHeader column={column} title="Status" />
       ),
       cell: ({ row }) => {
-        const amount = row.getValue<number>("total_amount");
+        const status = row.getValue<string>("doc_status");
         return (
-          <span>
-            {amount?.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </span>
+          <Badge size="sm" variant={STATUS_VARIANT[status] ?? "secondary"}>
+            {status}
+          </Badge>
         );
       },
-      meta: {
-        cellClassName: "text-right",
-      },
+      size: 120,
+    },
+    {
+      accessorKey: "doc_type",
+      header: ({ column }) => (
+        <DataGridColumnHeader column={column} title="Type" />
+      ),
+      size: 120,
     },
   ];
 

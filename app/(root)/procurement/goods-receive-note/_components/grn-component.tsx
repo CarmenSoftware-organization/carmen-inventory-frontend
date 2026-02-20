@@ -45,7 +45,7 @@ export default function GrnComponent() {
   const newGrnBtn = (
     <Button size="sm" onClick={newgrn}>
       <Plus />
-      Add Credit Note
+      Add GRN
     </Button>
   );
 
@@ -100,8 +100,8 @@ export default function GrnComponent() {
         emptyMessage={
           <EmptyComponent
             icon={BoxIcon}
-            title="No Items Yet"
-            description="Add items to this credit note."
+            title="No GRN Yet"
+            description="No goods receive notes found."
             content={newGrnBtn}
           />
         }
@@ -118,7 +118,7 @@ export default function GrnComponent() {
           !open && !deleteGrn.isPending && setDeleteTarget(null)
         }
         title="Delete Goods Receive Note"
-        description={`Are you sure you want to delete goods receive note "${deleteTarget?.grn_number}"? This action cannot be undone.`}
+        description={`Are you sure you want to delete goods receive note "${deleteTarget?.invoice_no || deleteTarget?.id.slice(0, 8)}"? This action cannot be undone.`}
         isPending={deleteGrn.isPending}
         onConfirm={() => {
           if (!deleteTarget) return;

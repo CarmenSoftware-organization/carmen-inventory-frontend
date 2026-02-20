@@ -1,43 +1,106 @@
 "use client";
 
 import { Controller, type UseFormReturn } from "react-hook-form";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldError,
-} from "@/components/ui/field";
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { LookupVendor } from "@/components/lookup/lookup-vendor";
 import { DatePicker } from "@/components/ui/date-picker";
 import type { GrnFormValues } from "./grn-form-schema";
+import { GrnItemFields } from "./grn-item-fields";
+
+const DOC_STATUS_OPTIONS = [
+  { value: "draft", label: "Draft" },
+  { value: "pending", label: "Pending" },
+  { value: "approved", label: "Approved" },
+  { value: "cancelled", label: "Cancelled" },
+];
+
+const DOC_TYPE_OPTIONS = [
+  { value: "purchase_order", label: "Purchase Order" },
+  { value: "direct", label: "Direct" },
+];
 
 interface GrnGeneralFieldsProps {
-  form: UseFormReturn<GrnFormValues>;
-  disabled: boolean;
+  readonly form: UseFormReturn<GrnFormValues>;
+  readonly disabled: boolean;
 }
 
 export function GrnGeneralFields({ form, disabled }: GrnGeneralFieldsProps) {
   return (
-    <div className="max-w-2xl space-y-4">
-      <FieldGroup className="gap-3">
-        <div className="grid grid-cols-2 gap-3">
-          <Field data-invalid={!!form.formState.errors.grn_number}>
-            <FieldLabel className="text-xs">GRN Number</FieldLabel>
-            <Input
-              placeholder="e.g. GRN-2026-001"
-              className="h-8 text-sm"
-              disabled={disabled}
-              {...form.register("grn_number")}
+    <div className="space-y-6 pt-4">
+      {/* Document Info */}
+      <div className="space-y-3">
+        <h2 className="text-sm font-semibold">Document Information</h2>
+        <div className="grid grid-cols-3 gap-3">
+          <Field data-invalid={!!form.formState.errors.doc_type}>
+            <FieldLabel className="text-xs" required>
+              Document Type
+            </FieldLabel>
+            <Controller
+              control={form.control}
+              name="doc_type"
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  disabled={disabled}
+                >
+                  <SelectTrigger className="w-full text-sm">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {DOC_TYPE_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             />
-            <FieldError>
-              {form.formState.errors.grn_number?.message}
-            </FieldError>
+            <FieldError>{form.formState.errors.doc_type?.message}</FieldError>
           </Field>
 
+          <Field>
+            <FieldLabel className="text-xs">Invoice No.</FieldLabel>
+            <Input
+              placeholder="e.g. INV-001"
+              className="h-9 text-sm"
+              disabled={disabled}
+              {...form.register("invoice_no")}
+            />
+          </Field>
+
+          <Field data-invalid={!!form.formState.errors.vendor_id}>
+            <FieldLabel className="text-xs" required>
+              Vendor
+            </FieldLabel>
+            <Controller
+              control={form.control}
+              name="vendor_id"
+              render={({ field }) => (
+                <LookupVendor
+                  value={field.value ?? ""}
+                  onValueChange={field.onChange}
+                  disabled={disabled}
+                  className="h-9"
+                />
+              )}
+            />
+            <FieldError>{form.formState.errors.vendor_id?.message}</FieldError>
+          </Field>
           <Field data-invalid={!!form.formState.errors.grn_date}>
-            <FieldLabel className="text-xs">GRN Date</FieldLabel>
+            <FieldLabel className="text-xs" required>
+              GRN Date
+            </FieldLabel>
             <Controller
               control={form.control}
               name="grn_date"
@@ -47,55 +110,107 @@ export function GrnGeneralFields({ form, disabled }: GrnGeneralFieldsProps) {
                   onValueChange={field.onChange}
                   disabled={disabled}
                   placeholder="Select date"
-                  className="w-full text-xs"
+                  className="w-full text-xs h-9"
                 />
               )}
             />
-            <FieldError>
-              {form.formState.errors.grn_date?.message}
-            </FieldError>
-          </Field>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <Field data-invalid={!!form.formState.errors.vendor_id}>
-            <FieldLabel className="text-xs">Vendor</FieldLabel>
-            <Controller
-              control={form.control}
-              name="vendor_id"
-              render={({ field }) => (
-                <LookupVendor
-                  value={field.value}
-                  onValueChange={field.onChange}
-                  disabled={disabled}
-                />
-              )}
-            />
-            <FieldError>{form.formState.errors.vendor_id?.message}</FieldError>
+            <FieldError>{form.formState.errors.grn_date?.message}</FieldError>
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">PO Reference</FieldLabel>
-            <Input
-              placeholder="e.g. PO-2026-001"
-              className="h-8 text-sm"
-              disabled={disabled}
-              {...form.register("po_id")}
+            <FieldLabel className="text-xs">Invoice Date</FieldLabel>
+            <Controller
+              control={form.control}
+              name="invoice_date"
+              render={({ field }) => (
+                <DatePicker
+                  value={field.value ?? ""}
+                  onValueChange={field.onChange}
+                  disabled={disabled}
+                  placeholder="Select date"
+                  className="text-xs h-9"
+                />
+              )}
             />
           </Field>
-        </div>
 
-        <Field>
-          <FieldLabel className="text-xs">Description</FieldLabel>
-          <Textarea
-            placeholder="Optional description"
-            className="text-sm"
-            rows={2}
-            disabled={disabled}
-            {...form.register("description")}
+          <Field>
+            <FieldLabel className="text-xs">Expired Date</FieldLabel>
+            <Controller
+              control={form.control}
+              name="expired_date"
+              render={({ field }) => (
+                <DatePicker
+                  value={field.value ?? ""}
+                  onValueChange={field.onChange}
+                  disabled={disabled}
+                  placeholder="Select date"
+                  className="text-xs h-9"
+                />
+              )}
+            />
+          </Field>
+          <Field data-invalid={!!form.formState.errors.doc_status}>
+            <FieldLabel className="text-xs" required>
+              Status
+            </FieldLabel>
+            <Controller
+              control={form.control}
+              name="doc_status"
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  disabled={disabled}
+                >
+                  <SelectTrigger className="w-full text-sm">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {DOC_STATUS_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            <FieldError>{form.formState.errors.doc_status?.message}</FieldError>
+          </Field>
+        </div>
+        <Field orientation="horizontal" className="self-end pb-1.5">
+          <Controller
+            control={form.control}
+            name="is_consignment"
+            render={({ field }) => (
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                disabled={disabled}
+              />
+            )}
           />
+          <FieldLabel className="text-xs">Consignment</FieldLabel>
         </Field>
-      </FieldGroup>
+
+        <Field orientation="horizontal" className="self-end pb-1.5">
+          <Controller
+            control={form.control}
+            name="is_cash"
+            render={({ field }) => (
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                disabled={disabled}
+              />
+            )}
+          />
+          <FieldLabel className="text-xs">Cash</FieldLabel>
+        </Field>
+      </div>
+
+      <GrnItemFields form={form} disabled={disabled} />
     </div>
   );
 }

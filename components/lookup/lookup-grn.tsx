@@ -37,12 +37,14 @@ export function LookupGrn({
   const filteredGrns = useMemo(() => {
     if (!search) return grns;
     const q = search.toLowerCase();
-    return grns.filter((g) => g.grn_number.toLowerCase().includes(q));
+    return grns.filter((g) => (g.invoice_no ?? g.id.slice(0, 8)).toLowerCase().includes(q));
   }, [grns, search]);
 
   const selectedLabel = useMemo(() => {
     if (!value) return null;
-    return grns.find((g) => g.id === value)?.grn_number ?? null;
+    const found = grns.find((g) => g.id === value);
+    if (!found) return null;
+    return found.invoice_no || found.id.slice(0, 8);
   }, [value, grns]);
 
   return (
@@ -85,7 +87,7 @@ export function LookupGrn({
                 <button
                   type="button"
                   aria-pressed={value === grn.id}
-                  data-value={grn.grn_number}
+                  data-value={grn.invoice_no ?? grn.id}
                   className={cn(
                     "relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
                     "hover:bg-accent hover:text-accent-foreground",
@@ -96,7 +98,7 @@ export function LookupGrn({
                     setOpen(false);
                   }}
                 >
-                  {grn.grn_number}
+                  {grn.invoice_no || grn.id.slice(0, 8)}
                   <Check
                     className={cn(
                       "ml-auto h-4 w-4",

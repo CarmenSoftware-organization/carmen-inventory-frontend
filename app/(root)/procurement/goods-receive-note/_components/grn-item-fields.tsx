@@ -13,7 +13,7 @@ import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import type { GrnFormValues } from "./grn-form-schema";
 import { useGrnItemTable } from "./grn-item-table";
-import { GRN_ITEM } from "./grn-form-schema";
+import { EMPTY_DETAIL } from "./grn-form-schema";
 import EmptyComponent from "@/components/empty-component";
 
 function getDeleteDescription(
@@ -21,14 +21,14 @@ function getDeleteDescription(
   form: UseFormReturn<GrnFormValues>,
 ) {
   if (index === null) return "";
-  const name = form.getValues(`items.${index}.item_name`);
+  const name = form.getValues(`items.${index}.product_name`);
   const label = name || `Item #${index + 1}`;
   return `Are you sure you want to remove "${label}"?`;
 }
 
 interface GrnItemFieldsProps {
-  form: UseFormReturn<GrnFormValues>;
-  disabled: boolean;
+  readonly form: UseFormReturn<GrnFormValues>;
+  readonly disabled: boolean;
 }
 
 export function GrnItemFields({ form, disabled }: GrnItemFieldsProps) {
@@ -41,7 +41,7 @@ export function GrnItemFields({ form, disabled }: GrnItemFieldsProps) {
   } = useFieldArray({ control: form.control, name: "items" });
 
   const handleAddItem = () => {
-    appendItem({ ...GRN_ITEM });
+    appendItem({ ...EMPTY_DETAIL });
   };
 
   const { table } = useGrnItemTable({
@@ -52,7 +52,7 @@ export function GrnItemFields({ form, disabled }: GrnItemFieldsProps) {
   });
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 pt-4">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold">Items</h2>
         {!disabled && (

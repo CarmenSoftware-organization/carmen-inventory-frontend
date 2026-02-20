@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, WarehouseIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Command, CommandInput } from "@/components/ui/command";
@@ -13,6 +13,7 @@ import {
 import { VirtualCommandList } from "@/components/ui/virtual-command-list";
 import { useVendor } from "@/hooks/use-vendor";
 import type { Vendor } from "@/types/vendor";
+import EmptyComponent from "../empty-component";
 
 interface LookupVendorProps {
   readonly value: string;
@@ -57,11 +58,19 @@ export function LookupVendor({
 
   const selectedName = useMemo(() => {
     if (!value) return null;
-    return activeVendors.find((v) => v.id === value)?.name ?? defaultLabel ?? null;
+    return (
+      activeVendors.find((v) => v.id === value)?.name ?? defaultLabel ?? null
+    );
   }, [value, activeVendors, defaultLabel]);
 
   return (
-    <Popover open={open} onOpenChange={(o) => { setOpen(o); if (!o) setSearch(""); }}>
+    <Popover
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        if (!o) setSearch("");
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -89,7 +98,13 @@ export function LookupVendor({
           />
           <VirtualCommandList
             items={filteredVendors}
-            emptyMessage="No vendors found."
+            emptyMessage={
+              <EmptyComponent
+                icon={WarehouseIcon}
+                title="No vendor found"
+                description="Try adjusting your search or filter to find what you're looking for."
+              />
+            }
           >
             {(vendor) => (
               <button
