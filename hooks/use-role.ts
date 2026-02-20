@@ -1,9 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
-import { httpClient } from "@/lib/http-client";
-import { buildUrl } from "@/utils/build-query-string";
-import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type {
   Role,
@@ -13,19 +10,14 @@ import type {
 } from "@/types/role";
 import type { PaginatedResponse, ParamsDto } from "@/types/params";
 import { CACHE_STATIC } from "@/lib/cache-config";
+import * as api from "@/lib/api/roles";
 
 export function useRole(params?: ParamsDto) {
   const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<Role>>({
     queryKey: [QUERY_KEYS.APPLICATION_ROLES, buCode, params],
-    queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
-      const url = buildUrl(API_ENDPOINTS.APPLICATION_ROLES(buCode), params);
-      const res = await httpClient.get(url);
-      if (!res.ok) throw new Error("Failed to fetch roles");
-      return res.json();
-    },
+    queryFn: () => api.getRoles(buCode!, params),
     enabled: !!buCode,
     ...CACHE_STATIC,
   });
@@ -36,23 +28,14 @@ export function useRoleById(id: string | undefined) {
 
   return useQuery<RoleDetail>({
     queryKey: [QUERY_KEYS.APPLICATION_ROLES, buCode, id],
-    queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
-      const res = await httpClient.get(
-        `${API_ENDPOINTS.APPLICATION_ROLES(buCode)}/${id}`,
-      );
-      if (!res.ok) throw new Error("Failed to fetch role");
-      const json = await res.json();
-      return json.data;
-    },
+    queryFn: () => api.getRoleById(buCode!, id!),
     enabled: !!buCode && !!id,
   });
 }
 
 export function useCreateRole() {
   return useApiMutation<CreateRoleDto>({
-    mutationFn: (data, buCode) =>
-      httpClient.post(API_ENDPOINTS.APPLICATION_ROLES(buCode), data),
+    mutationFn: (data, buCode) => api.createRole(buCode, data),
     invalidateKeys: [QUERY_KEYS.APPLICATION_ROLES],
     errorMessage: "Failed to create role",
   });
@@ -60,8 +43,7 @@ export function useCreateRole() {
 
 export function useUpdateRole() {
   return useApiMutation<UpdateRoleDto & { id: string }>({
-    mutationFn: ({ id, ...data }, buCode) =>
-      httpClient.put(`${API_ENDPOINTS.APPLICATION_ROLES(buCode)}/${id}`, data),
+    mutationFn: ({ id, ...data }, buCode) => api.updateRole(buCode, id, data),
     invalidateKeys: [QUERY_KEYS.APPLICATION_ROLES],
     errorMessage: "Failed to update role",
   });
@@ -69,8 +51,7 @@ export function useUpdateRole() {
 
 export function useDeleteRole() {
   return useApiMutation<string>({
-    mutationFn: (id, buCode) =>
-      httpClient.delete(`${API_ENDPOINTS.APPLICATION_ROLES(buCode)}/${id}`),
+    mutationFn: (id, buCode) => api.deleteRole(buCode, id),
     invalidateKeys: [QUERY_KEYS.APPLICATION_ROLES],
     errorMessage: "Failed to delete role",
   });
