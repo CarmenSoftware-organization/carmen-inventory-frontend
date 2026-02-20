@@ -76,7 +76,7 @@ export function LookupVendor({
           variant="outline"
           aria-expanded={open}
           className={cn(
-            "h-8 flex justify-between items-center pl-3 pr-1 text-sm",
+            "flex justify-between items-center pl-3 pr-1 text-sm",
             className,
           )}
           disabled={disabled}

@@ -140,7 +140,7 @@ export function PrItemExpand({
   };
 
   return (
-    <div className="px-3 py-1.5 bg-muted/40 border-t border-border space-y-1">
+    <div className="px-3 py-1.5">
       {/* Row 1: Vendor | Unit Price | Pricelist */}
       <div className="grid grid-cols-12 gap-2 items-end">
         <div className="col-span-5">
@@ -153,7 +153,7 @@ export function PrItemExpand({
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
                 disabled={disabled}
-                className="w-full text-[11px]"
+                className="w-full h-6 text-[11px]"
               />
             )}
           />
@@ -223,6 +223,7 @@ export function PrItemExpand({
                 }}
                 disabled={disabled}
                 className="w-full text-[11px]"
+                size="xs"
               />
             )}
           />

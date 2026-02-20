@@ -475,7 +475,7 @@ export function PurchaseRequestForm({
           <TabsContent value="items">
             <PrItemFields
               form={form}
-              disabled={isDisabled}
+              isDisabled={isDisabled}
               role={role}
               prId={purchaseRequest?.id}
               prStatus={purchaseRequest?.pr_status}

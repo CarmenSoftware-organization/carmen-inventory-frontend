@@ -13,6 +13,7 @@ import {
 import { VirtualCommandList } from "@/components/ui/virtual-command-list";
 import { useLocation } from "@/hooks/use-location";
 import EmptyComponent from "../empty-component";
+import { Badge } from "../ui/badge";
 
 interface LookupLocationProps {
   readonly value: string;
@@ -55,19 +56,28 @@ export function LookupLocation({
   }, [value, locations]);
 
   return (
-    <Popover open={open} onOpenChange={(o) => { setOpen(o); if (!o) setSearch(""); }}>
+    <Popover
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        if (!o) setSearch("");
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           aria-expanded={open}
           className={cn(
-            "h-8 flex justify-between items-center pl-3 pr-1 text-sm",
+            "flex justify-between items-center pl-3 pr-1 text-sm",
             className,
           )}
           disabled={disabled}
         >
           <span
-            className={cn(!selectedName && "text-muted-foreground text-xs")}
+            className={cn(
+              "truncate",
+              !selectedName && "text-muted-foreground text-xs",
+            )}
           >
             {selectedName ?? placeholder}
           </span>
@@ -75,7 +85,10 @@ export function LookupLocation({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+      <PopoverContent
+        className="w-[--radix-popover-trigger-width] p-0"
+        align="start"
+      >
         <Command shouldFilter={false}>
           <CommandInput
             placeholder="Search location..."
@@ -108,10 +121,15 @@ export function LookupLocation({
                   setOpen(false);
                 }}
               >
-                {location.name}
+                <Badge size="xs" variant="secondary" className="shrink-0">
+                  {location.code}
+                </Badge>
+                <span className="flex-1 text-left truncate">
+                  {location.name}
+                </span>
                 <Check
                   className={cn(
-                    "ml-auto h-4 w-4",
+                    "shrink-0 h-4 w-4",
                     value === location.id ? "opacity-100" : "opacity-0",
                   )}
                 />

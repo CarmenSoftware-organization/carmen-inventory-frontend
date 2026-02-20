@@ -46,7 +46,7 @@ function getDeleteDescription(
 
 interface PrItemFieldsProps {
   form: UseFormReturn<PrFormValues>;
-  disabled: boolean;
+  isDisabled: boolean;
   role?: string;
   prId?: string;
   prStatus?: string;
@@ -58,7 +58,7 @@ interface PrItemFieldsProps {
 
 export function PrItemFields({
   form,
-  disabled,
+  isDisabled,
   role,
   prId,
   prStatus,
@@ -101,7 +101,7 @@ export function PrItemFields({
   } = usePrItemTable({
     form,
     itemFields,
-    disabled,
+    isDisabled,
     prStatus,
     dateFormat,
     buCode,
@@ -233,7 +233,7 @@ export function PrItemFields({
 
         <div className="flex flex-col  gap-2">
           <div className="flex items-center justify-end gap-1.5">
-            {!disabled && role !== STAGE_ROLE.PURCHASE && (
+            {!isDisabled && role !== STAGE_ROLE.PURCHASE && (
               <Button type="button" size="xs" onClick={() => handleAddItem()}>
                 <Plus /> Add Item
               </Button>
@@ -311,7 +311,7 @@ export function PrItemFields({
             title="No Products Yet"
             description="You haven't created any Products yet."
             content={
-              !disabled && (
+              !isDisabled && (
                 <Button type="button" size="xs" onClick={() => handleAddItem()}>
                   <Plus /> Add Item
                 </Button>
