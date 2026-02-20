@@ -43,18 +43,18 @@ export default function LoginForm() {
       {/* ── Left: Form ── */}
       <div className="relative flex flex-col overflow-hidden px-6 py-8 lg:px-14 xl:px-20">
         {/* Background gradient orbs */}
-        <div className="pointer-events-none absolute -top-40 -right-40 size-[500px] rounded-full bg-info/[0.04] blur-[100px]" />
-        <div className="pointer-events-none absolute -bottom-32 -left-32 size-[400px] rounded-full bg-success/[0.03] blur-[80px]" />
+        <div className="pointer-events-none absolute -top-40 -right-40 size-125 rounded-full bg-info/4 blur-[100px]" />
+        <div className="pointer-events-none absolute -bottom-32 -left-32 size-100 rounded-full bg-success/3 blur-[80px]" />
 
         <div className="relative z-10 flex items-center gap-2.5 animate-in fade-in slide-in-from-bottom-3 duration-700 fill-mode-both">
           <div className="flex size-9 items-center justify-center rounded-lg bg-primary shadow-lg shadow-primary/30">
-            <Hotel className="size-[18px] text-primary-foreground" />
+            <Hotel className="size-4.5 text-primary-foreground" />
           </div>
           <span className="text-lg font-bold tracking-tight">Carmen</span>
         </div>
 
         <div className="relative z-10 flex flex-1 items-center justify-center">
-          <div className="w-full max-w-[340px]">
+          <div className="w-full max-w-85">
             <h1 className="text-[28px] font-bold leading-tight tracking-tight animate-in fade-in slide-in-from-bottom-3 duration-700 fill-mode-both delay-100">
               Welcome back
             </h1>
@@ -142,14 +142,14 @@ export default function LoginForm() {
         />
 
         {/* Ambient glow */}
-        <div className="absolute -top-32 right-1/3 size-[500px] rounded-full bg-info/[0.08] blur-[120px]" />
-        <div className="absolute -bottom-20 left-1/4 size-[400px] rounded-full bg-success/[0.07] blur-[100px]" />
+        <div className="absolute -top-32 right-1/3 size-125 rounded-full bg-info/8 blur-[120px]" />
+        <div className="absolute -bottom-20 left-1/4 size-100 rounded-full bg-success/[0.07] blur-[100px]" />
 
         {/* Content */}
         <div className="relative z-10 flex h-full flex-col justify-between p-10 xl:p-14">
           <div>
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-xl border border-invert-foreground/[0.08] bg-invert-foreground/[0.05] backdrop-blur-sm">
+              <div className="flex size-10 items-center justify-center rounded-xl border border-invert-foreground/8 bg-invert-foreground/5 backdrop-blur-sm">
                 <Hotel className="size-5 text-invert-foreground/90" />
               </div>
               <div>
@@ -174,7 +174,7 @@ export default function LoginForm() {
           {/* Floating cards */}
           <div className="relative my-8 flex-1">
             {/* Card: Overview */}
-            <div className="absolute left-0 top-8 w-[270px] rounded-2xl border border-invert-foreground/[0.06] bg-invert-foreground/[0.03] p-5 shadow-2xl shadow-black/20 backdrop-blur-md">
+            <div className="absolute left-0 top-8 w-67.5 rounded-2xl border border-invert-foreground/6 bg-invert-foreground/3 p-5 shadow-2xl shadow-black/20 backdrop-blur-md">
               <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="size-2 rounded-full bg-success" />
@@ -188,9 +188,24 @@ export default function LoginForm() {
               </div>
               <div className="space-y-3.5">
                 {[
-                  { label: "Total Items", value: "2,847", pct: 78, bar: "var(--info)" },
-                  { label: "Low Stock", value: "23", pct: 12, bar: "var(--warning)" },
-                  { label: "On Order", value: "156", pct: 52, bar: "var(--success)" },
+                  {
+                    label: "Total Items",
+                    value: "2,847",
+                    pct: 78,
+                    bar: "var(--info)",
+                  },
+                  {
+                    label: "Low Stock",
+                    value: "23",
+                    pct: 12,
+                    bar: "var(--warning)",
+                  },
+                  {
+                    label: "On Order",
+                    value: "156",
+                    pct: 52,
+                    bar: "var(--success)",
+                  },
                 ].map((row) => (
                   <div key={row.label}>
                     <div className="mb-1.5 flex items-center justify-between">
@@ -201,7 +216,7 @@ export default function LoginForm() {
                         {row.value}
                       </span>
                     </div>
-                    <div className="h-1 overflow-hidden rounded-full bg-invert-foreground/[0.06]">
+                    <div className="h-1 overflow-hidden rounded-full bg-invert-foreground/6">
                       <div
                         className="h-full rounded-full"
                         style={{
@@ -217,7 +232,7 @@ export default function LoginForm() {
             </div>
 
             {/* Card: Activity */}
-            <div className="absolute right-2 top-24 w-[250px] rounded-2xl border border-invert-foreground/[0.06] bg-invert-foreground/[0.03] p-5 shadow-2xl shadow-black/20 backdrop-blur-md xl:right-8">
+            <div className="absolute right-2 top-24 w-62.5 rounded-2xl border border-invert-foreground/6 bg-invert-foreground/3 p-5 shadow-2xl shadow-black/20 backdrop-blur-md xl:right-8">
               <div className="mb-4 flex items-center gap-2">
                 <Activity className="size-3.5 text-invert-foreground/40" />
                 <span className="text-[11px] font-medium text-invert-foreground/60">
@@ -226,9 +241,24 @@ export default function LoginForm() {
               </div>
               <div className="space-y-3">
                 {[
-                  { text: "Linens restocked", detail: "+240 units", time: "2m ago", color: "text-success" },
-                  { text: "Minibar updated", detail: "+85 units", time: "15m ago", color: "text-info" },
-                  { text: "Kitchen supplies", detail: "+120 units", time: "1h ago", color: "text-warning" },
+                  {
+                    text: "Linens restocked",
+                    detail: "+240 units",
+                    time: "2m ago",
+                    color: "text-success",
+                  },
+                  {
+                    text: "Minibar updated",
+                    detail: "+85 units",
+                    time: "15m ago",
+                    color: "text-info",
+                  },
+                  {
+                    text: "Kitchen supplies",
+                    detail: "+120 units",
+                    time: "1h ago",
+                    color: "text-warning",
+                  },
                 ].map((item) => (
                   <div key={item.text} className="flex items-start gap-2.5">
                     <ArrowUpRight
@@ -249,7 +279,7 @@ export default function LoginForm() {
           </div>
 
           {/* Bottom stats */}
-          <div className="flex items-center gap-8 border-t border-invert-foreground/[0.06] pt-6">
+          <div className="flex items-center gap-8 border-t border-invert-foreground/6 pt-6">
             {[
               { label: "Departments", value: "12" },
               { label: "Items Tracked", value: "4.2k" },
