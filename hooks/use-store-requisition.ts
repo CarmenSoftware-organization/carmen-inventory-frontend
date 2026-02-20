@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
@@ -38,7 +38,7 @@ export interface CreateStoreRequisitionDto {
 }
 
 export function useStoreRequisition(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<StoreRequisition>>({
     queryKey: [QUERY_KEYS.STORE_REQUISITIONS, buCode, params],
@@ -62,7 +62,7 @@ export function useStoreRequisition(params?: ParamsDto) {
 }
 
 export function useStoreRequisitionById(id: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<StoreRequisition>({
     queryKey: [QUERY_KEYS.STORE_REQUISITIONS, buCode, id],

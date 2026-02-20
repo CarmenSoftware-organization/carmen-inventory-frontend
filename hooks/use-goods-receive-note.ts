@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
@@ -9,7 +9,7 @@ import type { GoodsReceiveNote, CreateGrnDto } from "@/types/goods-receive-note"
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
 export function useGoodsReceiveNote(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<GoodsReceiveNote>>({
     queryKey: [QUERY_KEYS.GOODS_RECEIVE_NOTES, buCode, params],
@@ -25,7 +25,7 @@ export function useGoodsReceiveNote(params?: ParamsDto) {
 }
 
 export function useGoodsReceiveNoteById(id: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<GoodsReceiveNote>({
     queryKey: [QUERY_KEYS.GOODS_RECEIVE_NOTES, buCode, id],

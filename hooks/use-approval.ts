@@ -1,15 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { buildUrl } from "@/utils/build-query-string";
 import { httpClient } from "@/lib/http-client";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
-import type { ApprovalItem, ApprovalPendingSummary } from "@/types/approval";
+import type {
+  ApprovalItem,
+  ApprovalPendingSummary,
+  RawApprovalPR,
+  RawApprovalPO,
+  RawApprovalSR,
+} from "@/types/approval";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-function normalizePR(item: any): ApprovalItem {
+function normalizePR(item: RawApprovalPR): ApprovalItem {
   return {
     id: item.id,
     doc_type: "pr",
@@ -32,7 +36,7 @@ function normalizePR(item: any): ApprovalItem {
   };
 }
 
-function normalizePO(item: any): ApprovalItem {
+function normalizePO(item: RawApprovalPO): ApprovalItem {
   return {
     id: item.id,
     doc_type: "po",
@@ -55,7 +59,7 @@ function normalizePO(item: any): ApprovalItem {
   };
 }
 
-function normalizeSR(item: any): ApprovalItem {
+function normalizeSR(item: RawApprovalSR): ApprovalItem {
   return {
     id: item.id,
     doc_type: "sr",
@@ -78,12 +82,9 @@ function normalizeSR(item: any): ApprovalItem {
   };
 }
 
-/* eslint-enable @typescript-eslint/no-explicit-any */
-
-function extractSection(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  entries: any[] | undefined,
-  normalize: (item: any) => ApprovalItem, // eslint-disable-line @typescript-eslint/no-explicit-any
+function extractSection<T>(
+  entries: { data: T[]; paginate: { total: number } }[] | undefined,
+  normalize: (item: T) => ApprovalItem,
 ) {
   const entry = entries?.[0];
   const items: ApprovalItem[] = (entry?.data ?? []).map(normalize);
@@ -92,7 +93,7 @@ function extractSection(
 }
 
 export function useApprovalPending(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<ApprovalItem>>({
     queryKey: [QUERY_KEYS.APPROVAL_PENDING, buCode, params],

@@ -141,11 +141,17 @@ function DataGridPagination(props: DataGridPaginationProps): React.JSX.Element {
   return (
     <div
       data-slot="data-grid-pagination"
+      role="navigation"
+      aria-label="Pagination"
       className={cn(
         "mt-2 flex flex-col flex-wrap items-center justify-between gap-2.5 sm:flex-row",
         mergedProps?.className,
       )}
     >
+      <div aria-live="polite" className="sr-only">
+        Page {pageIndex + 1} of {pageCount}, showing{" "}
+        {table.getRowModel().rows.length} results
+      </div>
       <div className="order-2 flex flex-wrap items-center space-x-2.5 pb-2.5 sm:order-1 sm:pb-0">
         {isLoading ? (
           mergedProps?.sizesSkeleton

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { httpClient } from "@/lib/http-client";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
@@ -7,7 +7,7 @@ import type { User } from "@/types/workflows";
 import type { PaginatedResponse } from "@/types/params";
 
 export function useAllUsers() {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<User[]>({
     queryKey: [QUERY_KEYS.USERS, buCode, "all"],

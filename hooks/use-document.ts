@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
@@ -9,7 +9,7 @@ import type { DocumentFile } from "@/types/document";
 import type { PaginatedResponse, ParamsDto } from "@/types/params";
 
 export function useDocument(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<DocumentFile>>({
     queryKey: [QUERY_KEYS.DOCUMENTS, buCode, params],
@@ -25,7 +25,7 @@ export function useDocument(params?: ParamsDto) {
 }
 
 export function useUploadDocument() {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
   const queryClient = useQueryClient();
 
   return useMutation<unknown, Error, File>({

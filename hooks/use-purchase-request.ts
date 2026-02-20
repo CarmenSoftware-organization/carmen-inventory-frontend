@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
@@ -9,6 +9,9 @@ import type {
   PurchaseRequest,
   PurchaseRequestTemplate,
 } from "@/types/purchase-request";
+import { purchaseRequestSchema } from "@/types/purchase-request";
+import { paginatedResponse } from "@/lib/api-schemas";
+import { CACHE_DYNAMIC } from "@/lib/cache-config";
 import type { ActionPr } from "@/types/stage-role";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
@@ -57,7 +60,7 @@ export interface CreatePurchaseRequestDto {
 }
 
 export function usePurchaseRequest(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<PurchaseRequest>>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUESTS, buCode, params],
@@ -71,6 +74,12 @@ export function usePurchaseRequest(params?: ParamsDto) {
       if (!res.ok) throw new Error("Failed to fetch purchase requests");
       const json = await res.json();
       const entry = json.data?.[0];
+
+      const parsed = paginatedResponse(purchaseRequestSchema).safeParse(entry);
+      if (!parsed.success) {
+        console.warn("[PR] API schema mismatch:", parsed.error.issues);
+      }
+
       return {
         data: entry?.data ?? [],
         paginate: entry?.paginate ?? {
@@ -82,11 +91,12 @@ export function usePurchaseRequest(params?: ParamsDto) {
       };
     },
     enabled: !!buCode,
+    ...CACHE_DYNAMIC,
   });
 }
 
 export function useMyPendingPurchaseRequest(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<PurchaseRequest>>({
     queryKey: [QUERY_KEYS.MY_PENDING_PURCHASE_REQUESTS, buCode, params],
@@ -101,6 +111,12 @@ export function useMyPendingPurchaseRequest(params?: ParamsDto) {
         throw new Error("Failed to fetch my pending purchase requests");
       const json = await res.json();
       const entry = json.data?.[0];
+
+      const parsed = paginatedResponse(purchaseRequestSchema).safeParse(entry);
+      if (!parsed.success) {
+        console.warn("[PR pending] API schema mismatch:", parsed.error.issues);
+      }
+
       return {
         data: entry?.data ?? [],
         paginate: entry?.paginate ?? {
@@ -112,11 +128,12 @@ export function useMyPendingPurchaseRequest(params?: ParamsDto) {
       };
     },
     enabled: !!buCode,
+    ...CACHE_DYNAMIC,
   });
 }
 
 export function usePurchaseRequestWorkflowStages() {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<string[]>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUEST_WORKFLOW_STAGES, buCode],
@@ -135,7 +152,7 @@ export function usePurchaseRequestWorkflowStages() {
 }
 
 export function usePurchaseRequestTemplates() {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PurchaseRequestTemplate[]>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUEST_TEMPLATES, buCode],
@@ -154,7 +171,7 @@ export function usePurchaseRequestTemplates() {
 }
 
 export function usePurchaseRequestById(id: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PurchaseRequest>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUESTS, buCode, id],
@@ -208,7 +225,7 @@ export interface PurchaseRequestComment {
 }
 
 export function usePurchaseRequestComments(prId: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PurchaseRequestComment[]>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUEST_COMMENTS, buCode, prId],

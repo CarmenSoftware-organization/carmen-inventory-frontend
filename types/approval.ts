@@ -44,3 +44,57 @@ export interface ApprovalStageDetail {
   stage_status: string;
   stage_message: string;
 }
+
+// --- Raw API response shapes for normalization ---
+
+export interface RawApprovalPR {
+  id: string;
+  pr_no: string;
+  pr_date: string;
+  pr_status: string;
+  description: string;
+  created_at: string;
+  workflow_name: string;
+  workflow_current_stage: string;
+  workflow_next_stage: string | null;
+  workflow_previous_stage: string | null;
+  last_action: string | null;
+  requestor_name: string;
+  department_name: string;
+  purchase_request_detail: ApprovalItemDetail[];
+}
+
+export interface RawApprovalPO {
+  id: string;
+  po_no: string;
+  order_date: string;
+  po_status?: string;
+  status?: string;
+  description: string;
+  created_at: string;
+  workflow_name: string;
+  workflow_current_stage: string;
+  workflow_next_stage: string | null;
+  workflow_previous_stage: string | null;
+  last_action: string | null;
+  vendor_name: string;
+  total_amount: number;
+  delivery_date: string | null;
+}
+
+export interface RawApprovalSR {
+  id: string;
+  sr_no: string;
+  sr_date: string;
+  sr_status?: string;
+  status?: string;
+  description: string;
+  created_at: string;
+  workflow_name: string;
+  workflow_current_stage: string;
+  workflow_next_stage: string | null;
+  workflow_previous_stage: string | null;
+  last_action: string | null;
+  requestor_name: string;
+  department_name: string;
+}

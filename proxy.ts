@@ -1,9 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/register", "/api/auth"];
+const EXACT_PUBLIC = new Set(["/login", "/register"]);
+const PREFIX_PUBLIC = ["/api/auth/"];
 
 function isPublic(pathname: string) {
-  return PUBLIC_PATHS.some((p) => pathname.startsWith(p));
+  if (EXACT_PUBLIC.has(pathname)) return true;
+  return PREFIX_PUBLIC.some((p) => pathname.startsWith(p));
 }
 
 export function proxy(request: NextRequest) {

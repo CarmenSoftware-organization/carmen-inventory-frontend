@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
@@ -51,7 +51,7 @@ export interface CreatePrtDto {
 }
 
 export function usePrt(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<PurchaseRequestTemplate>>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUEST_TEMPLATES, buCode, params],
@@ -71,7 +71,7 @@ export function usePrt(params?: ParamsDto) {
 }
 
 export function usePrtById(id: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PurchaseRequestTemplate>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUEST_TEMPLATES, buCode, id],

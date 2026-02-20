@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
@@ -9,7 +9,7 @@ import type { PhysicalCount, CreatePhysicalCountDto } from "@/types/physical-cou
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
 export function usePhysicalCount(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<PhysicalCount>>({
     queryKey: [QUERY_KEYS.PHYSICAL_COUNTS, buCode, params],
@@ -25,7 +25,7 @@ export function usePhysicalCount(params?: ParamsDto) {
 }
 
 export function usePhysicalCountById(id: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PhysicalCount>({
     queryKey: [QUERY_KEYS.PHYSICAL_COUNTS, buCode, id],

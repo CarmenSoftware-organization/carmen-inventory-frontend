@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
@@ -14,7 +14,7 @@ import type {
 import type { PaginatedResponse, ParamsDto } from "@/types/params";
 
 export function useRole(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<Role>>({
     queryKey: [QUERY_KEYS.APPLICATION_ROLES, buCode, params],
@@ -30,7 +30,7 @@ export function useRole(params?: ParamsDto) {
 }
 
 export function useRoleById(id: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<RoleDetail>({
     queryKey: [QUERY_KEYS.APPLICATION_ROLES, buCode, id],

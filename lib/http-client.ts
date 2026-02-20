@@ -1,3 +1,5 @@
+import { ApiError, ERROR_CODES } from "@/lib/api-error";
+
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 interface RequestOptions extends Omit<RequestInit, "method" | "body"> {
@@ -28,8 +30,23 @@ async function request(
 
   const response = await fetch(url, init);
 
-  if (response.status === 401 && typeof globalThis.window !== "undefined") {
-    globalThis.window.location.href = "/login";
+  if (typeof globalThis.window !== "undefined") {
+    if (response.status === 401) {
+      globalThis.window.location.href = "/login";
+    }
+
+    if (response.status === 403) {
+      throw new ApiError(ERROR_CODES.FORBIDDEN, "Access denied", 403);
+    }
+
+    if (response.status === 429) {
+      throw new ApiError(
+        ERROR_CODES.RATE_LIMITED,
+        "Too many requests — try again later",
+        429,
+        true,
+      );
+    }
   }
 
   return response;

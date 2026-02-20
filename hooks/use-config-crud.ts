@@ -3,9 +3,10 @@ import {
   type UseQueryResult,
   type UseMutationResult,
 } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
+import { CACHE_STATIC } from "@/lib/cache-config";
 import { buildUrl } from "@/utils/build-query-string";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
@@ -29,7 +30,7 @@ export function createConfigCrud<T, TCreate>({
   useDelete: () => UseMutationResult<unknown, Error, string>;
 } {
   function useList(params?: ParamsDto) {
-    const { buCode } = useProfile();
+    const buCode = useBuCode();
 
     return useQuery<PaginatedResponse<T>>({
       queryKey: [queryKey, buCode, params],
@@ -41,12 +42,12 @@ export function createConfigCrud<T, TCreate>({
         return res.json();
       },
       enabled: !!buCode,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      ...CACHE_STATIC,
     });
   }
 
   function useById(id: string | undefined) {
-    const { buCode } = useProfile();
+    const buCode = useBuCode();
 
     return useQuery<T>({
       queryKey: [queryKey, buCode, id],
@@ -58,7 +59,7 @@ export function createConfigCrud<T, TCreate>({
         return json.data;
       },
       enabled: !!buCode && !!id,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      ...CACHE_STATIC,
     });
   }
 

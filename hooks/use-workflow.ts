@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
@@ -14,7 +14,7 @@ import {
 import type { PaginatedResponse, ParamsDto } from "@/types/params";
 
 export function useWorkflow(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<WorkflowDto>>({
     queryKey: [QUERY_KEYS.WORKFLOWS, buCode, params],
@@ -30,7 +30,7 @@ export function useWorkflow(params?: ParamsDto) {
 }
 
 export function useWorkflowTypeQuery(type: WORKFLOW_TYPE) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<WorkflowDto[]>({
     queryKey: [QUERY_KEYS.WORKFLOWS, buCode, "type", type],
@@ -48,7 +48,7 @@ export function useWorkflowTypeQuery(type: WORKFLOW_TYPE) {
 }
 
 export function useWorkflowById(id: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<Workflow>({
     queryKey: [QUERY_KEYS.WORKFLOWS, buCode, id],

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
@@ -9,7 +9,7 @@ import type { PeriodEnd, CreatePeriodEndDto } from "@/types/period-end";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
 export function usePeriodEnd(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<PeriodEnd>>({
     queryKey: [QUERY_KEYS.PERIOD_ENDS, buCode, params],
@@ -25,7 +25,7 @@ export function usePeriodEnd(params?: ParamsDto) {
 }
 
 export function usePeriodEndById(id: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PeriodEnd>({
     queryKey: [QUERY_KEYS.PERIOD_ENDS, buCode, id],

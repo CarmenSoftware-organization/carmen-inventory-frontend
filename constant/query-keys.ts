@@ -51,3 +51,62 @@ export const QUERY_KEYS = {
 } as const;
 
 export type QueryKey = (typeof QUERY_KEYS)[keyof typeof QUERY_KEYS];
+
+// Type-safe query key factories
+import type { ParamsDto } from "@/types/params";
+
+export const queryKeys = {
+  purchaseRequests: {
+    all: () => [QUERY_KEYS.PURCHASE_REQUESTS] as const,
+    lists: () => [...queryKeys.purchaseRequests.all(), "list"] as const,
+    list: (buCode: string, params?: ParamsDto) =>
+      [...queryKeys.purchaseRequests.lists(), buCode, params] as const,
+    details: () => [...queryKeys.purchaseRequests.all(), "detail"] as const,
+    detail: (buCode: string, id: string) =>
+      [...queryKeys.purchaseRequests.details(), buCode, id] as const,
+    comments: (buCode: string, prId: string) =>
+      [QUERY_KEYS.PURCHASE_REQUEST_COMMENTS, buCode, prId] as const,
+  },
+  purchaseOrders: {
+    all: () => [QUERY_KEYS.PURCHASE_ORDERS] as const,
+    list: (buCode: string, params?: ParamsDto) =>
+      [...queryKeys.purchaseOrders.all(), "list", buCode, params] as const,
+    detail: (buCode: string, id: string) =>
+      [...queryKeys.purchaseOrders.all(), "detail", buCode, id] as const,
+  },
+  vendors: {
+    all: () => [QUERY_KEYS.VENDORS] as const,
+    list: (buCode: string, params?: ParamsDto) =>
+      [...queryKeys.vendors.all(), "list", buCode, params] as const,
+    detail: (buCode: string, id: string) =>
+      [...queryKeys.vendors.all(), "detail", buCode, id] as const,
+  },
+  products: {
+    all: () => [QUERY_KEYS.PRODUCTS] as const,
+    list: (buCode: string, params?: ParamsDto) =>
+      [...queryKeys.products.all(), "list", buCode, params] as const,
+    detail: (buCode: string, id: string) =>
+      [...queryKeys.products.all(), "detail", buCode, id] as const,
+  },
+  goodsReceiveNotes: {
+    all: () => [QUERY_KEYS.GOODS_RECEIVE_NOTES] as const,
+    list: (buCode: string, params?: ParamsDto) =>
+      [...queryKeys.goodsReceiveNotes.all(), "list", buCode, params] as const,
+    detail: (buCode: string, id: string) =>
+      [...queryKeys.goodsReceiveNotes.all(), "detail", buCode, id] as const,
+  },
+  creditNotes: {
+    all: () => [QUERY_KEYS.CREDIT_NOTES] as const,
+    list: (buCode: string, params?: ParamsDto) =>
+      [...queryKeys.creditNotes.all(), "list", buCode, params] as const,
+    detail: (buCode: string, id: string) =>
+      [...queryKeys.creditNotes.all(), "detail", buCode, id] as const,
+  },
+  storeRequisitions: {
+    all: () => [QUERY_KEYS.STORE_REQUISITIONS] as const,
+    list: (buCode: string, params?: ParamsDto) =>
+      [...queryKeys.storeRequisitions.all(), "list", buCode, params] as const,
+    detail: (buCode: string, id: string) =>
+      [...queryKeys.storeRequisitions.all(), "detail", buCode, id] as const,
+  },
+} as const;

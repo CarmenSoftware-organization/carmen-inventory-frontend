@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { httpClient } from "@/lib/http-client";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { Product } from "@/types/product";
 
 export function useProductsByLocation(locationId: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<Product[]>({
     queryKey: [QUERY_KEYS.PRODUCTS_BY_LOCATION, buCode, locationId],

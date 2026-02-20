@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
@@ -9,7 +9,7 @@ import type { ExchangeRateItem, ExchangeRateDto } from "@/types/exchange-rate";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
 export function useExchangeRateQuery(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<ExchangeRateItem>>({
     queryKey: [QUERY_KEYS.EXCHANGE_RATES, buCode, params],

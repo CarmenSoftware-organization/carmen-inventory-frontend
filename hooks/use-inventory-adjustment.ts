@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
@@ -38,7 +38,7 @@ function getEndpoint(type: InventoryAdjustmentType) {
 }
 
 export function useInventoryAdjustment(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<InventoryAdjustment>>({
     queryKey: [QUERY_KEYS.INVENTORY_ADJUSTMENTS, buCode, params],
@@ -54,7 +54,7 @@ export function useInventoryAdjustment(params?: ParamsDto) {
 }
 
 export function useInventoryAdjustmentById(id: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<InventoryAdjustment>({
     queryKey: [QUERY_KEYS.INVENTORY_ADJUSTMENTS, buCode, id],

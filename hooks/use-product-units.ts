@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { httpClient } from "@/lib/http-client";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
@@ -11,7 +11,7 @@ export interface ProductUnit {
 }
 
 export function useProductUnits(productId: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<ProductUnit[]>({
     queryKey: [QUERY_KEYS.PRODUCT_UNITS, buCode, productId],
