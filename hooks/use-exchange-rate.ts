@@ -7,6 +7,7 @@ import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { ExchangeRateItem, ExchangeRateDto } from "@/types/exchange-rate";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
+import { CACHE_NORMAL } from "@/lib/cache-config";
 
 export function useExchangeRateQuery(params?: ParamsDto) {
   const buCode = useBuCode();
@@ -21,7 +22,7 @@ export function useExchangeRateQuery(params?: ParamsDto) {
       return res.json();
     },
     enabled: !!buCode,
-    staleTime: 5 * 60 * 1000,
+    ...CACHE_NORMAL,
   });
 }
 
@@ -70,8 +71,7 @@ export function useExternalExchangeRates(baseCurrency: string) {
       return data.conversion_rates;
     },
     enabled: !!baseCurrency,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    ...CACHE_NORMAL,
     refetchOnWindowFocus: false,
     retry: 3,
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 30000),

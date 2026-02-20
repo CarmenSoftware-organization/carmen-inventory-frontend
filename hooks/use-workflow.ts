@@ -12,6 +12,7 @@ import {
   WORKFLOW_TYPE,
 } from "@/types/workflows";
 import type { PaginatedResponse, ParamsDto } from "@/types/params";
+import { CACHE_STATIC } from "@/lib/cache-config";
 
 export function useWorkflow(params?: ParamsDto) {
   const buCode = useBuCode();
@@ -26,6 +27,7 @@ export function useWorkflow(params?: ParamsDto) {
       return res.json();
     },
     enabled: !!buCode,
+    ...CACHE_STATIC,
   });
 }
 
@@ -44,6 +46,7 @@ export function useWorkflowTypeQuery(type: WORKFLOW_TYPE) {
       return json.data ?? [];
     },
     enabled: !!buCode,
+    ...CACHE_STATIC,
   });
 }
 

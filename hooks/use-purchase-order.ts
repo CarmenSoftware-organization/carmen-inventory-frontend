@@ -7,6 +7,7 @@ import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { PurchaseOrder, CreatePoDto } from "@/types/purchase-order";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
+import { CACHE_DYNAMIC } from "@/lib/cache-config";
 
 export function usePurchaseOrder(params?: ParamsDto) {
   const buCode = useBuCode();
@@ -21,6 +22,7 @@ export function usePurchaseOrder(params?: ParamsDto) {
       return res.json();
     },
     enabled: !!buCode,
+    ...CACHE_DYNAMIC,
   });
 }
 

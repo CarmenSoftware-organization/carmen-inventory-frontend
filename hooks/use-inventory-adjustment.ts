@@ -10,6 +10,7 @@ import type {
   InventoryAdjustmentType,
 } from "@/types/inventory-adjustment";
 import type { PaginatedResponse, ParamsDto } from "@/types/params";
+import { CACHE_DYNAMIC } from "@/lib/cache-config";
 
 interface CreateInventoryAdjustmentDto {
   description: string;
@@ -50,6 +51,7 @@ export function useInventoryAdjustment(params?: ParamsDto) {
       return res.json();
     },
     enabled: !!buCode,
+    ...CACHE_DYNAMIC,
   });
 }
 

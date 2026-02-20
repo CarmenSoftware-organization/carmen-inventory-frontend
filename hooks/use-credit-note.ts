@@ -7,6 +7,7 @@ import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { CreditNote, CreateCnDto } from "@/types/credit-note";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
+import { CACHE_DYNAMIC } from "@/lib/cache-config";
 
 export function useCreditNote(params?: ParamsDto) {
   const buCode = useBuCode();
@@ -21,6 +22,7 @@ export function useCreditNote(params?: ParamsDto) {
       return res.json();
     },
     enabled: !!buCode,
+    ...CACHE_DYNAMIC,
   });
 }
 

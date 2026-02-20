@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { httpClient } from "@/lib/http-client";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
+import { CACHE_DYNAMIC } from "@/lib/cache-config";
 
 export interface InventoryBalance {
   on_hand_qty: number;
@@ -28,6 +29,6 @@ export function useProductInventory(
       return json.data;
     },
     enabled: !!buCode && !!locationId && !!productId,
-    staleTime: 30_000,
+    ...CACHE_DYNAMIC,
   });
 }

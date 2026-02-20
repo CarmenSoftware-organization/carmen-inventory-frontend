@@ -12,6 +12,7 @@ import type {
   UpdateRoleDto,
 } from "@/types/role";
 import type { PaginatedResponse, ParamsDto } from "@/types/params";
+import { CACHE_STATIC } from "@/lib/cache-config";
 
 export function useRole(params?: ParamsDto) {
   const buCode = useBuCode();
@@ -26,6 +27,7 @@ export function useRole(params?: ParamsDto) {
       return res.json();
     },
     enabled: !!buCode,
+    ...CACHE_STATIC,
   });
 }
 

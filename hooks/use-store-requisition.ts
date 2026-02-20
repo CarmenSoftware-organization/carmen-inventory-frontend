@@ -7,6 +7,7 @@ import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { StoreRequisition } from "@/types/store-requisition";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
+import { CACHE_DYNAMIC } from "@/lib/cache-config";
 
 export interface SrDetailPayload {
   product_id: string;
@@ -58,6 +59,7 @@ export function useStoreRequisition(params?: ParamsDto) {
       };
     },
     enabled: !!buCode,
+    ...CACHE_DYNAMIC,
   });
 }
 

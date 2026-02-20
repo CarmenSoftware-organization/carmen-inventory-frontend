@@ -3,6 +3,7 @@ import { useBuCode } from "@/hooks/use-bu-code";
 import { httpClient } from "@/lib/http-client";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
+import { CACHE_STATIC } from "@/lib/cache-config";
 
 export interface ProductUnit {
   id: string;
@@ -25,5 +26,6 @@ export function useProductUnits(productId: string | undefined) {
       return json.data ?? [];
     },
     enabled: !!buCode && !!productId,
+    ...CACHE_STATIC,
   });
 }

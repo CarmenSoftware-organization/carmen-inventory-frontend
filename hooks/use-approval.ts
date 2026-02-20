@@ -12,6 +12,7 @@ import type {
   RawApprovalSR,
 } from "@/types/approval";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
+import { CACHE_DYNAMIC } from "@/lib/cache-config";
 
 function normalizePR(item: RawApprovalPR): ApprovalItem {
   return {
@@ -126,6 +127,7 @@ export function useApprovalPending(params?: ParamsDto) {
       };
     },
     enabled: !!buCode,
+    ...CACHE_DYNAMIC,
   });
 }
 
@@ -138,5 +140,6 @@ export function useApprovalPendingSummary() {
       const json = await res.json();
       return json.data;
     },
+    ...CACHE_DYNAMIC,
   });
 }

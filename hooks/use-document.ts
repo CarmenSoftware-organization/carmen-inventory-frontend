@@ -7,6 +7,7 @@ import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { DocumentFile } from "@/types/document";
 import type { PaginatedResponse, ParamsDto } from "@/types/params";
+import { CACHE_DYNAMIC } from "@/lib/cache-config";
 
 export function useDocument(params?: ParamsDto) {
   const buCode = useBuCode();
@@ -21,6 +22,7 @@ export function useDocument(params?: ParamsDto) {
       return res.json();
     },
     enabled: !!buCode,
+    ...CACHE_DYNAMIC,
   });
 }
 

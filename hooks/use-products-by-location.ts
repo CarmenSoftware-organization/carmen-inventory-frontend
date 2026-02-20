@@ -4,6 +4,7 @@ import { httpClient } from "@/lib/http-client";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { Product } from "@/types/product";
+import { CACHE_NORMAL } from "@/lib/cache-config";
 
 export function useProductsByLocation(locationId: string | undefined) {
   const buCode = useBuCode();
@@ -20,5 +21,6 @@ export function useProductsByLocation(locationId: string | undefined) {
       return json.data ?? [];
     },
     enabled: !!buCode && !!locationId,
+    ...CACHE_NORMAL,
   });
 }

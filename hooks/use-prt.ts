@@ -7,6 +7,7 @@ import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { PurchaseRequestTemplate } from "@/types/purchase-request";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
+import { CACHE_STATIC } from "@/lib/cache-config";
 
 export interface PrtDetailPayload {
   location_id: string | null;
@@ -67,6 +68,7 @@ export function usePrt(params?: ParamsDto) {
       return res.json();
     },
     enabled: !!buCode,
+    ...CACHE_STATIC,
   });
 }
 
