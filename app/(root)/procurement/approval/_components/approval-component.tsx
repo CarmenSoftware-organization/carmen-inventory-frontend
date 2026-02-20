@@ -1,6 +1,12 @@
 "use client";
 
-import { ClipboardList, FileText } from "lucide-react";
+import {
+  ClipboardList,
+  FileText,
+  ShoppingCart,
+  PackageOpen,
+  type LucideIcon,
+} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   useApprovalPending,
@@ -11,7 +17,20 @@ import { useProfile } from "@/hooks/use-profile";
 import SearchInput from "@/components/search-input";
 import { ErrorState } from "@/components/ui/error-state";
 import DisplayTemplate from "@/components/display-template";
+import type { ApprovalPendingSummary } from "@/types/approval";
 import ApprovalQueueList from "./approve-queue-list";
+
+const SUMMARY_CARDS: {
+  key: keyof ApprovalPendingSummary;
+  label: string;
+  icon: LucideIcon;
+  color: string;
+}[] = [
+  { key: "total", label: "Total Pending", icon: ClipboardList, color: "primary" },
+  { key: "pr", label: "Purchase Request", icon: FileText, color: "info" },
+  { key: "po", label: "Purchase Order", icon: ShoppingCart, color: "warning" },
+  { key: "sr", label: "Store Requisition", icon: PackageOpen, color: "secondary" },
+];
 
 export default function ApprovalComponent() {
   const { dateFormat } = useProfile();
@@ -38,10 +57,11 @@ export default function ApprovalComponent() {
     >
       {/* Summary Stats */}
       <div className="grid grid-cols-4 gap-3">
-        {summaryLoading ? (
-          Array.from({ length: 3 }).map((_, i) => (
+        {SUMMARY_CARDS.map((card) => {
+          const Icon = card.icon;
+          return summaryLoading ? (
             <div
-              key={i}
+              key={card.key}
               className="rounded-lg border bg-card p-3 flex items-center gap-3"
             >
               <Skeleton className="size-9 rounded-lg" />
@@ -50,63 +70,27 @@ export default function ApprovalComponent() {
                 <Skeleton className="h-5 w-8" />
               </div>
             </div>
-          ))
-        ) : (
-          <>
-            <div className="rounded-lg border bg-card p-3 flex items-center gap-3">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10">
-                <ClipboardList className="size-4 text-primary" />
+          ) : (
+            <div
+              key={card.key}
+              className="rounded-lg border bg-card p-3 flex items-center gap-3"
+            >
+              <div
+                className={`flex size-9 items-center justify-center rounded-lg bg-${card.color}/10`}
+              >
+                <Icon className={`size-4 text-${card.color}`} />
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground leading-none">
-                  Total Pending
+                  {card.label}
                 </p>
                 <p className="text-lg font-semibold leading-tight tabular-nums">
-                  {summary?.total ?? 0}
+                  {summary?.[card.key] ?? 0}
                 </p>
               </div>
             </div>
-            <div className="rounded-lg border bg-card p-3 flex items-center gap-3">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-info/10">
-                <FileText className="size-4 text-info" />
-              </div>
-              <div>
-                <p className="text-[11px] text-muted-foreground leading-none">
-                  Purchase Request
-                </p>
-                <p className="text-lg font-semibold leading-tight tabular-nums">
-                  {summary?.pr ?? 0}
-                </p>
-              </div>
-            </div>
-            <div className="rounded-lg border bg-card p-3 flex items-center gap-3">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-info/10">
-                <FileText className="size-4 text-info" />
-              </div>
-              <div>
-                <p className="text-[11px] text-muted-foreground leading-none">
-                  Purchase Order
-                </p>
-                <p className="text-lg font-semibold leading-tight tabular-nums">
-                  {summary?.po ?? 0}
-                </p>
-              </div>
-            </div>
-            <div className="rounded-lg border bg-card p-3 flex items-center gap-3">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-info/10">
-                <FileText className="size-4 text-info" />
-              </div>
-              <div>
-                <p className="text-[11px] text-muted-foreground leading-none">
-                  Store Requisition
-                </p>
-                <p className="text-lg font-semibold leading-tight tabular-nums">
-                  {summary?.sr ?? 0}
-                </p>
-              </div>
-            </div>
-          </>
-        )}
+          );
+        })}
       </div>
 
       <ApprovalQueueList
