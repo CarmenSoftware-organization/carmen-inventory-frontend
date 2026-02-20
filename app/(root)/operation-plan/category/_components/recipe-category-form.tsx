@@ -283,7 +283,6 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
           </FieldGroup>
         </section>
 
-        {/* ── Settings ── */}
         <section className="space-y-3">
           <h2 className="text-sm font-semibold">Settings</h2>
           <FieldGroup className="gap-3">
@@ -300,7 +299,8 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                   {...form.register("default_cost_settings")}
                 />
                 <FieldDescription className="text-xs">
-                  JSON format for default cost configuration
+                  For cost calculation, e.g. {'{ "wastage": 0.1 }'} for 10%
+                  wastage
                 </FieldDescription>
               </Field>
 
@@ -314,7 +314,9 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                   {...form.register("default_margins")}
                 />
                 <FieldDescription className="text-xs">
-                  JSON format for default margin targets
+                  For price calculation, e.g.{" "}
+                  {'{ "dine_in": 0.3, "takeaway": 0.2 }'} for 30% margin on
+                  dine-in and 20% on takeaway
                 </FieldDescription>
               </Field>
 
@@ -343,7 +345,6 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
           </FieldGroup>
         </section>
 
-        {/* ── Additional ── */}
         <section className="space-y-3">
           <h2 className="text-sm font-semibold">Additional</h2>
           <FieldGroup className="gap-3">
