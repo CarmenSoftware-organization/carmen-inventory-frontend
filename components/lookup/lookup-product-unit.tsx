@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2, Ruler } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Command, CommandInput } from "@/components/ui/command";
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/popover";
 import { VirtualCommandList } from "@/components/ui/virtual-command-list";
 import { useProductUnits } from "@/hooks/use-product-units";
+import EmptyComponent from "../empty-component";
 
 interface LookupProductUnitProps {
   readonly productId: string;
@@ -98,7 +99,13 @@ export function LookupProductUnit({
           ) : (
             <VirtualCommandList
               items={filteredUnits}
-              emptyMessage="No units found."
+              emptyMessage={
+                <EmptyComponent
+                  icon={Ruler}
+                  title="No unit found"
+                  description="Try adjusting your search or filter to find what you're looking for."
+                />
+              }
             >
               {(unit) => (
                 <button

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, PackageSearch } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Command, CommandInput } from "@/components/ui/command";
@@ -13,6 +13,7 @@ import {
 import { VirtualCommandList } from "@/components/ui/virtual-command-list";
 import { useProductsByLocation } from "@/hooks/use-products-by-location";
 import type { Product } from "@/types/product";
+import EmptyComponent from "../empty-component";
 
 interface LookupProductInLocationProps {
   readonly locationId: string;
@@ -82,7 +83,13 @@ export function LookupProductInLocation({
           />
           <VirtualCommandList
             items={filteredProducts}
-            emptyMessage="No products found."
+            emptyMessage={
+              <EmptyComponent
+                icon={PackageSearch}
+                title="No product found"
+                description="Try adjusting your search or filter to find what you're looking for."
+              />
+            }
           >
             {(product) => (
               <button

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2, Tags } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Command, CommandInput } from "@/components/ui/command";
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/popover";
 import { VirtualCommandList } from "@/components/ui/virtual-command-list";
 import { usePriceList } from "@/hooks/use-price-list";
+import EmptyComponent from "../empty-component";
 
 interface LookupPriceListProps {
   readonly value: string;
@@ -87,7 +88,13 @@ export function LookupPriceList({
           ) : (
             <VirtualCommandList
               items={filteredPriceLists}
-              emptyMessage="No price lists found."
+              emptyMessage={
+                <EmptyComponent
+                  icon={Tags}
+                  title="No price list found"
+                  description="Try adjusting your search or filter to find what you're looking for."
+                />
+              }
             >
               {(pl) => (
                 <button
