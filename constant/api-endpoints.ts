@@ -1,8 +1,8 @@
 export const API_ENDPOINTS = {
   ADJUSTMENT_TYPES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/adjustment-type`,
-  APPROVAL_PENDING: "/api/proxy/api/pprove/pending",
-  APPROVAL_ACTION: (buCode: string) => `/api/proxy/api/${buCode}/pprove`,
+  APPROVAL_PENDING: "/api/proxy/api/my-approve",
+  APPROVAL_PENDING_SUMMARY: "/api/proxy/api/my-approve/pending",
   APPLICATION_ROLES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/application-roles`,
   CN_REASONS: (buCode: string) =>

@@ -1,168 +1,175 @@
-import { Skeleton } from "@/components/ui/skeleton";
-import { PR_STATUS_CONFIG } from "@/constant/purchase-request";
-import { ApprovalItem } from "@/types/approval";
+"use no memo";
+
+import type { ColumnDef } from "@tanstack/react-table";
+import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { Clock } from "lucide-react";
+import { PR_STATUS_CONFIG } from "@/constant/purchase-request";
+import type { ApprovalItem } from "@/types/approval";
 import { formatDate } from "@/lib/date-utils";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import {
+  columnSkeletons,
+  indexColumn,
+} from "@/components/ui/data-grid/columns";
+import {
+  DataGrid,
+  DataGridContainer,
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
+import { DataGridPagination } from "@/components/ui/data-grid/data-grid-pagination";
+import type { useDataGridState } from "@/hooks/use-data-grid-state";
+import type { ParamsDto } from "@/types/params";
+import EmptyComponent from "@/components/empty-component";
+
+const DOC_TYPE_CONFIG: Record<
+  string,
+  {
+    label: string;
+    variant: "info" | "warning" | "default";
+    href: (id: string) => string;
+  }
+> = {
+  pr: {
+    label: "PR",
+    variant: "info",
+    href: (id) => `/procurement/purchase-request/${id}`,
+  },
+  po: {
+    label: "PO",
+    variant: "warning",
+    href: (id) => `/procurement/purchase-order/${id}`,
+  },
+  sr: {
+    label: "SR",
+    variant: "default",
+    href: (id) => `/store-operation/store-requisition/${id}`,
+  },
+};
 
 interface ApprovalQueueListProps {
   readonly items: ApprovalItem[];
+  readonly totalRecords: number;
   readonly isLoading: boolean;
-  readonly isPending: boolean;
   readonly dateFormat: string;
-  readonly onView: (item: ApprovalItem) => void;
-  readonly onApprove: (item: ApprovalItem) => void;
-  readonly onReject: (item: ApprovalItem) => void;
+  readonly params: ParamsDto;
+  readonly tableConfig: ReturnType<typeof useDataGridState>["tableConfig"];
 }
 
 export default function ApprovalQueueList({
   items,
+  totalRecords,
   isLoading,
-  isPending,
   dateFormat,
-  onView,
-  onApprove,
-  onReject,
+  params,
+  tableConfig,
 }: ApprovalQueueListProps) {
-  if (isLoading) {
-    return (
-      <div className="rounded-lg border bg-card divide-y">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="p-3 flex items-center gap-4">
-            <Skeleton className="h-10 w-full" />
-          </div>
-        ))}
-      </div>
-    );
-  }
+  const columns: ColumnDef<ApprovalItem>[] = [
+    indexColumn<ApprovalItem>(params),
+    {
+      accessorKey: "doc_no",
+      header: "Document",
+      cell: ({ row }) => {
+        const item = row.original;
 
-  if (items.length === 0) {
+        const href = DOC_TYPE_CONFIG[item.doc_type]?.href(item.id) ?? "#";
+        return (
+          <Link
+            href={href}
+            className="font-medium hover:underline text-left text-xs"
+          >
+            {item.doc_no}
+          </Link>
+        );
+      },
+      meta: { skeleton: columnSkeletons.text },
+    },
+    {
+      accessorKey: "doc_type",
+      header: "Type",
+      cell: ({ row }) => (
+        <Badge
+          variant={
+            DOC_TYPE_CONFIG[row.original.doc_type]?.variant ?? "secondary"
+          }
+          size="xs"
+        >
+          {DOC_TYPE_CONFIG[row.original.doc_type]?.label ??
+            row.original.doc_type.toUpperCase()}
+        </Badge>
+      ),
+      size: 60,
+      meta: {
+        cellClassName: "text-center",
+        headerClassName: "text-center",
+        skeleton: columnSkeletons.badge,
+      },
+    },
+
+    {
+      accessorKey: "doc_date",
+      header: "Date",
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {formatDate(row.original.doc_date, dateFormat)}
+        </span>
+      ),
+      size: 100,
+      meta: { skeleton: columnSkeletons.text },
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.getValue("status") as string;
+        const config =
+          PR_STATUS_CONFIG[status ?? "draft"] ?? PR_STATUS_CONFIG.draft;
+        return (
+          <Badge variant={config.variant} size="xs">
+            {config.label}
+          </Badge>
+        );
+      },
+      size: 100,
+      meta: {
+        cellClassName: "text-center",
+        headerClassName: "text-center",
+        skeleton: columnSkeletons.badge,
+      },
+    },
+  ];
+
+  const pageSize = tableConfig.state.pagination.pageSize;
+
+  const table = useReactTable({
+    data: items,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    ...tableConfig,
+    pageCount: Math.ceil(totalRecords / pageSize),
+  });
+
+  if (!isLoading && items.length === 0) {
     return (
-      <div className="rounded-lg border bg-card flex flex-col items-center justify-center py-16 gap-2">
-        <Clock className="size-8 text-muted-foreground/50" />
-        <p className="text-sm text-muted-foreground">No pending approvals</p>
-      </div>
+      <EmptyComponent
+        icon={Clock}
+        title="No pending approvals"
+        description="You have no documents waiting for your approval at the moment."
+      />
     );
   }
 
   return (
-    <div className="rounded-lg border bg-card divide-y">
-      {/* Column Header */}
-      <div className="grid grid-cols-[1fr_120px_120px_100px_100px_140px] gap-2 px-3 py-2 text-[11px] font-medium text-muted-foreground uppercase tracking-wider bg-muted/30">
-        <span>Document</span>
-        <span>Requestor</span>
-        <span>Department</span>
-        <span className="text-center">Status</span>
-        <span className="text-center">Stage</span>
-        <span className="text-right">Action</span>
-      </div>
-
-      {/* Rows */}
-      {items.map((item) => {
-        const statusConfig =
-          PR_STATUS_CONFIG[item.pr_status ?? "draft"] ?? PR_STATUS_CONFIG.draft;
-
-        const totalAmount = item.purchase_request_detail?.reduce(
-          (sum, d) => sum + (d.total_price ?? 0),
-          0,
-        );
-
-        return (
-          <div
-            key={item.id}
-            className="grid grid-cols-[1fr_120px_120px_100px_100px_140px] gap-2 px-3 py-2.5 items-center hover:bg-muted/20 transition-colors"
-          >
-            {/* Document Info */}
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  className="text-xs font-semibold hover:underline text-left truncate"
-                  onClick={() => onView(item)}
-                >
-                  {item.pr_no}
-                </button>
-                {item.workflow_name && (
-                  <Badge variant="outline" size="xs">
-                    {item.workflow_name}
-                  </Badge>
-                )}
-              </div>
-              <div className="flex items-center gap-2 mt-0.5 text-[11px] text-muted-foreground">
-                <span>{formatDate(item.pr_date, dateFormat)}</span>
-                {item.purchase_request_detail?.length > 0 && (
-                  <>
-                    <span>|</span>
-                    <span>{item.purchase_request_detail.length} items</span>
-                  </>
-                )}
-                {totalAmount > 0 && (
-                  <>
-                    <span>|</span>
-                    <span className="tabular-nums font-medium text-foreground">
-                      {totalAmount.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
-                    </span>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Requestor */}
-            <span className="text-xs truncate">
-              {item.requestor_name || "\u2014"}
-            </span>
-
-            {/* Department */}
-            <span className="text-xs truncate">
-              {item.department_name || "\u2014"}
-            </span>
-
-            {/* Status */}
-            <div className="text-center">
-              <Badge variant={statusConfig.variant} size="xs">
-                {statusConfig.label}
-              </Badge>
-            </div>
-
-            {/* Stage */}
-            <div className="text-center">
-              {item.workflow_current_stage ? (
-                <Badge variant="outline" size="xs">
-                  {item.workflow_current_stage}
-                </Badge>
-              ) : (
-                <span className="text-xs text-muted-foreground">
-                  {"\u2014"}
-                </span>
-              )}
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center justify-end gap-1">
-              <Button
-                size="xs"
-                variant="success"
-                onClick={() => onApprove(item)}
-                disabled={isPending}
-              >
-                Approve
-              </Button>
-              <Button
-                size="xs"
-                variant="destructive"
-                onClick={() => onReject(item)}
-                disabled={isPending}
-              >
-                Reject
-              </Button>
-            </div>
-          </div>
-        );
-      })}
-    </div>
+    <DataGrid
+      table={table}
+      recordCount={totalRecords}
+      isLoading={isLoading}
+      tableClassNames={{ base: "text-xs" }}
+    >
+      <DataGridContainer>
+        <DataGridTable />
+      </DataGridContainer>
+      <DataGridPagination />
+    </DataGrid>
   );
 }
