@@ -5,6 +5,7 @@ import { useForm, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { BookOpen, Clock, DollarSign, Settings2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormToolbar } from "@/components/ui/form-toolbar";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
@@ -285,37 +286,41 @@ export function RecipeForm({ recipe }: RecipeFormProps) {
       <form
         id="recipe-form"
         onSubmit={form.handleSubmit(onSubmit)}
-        className="max-w-3xl"
+        className="max-w-4xl"
       >
         <Tabs defaultValue="general">
           <TabsList variant="line">
             <TabsTrigger value="general" className="text-xs">
+              <BookOpen className="size-3.5" />
               General
             </TabsTrigger>
             <TabsTrigger value="preparation" className="text-xs">
+              <Clock className="size-3.5" />
               Preparation
             </TabsTrigger>
             <TabsTrigger value="cost" className="text-xs">
+              <DollarSign className="size-3.5" />
               Cost & Pricing
             </TabsTrigger>
             <TabsTrigger value="details" className="text-xs">
+              <Settings2 className="size-3.5" />
               Details
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="general">
+          <TabsContent value="general" className="space-y-2.5 pt-2.5">
             <RecipeGeneralFields form={form} isDisabled={isDisabled} />
           </TabsContent>
 
-          <TabsContent value="preparation">
+          <TabsContent value="preparation" className="space-y-2.5 pt-2.5">
             <RecipePreparationFields form={form} isDisabled={isDisabled} />
           </TabsContent>
 
-          <TabsContent value="cost">
+          <TabsContent value="cost" className="space-y-2.5 pt-2.5">
             <RecipeCostFields form={form} isDisabled={isDisabled} />
           </TabsContent>
 
-          <TabsContent value="details">
+          <TabsContent value="details" className="space-y-2.5 pt-2.5">
             <RecipeDetailFields form={form} isDisabled={isDisabled} />
           </TabsContent>
         </Tabs>

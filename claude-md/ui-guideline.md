@@ -43,6 +43,135 @@
 > - ใช้ spacing + section header (`<h2>`) แทน
 > - Card = visual noise ดูรกตา อ่านยากขึ้น
 
+## Form Section Layout
+
+Form ที่มีหลาย fields ให้แบ่งเป็น **section** ด้วย `<section>` + `<h2>` + `<FieldGroup>`:
+
+```tsx
+<div className="space-y-4">
+  {/* ── Section Name ── */}
+  <section className="space-y-3">
+    <h2 className="text-sm font-semibold">Section Name</h2>
+    <FieldGroup className="gap-3">
+      <div className="grid grid-cols-2 gap-2">
+        <Field>...</Field>
+        <Field>...</Field>
+      </div>
+    </FieldGroup>
+  </section>
+</div>
+```
+
+| ส่วน | Class |
+|------|-------|
+| Wrapper รวม sections | `space-y-4` |
+| แต่ละ section | `<section className="space-y-3">` |
+| Section header | `<h2 className="text-sm font-semibold">` |
+| FieldGroup | `gap-3` (compact) |
+| Grid ภายใน | `grid-cols-2 gap-2` (default), `grid-cols-3 gap-2` (ถ้าต้องการ) |
+
+### Section Header + Badge
+
+ถ้า section มี status หรือ context เพิ่มเติม ใช้ Badge ข้าง `<h2>`:
+
+```tsx
+<div className="flex items-center gap-2">
+  <h2 className="text-sm font-semibold">Recipe Identity</h2>
+  <Badge variant="success-light" size="sm">PUBLISHED</Badge>
+</div>
+```
+
+Badge variants ที่ใช้บ่อย:
+
+- Status: `info-light` (Draft), `success-light` (Published/Active), `warning-light` (Archived/Warning), `destructive-light` (Inactive/Error)
+- Label: `outline` (KPI, Required, etc.)
+
+### Sub-group ภายใน Section
+
+ถ้า section มี fields เยอะ แบ่งย่อยด้วย uppercase label + `<Separator>`:
+
+```tsx
+<FieldGroup className="gap-3">
+  <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+    Sub-group Name
+  </p>
+  <div className="grid grid-cols-2 gap-2">...</div>
+
+  <Separator />
+
+  <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+    Another Sub-group
+  </p>
+  <div className="grid grid-cols-2 gap-2">...</div>
+</FieldGroup>
+```
+
+### FieldDescription
+
+ใช้ `<FieldDescription>` ใต้ input สำหรับ field ที่ต้องการคำอธิบายเพิ่ม (user อายุเยอะ ต้องการ clarity):
+
+```tsx
+<Field>
+  <FieldLabel className="text-xs" required>Cuisine</FieldLabel>
+  <LookupCuisine ... />
+  <FieldDescription className="text-xs">
+    The culinary tradition this recipe belongs to
+  </FieldDescription>
+  <FieldError>...</FieldError>
+</Field>
+```
+
+- ใช้ `className="text-xs"` เสมอ
+- ใส่เฉพาะ field ที่อาจสับสน ไม่ต้องใส่ทุก field
+
+### Input Suffix (Unit)
+
+สำหรับ field ที่มีหน่วย (min, %, kg CO2e):
+
+```tsx
+<div className="relative">
+  <Input
+    type="number"
+    step="0.01"
+    className="h-8 pr-12 text-right text-sm"
+    {...form.register("field_name")}
+  />
+  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+    min
+  </span>
+</div>
+```
+
+- `pr-8` สำหรับ suffix สั้น (%), `pr-12` สำหรับ suffix ยาว (min), `pr-16` สำหรับ suffix ยาวมาก (kg CO2e)
+- `text-right` สำหรับ number fields เสมอ
+
+### Textarea สำหรับ List Data
+
+สำหรับ field ที่รับ list (tags, allergens, URLs):
+
+```tsx
+<Textarea
+  placeholder={"Gluten\nDairy\nNuts"}
+  className="font-mono text-sm"
+  rows={3}
+  {...form.register("allergens")}
+/>
+```
+
+- ใช้ `font-mono` เพื่อให้อ่าน list ง่าย
+- placeholder แสดงตัวอย่างจริง ไม่ใช่ "Optional"
+
+### Tab with Icon
+
+Tab trigger สามารถมี Lucide icon ได้:
+
+```tsx
+<TabsTrigger value="general" className="text-xs">
+  <BookOpen className="size-3.5" />
+  General
+</TabsTrigger>
+```
+
 ## DataGrid / Table
 
 โปรเจคนี้ใช้ **dense mode เป็นค่าเริ่มต้น** ทุก DataGrid:
