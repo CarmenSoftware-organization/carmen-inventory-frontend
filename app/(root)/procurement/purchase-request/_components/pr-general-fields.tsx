@@ -50,9 +50,10 @@ export function PrGeneralFields({
         <Field>
           <FieldLabel className="text-xs">Description</FieldLabel>
           <Textarea
-            placeholder="Optional description"
+            placeholder="Enter description..."
             className="text-sm"
             rows={2}
+            maxLength={256}
             disabled={disabled}
             {...form.register("description")}
           />
