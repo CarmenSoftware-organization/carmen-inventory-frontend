@@ -12,6 +12,7 @@ import {
   FieldGroup,
   FieldLabel,
   FieldError,
+  FieldDescription,
 } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { FormToolbar } from "@/components/ui/form-toolbar";
@@ -198,180 +199,157 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
       <form
         id="recipe-category-form"
         onSubmit={form.handleSubmit(onSubmit)}
-        className="max-w-2xl space-y-6"
+        className="max-w-2xl space-y-4"
       >
-        {/* General Information */}
-        <div className="space-y-3">
+        {/* ── General Information ── */}
+        <section className="space-y-3">
           <h2 className="text-sm font-semibold">General Information</h2>
-          <div className="grid grid-cols-2 gap-3">
-            <Field data-invalid={!!form.formState.errors.code}>
-              <FieldLabel
-                htmlFor="recipe-category-code"
-                className="text-xs"
-                required
-              >
-                Code
-              </FieldLabel>
-              <Input
-                id="recipe-category-code"
-                placeholder="e.g. APPETIZER"
-                className="h-8 text-sm"
-                disabled={isDisabled}
-                {...form.register("code")}
-              />
-              <FieldError>{form.formState.errors.code?.message}</FieldError>
-            </Field>
+          <FieldGroup className="gap-3">
+            <div className="grid grid-cols-2 gap-2">
+              <Field data-invalid={!!form.formState.errors.code}>
+                <FieldLabel className="text-xs" required>
+                  Code
+                </FieldLabel>
+                <Input
+                  placeholder="e.g. APPETIZER"
+                  className="h-8 text-sm"
+                  disabled={isDisabled}
+                  {...form.register("code")}
+                />
+                <FieldError>{form.formState.errors.code?.message}</FieldError>
+              </Field>
 
-            <Field data-invalid={!!form.formState.errors.name}>
-              <FieldLabel
-                htmlFor="recipe-category-name"
-                className="text-xs"
-                required
-              >
-                Name
-              </FieldLabel>
-              <Input
-                id="recipe-category-name"
-                placeholder="e.g. Appetizer"
-                className="h-8 text-sm"
-                disabled={isDisabled}
-                {...form.register("name")}
-              />
-              <FieldError>{form.formState.errors.name?.message}</FieldError>
-            </Field>
+              <Field data-invalid={!!form.formState.errors.name}>
+                <FieldLabel className="text-xs" required>
+                  Name
+                </FieldLabel>
+                <Input
+                  placeholder="e.g. Appetizer"
+                  className="h-8 text-sm"
+                  disabled={isDisabled}
+                  {...form.register("name")}
+                />
+                <FieldError>{form.formState.errors.name?.message}</FieldError>
+              </Field>
 
-            <Field>
-              <FieldLabel className="text-xs">Parent Category</FieldLabel>
-              <Controller
-                control={form.control}
-                name="parent_id"
-                render={({ field }) => (
-                  <LookupRecipeCategory
-                    value={field.value ?? ""}
-                    onValueChange={field.onChange}
-                    disabled={isDisabled}
-                    excludeIds={category ? new Set([category.id]) : undefined}
-                  />
-                )}
-              />
-            </Field>
+              <Field>
+                <FieldLabel className="text-xs">Parent Category</FieldLabel>
+                <Controller
+                  control={form.control}
+                  name="parent_id"
+                  render={({ field }) => (
+                    <LookupRecipeCategory
+                      value={field.value ?? ""}
+                      onValueChange={field.onChange}
+                      disabled={isDisabled}
+                      excludeIds={category ? new Set([category.id]) : undefined}
+                    />
+                  )}
+                />
+                <FieldDescription className="text-xs">
+                  Select a parent to create a sub-category
+                </FieldDescription>
+              </Field>
 
-            <Field data-invalid={!!form.formState.errors.level}>
-              <FieldLabel
-                htmlFor="recipe-category-level"
-                className="text-xs"
-                required
-              >
-                Level
-              </FieldLabel>
-              <Input
-                id="recipe-category-level"
-                type="number"
-                min={1}
-                placeholder="1"
-                className="h-8 text-sm"
-                disabled={isDisabled}
-                {...form.register("level")}
-              />
-              <FieldError>{form.formState.errors.level?.message}</FieldError>
-            </Field>
+              <Field data-invalid={!!form.formState.errors.level}>
+                <FieldLabel className="text-xs" required>
+                  Level
+                </FieldLabel>
+                <Input
+                  type="number"
+                  min={1}
+                  placeholder="1"
+                  className="h-8 text-sm"
+                  disabled={isDisabled}
+                  {...form.register("level")}
+                />
+                <FieldError>{form.formState.errors.level?.message}</FieldError>
+                <FieldDescription className="text-xs">
+                  Hierarchy depth (1 = top-level)
+                </FieldDescription>
+              </Field>
 
-            <Field className="col-span-2">
-              <FieldLabel
-                htmlFor="recipe-category-description"
-                className="text-xs"
-              >
-                Description
-              </FieldLabel>
-              <Textarea
-                id="recipe-category-description"
-                placeholder="Optional"
-                className="text-sm"
-                rows={2}
-                disabled={isDisabled}
-                {...form.register("description")}
-              />
-            </Field>
-          </div>
-        </div>
+              <Field className="col-span-2">
+                <FieldLabel className="text-xs">Description</FieldLabel>
+                <Textarea
+                  placeholder="Optional"
+                  className="text-sm"
+                  rows={2}
+                  disabled={isDisabled}
+                  {...form.register("description")}
+                />
+              </Field>
+            </div>
+          </FieldGroup>
+        </section>
 
-        {/* Settings */}
-        <div className="space-y-3">
+        {/* ── Settings ── */}
+        <section className="space-y-3">
           <h2 className="text-sm font-semibold">Settings</h2>
-          <div className="grid grid-cols-2 gap-3">
-            <Field>
-              <FieldLabel
-                htmlFor="recipe-category-default-cost"
-                className="text-xs"
-              >
-                Default Cost Settings
-              </FieldLabel>
-              <Textarea
-                id="recipe-category-default-cost"
-                className="text-sm"
-                rows={3}
-                disabled={isDisabled}
-                {...form.register("default_cost_settings")}
-              />
-            </Field>
+          <FieldGroup className="gap-3">
+            <div className="grid grid-cols-2 gap-2">
+              <Field>
+                <FieldLabel className="text-xs">
+                  Default Cost Settings
+                </FieldLabel>
+                <Textarea
+                  placeholder="{}"
+                  className="text-sm"
+                  rows={3}
+                  disabled={isDisabled}
+                  {...form.register("default_cost_settings")}
+                />
+                <FieldDescription className="text-xs">
+                  JSON format for default cost configuration
+                </FieldDescription>
+              </Field>
 
-            <Field>
-              <FieldLabel
-                htmlFor="recipe-category-default-margins"
-                className="text-xs"
-              >
-                Default Margins
-              </FieldLabel>
-              <Textarea
-                id="recipe-category-default-margins"
-                className="text-sm"
-                rows={3}
-                disabled={isDisabled}
-                {...form.register("default_margins")}
-              />
-            </Field>
+              <Field>
+                <FieldLabel className="text-xs">Default Margins</FieldLabel>
+                <Textarea
+                  placeholder="Enter default margins ..."
+                  className="text-sm"
+                  rows={3}
+                  disabled={isDisabled}
+                  {...form.register("default_margins")}
+                />
+                <FieldDescription className="text-xs">
+                  JSON format for default margin targets
+                </FieldDescription>
+              </Field>
 
-            <Field>
-              <FieldLabel htmlFor="recipe-category-info" className="text-xs">
-                Info
-              </FieldLabel>
-              <Textarea
-                id="recipe-category-info"
-                className="text-sm"
-                rows={3}
-                disabled={isDisabled}
-                {...form.register("info")}
-              />
-            </Field>
+              <Field>
+                <FieldLabel className="text-xs">Info</FieldLabel>
+                <Textarea
+                  placeholder="Enter info ..."
+                  className="text-sm"
+                  rows={3}
+                  disabled={isDisabled}
+                  {...form.register("info")}
+                />
+              </Field>
 
-            <Field>
-              <FieldLabel
-                htmlFor="recipe-category-dimension"
-                className="text-xs"
-              >
-                Dimension
-              </FieldLabel>
-              <Textarea
-                id="recipe-category-dimension"
-                className="text-sm"
-                rows={3}
-                disabled={isDisabled}
-                {...form.register("dimension")}
-              />
-            </Field>
-          </div>
-        </div>
+              <Field>
+                <FieldLabel className="text-xs">Dimension</FieldLabel>
+                <Textarea
+                  placeholder="Enter dimension ..."
+                  className="text-sm"
+                  rows={3}
+                  disabled={isDisabled}
+                  {...form.register("dimension")}
+                />
+              </Field>
+            </div>
+          </FieldGroup>
+        </section>
 
-        {/* Additional */}
-        <div className="space-y-3">
+        {/* ── Additional ── */}
+        <section className="space-y-3">
           <h2 className="text-sm font-semibold">Additional</h2>
           <FieldGroup className="gap-3">
             <Field>
-              <FieldLabel htmlFor="recipe-category-note" className="text-xs">
-                Note
-              </FieldLabel>
+              <FieldLabel className="text-xs">Note</FieldLabel>
               <Textarea
-                id="recipe-category-note"
                 placeholder="Optional"
                 className="text-sm"
                 rows={2}
@@ -386,22 +364,16 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                 name="is_active"
                 render={({ field }) => (
                   <Checkbox
-                    id="recipe-category-is-active"
                     checked={field.value}
                     onCheckedChange={field.onChange}
                     disabled={isDisabled}
                   />
                 )}
               />
-              <FieldLabel
-                htmlFor="recipe-category-is-active"
-                className="text-xs"
-              >
-                Active
-              </FieldLabel>
+              <FieldLabel className="text-xs">Active</FieldLabel>
             </Field>
           </FieldGroup>
-        </div>
+        </section>
       </form>
 
       {category && (

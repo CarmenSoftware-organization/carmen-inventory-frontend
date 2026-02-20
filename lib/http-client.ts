@@ -26,7 +26,13 @@ async function request(
     init.headers = headers;
   }
 
-  return fetch(url, init);
+  const response = await fetch(url, init);
+
+  if (response.status === 401 && typeof globalThis.window !== "undefined") {
+    globalThis.window.location.href = "/login";
+  }
+
+  return response;
 }
 
 export const httpClient = {
