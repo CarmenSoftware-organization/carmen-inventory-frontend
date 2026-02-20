@@ -23,7 +23,11 @@ import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
 import DisplayTemplate from "@/components/display-template";
 import { usePoTable } from "./use-po-table";
-import { CreatePODialog } from "./po-create-dialog";
+import dynamic from "next/dynamic";
+
+const CreatePODialog = dynamic(
+  () => import("./po-create-dialog").then((mod) => mod.CreatePODialog),
+);
 
 export default function PoComponent() {
   const router = useRouter();

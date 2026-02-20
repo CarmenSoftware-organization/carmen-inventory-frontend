@@ -34,7 +34,11 @@ import DisplayTemplate from "@/components/display-template";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { PURCHASE_REQUEST_STATUS_OPTIONS } from "@/constant/purchase-request";
 import { usePurchaseRequestTable } from "./pr-table";
-import { CreatePRDialog } from "./pr-create-dialog";
+import dynamic from "next/dynamic";
+
+const CreatePRDialog = dynamic(
+  () => import("./pr-create-dialog").then((mod) => mod.CreatePRDialog),
+);
 
 export default function PurchaseRequestComponent() {
   const router = useRouter();

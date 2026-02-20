@@ -39,7 +39,7 @@ function Input({
       )}
       {...props}
       {...(showCounter && {
-        onInput: (e: React.FormEvent<HTMLInputElement>) => {
+        onInput: (e: React.InputEvent<HTMLInputElement>) => {
           setLength(e.currentTarget.value.length)
           props.onInput?.(e)
         },

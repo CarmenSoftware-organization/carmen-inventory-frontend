@@ -30,7 +30,11 @@ import type { BusinessUnit } from "@/types/profile";
 import type { PrFormValues } from "./pr-form-schema";
 import { usePrItemTable } from "./pr-item-table";
 import { PrActionDialog } from "./pr-action-dialog";
-import { PrSelectDialog } from "./pr-select-dialog";
+import dynamic from "next/dynamic";
+
+const PrSelectDialog = dynamic(
+  () => import("./pr-select-dialog").then((mod) => mod.PrSelectDialog),
+);
 import EmptyComponent from "@/components/empty-component";
 import { PR_ITEM } from "./pr-form-schema";
 

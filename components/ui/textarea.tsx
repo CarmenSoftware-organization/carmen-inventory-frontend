@@ -33,7 +33,7 @@ function Textarea({
       )}
       {...props}
       {...(showCounter && {
-        onInput: (e: React.FormEvent<HTMLTextAreaElement>) => {
+        onInput: (e: React.InputEvent<HTMLTextAreaElement>) => {
           setLength(e.currentTarget.value.length)
           props.onInput?.(e)
         },
