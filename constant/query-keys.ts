@@ -6,6 +6,7 @@ export const QUERY_KEYS = {
   CN_REASONS: "cn-reasons",
   CREDIT_NOTES: "credit-notes",
   CREDIT_TERMS: "credit-terms",
+  CUISINES: "cuisines",
   CURRENCIES: "currencies",
   DELIVERY_POINTS: "delivery-points",
   DEPARTMENTS: "departments",

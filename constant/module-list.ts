@@ -41,6 +41,10 @@ import {
   ShieldCheck,
   UserCheck,
   User,
+  ChefHat,
+  UtensilsCrossed,
+  Layers,
+  BookOpen,
 } from "lucide-react";
 
 interface ModuleDto {
@@ -163,6 +167,28 @@ export const moduleList: ModuleDto[] = [
         name: "Wastage Reporting",
         path: "/store-operation/wastage-reporting",
         icon: AlertTriangle,
+      },
+    ],
+  },
+  {
+    name: "Operational Planning",
+    path: "/operation-plan",
+    icon: ChefHat,
+    subModules: [
+      {
+        name: "Cuisine",
+        path: "/operation-plan/cuisine",
+        icon: UtensilsCrossed,
+      },
+      {
+        name: "Category",
+        path: "/operation-plan/category",
+        icon: Layers,
+      },
+      {
+        name: "Recipe",
+        path: "/operation-plan/recipe",
+        icon: BookOpen,
       },
     ],
   },

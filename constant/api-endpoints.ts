@@ -10,6 +10,8 @@ export const API_ENDPOINTS = {
   CREDIT_NOTE: (buCode: string) => `/api/proxy/api/${buCode}/credit-note`,
   CREDIT_TERMS: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/credit-term`,
+  CUISINES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/recipe-cuisine`,
   CURRENCIES: (buCode: string) => `/api/proxy/api/config/${buCode}/currencies`,
   EXCHANGE_RATES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/exchange-rate`,
