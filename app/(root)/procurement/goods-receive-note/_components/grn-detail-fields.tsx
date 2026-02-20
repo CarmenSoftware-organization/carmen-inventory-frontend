@@ -107,6 +107,7 @@ export function GrnDetailFields({ form, disabled }: GrnDetailFieldsProps) {
                 className="text-sm"
                 rows={2}
                 disabled={disabled}
+                maxLength={256}
                 {...form.register("description")}
               />
             </Field>
@@ -118,6 +119,7 @@ export function GrnDetailFields({ form, disabled }: GrnDetailFieldsProps) {
                 className="text-sm"
                 rows={2}
                 disabled={disabled}
+                maxLength={256}
                 {...form.register("note")}
               />
             </Field>
@@ -131,6 +133,7 @@ export function GrnDetailFields({ form, disabled }: GrnDetailFieldsProps) {
                 className="font-mono text-xs"
                 rows={3}
                 disabled={disabled}
+                maxLength={256}
                 {...form.register("info")}
               />
             </Field>
@@ -142,6 +145,7 @@ export function GrnDetailFields({ form, disabled }: GrnDetailFieldsProps) {
                 className="font-mono text-xs"
                 rows={3}
                 disabled={disabled}
+                maxLength={256}
                 {...form.register("dimension")}
               />
             </Field>

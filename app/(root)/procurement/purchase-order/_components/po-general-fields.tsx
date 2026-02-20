@@ -173,6 +173,7 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
                 className="text-xs min-h-13"
                 rows={2}
                 disabled={disabled}
+                maxLength={256}
                 {...form.register("description")}
               />
             </Field>
@@ -184,6 +185,7 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
                 className="text-xs min-h-13"
                 rows={2}
                 disabled={disabled}
+                maxLength={256}
                 {...form.register("note")}
               />
             </Field>

@@ -89,6 +89,7 @@ export function WfGeneral({ form, isDisabled }: WfGeneralProps) {
             placeholder="Optional description"
             className="text-xs min-h-15"
             disabled={isDisabled}
+            maxLength={256}
             {...form.register("description")}
           />
         </Field>

@@ -373,6 +373,7 @@ export function CategoryDialog({
                 placeholder="e.g. Electronics"
                 className="h-8 text-sm"
                 disabled={isPending}
+                maxLength={100}
                 {...form.register("name")}
               />
               <FieldError>
@@ -389,6 +390,7 @@ export function CategoryDialog({
                 placeholder="Optional"
                 className="h-8 text-sm"
                 disabled={isPending}
+                maxLength={256}
                 {...form.register("description")}
               />
             </Field>
@@ -761,6 +763,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
               placeholder="e.g. Electronics"
               className="h-8 text-sm"
               disabled={isDisabled}
+              maxLength={100}
               {...form.register("name")}
             />
             <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -775,6 +778,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
               placeholder="Optional"
               className="text-sm"
               disabled={isDisabled}
+              maxLength={256}
               {...form.register("description")}
             />
           </Field>
@@ -1033,6 +1037,7 @@ export default function EditCategoryPage({
 - **Delete in form** (Variant B): แสดงปุ่ม Delete เฉพาะ **edit mode** (`variant="destructive"`) → เปิด `DeleteDialog` confirm → ลบแล้ว `router.push` กลับ list
 - **Back button** (Variant B): ใช้ `ArrowLeft` icon inline กับ title (`← Title`) — ไม่ใช้ `DisplayTemplate` ในหน้า form
 - **Navigate back on success** (Variant B): `router.push("/{basePath}/{module}")` หลัง mutation สำเร็จ
+- **maxLength**: Input type text ใส่ `maxLength` เสมอ — `code` field ใช้ `maxLength={10}`, `name` field ใช้ `maxLength={100}`, Textarea ใช้ `maxLength={256}` — component จะแสดง char counter (เช่น `3/10`) อัตโนมัติ
 - **React Compiler**: `"use no memo"` อยู่ใน `useConfigTable` แล้ว ไม่ต้องใส่เอง
 - **Dense DataGrid**: `tableLayout={{ dense: true }}` + `tableClassNames={{ base: "text-xs" }}`
 - **Query invalidation**: อัตโนมัติผ่าน `createConfigCrud` → `useApiMutation` → `invalidateKeys`

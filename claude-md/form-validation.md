@@ -90,6 +90,25 @@ export const rfpSchema = z.object({
 
 ---
 
+## maxLength — Input & Textarea
+
+ใส่ `maxLength` prop เสมอสำหรับ text input และ textarea — component จะแสดง char counter (เช่น `3/10`) อัตโนมัติ
+
+| Field type | maxLength | ตัวอย่าง |
+| --- | --- | --- |
+| `code` | `10` | `<Input maxLength={10} {...form.register("code")} />` |
+| `name` (และ text input ทั่วไป) | `100` | `<Input maxLength={100} {...form.register("name")} />` |
+| `Textarea` (description, note, etc.) | `256` | `<Textarea maxLength={256} {...form.register("description")} />` |
+
+### Rules
+
+- ใส่ `maxLength` **ก่อน** `{...form.register(...)}` เสมอ
+- Input component จะแสดง counter เฉพาะ type `text` (หรือไม่ระบุ type) + มี `maxLength`
+- Textarea component จะแสดง counter เมื่อมี `maxLength`
+- Input type `number`, `password`, `email` จะไม่แสดง counter
+
+---
+
 ## getDefaultValues()
 
 แปลง API response → form values, handle null/undefined

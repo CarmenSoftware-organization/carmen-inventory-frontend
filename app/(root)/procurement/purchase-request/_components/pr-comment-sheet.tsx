@@ -229,6 +229,7 @@ export function PrCommentSheet({
                       <Textarea
                         className="min-h-7 text-xs resize-none"
                         rows={2}
+                        maxLength={256}
                         value={editMessage}
                         onChange={(e) => setEditMessage(e.target.value)}
                         onKeyDown={(e) => {
@@ -357,6 +358,7 @@ export function PrCommentSheet({
                 placeholder="Add comment..."
                 className="text-xs resize-none"
                 rows={1}
+                maxLength={256}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={(e) => {
