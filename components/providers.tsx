@@ -7,8 +7,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default function Providers({
   children,
+  nonce,
 }: {
   readonly children: React.ReactNode;
+  readonly nonce: string;
 }) {
   const [queryClient] = useState(
     () =>
@@ -26,7 +28,7 @@ export default function Providers({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem nonce={nonce}>
         <TooltipProvider>{children}</TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import Providers from "@/components/providers";
@@ -23,11 +24,13 @@ export const metadata: Metadata = {
   description: "ERP for Hospitality Hotel",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = (await headers()).get("x-nonce") ?? "";
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -37,8 +40,9 @@ export default function RootLayout({
           color={"var(--primary)"}
           showSpinner={false}
           height={3}
+          nonce={nonce}
         />
-        <Providers>{children}</Providers>
+        <Providers nonce={nonce}>{children}</Providers>
         <Toaster richColors position="top-right" />
       </body>
     </html>
