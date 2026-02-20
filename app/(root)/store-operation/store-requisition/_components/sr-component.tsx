@@ -23,7 +23,7 @@ import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
 import DisplayTemplate from "@/components/display-template";
 import { STORE_REQUISITION_STATUS_OPTIONS } from "@/constant/store-requisition";
-import { useStoreRequisitionTable } from "./use-store-requisition-table";
+import { useStoreRequisitionTable } from "./use-sr-table";
 
 export default function StoreRequisitionComponent() {
   const router = useRouter();

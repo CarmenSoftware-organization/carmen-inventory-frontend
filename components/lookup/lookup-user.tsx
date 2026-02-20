@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, ChevronsUpDown, PackageSearch } from "lucide-react";
+import { Check, ChevronsUpDown, UserSearch } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Command, CommandInput } from "@/components/ui/command";
@@ -11,45 +11,51 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { VirtualCommandList } from "@/components/ui/virtual-command-list";
-import { useProduct } from "@/hooks/use-product";
-import type { Product } from "@/types/product";
+import { useAllUsers } from "@/hooks/use-all-users";
+import type { User } from "@/types/workflows";
 import EmptyComponent from "../empty-component";
 
-interface LookupProductProps {
+function getUserFullName(user: User) {
+  return [user.firstname, user.middlename, user.lastname]
+    .filter(Boolean)
+    .join(" ");
+}
+
+interface LookupUserProps {
   readonly value: string;
-  readonly onValueChange: (value: string, product?: Product) => void;
+  readonly onValueChange: (value: string) => void;
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
 }
 
-export function LookupProduct({
+export function LookupUser({
   value,
   onValueChange,
   disabled,
-  placeholder = "Select product",
+  placeholder = "Select user",
   className,
-}: LookupProductProps) {
-  const { data } = useProduct({ perpage: -1 });
-  const products = useMemo(
-    () =>
-      data?.data?.filter((p) => p.product_status_type === "active") ?? [],
-    [data?.data],
-  );
+}: LookupUserProps) {
+  const { data: users = [] } = useAllUsers();
 
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
-  const filteredProducts = useMemo(() => {
-    if (!search) return products;
+  const filteredUsers = useMemo(() => {
+    if (!search) return users;
     const q = search.toLowerCase();
-    return products.filter((p) => p.name.toLowerCase().includes(q));
-  }, [products, search]);
+    return users.filter(
+      (u) =>
+        getUserFullName(u).toLowerCase().includes(q) ||
+        u.email.toLowerCase().includes(q),
+    );
+  }, [users, search]);
 
   const selectedName = useMemo(() => {
     if (!value) return null;
-    return products.find((p) => p.id === value)?.name ?? null;
-  }, [value, products]);
+    const user = users.find((u) => u.user_id === value);
+    return user ? getUserFullName(user) : null;
+  }, [value, users]);
 
   return (
     <Popover open={open} onOpenChange={(o) => { setOpen(o); if (!o) setSearch(""); }}>
@@ -63,51 +69,56 @@ export function LookupProduct({
           )}
           disabled={disabled}
         >
-          <span className={cn("truncate text-left", !selectedName && "text-muted-foreground")}>
+          <span
+            className={cn(
+              "truncate text-left",
+              !selectedName && "text-muted-foreground",
+            )}
+          >
             {selectedName ?? placeholder}
           </span>
           <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-90 p-0">
+      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
         <Command shouldFilter={false}>
           <CommandInput
-            placeholder="Search product..."
+            placeholder="Search user..."
             className="placeholder:text-xs"
             value={search}
             onValueChange={setSearch}
           />
           <VirtualCommandList
-            items={filteredProducts}
+            items={filteredUsers}
             emptyMessage={
               <EmptyComponent
-                icon={PackageSearch}
-                title="No product found"
-                description="Try adjusting your search or filter to find what you're looking for."
+                icon={UserSearch}
+                title="No user found"
+                description="Try adjusting your search to find what you're looking for."
               />
             }
           >
-            {(product) => (
+            {(user) => (
               <button
                 type="button"
-                aria-pressed={value === product.id}
-                data-value={product.name}
+                aria-pressed={value === user.user_id}
+                data-value={getUserFullName(user)}
                 className={cn(
                   "relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
                   "hover:bg-accent hover:text-accent-foreground",
                   "focus:bg-accent focus:text-accent-foreground focus:outline-none",
                 )}
                 onClick={() => {
-                  onValueChange(product.id, product);
+                  onValueChange(user.user_id);
                   setOpen(false);
                 }}
               >
-                {product.name}
+                <span className="truncate">{getUserFullName(user)}</span>
                 <Check
                   className={cn(
-                    "ml-auto h-4 w-4",
-                    value === product.id ? "opacity-100" : "opacity-0",
+                    "ml-auto h-4 w-4 shrink-0",
+                    value === user.user_id ? "opacity-100" : "opacity-0",
                   )}
                 />
               </button>

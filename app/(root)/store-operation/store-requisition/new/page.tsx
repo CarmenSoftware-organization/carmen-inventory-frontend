@@ -1,4 +1,4 @@
-import { StoreRequisitionForm } from "../_components/store-requisition-form";
+import { StoreRequisitionForm } from "../_components/sr-form";
 
 export default function NewStoreRequisitionPage() {
   return <StoreRequisitionForm />;

@@ -8,6 +8,15 @@ import { QUERY_KEYS } from "@/constant/query-keys";
 import type { StoreRequisition } from "@/types/store-requisition";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
+export interface SrDetailPayload {
+  product_id: string;
+  description: string;
+  requested_qty: number;
+  approved_qty: number;
+  issued_qty: number;
+  current_stage_status: string;
+}
+
 export interface CreateStoreRequisitionDto {
   state_role: string;
   details: {
@@ -19,13 +28,11 @@ export interface CreateStoreRequisitionDto {
     department_id: string;
     from_location_id: string;
     to_location_id: string;
+    doc_version: number;
     store_requisition_detail: {
-      add: {
-        description: string;
-        current_stage_status: string;
-        product_id: string;
-        requested_qty: number;
-      }[];
+      add?: SrDetailPayload[];
+      update?: (SrDetailPayload & { id: string })[];
+      remove?: { id: string }[];
     };
   };
 }

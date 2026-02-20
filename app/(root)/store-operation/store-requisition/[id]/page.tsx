@@ -2,7 +2,7 @@
 
 import { use } from "react";
 import { useStoreRequisitionById } from "@/hooks/use-store-requisition";
-import { StoreRequisitionForm } from "../_components/store-requisition-form";
+import { StoreRequisitionForm } from "../_components/sr-form";
 import { ErrorState } from "@/components/ui/error-state";
 
 export default function EditStoreRequisitionPage({
@@ -19,9 +19,7 @@ export default function EditStoreRequisitionPage({
   } = useStoreRequisitionById(id);
 
   if (isLoading)
-    return (
-      <div className="p-6 text-sm text-muted-foreground">Loading...</div>
-    );
+    return <div className="p-6 text-sm text-muted-foreground">Loading...</div>;
   if (error)
     return <ErrorState message={error.message} onRetry={() => refetch()} />;
   if (!storeRequisition)
