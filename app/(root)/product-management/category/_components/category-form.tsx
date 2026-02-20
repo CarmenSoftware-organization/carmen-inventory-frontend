@@ -158,7 +158,7 @@ export function CategoryForm({
             <Input
               id="code"
               className="h-7 text-xs font-mono"
-              maxLength={5}
+              maxLength={10}
               disabled={isPending}
               {...form.register("code")}
             />

@@ -38,6 +38,7 @@ export function WfGeneral({ form, isDisabled }: WfGeneralProps) {
               placeholder="e.g. Purchase Request Approval"
               className="h-8 text-xs"
               disabled={isDisabled}
+              maxLength={100}
               {...form.register("name")}
             />
             <FieldError>{form.formState.errors.name?.message}</FieldError>

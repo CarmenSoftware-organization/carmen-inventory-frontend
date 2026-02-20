@@ -226,6 +226,7 @@ export function WfStageDetail({
                 className="text-xs min-h-12"
                 disabled={isDisabled}
                 placeholder="Optional"
+                maxLength={256}
                 {...form.register(`data.stages.${index}.description`)}
               />
             </Field>

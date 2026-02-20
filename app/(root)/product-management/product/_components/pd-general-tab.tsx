@@ -84,6 +84,7 @@ export default function GeneralTab({
               placeholder="e.g. ESP-250G"
               className="h-8 text-sm"
               disabled={isDisabled}
+              maxLength={10}
               {...form.register("code")}
             />
             <FieldError>{form.formState.errors.code?.message}</FieldError>
@@ -98,6 +99,7 @@ export default function GeneralTab({
               placeholder="e.g. Coffee Beans"
               className="h-8 text-sm"
               disabled={isDisabled}
+              maxLength={100}
               {...form.register("name")}
             />
             <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -127,6 +129,7 @@ export default function GeneralTab({
               className="text-sm"
               rows={2}
               disabled={isDisabled}
+              maxLength={256}
               {...form.register("description")}
             />
           </Field>

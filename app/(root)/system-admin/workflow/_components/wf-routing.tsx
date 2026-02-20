@@ -228,6 +228,7 @@ export function WfRouting({
                   className="text-xs min-h-12"
                   disabled={isDisabled}
                   placeholder="Optional"
+                  maxLength={256}
                   {...form.register(
                     `data.routing_rules.${safeIndex}.description`,
                   )}

@@ -123,6 +123,7 @@ export function UnitDialog({ open, onOpenChange, unit, onSuccess }: UnitDialogPr
                 placeholder="e.g. TRAY"
                 className="h-8 text-sm"
                 disabled={isPending}
+                maxLength={100}
                 {...form.register("name")}
               />
               <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -137,6 +138,7 @@ export function UnitDialog({ open, onOpenChange, unit, onSuccess }: UnitDialogPr
                 placeholder="Optional"
                 className="h-8 text-sm"
                 disabled={isPending}
+                maxLength={256}
                 {...form.register("description")}
               />
             </Field>

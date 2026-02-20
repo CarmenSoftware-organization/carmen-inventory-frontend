@@ -219,6 +219,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
                 placeholder="e.g. IT, HR, FIN"
                 className="h-8 text-sm"
                 disabled={isDisabled}
+                maxLength={10}
                 {...form.register("code")}
               />
               <FieldError>{form.formState.errors.code?.message}</FieldError>
@@ -233,6 +234,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
                 placeholder="e.g. Information Technology"
                 className="h-8 text-sm"
                 disabled={isDisabled}
+                maxLength={100}
                 {...form.register("name")}
               />
               <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -248,6 +250,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
               placeholder="Optional"
               className="text-sm"
               disabled={isDisabled}
+              maxLength={256}
               {...form.register("description")}
             />
           </Field>

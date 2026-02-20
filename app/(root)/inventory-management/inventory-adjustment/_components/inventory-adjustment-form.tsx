@@ -238,6 +238,7 @@ export function InventoryAdjustmentForm({
                   placeholder="Optional description"
                   className="text-sm"
                   disabled={isDisabled}
+                  maxLength={256}
                   {...form.register("description")}
                 />
               </Field>
@@ -276,6 +277,7 @@ export function InventoryAdjustmentForm({
                   placeholder="Optional note"
                   className="text-sm"
                   disabled={isDisabled}
+                  maxLength={256}
                   {...form.register("note")}
                 />
               </Field>

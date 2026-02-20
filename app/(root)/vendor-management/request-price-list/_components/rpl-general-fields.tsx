@@ -218,6 +218,7 @@ export function RequestPriceListGeneralFields({ form, disabled }: Props) {
           className="text-sm"
           rows={6}
           disabled={disabled}
+          maxLength={256}
           {...form.register("custom_message")}
         />
       </Field>

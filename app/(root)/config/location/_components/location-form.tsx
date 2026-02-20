@@ -253,6 +253,7 @@ export function LocationForm({ location }: LocationFormProps) {
                 placeholder="e.g. M123D"
                 className="h-8 text-sm"
                 disabled={isDisabled}
+                maxLength={10}
                 {...form.register("code")}
               />
               <FieldError>{form.formState.errors.code?.message}</FieldError>
@@ -267,6 +268,7 @@ export function LocationForm({ location }: LocationFormProps) {
                 placeholder="e.g. BAR เหล้า"
                 className="h-8 text-sm"
                 disabled={isDisabled}
+                maxLength={100}
                 {...form.register("name")}
               />
               <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -342,6 +344,7 @@ export function LocationForm({ location }: LocationFormProps) {
               placeholder="Optional"
               className="text-sm"
               disabled={isDisabled}
+              maxLength={256}
               {...form.register("description")}
             />
           </Field>

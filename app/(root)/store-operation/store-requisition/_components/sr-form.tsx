@@ -364,6 +364,7 @@ export function StoreRequisitionForm({
                 placeholder="Optional description"
                 className="text-sm"
                 disabled={isDisabled}
+                maxLength={256}
                 {...form.register("description")}
               />
             </Field>

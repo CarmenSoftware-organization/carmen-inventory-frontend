@@ -38,6 +38,7 @@ export function RecipeDetailFields({
               className="font-mono text-sm"
               rows={4}
               disabled={isDisabled}
+              maxLength={256}
               {...form.register("allergens")}
             />
             <FieldDescription className="text-xs">
@@ -81,6 +82,7 @@ export function RecipeDetailFields({
               className="font-mono text-sm"
               rows={3}
               disabled={isDisabled}
+              maxLength={256}
               {...form.register("tags")}
             />
             <FieldDescription className="text-xs">
@@ -104,6 +106,7 @@ export function RecipeDetailFields({
               className="font-mono text-sm"
               rows={3}
               disabled={isDisabled}
+              maxLength={256}
               {...form.register("images")}
             />
             <FieldDescription className="text-xs">

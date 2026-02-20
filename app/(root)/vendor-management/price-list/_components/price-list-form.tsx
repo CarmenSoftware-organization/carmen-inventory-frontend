@@ -254,6 +254,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
                   placeholder="e.g. Quotation - Fresh Produce"
                   className="h-8 text-sm"
                   disabled={isDisabled}
+                  maxLength={100}
                   {...form.register("name")}
                 />
                 <FieldError>
@@ -267,6 +268,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
                   placeholder="Optional"
                   className="text-sm"
                   disabled={isDisabled}
+                  maxLength={256}
                   {...form.register("description")}
                 />
               </Field>
@@ -389,6 +391,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
                   placeholder="Optional"
                   className="text-sm"
                   disabled={isDisabled}
+                  maxLength={256}
                   {...form.register("note")}
                 />
               </Field>

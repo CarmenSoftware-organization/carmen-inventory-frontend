@@ -186,6 +186,7 @@ export function AdjustmentTypeForm({
               placeholder="e.g. TRFOT"
               className="h-8 text-sm"
               disabled={isDisabled}
+              maxLength={10}
               {...form.register("code")}
             />
             <FieldError>{form.formState.errors.code?.message}</FieldError>
@@ -204,6 +205,7 @@ export function AdjustmentTypeForm({
               placeholder="e.g. โอนออก"
               className="h-8 text-sm"
               disabled={isDisabled}
+              maxLength={100}
               {...form.register("name")}
             />
             <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -251,6 +253,7 @@ export function AdjustmentTypeForm({
               className="text-sm"
               rows={2}
               disabled={isDisabled}
+              maxLength={256}
               {...form.register("description")}
             />
           </Field>
@@ -268,6 +271,7 @@ export function AdjustmentTypeForm({
               className="text-sm"
               rows={2}
               disabled={isDisabled}
+              maxLength={256}
               {...form.register("note")}
             />
           </Field>

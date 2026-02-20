@@ -202,6 +202,7 @@ export function CurrencyDialog({
                 placeholder="e.g. United States Dollar"
                 className="h-8 text-sm"
                 disabled={isPending}
+                maxLength={100}
                 {...form.register("name")}
               />
               <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -248,6 +249,7 @@ export function CurrencyDialog({
                 placeholder="Optional"
                 className="text-sm"
                 disabled={isPending}
+                maxLength={256}
                 {...form.register("description")}
               />
             </Field>

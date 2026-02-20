@@ -227,6 +227,7 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
               className="text-sm"
               rows={2}
               disabled={disabled}
+              maxLength={256}
               {...form.register("description")}
             />
           </Field>

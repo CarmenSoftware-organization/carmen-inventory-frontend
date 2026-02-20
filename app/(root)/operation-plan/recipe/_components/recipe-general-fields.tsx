@@ -73,6 +73,7 @@ export function RecipeGeneralFields({
                 placeholder="e.g. RCP-001"
                 className="h-8 text-sm"
                 disabled={isDisabled}
+                maxLength={10}
                 {...form.register("code")}
               />
               <FieldError>
@@ -91,6 +92,7 @@ export function RecipeGeneralFields({
                 placeholder="e.g. Tom Yum Goong"
                 className="h-8 text-sm"
                 disabled={isDisabled}
+                maxLength={100}
                 {...form.register("name")}
               />
               <FieldError>
@@ -245,6 +247,7 @@ export function RecipeGeneralFields({
               className="text-sm"
               rows={3}
               disabled={isDisabled}
+              maxLength={256}
               {...form.register("description")}
             />
             <FieldDescription className="text-xs">
@@ -259,6 +262,7 @@ export function RecipeGeneralFields({
               className="text-sm"
               rows={2}
               disabled={isDisabled}
+              maxLength={256}
               {...form.register("note")}
             />
             <FieldDescription className="text-xs">

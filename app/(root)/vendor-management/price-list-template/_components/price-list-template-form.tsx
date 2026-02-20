@@ -231,6 +231,7 @@ export function PriceListTemplateForm({
                   placeholder="e.g. Fresh Produce Template"
                   className="h-8 text-sm"
                   disabled={isDisabled}
+                  maxLength={100}
                   {...form.register("name")}
                 />
                 <FieldError>
@@ -244,6 +245,7 @@ export function PriceListTemplateForm({
                   placeholder="Optional"
                   className="text-sm"
                   disabled={isDisabled}
+                  maxLength={256}
                   {...form.register("description")}
                 />
               </Field>
@@ -325,6 +327,7 @@ export function PriceListTemplateForm({
                   placeholder="Optional"
                   className="text-sm"
                   disabled={isDisabled}
+                  maxLength={256}
                   {...form.register("vendor_instruction")}
                 />
               </Field>

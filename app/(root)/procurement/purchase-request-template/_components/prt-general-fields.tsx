@@ -33,6 +33,7 @@ export function PrtGeneralFields({ form, disabled }: PrtGeneralFieldsProps) {
               placeholder="e.g. Food Template"
               className="h-8 text-sm"
               disabled={disabled}
+              maxLength={100}
               {...form.register("name")}
             />
             <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -91,6 +92,7 @@ export function PrtGeneralFields({ form, disabled }: PrtGeneralFieldsProps) {
                 className="text-sm"
                 rows={2}
                 disabled={disabled}
+                maxLength={256}
                 {...form.register("description")}
               />
             </Field>
@@ -102,6 +104,7 @@ export function PrtGeneralFields({ form, disabled }: PrtGeneralFieldsProps) {
                 className="text-sm"
                 rows={2}
                 disabled={disabled}
+                maxLength={256}
                 {...form.register("note")}
               />
             </Field>

@@ -219,6 +219,7 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
                 placeholder="e.g. Thai"
                 className="h-9 text-sm"
                 disabled={isDisabled}
+                maxLength={100}
                 {...form.register("name")}
               />
               <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -263,6 +264,7 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
                 className="text-sm"
                 rows={2}
                 disabled={isDisabled}
+                maxLength={256}
                 {...form.register("description")}
               />
             </Field>
@@ -283,6 +285,7 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
                 className="text-sm"
                 rows={3}
                 disabled={isDisabled}
+                maxLength={256}
                 {...form.register("popular_dishes")}
               />
             </Field>
@@ -297,6 +300,7 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
                 className="text-sm"
                 rows={3}
                 disabled={isDisabled}
+                maxLength={256}
                 {...form.register("key_ingredients")}
               />
             </Field>
@@ -311,6 +315,7 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
                 className="text-sm"
                 rows={3}
                 disabled={isDisabled}
+                maxLength={256}
                 {...form.register("info")}
               />
             </Field>
@@ -325,6 +330,7 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
                 className="text-sm"
                 rows={3}
                 disabled={isDisabled}
+                maxLength={256}
                 {...form.register("dimension")}
               />
             </Field>
@@ -345,6 +351,7 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
                 className="text-sm"
                 rows={2}
                 disabled={isDisabled}
+                maxLength={256}
                 {...form.register("note")}
               />
             </Field>

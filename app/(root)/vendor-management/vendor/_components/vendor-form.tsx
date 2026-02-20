@@ -272,6 +272,7 @@ export function VendorForm({ vendor }: VendorFormProps) {
                   placeholder="e.g. VN-001"
                   className="h-8 text-sm"
                   disabled={isDisabled}
+                  maxLength={10}
                   {...form.register("code")}
                 />
                 <FieldError>
@@ -288,6 +289,7 @@ export function VendorForm({ vendor }: VendorFormProps) {
                   placeholder="e.g. บริษัท ABC จำกัด"
                   className="h-8 text-sm"
                   disabled={isDisabled}
+                  maxLength={100}
                   {...form.register("name")}
                 />
                 <FieldError>
@@ -304,6 +306,7 @@ export function VendorForm({ vendor }: VendorFormProps) {
                   placeholder="Optional"
                   className="text-sm"
                   disabled={isDisabled}
+                  maxLength={256}
                   {...form.register("description")}
                 />
               </Field>

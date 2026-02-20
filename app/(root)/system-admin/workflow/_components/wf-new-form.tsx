@@ -227,6 +227,7 @@ export default function WorkflowNewForm() {
                 placeholder="e.g. Purchase Request Approval"
                 className="h-8 text-sm"
                 disabled={isPending}
+                maxLength={100}
                 {...form.register("name")}
               />
               <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -277,6 +278,7 @@ export default function WorkflowNewForm() {
               placeholder="Optional description"
               className="text-xs min-h-15"
               disabled={isPending}
+              maxLength={256}
               {...form.register("description")}
             />
           </Field>

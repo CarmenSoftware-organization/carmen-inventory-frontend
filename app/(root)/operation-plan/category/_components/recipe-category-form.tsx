@@ -214,6 +214,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                   placeholder="e.g. APPETIZER"
                   className="h-8 text-sm"
                   disabled={isDisabled}
+                  maxLength={10}
                   {...form.register("code")}
                 />
                 <FieldError>{form.formState.errors.code?.message}</FieldError>
@@ -227,6 +228,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                   placeholder="e.g. Appetizer"
                   className="h-8 text-sm"
                   disabled={isDisabled}
+                  maxLength={100}
                   {...form.register("name")}
                 />
                 <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -276,6 +278,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                   className="text-sm"
                   rows={2}
                   disabled={isDisabled}
+                  maxLength={256}
                   {...form.register("description")}
                 />
               </Field>
@@ -296,6 +299,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                   className="text-sm"
                   rows={3}
                   disabled={isDisabled}
+                  maxLength={256}
                   {...form.register("default_cost_settings")}
                 />
                 <FieldDescription className="text-xs">
@@ -311,6 +315,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                   className="text-sm"
                   rows={3}
                   disabled={isDisabled}
+                  maxLength={256}
                   {...form.register("default_margins")}
                 />
                 <FieldDescription className="text-xs">
@@ -327,6 +332,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                   className="text-sm"
                   rows={3}
                   disabled={isDisabled}
+                  maxLength={256}
                   {...form.register("info")}
                 />
               </Field>
@@ -338,6 +344,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                   className="text-sm"
                   rows={3}
                   disabled={isDisabled}
+                  maxLength={256}
                   {...form.register("dimension")}
                 />
               </Field>
@@ -355,6 +362,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                 className="text-sm"
                 rows={2}
                 disabled={isDisabled}
+                maxLength={256}
                 {...form.register("note")}
               />
             </Field>
