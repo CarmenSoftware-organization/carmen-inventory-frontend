@@ -13,6 +13,8 @@ export const API_ENDPOINTS = {
   CUISINES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/recipe-cuisine`,
   CURRENCIES: (buCode: string) => `/api/proxy/api/config/${buCode}/currencies`,
+  RECIPE_CATEGORIES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/recipe-category`,
   EXCHANGE_RATES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/exchange-rate`,
   DEPARTMENTS: (buCode: string) =>

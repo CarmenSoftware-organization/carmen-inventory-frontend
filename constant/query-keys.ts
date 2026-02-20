@@ -8,6 +8,7 @@ export const QUERY_KEYS = {
   CREDIT_TERMS: "credit-terms",
   CUISINES: "cuisines",
   CURRENCIES: "currencies",
+  RECIPE_CATEGORIES: "recipe-categories",
   DELIVERY_POINTS: "delivery-points",
   DEPARTMENTS: "departments",
   DOCUMENTS: "documents",
