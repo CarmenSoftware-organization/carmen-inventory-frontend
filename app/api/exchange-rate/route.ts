@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const API_KEY = process.env.EXCHANGE_RATE_API_KEY;
+const CURRENCY_CODE_RE = /^[A-Z]{3}$/;
 
 export async function GET(request: NextRequest) {
   const baseCurrency = request.nextUrl.searchParams.get("base");
@@ -9,6 +10,13 @@ export async function GET(request: NextRequest) {
   if (!baseCurrency) {
     return NextResponse.json(
       { error: "Missing 'base' query parameter" },
+      { status: 400 },
+    );
+  }
+
+  if (!CURRENCY_CODE_RE.test(baseCurrency)) {
+    return NextResponse.json(
+      { error: "Invalid currency code — must be 3 uppercase letters (e.g. USD)" },
       { status: 400 },
     );
   }

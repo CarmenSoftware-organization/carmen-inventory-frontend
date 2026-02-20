@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/lib/cookies";
+import { checkServerRateLimit } from "@/lib/rate-limit";
 
 const BACKEND_URL = process.env.BACKEND_URL;
 const X_APP_ID = process.env.X_APP_ID!;
@@ -54,6 +55,13 @@ async function proxyRequest(
   request: NextRequest,
   params: { path: string[] },
 ) {
+  // --- SERVER-SIDE RATE LIMIT ---
+  const rateLimited = checkServerRateLimit(
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null,
+    { windowMs: 60_000, maxRequests: 100 },
+  );
+  if (rateLimited) return rateLimited;
+
   // --- PATH VALIDATION ---
   const backendPath = params.path.join("/");
   if (backendPath.includes("..") || backendPath.includes("//")) {

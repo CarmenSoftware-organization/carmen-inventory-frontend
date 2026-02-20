@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { checkServerRateLimit } from "@/lib/rate-limit";
 
 const BACKEND_URL = process.env.BACKEND_URL;
 
@@ -15,6 +16,13 @@ async function proxyRequest(
   request: NextRequest,
   params: { path: string[] },
 ) {
+  // --- SERVER-SIDE RATE LIMIT ---
+  const rateLimited = checkServerRateLimit(
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null,
+    { windowMs: 60_000, maxRequests: 60 },
+  );
+  if (rateLimited) return rateLimited;
+
   // --- PATH VALIDATION ---
   const backendPath = params.path.join("/");
   if (backendPath.includes("..") || backendPath.includes("//")) {
