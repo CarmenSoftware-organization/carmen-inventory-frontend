@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import { ProductForm } from "../_components/pd-form";
+
+export const metadata: Metadata = { title: "New Product" };
 
 export default function NewProductPage() {
   return (
