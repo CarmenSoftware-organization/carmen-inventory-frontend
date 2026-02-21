@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm, Controller, type Resolver } from "react-hook-form";
+import { useForm, useWatch, Controller, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import {
@@ -14,13 +14,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormToolbar } from "@/components/ui/form-toolbar";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { LookupLocation } from "@/components/lookup/lookup-location";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { LookupWorkflow } from "@/components/lookup/lookup-workflow";
+import { WORKFLOW_TYPE } from "@/types/workflows";
 import { toast } from "sonner";
 import {
   useCreateStoreRequisition,
@@ -28,7 +23,6 @@ import {
   useDeleteStoreRequisition,
   type CreateStoreRequisitionDto,
 } from "@/hooks/use-store-requisition";
-import { useWorkflow } from "@/hooks/use-workflow";
 import { useProfile } from "@/hooks/use-profile";
 import type { StoreRequisition } from "@/types/store-requisition";
 import type { FormMode } from "@/types/form";
@@ -54,8 +48,6 @@ export function StoreRequisitionForm({
   const updateSr = useUpdateStoreRequisition();
   const deleteSr = useDeleteStoreRequisition();
   const [showDelete, setShowDelete] = useState(false);
-  const { data: wfData } = useWorkflow({ perpage: -1 });
-  const workflows = wfData?.data?.filter((w) => w.is_active) ?? [];
 
   const isPending = createSr.isPending || updateSr.isPending;
   const isDisabled = isView || isPending;
@@ -107,6 +99,9 @@ export function StoreRequisitionForm({
     resolver: zodResolver(srSchema) as Resolver<SrFormValues>,
     defaultValues,
   });
+
+  const fromLocationId = useWatch({ control: form.control, name: "from_location_id" });
+  const srDate = useWatch({ control: form.control, name: "sr_date" });
 
   useEffect(() => {
     if (!profile || !defaultBu) return;
@@ -234,142 +229,141 @@ export function StoreRequisitionForm({
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4"
       >
-        <div className="flex gap-6">
-          <InfoCell label="Requestor" value={reqName} />
-          <InfoCell label="Department" value={departmentName} />
-        </div>
+        <div className="max-w-3xl space-y-3">
+          <div className="flex gap-6">
+            <InfoCell label="Requestor" value={reqName} />
+            <InfoCell label="Department" value={departmentName} />
+          </div>
 
-        {/* ── Assignment ── */}
-        <section className="space-y-3">
-          <FieldGroup className="gap-3">
-            <div className="grid grid-cols-2 gap-2">
+          {/* ── Assignment ── */}
+          <section className="space-y-3">
+            <FieldGroup className="gap-3">
+              <div className="grid grid-cols-2 gap-3">
+                <Field>
+                  <FieldLabel className="text-xs">Workflow</FieldLabel>
+                  <Controller
+                    control={form.control}
+                    name="workflow_id"
+                    render={({ field }) => (
+                      <LookupWorkflow
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        workflowType={WORKFLOW_TYPE.SR}
+                        disabled={isDisabled}
+                      />
+                    )}
+                  />
+                </Field>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Field data-invalid={!!form.formState.errors.from_location_id}>
+                  <FieldLabel className="text-xs">From Location</FieldLabel>
+                  <Controller
+                    control={form.control}
+                    name="from_location_id"
+                    render={({ field }) => (
+                      <LookupLocation
+                        value={field.value}
+                        onValueChange={(val) => {
+                          field.onChange(val);
+                          if (val && val === form.getValues("to_location_id")) {
+                            form.setValue("to_location_id", "");
+                          }
+                        }}
+                        disabled={isDisabled}
+                        className="w-full"
+                      />
+                    )}
+                  />
+                  <FieldError>
+                    {form.formState.errors.from_location_id?.message}
+                  </FieldError>
+                </Field>
+
+                <Field data-invalid={!!form.formState.errors.to_location_id}>
+                  <FieldLabel className="text-xs">To Location</FieldLabel>
+                  <Controller
+                    control={form.control}
+                    name="to_location_id"
+                    render={({ field }) => (
+                      <LookupLocation
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        disabled={isDisabled || !fromLocationId}
+                        excludeIds={fromLocationId ? [fromLocationId] : undefined}
+                        className="w-full"
+                      />
+                    )}
+                  />
+                  <FieldError>
+                    {form.formState.errors.to_location_id?.message}
+                  </FieldError>
+                </Field>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Field data-invalid={!!form.formState.errors.sr_date}>
+                  <FieldLabel className="text-xs">SR Date</FieldLabel>
+                  <Controller
+                    control={form.control}
+                    name="sr_date"
+                    render={({ field }) => (
+                      <DatePicker
+                        value={field.value}
+                        onValueChange={(val) => {
+                          field.onChange(val);
+                          const expected = form.getValues("expected_date");
+                          if (val && expected && new Date(expected) < new Date(val)) {
+                            form.setValue("expected_date", "");
+                          }
+                        }}
+                        disabled={isDisabled}
+                        placeholder="Pick SR date"
+                        className="w-full"
+                      />
+                    )}
+                  />
+                  <FieldError>
+                    {form.formState.errors.sr_date?.message}
+                  </FieldError>
+                </Field>
+
+                <Field data-invalid={!!form.formState.errors.expected_date}>
+                  <FieldLabel className="text-xs">Expected Date</FieldLabel>
+                  <Controller
+                    control={form.control}
+                    name="expected_date"
+                    render={({ field }) => (
+                      <DatePicker
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        disabled={isDisabled || !srDate}
+                        fromDate={srDate ? new Date(srDate) : undefined}
+                        placeholder="Pick expected date"
+                        className="w-full"
+                      />
+                    )}
+                  />
+                  <FieldError>
+                    {form.formState.errors.expected_date?.message}
+                  </FieldError>
+                </Field>
+              </div>
+
               <Field>
-                <FieldLabel className="text-xs">Workflow</FieldLabel>
-                <Controller
-                  control={form.control}
-                  name="workflow_id"
-                  render={({ field }) => (
-                    <Select
-                      value={field.value}
-                      onValueChange={field.onChange}
-                      disabled={isDisabled}
-                    >
-                      <SelectTrigger size="sm" className="w-full">
-                        <SelectValue placeholder="Select workflow" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {workflows.map((wf) => (
-                          <SelectItem
-                            key={wf.id}
-                            value={wf.id}
-                            className="text-xs"
-                          >
-                            {wf.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
+                <FieldLabel className="text-xs">Description</FieldLabel>
+                <Textarea
+                  placeholder="Optional description"
+                  className="text-xs min-h-13"
+                  disabled={isDisabled}
+                  maxLength={256}
+                  {...form.register("description")}
                 />
               </Field>
-            </div>
-          </FieldGroup>
-          <FieldGroup className="gap-3">
-            <div className="grid grid-cols-2 gap-2">
-              <Field data-invalid={!!form.formState.errors.from_location_id}>
-                <FieldLabel className="text-xs">From Location</FieldLabel>
-                <Controller
-                  control={form.control}
-                  name="from_location_id"
-                  render={({ field }) => (
-                    <LookupLocation
-                      value={field.value}
-                      onValueChange={field.onChange}
-                      disabled={isDisabled}
-                      className="w-full"
-                    />
-                  )}
-                />
-                <FieldError>
-                  {form.formState.errors.from_location_id?.message}
-                </FieldError>
-              </Field>
-
-              <Field data-invalid={!!form.formState.errors.to_location_id}>
-                <FieldLabel className="text-xs">To Location</FieldLabel>
-                <Controller
-                  control={form.control}
-                  name="to_location_id"
-                  render={({ field }) => (
-                    <LookupLocation
-                      value={field.value}
-                      onValueChange={field.onChange}
-                      disabled={isDisabled}
-                      className="w-full"
-                    />
-                  )}
-                />
-                <FieldError>
-                  {form.formState.errors.to_location_id?.message}
-                </FieldError>
-              </Field>
-            </div>
-          </FieldGroup>
-          <FieldGroup className="gap-3">
-            <div className="grid grid-cols-2 gap-2">
-              <Field data-invalid={!!form.formState.errors.sr_date}>
-                <FieldLabel className="text-xs">SR Date</FieldLabel>
-                <Controller
-                  control={form.control}
-                  name="sr_date"
-                  render={({ field }) => (
-                    <DatePicker
-                      value={field.value}
-                      onValueChange={field.onChange}
-                      disabled={isDisabled}
-                      placeholder="Pick SR date"
-                      className="w-full"
-                    />
-                  )}
-                />
-                <FieldError>
-                  {form.formState.errors.sr_date?.message}
-                </FieldError>
-              </Field>
-
-              <Field data-invalid={!!form.formState.errors.expected_date}>
-                <FieldLabel className="text-xs">Expected Date</FieldLabel>
-                <Controller
-                  control={form.control}
-                  name="expected_date"
-                  render={({ field }) => (
-                    <DatePicker
-                      value={field.value}
-                      onValueChange={field.onChange}
-                      disabled={isDisabled}
-                      placeholder="Pick expected date"
-                      className="w-full"
-                    />
-                  )}
-                />
-                <FieldError>
-                  {form.formState.errors.expected_date?.message}
-                </FieldError>
-              </Field>
-            </div>
-
-            <Field>
-              <FieldLabel className="text-xs">Description</FieldLabel>
-              <Textarea
-                placeholder="Optional description"
-                className="text-sm"
-                disabled={isDisabled}
-                maxLength={256}
-                {...form.register("description")}
-              />
-            </Field>
-          </FieldGroup>
-        </section>
+            </FieldGroup>
+          </section>
+        </div>
         <SrItemFields form={form} disabled={isDisabled} />
       </form>
 

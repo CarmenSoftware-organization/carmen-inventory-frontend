@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Download, Plus, Printer } from "lucide-react";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import {
   DataGrid,
@@ -66,25 +66,15 @@ export default function StoreRequisitionComponent() {
         </>
       }
       actions={
-        <>
-          <Button
-            size="sm"
-            onClick={() =>
-              router.push("/store-operation/store-requisition/new")
-            }
-          >
-            <Plus />
-            Add Requisition
-          </Button>
-          <Button size="sm" variant="outline">
-            <Download />
-            Export
-          </Button>
-          <Button size="sm" variant="outline">
-            <Printer />
-            Print
-          </Button>
-        </>
+        <Button
+          size="sm"
+          onClick={() =>
+            router.push("/store-operation/store-requisition/new")
+          }
+        >
+          <Plus />
+          Add Requisition
+        </Button>
       }
     >
       <DataGrid

@@ -24,11 +24,13 @@ const ProductCell = memo(function ProductCell({
   form,
   index,
   disabled,
+  hasError,
 }: {
   control: Control<SrFormValues>;
   form: UseFormReturn<SrFormValues>;
   index: number;
   disabled: boolean;
+  hasError: boolean;
 }) {
   return (
     <Controller
@@ -44,7 +46,7 @@ const ProductCell = memo(function ProductCell({
             }
           }}
           disabled={disabled}
-          className="w-full h-6 text-[11px]"
+          className={`w-full h-6 text-[11px]${hasError ? " ring-1 ring-destructive rounded-md" : ""}`}
         />
       )}
     />
@@ -83,31 +85,40 @@ export function useSrItemTable({
       {
         accessorKey: "product_id",
         header: "Product",
-        cell: ({ row }) => (
-          <ProductCell
-            control={form.control}
-            form={form}
-            index={row.index}
-            disabled={disabled}
-          />
-        ),
+        cell: ({ row }) => {
+          const hasError =
+            !!form.formState.errors.items?.[row.index]?.product_id;
+          return (
+            <ProductCell
+              control={form.control}
+              form={form}
+              index={row.index}
+              disabled={disabled}
+              hasError={hasError}
+            />
+          );
+        },
         size: 280,
       },
       {
         accessorKey: "requested_qty",
         header: "Requested Qty",
-        cell: ({ row }) => (
-          <Input
-            type="number"
-            min={1}
-            placeholder="Qty"
-            className="h-6 text-[11px] md:text-[11px] text-right"
-            disabled={disabled}
-            {...form.register(`items.${row.index}.requested_qty`, {
-              valueAsNumber: true,
-            })}
-          />
-        ),
+        cell: ({ row }) => {
+          const hasError =
+            !!form.formState.errors.items?.[row.index]?.requested_qty;
+          return (
+            <Input
+              type="number"
+              min={1}
+              placeholder="Qty"
+              className={`h-6 text-[11px] md:text-[11px] text-right${hasError ? " ring-1 ring-destructive" : ""}`}
+              disabled={disabled}
+              {...form.register(`items.${row.index}.requested_qty`, {
+                valueAsNumber: true,
+              })}
+            />
+          );
+        },
         size: 100,
         meta: { headerClassName: "text-right" },
       },
@@ -151,7 +162,7 @@ export function useSrItemTable({
         accessorKey: "current_stage_status",
         header: "Status",
         cell: ({ row }) => (
-          <Badge variant="secondary" className="text-[11px] capitalize">
+          <Badge variant="secondary" className="text-xs capitalize">
             {row.original.current_stage_status}
           </Badge>
         ),
