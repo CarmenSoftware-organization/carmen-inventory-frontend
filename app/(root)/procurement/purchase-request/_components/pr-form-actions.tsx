@@ -1,5 +1,8 @@
+import { useState } from "react";
 import {
   Check,
+  ChevronDown,
+  Eye,
   MessageSquare,
   Pencil,
   Save,
@@ -8,9 +11,24 @@ import {
   Trash2,
   Undo2,
   X,
-  RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { STAGE_ROLE } from "@/types/stage-role";
 import type { FormMode } from "@/types/form";
 
@@ -139,6 +157,14 @@ interface WorkflowActionsProps {
   readonly onPurchaseApprove?: () => void;
 }
 
+type ConfirmConfig = {
+  title: string;
+  description: string;
+  confirmLabel: string;
+  variant: "default" | "destructive" | "success" | "info";
+  onConfirm: () => void;
+};
+
 function WorkflowActions({
   role,
   prStatus,
@@ -150,6 +176,8 @@ function WorkflowActions({
   onReview,
   onPurchaseApprove,
 }: WorkflowActionsProps) {
+  const [confirm, setConfirm] = useState<ConfirmConfig | null>(null);
+
   const canSubmit =
     role === STAGE_ROLE.CREATE && prStatus !== "in_progress";
 
@@ -157,74 +185,127 @@ function WorkflowActions({
   const canPurchaseApprove = role === STAGE_ROLE.PURCHASE;
   const canAction = canApprove || canPurchaseApprove;
 
+  const openConfirm = (config: ConfirmConfig) => setConfirm(config);
+
   return (
     <>
       {canSubmit && (
         <Button
           size="sm"
           variant="info"
-          onClick={onSubmitPr}
           disabled={isPending}
+          onClick={() =>
+            openConfirm({
+              title: "Submit Purchase Request",
+              description:
+                "This will submit the PR for approval. Are you sure?",
+              confirmLabel: "Submit",
+              variant: "info",
+              onConfirm: () => onSubmitPr?.(),
+            })
+          }
         >
           <SendHorizonal />
           Submit
         </Button>
       )}
+
       {canApprove && (
         <Button
           size="sm"
           variant="success"
-          onClick={onApprove}
           disabled={isPending}
+          onClick={() =>
+            openConfirm({
+              title: "Approve Purchase Request",
+              description:
+                "This will approve the PR and move it to the next stage. Are you sure?",
+              confirmLabel: "Approve",
+              variant: "success",
+              onConfirm: () => onApprove?.(),
+            })
+          }
         >
           <Check />
           Approve
         </Button>
       )}
+
       {canPurchaseApprove && (
         <Button
           size="sm"
           variant="success"
-          onClick={onPurchaseApprove}
           disabled={isPending}
+          onClick={() =>
+            openConfirm({
+              title: "Purchase Approve",
+              description:
+                "This will approve for purchasing. Are you sure?",
+              confirmLabel: "Purchase Approve",
+              variant: "success",
+              onConfirm: () => onPurchaseApprove?.(),
+            })
+          }
         >
           <ShoppingCart />
           Purchase Approve
         </Button>
       )}
+
       {canAction && (
-        <Button
-          size="sm"
-          variant="destructive"
-          onClick={onReject}
-          disabled={isPending}
-        >
-          <X />
-          Reject
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm" variant="outline" disabled={isPending}>
+              More
+              <ChevronDown />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={onReject}>
+              <X className="text-destructive" />
+              Reject
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onSendBack}>
+              <Undo2 className="text-warning" />
+              Send Back
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onReview}>
+              <Eye />
+              Review
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
-      {canAction && (
-        <Button
-          size="sm"
-          variant="warning"
-          onClick={onSendBack}
-          disabled={isPending}
-        >
-          <Undo2 />
-          Send Back
-        </Button>
-      )}
-      {canAction && (
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={onReview}
-          disabled={isPending}
-        >
-          <RotateCcw />
-          Review
-        </Button>
-      )}
+
+      <AlertDialog
+        open={!!confirm}
+        onOpenChange={(open) => {
+          if (!open) setConfirm(null);
+        }}
+      >
+        {confirm && (
+          <AlertDialogContent size="sm">
+            <AlertDialogHeader>
+              <AlertDialogTitle>{confirm.title}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {confirm.description}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                variant={confirm.variant}
+                onClick={() => {
+                  confirm.onConfirm();
+                  setConfirm(null);
+                }}
+              >
+                {confirm.confirmLabel}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        )}
+      </AlertDialog>
     </>
   );
 }
