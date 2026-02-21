@@ -1,24 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, ChevronsUpDown, Loader2, Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { UnitDialog } from "@/components/share/unit-dialog";
 import { useUnit } from "@/hooks/use-unit";
+import { LookupCombobox } from "./lookup-combobox";
 
 interface LookupUnitProps {
   readonly value: string;
@@ -45,94 +32,33 @@ export function LookupUnit({
     return active.filter((u) => !excluded.has(u.id));
   }, [data, excludeIds]);
 
-  const [open, setOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  const selectedName = useMemo(() => {
-    if (!value) return null;
-    return units.find((u) => u.id === value)?.name ?? null;
-  }, [value, units]);
 
   return (
     <>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+      <LookupCombobox
+        value={value}
+        onValueChange={(id) => onValueChange(id)}
+        items={units}
+        getId={(u) => u.id}
+        getLabel={(u) => u.name}
+        placeholder={placeholder}
+        searchPlaceholder="Search unit..."
+        disabled={disabled}
+        isLoading={isLoading}
+        className={className}
+        headerSlot={
           <Button
-            variant="outline"
-            aria-expanded={open}
-            className={cn(
-              "h-8 flex justify-between items-center pl-3 pr-1 text-sm",
-              className,
-            )}
-            disabled={disabled}
+            size="xs"
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-1"
+            onClick={() => setDialogOpen(true)}
+            type="button"
+            aria-label="Add new unit"
           >
-            <span
-              className={cn(!selectedName && "text-muted-foreground text-xs")}
-            >
-              {selectedName ?? placeholder}
-            </span>
-            <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+            <Plus className="h-3 w-3" />
           </Button>
-        </PopoverTrigger>
-
-        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-          <Command
-            filter={(value, search) => {
-              if (!search) return 1;
-              if (value.toLowerCase().includes(search.toLowerCase())) return 1;
-              return 0;
-            }}
-          >
-            <div className="relative w-full">
-              <CommandInput
-                placeholder="Search unit..."
-                className="w-full pr-8 placeholder:text-xs"
-              />
-              <Button
-                size="xs"
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1"
-                onClick={() => setDialogOpen(true)}
-                type="button"
-                aria-label="Add new unit"
-              >
-                <Plus className="h-3 w-3" />
-              </Button>
-            </div>
-            <CommandList>
-              {isLoading ? (
-                <div className="flex items-center justify-center py-3">
-                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                </div>
-              ) : (
-                <>
-                  <CommandEmpty>No units found.</CommandEmpty>
-                  <CommandGroup>
-                    {units.map((unit) => (
-                      <CommandItem
-                        key={unit.id}
-                        value={unit.name}
-                        onSelect={() => {
-                          onValueChange(unit.id);
-                          setOpen(false);
-                        }}
-                        className="text-xs"
-                      >
-                        {unit.name}
-                        <Check
-                          className={cn(
-                            "ml-auto h-4 w-4",
-                            value === unit.id ? "opacity-100" : "opacity-0",
-                          )}
-                        />
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </>
-              )}
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+        }
+      />
       <UnitDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}

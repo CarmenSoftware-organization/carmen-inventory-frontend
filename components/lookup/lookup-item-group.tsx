@@ -1,26 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { useMemo } from "react";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { useItemGroup } from "@/hooks/use-item-group";
 import type { ItemGroupDto } from "@/types/category";
-import { Badge } from "../ui/badge";
-import EmptyComponent from "../empty-component";
+import { Badge } from "@/components/ui/badge";
+import { LookupCombobox } from "./lookup-combobox";
 
 interface LookupItemGroupProps {
   readonly value: string;
@@ -43,97 +29,47 @@ export function LookupItemGroup({
     [data?.data],
   );
 
-  const [open, setOpen] = useState(false);
-
-  const selectedLabel = useMemo(() => {
-    if (!value) return null;
-    const found = itemGroups.find((g) => g.id === value);
-    return found ? `${found.name}` : null;
-  }, [value, itemGroups]);
-
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          aria-expanded={open}
+    <LookupCombobox
+      value={value}
+      onValueChange={onValueChange}
+      items={itemGroups}
+      getId={(g) => g.id}
+      getLabel={(g) => g.name}
+      getSearchValue={(g) => `${g.code} ${g.name}`}
+      renderItem={(g) => (
+        <>
+          <Badge size="xs" variant="secondary">
+            {g.code}
+          </Badge>
+          - {g.name}
+        </>
+      )}
+      placeholder={placeholder}
+      searchPlaceholder="Search item group..."
+      disabled={disabled}
+      className={className}
+      emptyTitle="No item groups"
+      emptyDescription="No item groups defined"
+      prependItems={
+        <button
+          type="button"
+          aria-pressed={!value}
           className={cn(
-            "h-8 flex justify-between items-center pl-3 pr-1 text-sm",
-            className,
+            "relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
+            "hover:bg-accent hover:text-accent-foreground",
           )}
-          disabled={disabled}
+          onClick={() => onValueChange("")}
         >
-          <span
-            className={cn(!selectedLabel && "text-muted-foreground text-xs")}
-          >
-            {selectedLabel ?? placeholder}
-          </span>
-          <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-
-      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-        <Command
-          filter={(value, search) => {
-            if (!search) return 1;
-            if (value.toLowerCase().includes(search.toLowerCase())) return 1;
-            return 0;
-          }}
-        >
-          <CommandInput
-            placeholder="Search item group..."
-            className="placeholder:text-xs"
+          None
+          <Check
+            className={cn(
+              "ml-auto h-4 w-4 shrink-0",
+              value ? "opacity-0" : "opacity-100",
+            )}
           />
-          <CommandList>
-            <CommandEmpty>
-              <EmptyComponent
-                title="No item groups"
-                description="No item groups defined"
-              />
-            </CommandEmpty>
-            <CommandGroup>
-              <CommandItem
-                value="__none__"
-                onSelect={() => {
-                  onValueChange("");
-                  setOpen(false);
-                }}
-                className="text-xs"
-              >
-                None
-                <Check
-                  className={cn(
-                    "ml-auto h-4 w-4",
-                    value ? "opacity-0" : "opacity-100",
-                  )}
-                />
-              </CommandItem>
-              {itemGroups.map((g) => (
-                <CommandItem
-                  key={g.id}
-                  value={`${g.code} ${g.name}`}
-                  onSelect={() => {
-                    onValueChange(g.id, g);
-                    setOpen(false);
-                  }}
-                  className="text-xs"
-                >
-                  <Badge size={"xs"} variant={"secondary"}>
-                    {g.code}
-                  </Badge>
-                  - {g.name}
-                  <Check
-                    className={cn(
-                      "ml-auto h-4 w-4",
-                      value === g.id ? "opacity-100" : "opacity-0",
-                    )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+        </button>
+      }
+    />
   );
 }
