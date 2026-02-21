@@ -100,7 +100,7 @@ export function Transfer({
           size="icon-xs"
           onClick={moveRight}
           disabled={disabled || leftChecked.size === 0}
-          title="Move selected to right"
+          aria-label="Move selected to right"
         >
           <ChevronRight />
         </Button>
@@ -110,7 +110,7 @@ export function Transfer({
           size="icon-xs"
           onClick={moveLeft}
           disabled={disabled || rightChecked.size === 0}
-          title="Move selected to left"
+          aria-label="Move selected to left"
         >
           <ChevronLeft />
         </Button>

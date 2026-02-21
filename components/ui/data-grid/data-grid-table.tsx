@@ -310,10 +310,22 @@ function DataGridTableBodyRow<TData>({
           ? "selected"
           : undefined
       }
+      tabIndex={props.onRowClick ? 0 : undefined}
+      role={props.onRowClick ? "button" : undefined}
       onClick={() => props.onRowClick && props.onRowClick(row.original)}
+      onKeyDown={
+        props.onRowClick
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                props.onRowClick!(row.original);
+              }
+            }
+          : undefined
+      }
       className={cn(
         "hover:bg-muted/40 data-[state=selected]:bg-muted/50",
-        props.onRowClick && "cursor-pointer",
+        props.onRowClick && "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset",
         !props.tableLayout?.stripped &&
           props.tableLayout?.rowBorder &&
           "border-border border-b [&:not(:last-child)>td]:border-b",

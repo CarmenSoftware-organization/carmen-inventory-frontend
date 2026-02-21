@@ -32,7 +32,7 @@ export function FormToolbar({
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon-sm" onClick={onBack}>
+        <Button variant="ghost" size="icon-sm" onClick={onBack} aria-label="Go back">
           <ArrowLeft />
         </Button>
         <h1 className="text-lg font-semibold">{labels.title}</h1>
