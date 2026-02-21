@@ -497,6 +497,14 @@ export function PurchaseRequestForm({
           prDateDisplay={prDateDisplay}
         />
 
+        {purchaseRequest?.workflow_current_stage && (
+          <PrWorkflowStep
+            previousStage={purchaseRequest.workflow_previous_stage}
+            currentStage={purchaseRequest.workflow_current_stage}
+            nextStage={purchaseRequest.workflow_next_stage}
+          />
+        )}
+
         <Tabs defaultValue="items">
           <TabsList variant="line">
             <TabsTrigger value="items">Items</TabsTrigger>
@@ -516,13 +524,6 @@ export function PurchaseRequestForm({
               dateFormat={dateFormat}
               onSplit={handleSplit}
             />
-            {purchaseRequest?.workflow_current_stage && (
-              <PrWorkflowStep
-                previousStage={purchaseRequest.workflow_previous_stage}
-                currentStage={purchaseRequest.workflow_current_stage}
-                nextStage={purchaseRequest.workflow_next_stage}
-              />
-            )}
           </TabsContent>
           {(purchaseRequest?.workflow_history?.length ?? 0) > 0 && (
             <TabsContent value="history">
