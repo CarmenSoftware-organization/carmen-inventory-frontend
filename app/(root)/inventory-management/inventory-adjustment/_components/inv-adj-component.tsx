@@ -44,7 +44,9 @@ export default function InventoryAdjustmentComponent() {
     params,
     tableConfig,
     onEdit: (item) =>
-      router.push(`/inventory-management/inventory-adjustment/${item.id}`),
+      router.push(
+        `/inventory-management/inventory-adjustment/${item.id}?type=${item.type}`,
+      ),
     onDelete: setDeleteTarget,
   });
 
