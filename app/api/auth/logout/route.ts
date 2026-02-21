@@ -1,21 +1,20 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-
-const BACKEND_URL = process.env.BACKEND_URL;
-const X_APP_ID = process.env.X_APP_ID!;
+import { BACKEND_URL, X_APP_ID } from "@/lib/env";
 
 export async function POST() {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("access_token")?.value;
 
   // Invalidate token on backend (best-effort, don't block logout)
-  if (accessToken && BACKEND_URL) {
+  if (accessToken) {
     fetch(`${BACKEND_URL}/api/auth/logout`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "x-app-id": X_APP_ID,
       },
+      signal: AbortSignal.timeout(5_000),
     }).catch(() => {}); // fire-and-forget
   }
 

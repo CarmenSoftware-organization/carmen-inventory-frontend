@@ -1,7 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { checkServerRateLimit } from "@/lib/rate-limit";
-
-const BACKEND_URL = process.env.BACKEND_URL;
+import { BACKEND_URL, X_APP_ID } from "@/lib/env";
 
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
@@ -34,7 +33,9 @@ async function proxyRequest(
     url.searchParams.set(key, value);
   });
 
-  const headers: Record<string, string> = {};
+  const headers: Record<string, string> = {
+    "x-app-id": X_APP_ID,
+  };
 
   const contentType = request.headers.get("content-type");
   if (contentType) {

@@ -1,9 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/lib/cookies";
-
-const BACKEND_URL = process.env.BACKEND_URL;
-const X_APP_ID = process.env.X_APP_ID!;
+import { BACKEND_URL, X_APP_ID } from "@/lib/env";
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -33,6 +31,13 @@ export async function POST(request: Request) {
   const data = await res.json();
   const { access_token, refresh_token, expires_in, platform_role } = data;
 
+  if (!access_token || !refresh_token) {
+    return NextResponse.json(
+      { error: "Invalid login response from backend" },
+      { status: 502 },
+    );
+  }
+
   const cookieStore = await cookies();
 
   cookieStore.set({
@@ -46,19 +51,24 @@ export async function POST(request: Request) {
     value: refresh_token,
   });
 
-  // Fetch user profile after login
-  const profileRes = await fetch(`${BACKEND_URL}/api/user/profile`, {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-      "x-app-id": X_APP_ID,
-    },
-  });
+  // Fetch user profile after login (with timeout)
+  try {
+    const profileRes = await fetch(`${BACKEND_URL}/api/user/profile`, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "x-app-id": X_APP_ID,
+      },
+      signal: AbortSignal.timeout(10_000),
+    });
 
-  if (!profileRes.ok) {
+    if (!profileRes.ok) {
+      return NextResponse.json({ platform_role });
+    }
+
+    const profileJson = await profileRes.json();
+    return NextResponse.json({ platform_role, profile: profileJson.data });
+  } catch {
+    // Profile fetch failed/timed out — login still succeeds
     return NextResponse.json({ platform_role });
   }
-
-  const profileJson = await profileRes.json();
-
-  return NextResponse.json({ platform_role, profile: profileJson.data });
 }

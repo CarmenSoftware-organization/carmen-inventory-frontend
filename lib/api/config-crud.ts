@@ -22,13 +22,13 @@ export function createConfigApi<T, TCreate>({
   ): Promise<PaginatedResponse<T>> {
     const url = buildUrl(endpoint(buCode), params);
     const res = await httpClient.get(url);
-    if (!res.ok) throw new Error(`Failed to fetch ${label}s`);
+    if (!res.ok) throw new Error("Failed to fetch data");
     return res.json();
   }
 
   async function getById(buCode: string, id: string): Promise<T> {
     const res = await httpClient.get(`${endpoint(buCode)}/${id}`);
-    if (!res.ok) throw new Error(`Failed to fetch ${label}`);
+    if (!res.ok) throw new Error("Failed to fetch record");
     const json = await res.json();
     return json.data;
   }

@@ -1,8 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/lib/cookies";
-
-const BACKEND_URL = process.env.BACKEND_URL;
+import { BACKEND_URL } from "@/lib/env";
 
 export async function POST() {
   const cookieStore = await cookies();
@@ -16,6 +15,7 @@ export async function POST() {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ refresh_token: refreshToken }),
+    signal: AbortSignal.timeout(10_000),
   });
 
   if (!res.ok) {
@@ -25,6 +25,15 @@ export async function POST() {
   }
 
   const data = await res.json();
+
+  if (!data.access_token) {
+    cookieStore.delete("access_token");
+    cookieStore.delete("refresh_token");
+    return NextResponse.json(
+      { error: "Invalid refresh response" },
+      { status: 502 },
+    );
+  }
 
   cookieStore.set({
     ...ACCESS_TOKEN_COOKIE,

@@ -2,9 +2,7 @@ import { cookies } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/lib/cookies";
 import { checkServerRateLimit } from "@/lib/rate-limit";
-
-const BACKEND_URL = process.env.BACKEND_URL;
-const X_APP_ID = process.env.X_APP_ID!;
+import { BACKEND_URL, X_APP_ID } from "@/lib/env";
 
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
