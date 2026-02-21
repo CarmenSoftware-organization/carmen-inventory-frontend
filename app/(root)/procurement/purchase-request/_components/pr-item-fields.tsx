@@ -308,7 +308,7 @@ export function PrItemFields({
         table={table}
         recordCount={itemFields.length}
         tableLayout={{ dense: true }}
-        tableClassNames={{ base: "text-[11px]" }}
+        tableClassNames={{ base: "text-xs" }}
         emptyMessage={
           <EmptyComponent
             icon={BoxIcon}

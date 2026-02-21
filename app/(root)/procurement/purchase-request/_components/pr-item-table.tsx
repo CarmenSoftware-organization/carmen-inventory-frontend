@@ -43,7 +43,7 @@ const StatusCell = memo(function StatusCell({
   const { variant, label } =
     PR_ITEM_STATUS_CONFIG[status] ?? PR_ITEM_STATUS_CONFIG.pending;
   return (
-    <Badge variant={variant} className="text-[11px]">
+    <Badge variant={variant} className="text-xs">
       {label}
     </Badge>
   );
@@ -100,7 +100,7 @@ const ProductCell = memo(function ProductCell({
             form.setValue(`items.${index}.approved_unit_id`, "");
           }}
           disabled={isDisabled}
-          className="w-full h-6 text-[11px]"
+          className="w-full h-7 text-xs"
         />
       )}
     />
@@ -136,7 +136,7 @@ const WatchedProductUnit = memo(function WatchedProductUnit({
             onExtraChange?.(value);
           }}
           disabled={disabled}
-          className="w-full h-6 text-[11px]"
+          className="w-full h-7 text-xs"
         />
       )}
     />
@@ -268,7 +268,7 @@ export function usePrItemTable({
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
                 disabled={isDisabled}
-                className="w-full h-6 text-[11px]"
+                className="w-full h-7 text-xs"
               />
             )}
           />
@@ -305,7 +305,7 @@ export function usePrItemTable({
               type="number"
               min={1}
               placeholder="Qty"
-              className="h-6 text-[11px] md:text-[11px] text-right"
+              className="h-7 text-xs text-right"
               disabled={isDisabled}
               {...form.register(`items.${row.index}.requested_qty`, {
                 valueAsNumber: true,
@@ -334,7 +334,7 @@ export function usePrItemTable({
               type="number"
               min={0}
               placeholder="Qty"
-              className="h-6 text-[11px] md:text-[11px] text-right"
+              className="h-7 text-xs text-right"
               disabled={isDisabled}
               {...form.register(`items.${row.index}.approved_qty`, {
                 valueAsNumber: true,
@@ -359,7 +359,7 @@ export function usePrItemTable({
               type="number"
               min={0}
               placeholder="Qty"
-              className="h-6 text-[11px] md:text-[11px] text-right"
+              className="h-7 text-xs text-right"
               disabled={isDisabled}
               {...form.register(`items.${row.index}.foc_qty`, {
                 valueAsNumber: true,
@@ -400,7 +400,7 @@ export function usePrItemTable({
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
                 disabled={isDisabled}
-                className="w-full text-[11px]"
+                className="w-full text-xs"
                 size="xs"
               />
             )}
@@ -420,7 +420,7 @@ export function usePrItemTable({
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
                 disabled={isDisabled}
-                className="w-full h-6 text-[11px]"
+                className="w-full h-7 text-xs"
               />
             )}
           />
@@ -440,7 +440,7 @@ export function usePrItemTable({
                 onValueChange={field.onChange}
                 fromDate={today}
                 disabled={isDisabled}
-                className="w-full text-[11px]"
+                className="w-full text-xs"
                 size="xs"
               />
             )}

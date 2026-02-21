@@ -144,7 +144,7 @@ export function PrItemExpand({
       {/* Row 1: Vendor | Unit Price | Pricelist */}
       <div className="grid grid-cols-12 gap-2 items-end">
         <div className="col-span-5">
-          <span className="text-[10px] text-muted-foreground">Vendor</span>
+          <span className="text-xs text-muted-foreground">Vendor</span>
           <Controller
             control={form.control}
             name={`items.${index}.vendor_id`}
@@ -153,7 +153,7 @@ export function PrItemExpand({
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
                 disabled={disabled}
-                className="w-full h-6 text-[11px]"
+                className="w-full h-7 text-xs"
               />
             )}
           />
@@ -161,7 +161,7 @@ export function PrItemExpand({
         <div className="col-span-2">
           <label
             htmlFor={`items-${index}-pricelist-price`}
-            className="text-[10px] text-muted-foreground"
+            className="text-xs text-muted-foreground"
           >
             Unit Price
           </label>
@@ -171,7 +171,7 @@ export function PrItemExpand({
             min={0}
             step="0.01"
             placeholder="0.00"
-            className="h-6 text-[11px] md:text-[11px] text-right"
+            className="h-7 text-xs text-right"
             disabled={disabled}
             {...form.register(`items.${index}.pricelist_price`, {
               valueAsNumber: true,
@@ -179,9 +179,9 @@ export function PrItemExpand({
           />
         </div>
         <div className="col-span-3">
-          <span className="text-[10px] text-muted-foreground">Pricelist</span>
+          <span className="text-xs text-muted-foreground">Pricelist</span>
           <div className="flex items-center gap-0.5">
-            <span className="flex-1 h-6 leading-6 text-[11px] text-muted-foreground truncate">
+            <span className="flex-1 h-7 leading-6 text-xs text-muted-foreground truncate">
               {pricelistNo || "—"}
             </span>
             {!disabled && productId && unitId && currencyId && (
@@ -197,8 +197,8 @@ export function PrItemExpand({
           </div>
         </div>
         <div className="col-span-2">
-          <span className="text-[10px] text-muted-foreground">Net Amount</span>
-          <div className="h-6 leading-6 text-[11px] text-right font-medium tabular-nums">
+          <span className="text-xs text-muted-foreground">Net Amount</span>
+          <div className="h-7 leading-6 text-xs text-right font-medium tabular-nums">
             {netAmount.toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
@@ -210,7 +210,7 @@ export function PrItemExpand({
       {/* Row 2: Tax Profile | Tax % | Tax Amt [✓] | Disc % | Disc Amt [✓] | Total */}
       <div className="grid grid-cols-12 gap-2 items-end">
         <div className="col-span-3">
-          <span className="text-[10px] text-muted-foreground">Tax Profile</span>
+          <span className="text-xs text-muted-foreground">Tax Profile</span>
           <Controller
             control={form.control}
             name={`items.${index}.tax_profile_id`}
@@ -222,7 +222,7 @@ export function PrItemExpand({
                   form.setValue(`items.${index}.tax_rate`, taxRate);
                 }}
                 disabled={disabled}
-                className="w-full text-[11px]"
+                className="w-full text-xs"
                 size="xs"
               />
             )}
@@ -231,7 +231,7 @@ export function PrItemExpand({
         <div className="col-span-1">
           <label
             htmlFor={`items-${index}-tax-rate`}
-            className="text-[10px] text-muted-foreground"
+            className="text-xs text-muted-foreground"
           >
             Tax %
           </label>
@@ -241,7 +241,7 @@ export function PrItemExpand({
             min={0}
             step="0.01"
             placeholder="0"
-            className="h-6 text-[11px] md:text-[11px] text-right"
+            className="h-7 text-xs text-right"
             disabled
             {...form.register(`items.${index}.tax_rate`, {
               valueAsNumber: true,
@@ -250,7 +250,7 @@ export function PrItemExpand({
         </div>
         <div className="col-span-2">
           <div className="flex items-center gap-1">
-            <span className="text-[10px] text-muted-foreground">Tax Amt</span>
+            <span className="text-xs text-muted-foreground">Tax Amt</span>
             <Controller
               control={form.control}
               name={`items.${index}.is_tax_adjustment`}
@@ -270,7 +270,7 @@ export function PrItemExpand({
             min={0}
             step="0.01"
             placeholder="0.00"
-            className="h-6 text-[11px] md:text-[11px] text-right"
+            className="h-7 text-xs text-right"
             disabled={disabled || !isTaxAdj}
             {...form.register(`items.${index}.tax_amount`, {
               valueAsNumber: true,
@@ -280,7 +280,7 @@ export function PrItemExpand({
         <div className="col-span-1">
           <label
             htmlFor={`items-${index}-discount-rate`}
-            className="text-[10px] text-muted-foreground"
+            className="text-xs text-muted-foreground"
           >
             Disc %
           </label>
@@ -290,7 +290,7 @@ export function PrItemExpand({
             min={0}
             step="0.01"
             placeholder="0"
-            className="h-6 text-[11px] md:text-[11px] text-right"
+            className="h-7 text-xs text-right"
             disabled={disabled}
             {...form.register(`items.${index}.discount_rate`, {
               valueAsNumber: true,
@@ -299,7 +299,7 @@ export function PrItemExpand({
         </div>
         <div className="col-span-2">
           <div className="flex items-center gap-1">
-            <span className="text-[10px] text-muted-foreground">Disc Amt</span>
+            <span className="text-xs text-muted-foreground">Disc Amt</span>
             <Controller
               control={form.control}
               name={`items.${index}.is_discount_adjustment`}
@@ -319,7 +319,7 @@ export function PrItemExpand({
             min={0}
             step="0.01"
             placeholder="0.00"
-            className="h-6 text-[11px] md:text-[11px] text-right"
+            className="h-7 text-xs text-right"
             disabled={disabled || !isDiscAdj}
             {...form.register(`items.${index}.discount_amount`, {
               valueAsNumber: true,
@@ -327,8 +327,8 @@ export function PrItemExpand({
           />
         </div>
         <div className="col-span-3">
-          <span className="text-[10px] text-muted-foreground">Total</span>
-          <div className="h-6 leading-6 text-[11px] text-right font-semibold tabular-nums">
+          <span className="text-xs text-muted-foreground">Total</span>
+          <div className="h-7 leading-6 text-xs text-right font-semibold tabular-nums">
             {totalPrice.toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
