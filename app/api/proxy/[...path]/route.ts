@@ -34,6 +34,12 @@ async function refreshAccessToken(
 
   const data = await res.json();
 
+  if (!data.access_token) {
+    cookieStore.delete("access_token");
+    cookieStore.delete("refresh_token");
+    return null;
+  }
+
   cookieStore.set({
     ...ACCESS_TOKEN_COOKIE,
     value: data.access_token,
