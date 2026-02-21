@@ -28,10 +28,10 @@ interface CnGeneralFieldsProps {
 
 export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
   return (
-    <div className="max-w-2xl space-y-4">
+    <div className="max-w-3xl space-y-3">
       {/* ── Credit Note Details ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">Credit Note Details</h2>
+        <h2 className="text-xs font-semibold">Credit Note Details</h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!form.formState.errors.credit_note_type}>
@@ -121,7 +121,7 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
 
       {/* ── Vendor & Currency ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">Vendor & Currency</h2>
+        <h2 className="text-xs font-semibold">Vendor & Currency</h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!form.formState.errors.vendor_id}>
@@ -190,7 +190,7 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
 
       {/* ── Amounts & Remarks ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">Amounts & Remarks</h2>
+        <h2 className="text-xs font-semibold">Amounts & Remarks</h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-3">
             <Field>
@@ -220,17 +220,31 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
             </Field>
           </div>
 
-          <Field>
-            <FieldLabel className="text-xs">Description</FieldLabel>
-            <Textarea
-              placeholder="Optional"
-              className="text-sm"
-              rows={2}
-              disabled={disabled}
-              maxLength={256}
-              {...form.register("description")}
-            />
-          </Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field>
+              <FieldLabel className="text-xs">Description</FieldLabel>
+              <Textarea
+                placeholder="Optional"
+                className="text-xs min-h-13"
+                rows={2}
+                disabled={disabled}
+                maxLength={256}
+                {...form.register("description")}
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel className="text-xs">Notes</FieldLabel>
+              <Textarea
+                placeholder="Optional"
+                className="text-xs min-h-13"
+                rows={2}
+                disabled={disabled}
+                maxLength={256}
+                {...form.register("notes")}
+              />
+            </Field>
+          </div>
         </FieldGroup>
       </section>
     </div>

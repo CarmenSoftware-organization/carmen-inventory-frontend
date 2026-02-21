@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Download, File, Plus, Printer } from "lucide-react";
+import { File, Plus } from "lucide-react";
 import { toast } from "sonner";
 import {
   DataGrid,
@@ -66,19 +66,7 @@ export default function CnComponent() {
           <StatusFilter value={filter} onChange={setFilter} />
         </>
       }
-      actions={
-        <>
-          {newCnBtn}
-          <Button size="sm" variant="outline" disabled>
-            <Download />
-            Export
-          </Button>
-          <Button size="sm" variant="outline" disabled>
-            <Printer />
-            Print
-          </Button>
-        </>
-      }
+      actions={newCnBtn}
     >
       <DataGrid
         table={table}
@@ -89,8 +77,8 @@ export default function CnComponent() {
         emptyMessage={
           <EmptyComponent
             icon={File}
-            title="No Items Yet"
-            description="Add items to this credit note."
+            title="No Credit Notes"
+            description="No credit notes found."
             content={newCnBtn}
           />
         }
