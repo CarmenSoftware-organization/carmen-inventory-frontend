@@ -124,7 +124,7 @@ export function PrFormActions({
         </>
       )}
 
-      {isEdit && hasRecord && (
+      {hasRecord && (isEdit || (isView && prStatus === "draft")) && (
         <Button
           type="button"
           variant="destructive"
@@ -137,10 +137,12 @@ export function PrFormActions({
         </Button>
       )}
 
-      <Button size="sm" onClick={onComment}>
-        <MessageSquare />
-        Comment
-      </Button>
+      {hasRecord && (
+        <Button size="sm" onClick={onComment}>
+          <MessageSquare />
+          Comment
+        </Button>
+      )}
     </div>
   );
 }

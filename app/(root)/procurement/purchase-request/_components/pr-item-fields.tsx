@@ -121,6 +121,7 @@ export function PrItemFields({
     if (items.length === 0) return;
 
     setIsAllocating(true);
+    const toastId = toast.loading(`Allocating ${items.length} items...`);
     let allocated = 0;
 
     const results = await Promise.allSettled(
@@ -157,6 +158,7 @@ export function PrItemFields({
       }),
     );
 
+    toast.dismiss(toastId);
     const failed = results.filter((r) => r.status === "rejected").length;
     if (allocated > 0) {
       toast.success(`Allocated ${allocated} of ${items.length} items`);
@@ -233,7 +235,19 @@ export function PrItemFields({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold">Items</h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-sm font-semibold">Items</h2>
+          {itemFields.length > 0 && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="xs"
+              onClick={() => table.toggleAllRowsExpanded(!table.getIsAllRowsExpanded())}
+            >
+              {table.getIsAllRowsExpanded() ? "Collapse All" : "Expand All"}
+            </Button>
+          )}
+        </div>
 
         <div className="flex flex-col  gap-2">
           <div className="flex items-center justify-end gap-1.5">
@@ -312,8 +326,8 @@ export function PrItemFields({
         emptyMessage={
           <EmptyComponent
             icon={BoxIcon}
-            title="No Products Yet"
-            description="You haven't created any Products yet."
+            title="No items added yet"
+            description="Start by adding items to this purchase request."
             content={
               !isDisabled && (
                 <Button type="button" size="xs" onClick={() => handleAddItem()}>

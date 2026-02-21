@@ -475,7 +475,8 @@ export function usePrItemTable({
     const hiddenInDraft = new Set(["foc", "approved"]);
 
     return [
-      ...(!isDraft ? [expandColumn, prSelectColumn] : []),
+      expandColumn,
+      ...(!isDraft ? [prSelectColumn] : []),
       indexColumn,
       ...(isDraft
         ? dataColumns.filter((col) => !hiddenInDraft.has(col.id ?? ""))

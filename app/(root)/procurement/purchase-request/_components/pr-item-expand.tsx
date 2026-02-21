@@ -249,18 +249,23 @@ export function PrItemExpand({
           />
         </div>
         <div className="col-span-2">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center justify-between">
             <span className="text-xs text-muted-foreground">Tax Amt</span>
             <Controller
               control={form.control}
               name={`items.${index}.is_tax_adjustment`}
               render={({ field }) => (
-                <Checkbox
-                  checked={field.value ?? false}
-                  onCheckedChange={field.onChange}
-                  disabled={disabled}
-                  className="size-3"
-                />
+                <label className="flex items-center gap-1 cursor-pointer">
+                  <Checkbox
+                    checked={field.value ?? false}
+                    onCheckedChange={field.onChange}
+                    disabled={disabled}
+                    className="size-3.5"
+                  />
+                  <span className="text-[10px] text-muted-foreground select-none">
+                    Manual
+                  </span>
+                </label>
               )}
             />
           </div>
@@ -298,18 +303,23 @@ export function PrItemExpand({
           />
         </div>
         <div className="col-span-2">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center justify-between">
             <span className="text-xs text-muted-foreground">Disc Amt</span>
             <Controller
               control={form.control}
               name={`items.${index}.is_discount_adjustment`}
               render={({ field }) => (
-                <Checkbox
-                  checked={field.value ?? false}
-                  onCheckedChange={field.onChange}
-                  disabled={disabled}
-                  className="size-3"
-                />
+                <label className="flex items-center gap-1 cursor-pointer">
+                  <Checkbox
+                    checked={field.value ?? false}
+                    onCheckedChange={field.onChange}
+                    disabled={disabled}
+                    className="size-3.5"
+                  />
+                  <span className="text-[10px] text-muted-foreground select-none">
+                    Manual
+                  </span>
+                </label>
               )}
             />
           </div>

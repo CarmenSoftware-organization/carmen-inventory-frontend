@@ -88,7 +88,7 @@ export function PurchaseRequestForm({
   const approvePr = useUpdatePr("approve");
   const purchaseApprovePr = useUpdatePr("purchase");
   const rejectPr = useUpdatePr("reject");
-  const send_backPr = useUpdatePr("send_back");
+  const sendBackPr = useUpdatePr("send_back");
   const reviewPr = useUpdatePr("review");
   const splitPr = useSplitPurchaseRequest();
 
@@ -107,7 +107,7 @@ export function PurchaseRequestForm({
     approvePr.isPending ||
     purchaseApprovePr.isPending ||
     rejectPr.isPending ||
-    send_backPr.isPending ||
+    sendBackPr.isPending ||
     reviewPr.isPending ||
     splitPr.isPending;
 
@@ -364,7 +364,7 @@ export function PurchaseRequestForm({
         successMsg: "Purchase request rejected",
       },
       send_back: {
-        mutation: send_backPr,
+        mutation: sendBackPr,
         successMsg: "Purchase request sent back",
       },
       review: {
