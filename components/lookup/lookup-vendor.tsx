@@ -88,7 +88,7 @@ export function LookupVendor({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+      <PopoverContent className="p-0 w-90" align="start">
         <Command shouldFilter={false}>
           <CommandInput
             placeholder="Search vendor..."
