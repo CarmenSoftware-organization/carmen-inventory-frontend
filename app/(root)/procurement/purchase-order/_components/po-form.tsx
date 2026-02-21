@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,7 @@ import {
 } from "@/hooks/use-purchase-order";
 import type { PurchaseOrder, CreatePoDto } from "@/types/purchase-order";
 import type { FormMode } from "@/types/form";
+import { useProfile } from "@/hooks/use-profile";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { PoGeneralFields } from "./po-general-fields";
 import { PoItemFields } from "./po-item-fields";
@@ -28,6 +29,7 @@ interface PoFormProps {
 }
 
 export function PoForm({ purchaseOrder }: PoFormProps) {
+  const { defaultCurrencyId } = useProfile();
   const router = useRouter();
   const [mode, setMode] = useState<FormMode>(purchaseOrder ? "view" : "add");
   const isView = mode === "view";
@@ -41,7 +43,7 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
   const isPending = createPo.isPending || updatePo.isPending;
   const isDisabled = isView || isPending;
 
-  const defaultValues = getDefaultValues(purchaseOrder);
+  const defaultValues = getDefaultValues(purchaseOrder, { defaultCurrencyId });
 
   const title = purchaseOrder?.po_no ?? "Purchase Order";
 
@@ -49,6 +51,12 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
     resolver: zodResolver(poSchema) as Resolver<PoFormValues>,
     defaultValues,
   });
+
+  useEffect(() => {
+    if (!purchaseOrder && defaultCurrencyId && !form.getValues("currency_id")) {
+      form.setValue("currency_id", defaultCurrencyId);
+    }
+  }, [defaultCurrencyId, purchaseOrder, form]);
 
   const onSubmit = (values: PoFormValues) => {
     const newItems = values.items.filter((item) => !item.id);
