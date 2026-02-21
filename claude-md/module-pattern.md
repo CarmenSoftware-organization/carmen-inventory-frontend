@@ -193,8 +193,9 @@ export const useDeleteCategory = crud.useDelete;
 
 ```tsx
 import type { ColumnDef } from "@tanstack/react-table";
-import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
-import { useConfigTable } from "@/lib/data-grid/use-config-table";
+import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/ui/cell-action";
+import { useConfigTable } from "@/components/ui/data-grid/use-config-table";
 import type { Category } from "@/types/category";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
@@ -223,13 +224,9 @@ export function useCategoryTable({
         <DataGridColumnHeader column={column} title="Name" />
       ),
       cell: ({ row }) => (
-        <button
-          type="button"
-          className="font-medium hover:underline text-left text-xs"
-          onClick={() => onEdit(row.original)}
-        >
+        <CellAction onClick={() => onEdit(row.original)}>
           {row.getValue("name")}
-        </button>
+        </CellAction>
       ),
     },
     // ... เพิ่ม custom columns ตามที่ user ระบุ
@@ -376,6 +373,7 @@ export function CategoryDialog({
                 placeholder="e.g. Electronics"
                 className="h-8 text-sm"
                 disabled={isPending}
+                maxLength={100}
                 {...form.register("name")}
               />
               <FieldError>
@@ -392,6 +390,7 @@ export function CategoryDialog({
                 placeholder="Optional"
                 className="h-8 text-sm"
                 disabled={isPending}
+                maxLength={256}
                 {...form.register("description")}
               />
             </Field>
@@ -447,9 +446,9 @@ import { toast } from "sonner";
 import {
   DataGrid,
   DataGridContainer,
-} from "@/components/reui/data-grid/data-grid";
-import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
-import { DataGridPagination } from "@/components/reui/data-grid/data-grid-pagination";
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
+import { DataGridPagination } from "@/components/ui/data-grid/data-grid-pagination";
 import { Button } from "@/components/ui/button";
 import { useCategory, useDeleteCategory } from "@/hooks/use-category";
 import { useDataGridState } from "@/hooks/use-data-grid-state";
@@ -764,6 +763,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
               placeholder="e.g. Electronics"
               className="h-8 text-sm"
               disabled={isDisabled}
+              maxLength={100}
               {...form.register("name")}
             />
             <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -778,6 +778,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
               placeholder="Optional"
               className="text-sm"
               disabled={isDisabled}
+              maxLength={256}
               {...form.register("description")}
             />
           </Field>
@@ -841,9 +842,9 @@ import { toast } from "sonner";
 import {
   DataGrid,
   DataGridContainer,
-} from "@/components/reui/data-grid/data-grid";
-import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
-import { DataGridPagination } from "@/components/reui/data-grid/data-grid-pagination";
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
+import { DataGridPagination } from "@/components/ui/data-grid/data-grid-pagination";
 import { Button } from "@/components/ui/button";
 import { useCategory, useDeleteCategory } from "@/hooks/use-category";
 import { useDataGridState } from "@/hooks/use-data-grid-state";
@@ -1007,8 +1008,8 @@ export default function EditCategoryPage({
 | `hooks/use-api-mutation.ts` | Generic mutation helper (buCode, error handling, invalidation) |
 | `hooks/use-data-grid-state.ts` | Pagination, sorting, search, filter state via URL params |
 | `hooks/use-profile.ts` | User profile + buCode |
-| `lib/data-grid/use-config-table.ts` | Shared table helper — เพิ่ม select, index, status, action columns อัตโนมัติ |
-| `lib/data-grid/columns.tsx` | Shared column definitions (selectColumn, indexColumn, statusColumn, actionColumn) |
+| `components/ui/data-grid/use-config-table.ts` | Shared table helper — เพิ่ม select, index, status, action columns อัตโนมัติ |
+| `components/ui/data-grid/columns.tsx` | Shared column definitions (selectColumn, indexColumn, statusColumn, actionColumn) |
 | `lib/http-client.ts` | HTTP client wrapper (get, post, put, patch, delete) |
 | `components/display-template.tsx` | Page layout (title, description, toolbar, actions, children) |
 | `components/search-input.tsx` | Search input with Enter key + clear button |
@@ -1016,7 +1017,8 @@ export default function EditCategoryPage({
 | `components/ui/delete-dialog.tsx` | Confirmation dialog with isPending support |
 | `components/ui/error-state.tsx` | Error display with retry button |
 | `components/ui/field.tsx` | Field, FieldGroup, FieldLabel, FieldError components |
-| `components/reui/data-grid/*` | DataGrid, DataGridTable, DataGridPagination, DataGridColumnHeader, etc. |
+| `components/ui/data-grid/*` | DataGrid, DataGridTable, DataGridPagination, DataGridColumnHeader, etc. |
+| `components/ui/cell-action.tsx` | CellAction button component for table cells |
 | `utils/build-query-string.ts` | URL query string builder |
 | `types/params.ts` | ParamsDto interface |
 | `types/form.ts` | `FormMode` type + `getModeLabels(mode, entity)` helper สำหรับ title/button labels |
@@ -1035,9 +1037,24 @@ export default function EditCategoryPage({
 - **Delete in form** (Variant B): แสดงปุ่ม Delete เฉพาะ **edit mode** (`variant="destructive"`) → เปิด `DeleteDialog` confirm → ลบแล้ว `router.push` กลับ list
 - **Back button** (Variant B): ใช้ `ArrowLeft` icon inline กับ title (`← Title`) — ไม่ใช้ `DisplayTemplate` ในหน้า form
 - **Navigate back on success** (Variant B): `router.push("/{basePath}/{module}")` หลัง mutation สำเร็จ
+- **maxLength**: Input type text ใส่ `maxLength` เสมอ — `code` field ใช้ `maxLength={10}`, `name` field ใช้ `maxLength={100}`, Textarea ใช้ `maxLength={256}` — component จะแสดง char counter (เช่น `3/10`) อัตโนมัติ
 - **React Compiler**: `"use no memo"` อยู่ใน `useConfigTable` แล้ว ไม่ต้องใส่เอง
 - **Dense DataGrid**: `tableLayout={{ dense: true }}` + `tableClassNames={{ base: "text-xs" }}`
 - **Query invalidation**: อัตโนมัติผ่าน `createConfigCrud` → `useApiMutation` → `invalidateKeys`
-- **Next.js 15 params** (Variant B): `params` เป็น `Promise` ใช้ `use(params)` เพื่อ unwrap
+- **Next.js 16 params** (Variant B): `params` เป็น `Promise` ใช้ `use(params)` เพื่อ unwrap
 - **zodResolver type assertion**: `zodResolver(schema) as Resolver<FormValues>` — จำเป็นเพราะ `@hookform/resolvers` กับ `react-hook-form` export `Resolver` type คนละตัว ต้อง import `type Resolver` จาก `react-hook-form` แล้ว cast
 - **Mode labels**: ใช้ `getModeLabels(mode, "Entity")` จาก `@/types/form` แทน nested ternary — ใช้ได้ทั้ง Dialog (`isEdit ? "edit" : "add"`) และ Page-based (`mode`)
+- **No nested ternary** (SonarQube): ห้ามใช้ nested ternary (`a ? x : b ? y : z`) — ใช้ `&&` pattern แทน:
+
+  ```tsx
+  // Bad — nested ternary
+  {isLoading ? <Spinner /> : data.length > 0 ? <List /> : <Empty />}
+
+  // Good — independent statements
+  {isLoading && <Spinner />}
+  {!isLoading && data.length > 0 && <List />}
+  {!isLoading && data.length === 0 && <Empty />}
+  ```
+
+- **No array index as key** (SonarQube): ห้ามใช้ `key={i}` — ใช้ unique identifier จาก data เช่น `key={item.id}` หรือ composite key `key={`${item.user_id}-${item.action}-${i}`}`
+- **New row sentinel**: เมื่อมี inline add row ใน table ให้ประกาศ `const NEW_ROW_ID = "__new__"` ไว้นอก component (module-level) แล้วใช้เป็น sentinel value สำหรับ placeholder row — เช็คด้วย `v.id === NEW_ROW_ID` เพื่อแยก new row กับ data row จริง

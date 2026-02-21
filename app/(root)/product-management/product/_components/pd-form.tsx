@@ -12,7 +12,6 @@ import {
   useDeleteProduct,
   type CreateProductDto,
 } from "@/hooks/use-product";
-import { useLocation } from "@/hooks/use-location";
 import {
   type ProductDetail,
   type ProductFormValues,
@@ -27,11 +26,7 @@ import ProductInfoTab from "./pd-info-tab";
 import LocationsTab from "./pd-location-tab";
 import UnitConversionTab from "./pd-unit-conversion-tab";
 
-/* ------------------------------------------------------------------ */
-/* Default values                                                      */
-/* ------------------------------------------------------------------ */
-
-function getDefaultValues(product?: ProductDetail): ProductFormValues {
+const getDefaultValues = (product?: ProductDetail): ProductFormValues => {
   if (!product) {
     return {
       name: "",
@@ -46,9 +41,9 @@ function getDefaultValues(product?: ProductDetail): ProductFormValues {
       is_sold_directly: false,
       barcode: "",
       sku: "",
-      price: null,
-      price_deviation_limit: null,
-      qty_deviation_limit: null,
+      price: 0,
+      price_deviation_limit: 0,
+      qty_deviation_limit: 0,
       info: [],
       locations: [],
       order_units: [],
@@ -61,7 +56,7 @@ function getDefaultValues(product?: ProductDetail): ProductFormValues {
     code: product.code,
     local_name: product.local_name ?? "",
     description: product.description ?? "",
-    inventory_unit_id: product.inventory_unit?.id ?? "",
+    inventory_unit_id: product.inventory_unit.id ?? "",
     product_item_group_id: product.product_item_group?.id ?? "",
     product_status_type: product.product_status_type,
     tax_profile_id: product.tax_profile_id ?? "",
@@ -69,33 +64,46 @@ function getDefaultValues(product?: ProductDetail): ProductFormValues {
     is_sold_directly: product.product_info?.is_sold_directly ?? false,
     barcode: product.product_info?.barcode ?? "",
     sku: product.product_info?.sku ?? "",
-    price: product.product_info?.price ?? null,
-    price_deviation_limit: product.product_info?.price_deviation_limit ?? null,
-    qty_deviation_limit: product.product_info?.qty_deviation_limit ?? null,
+    price: product.product_info?.price ?? 0,
+    price_deviation_limit: product.product_info?.price_deviation_limit ?? 0,
+    qty_deviation_limit: product.product_info?.qty_deviation_limit ?? 0,
     info: product.product_info?.info ?? [],
     locations: product.locations ?? [],
     order_units: product.order_units ?? [],
     ingredient_units: product.ingredient_units ?? [],
   };
-}
+};
 
-/* ------------------------------------------------------------------ */
-/* Diff-based payload builder                                          */
-/* ------------------------------------------------------------------ */
-
-function diffUnits(
+const diffUnits = (
   original: ProductUnitConversion[],
   current: ProductUnitConversion[],
-) {
-  const origIds = new Set(original.map((u) => u.id).filter(Boolean));
+) => {
+  const origMap = new Map(
+    original.filter((u) => u.id).map((u) => [u.id!, u]),
+  );
   const currIds = new Set(current.map((u) => u.id).filter(Boolean));
 
-  const stripId = ({ id: _id, ...rest }: ProductUnitConversion) => rest;
+  const stripId = ({
+    id: _id,
+    ...rest
+  }: ProductUnitConversion): Omit<ProductUnitConversion, "id"> => rest;
 
   const add = current.filter((u) => !u.id).map(stripId);
 
   const update = current
-    .filter((u) => u.id && origIds.has(u.id))
+    .filter((u) => {
+      if (!u.id || !origMap.has(u.id)) return false;
+      const orig = origMap.get(u.id)!;
+      return (
+        u.from_unit_id !== orig.from_unit_id ||
+        u.from_unit_qty !== orig.from_unit_qty ||
+        u.to_unit_id !== orig.to_unit_id ||
+        u.to_unit_qty !== orig.to_unit_qty ||
+        u.description !== orig.description ||
+        u.is_default !== orig.is_default ||
+        u.is_active !== orig.is_active
+      );
+    })
     .map((u) => ({ ...stripId(u), id: u.id! }));
 
   const remove = original
@@ -103,12 +111,12 @@ function diffUnits(
     .map((u) => ({ id: u.id! }));
 
   return { add, update, remove };
-}
+};
 
-function buildPayload(
+const buildPayload = (
   values: ProductFormValues,
   product?: ProductDetail,
-): CreateProductDto {
+): CreateProductDto => {
   const origLocIds = new Set(
     (product?.locations ?? []).map((l) => l.location_id),
   );
@@ -136,6 +144,8 @@ function buildPayload(
     product_item_group_id: values.product_item_group_id,
     product_status_type: values.product_status_type,
     tax_profile_id: values.tax_profile_id || "",
+    price_deviation_limit: values.price_deviation_limit || 0,
+    qty_deviation_limit: values.qty_deviation_limit || 0,
     product_info: {
       is_used_in_recipe: values.is_used_in_recipe,
       is_sold_directly: values.is_sold_directly,
@@ -146,30 +156,41 @@ function buildPayload(
       qty_deviation_limit: values.qty_deviation_limit,
       info: values.info,
     },
-    locations: {
-      ...(locationsAdd.length > 0 && { add: locationsAdd }),
-      ...(locationsRemove.length > 0 && { remove: locationsRemove }),
-    },
-    order_units: {
-      ...(orderDiff.add.length > 0 && { add: orderDiff.add }),
-      ...(orderDiff.update.length > 0 && { update: orderDiff.update }),
-      ...(orderDiff.remove.length > 0 && { remove: orderDiff.remove }),
-    },
-    ingredient_units: {
-      ...(ingredientDiff.add.length > 0 && { add: ingredientDiff.add }),
-      ...(ingredientDiff.update.length > 0 && {
-        update: ingredientDiff.update,
-      }),
-      ...(ingredientDiff.remove.length > 0 && {
-        remove: ingredientDiff.remove,
-      }),
-    },
+    ...((locationsAdd.length > 0 || locationsRemove.length > 0) && {
+      locations: {
+        ...(locationsAdd.length > 0 && { add: locationsAdd }),
+        ...(locationsRemove.length > 0 && { remove: locationsRemove }),
+      },
+    }),
+    ...((orderDiff.add.length > 0 || orderDiff.update.length > 0 || orderDiff.remove.length > 0) && {
+      order_units: {
+        ...(orderDiff.add.length > 0 && { add: orderDiff.add }),
+        ...(orderDiff.update.length > 0 && {
+          update: orderDiff.update.map(({ id, ...rest }) => ({
+            ...rest,
+            product_order_unit_id: id,
+          })),
+        }),
+        ...(orderDiff.remove.length > 0 && {
+          remove: orderDiff.remove.map(({ id }) => ({
+            product_order_unit_id: id,
+          })),
+        }),
+      },
+    }),
+    ...((ingredientDiff.add.length > 0 || ingredientDiff.update.length > 0 || ingredientDiff.remove.length > 0) && {
+      ingredient_units: {
+        ...(ingredientDiff.add.length > 0 && { add: ingredientDiff.add }),
+        ...(ingredientDiff.update.length > 0 && {
+          update: ingredientDiff.update,
+        }),
+        ...(ingredientDiff.remove.length > 0 && {
+          remove: ingredientDiff.remove,
+        }),
+      },
+    }),
   };
-}
-
-/* ------------------------------------------------------------------ */
-/* Component                                                           */
-/* ------------------------------------------------------------------ */
+};
 
 interface ProductFormProps {
   readonly product?: ProductDetail;
@@ -191,9 +212,6 @@ export function ProductForm({ product }: ProductFormProps) {
   const [showDelete, setShowDelete] = useState(false);
   const isPending = createProduct.isPending || updateProduct.isPending;
   const isDisabled = mode === "view" || isPending;
-
-  const { data: locationData } = useLocation({ perpage: 9999 });
-  const allLocations = locationData?.data?.filter((l) => l.is_active) ?? [];
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema) as Resolver<ProductFormValues>,
@@ -296,21 +314,13 @@ export function ProductForm({ product }: ProductFormProps) {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="general">
-            <GeneralTab
-              form={form}
-              isDisabled={isDisabled}
-              product={product}
-            />
+            <GeneralTab form={form} isDisabled={isDisabled} product={product} />
           </TabsContent>
           <TabsContent value="product-info">
             <ProductInfoTab form={form} isDisabled={isDisabled} />
           </TabsContent>
           <TabsContent value="locations">
-            <LocationsTab
-              form={form}
-              isDisabled={isDisabled}
-              allLocations={allLocations}
-            />
+            <LocationsTab form={form} isDisabled={isDisabled} />
           </TabsContent>
           <TabsContent value="order-units">
             <UnitConversionTab

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
@@ -9,18 +9,11 @@ import type {
   PurchaseRequest,
   PurchaseRequestTemplate,
 } from "@/types/purchase-request";
+import { purchaseRequestSchema } from "@/types/purchase-request";
+import { paginatedResponse } from "@/lib/api-schemas";
+import { CACHE_DYNAMIC } from "@/lib/cache-config";
 import type { ActionPr } from "@/types/stage-role";
-import type { ParamsDto } from "@/types/params";
-
-interface PaginatedResponse {
-  data: PurchaseRequest[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
+import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
 export interface PurchaseRequestDetailPayload {
   product_id: string | null;
@@ -67,9 +60,9 @@ export interface CreatePurchaseRequestDto {
 }
 
 export function usePurchaseRequest(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
-  return useQuery<PaginatedResponse>({
+  return useQuery<PaginatedResponse<PurchaseRequest>>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUESTS, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");
@@ -81,6 +74,12 @@ export function usePurchaseRequest(params?: ParamsDto) {
       if (!res.ok) throw new Error("Failed to fetch purchase requests");
       const json = await res.json();
       const entry = json.data?.[0];
+
+      const parsed = paginatedResponse(purchaseRequestSchema).safeParse(entry);
+      if (!parsed.success) {
+        console.warn("[PR] API schema mismatch:", parsed.error.issues);
+      }
+
       return {
         data: entry?.data ?? [],
         paginate: entry?.paginate ?? {
@@ -92,13 +91,14 @@ export function usePurchaseRequest(params?: ParamsDto) {
       };
     },
     enabled: !!buCode,
+    ...CACHE_DYNAMIC,
   });
 }
 
 export function useMyPendingPurchaseRequest(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
-  return useQuery<PaginatedResponse>({
+  return useQuery<PaginatedResponse<PurchaseRequest>>({
     queryKey: [QUERY_KEYS.MY_PENDING_PURCHASE_REQUESTS, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");
@@ -111,6 +111,12 @@ export function useMyPendingPurchaseRequest(params?: ParamsDto) {
         throw new Error("Failed to fetch my pending purchase requests");
       const json = await res.json();
       const entry = json.data?.[0];
+
+      const parsed = paginatedResponse(purchaseRequestSchema).safeParse(entry);
+      if (!parsed.success) {
+        console.warn("[PR pending] API schema mismatch:", parsed.error.issues);
+      }
+
       return {
         data: entry?.data ?? [],
         paginate: entry?.paginate ?? {
@@ -122,11 +128,12 @@ export function useMyPendingPurchaseRequest(params?: ParamsDto) {
       };
     },
     enabled: !!buCode,
+    ...CACHE_DYNAMIC,
   });
 }
 
 export function usePurchaseRequestWorkflowStages() {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<string[]>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUEST_WORKFLOW_STAGES, buCode],
@@ -145,7 +152,7 @@ export function usePurchaseRequestWorkflowStages() {
 }
 
 export function usePurchaseRequestTemplates() {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PurchaseRequestTemplate[]>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUEST_TEMPLATES, buCode],
@@ -164,14 +171,14 @@ export function usePurchaseRequestTemplates() {
 }
 
 export function usePurchaseRequestById(id: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PurchaseRequest>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUESTS, buCode, id],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");
       const res = await httpClient.get(
-        `/api/proxy/api/${buCode}/purchase-request/${id}`,
+        `${API_ENDPOINTS.PURCHASE_REQUEST(buCode)}/${id}`,
       );
       if (!res.ok) throw new Error("Failed to fetch purchase request");
       const json = await res.json();
@@ -218,14 +225,14 @@ export interface PurchaseRequestComment {
 }
 
 export function usePurchaseRequestComments(prId: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PurchaseRequestComment[]>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUEST_COMMENTS, buCode, prId],
     queryFn: async () => {
       if (!buCode || !prId) throw new Error("Missing buCode or prId");
       const res = await httpClient.get(
-        `/api/proxy/api/${buCode}/purchase-request/${prId}/comment`,
+        `${API_ENDPOINTS.PURCHASE_REQUEST(buCode)}/${prId}/comment`,
       );
       if (!res.ok) throw new Error("Failed to fetch comments");
       const json = await res.json();
@@ -246,7 +253,7 @@ export function useCreatePurchaseRequestComment() {
   return useApiMutation<CreatePurchaseRequestCommentDto>({
     mutationFn: (data, buCode) =>
       httpClient.post(
-        `/api/proxy/api/${buCode}/purchase-request-comment`,
+        API_ENDPOINTS.PURCHASE_REQUEST_COMMENT(buCode),
         data,
       ),
     invalidateKeys: [QUERY_KEYS.PURCHASE_REQUEST_COMMENTS],
@@ -262,7 +269,7 @@ export function useUpdatePurchaseRequestComment() {
   }>({
     mutationFn: ({ id, ...data }, buCode) =>
       httpClient.patch(
-        `/api/proxy/api/${buCode}/purchase-request-comment/${id}`,
+        `${API_ENDPOINTS.PURCHASE_REQUEST_COMMENT(buCode)}/${id}`,
         data,
       ),
     invalidateKeys: [QUERY_KEYS.PURCHASE_REQUEST_COMMENTS],
@@ -274,7 +281,7 @@ export function useDeletePurchaseRequestComment() {
   return useApiMutation<string>({
     mutationFn: (id, buCode) =>
       httpClient.delete(
-        `/api/proxy/api/${buCode}/purchase-request-comment/${id}`,
+        `${API_ENDPOINTS.PURCHASE_REQUEST_COMMENT(buCode)}/${id}`,
       ),
     invalidateKeys: [QUERY_KEYS.PURCHASE_REQUEST_COMMENTS],
     errorMessage: "Failed to delete comment",
@@ -290,7 +297,7 @@ export async function uploadCommentAttachment(
   formData.append("file", file);
 
   const res = await fetch(
-    `/api/proxy/api/${buCode}/purchase-request-comment/${prId}/attachment`,
+    API_ENDPOINTS.PURCHASE_REQUEST_COMMENT_ATTACHMENT(buCode, prId),
     { method: "POST", body: formData },
   );
 

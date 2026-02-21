@@ -4,8 +4,7 @@ import { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { FormToolbar } from "@/components/ui/form-toolbar";
 import { toast } from "sonner";
 import {
   useCreatePrt,
@@ -14,7 +13,7 @@ import {
   type CreatePrtDto,
 } from "@/hooks/use-prt";
 import type { PurchaseRequestTemplate } from "@/types/purchase-request";
-import { type FormMode, getModeLabels } from "@/types/form";
+import type { FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { PrtGeneralFields } from "./prt-general-fields";
 import { PrtItemFields } from "./prt-item-fields";
@@ -44,7 +43,6 @@ export function PrtForm({ template }: PrtFormProps) {
   const [showDelete, setShowDelete] = useState(false);
   const isPending = createPrt.isPending || updatePrt.isPending;
   const isDisabled = isView || isPending;
-  const labels = getModeLabels(mode, "Purchase Request Template");
 
   const defaultValues = getDefaultValues(template);
 
@@ -52,8 +50,6 @@ export function PrtForm({ template }: PrtFormProps) {
     resolver: zodResolver(prtSchema) as Resolver<PrtFormValues>,
     defaultValues,
   });
-
-  console.log(form.getValues());
 
   const onSubmit = (values: PrtFormValues) => {
     const newItems = values.items.filter((item) => !item.id);
@@ -70,9 +66,9 @@ export function PrtForm({ template }: PrtFormProps) {
       .map((item) => ({ id: item.id }));
 
     const updatedItems = existingItems.filter((item) => {
-      const original = defaultValues.items.find((d) => d.id === item.id);
-      if (!original) return false;
-      return JSON.stringify(item) !== JSON.stringify(original);
+      const idx = values.items.findIndex((v) => v.id === item.id);
+      const dirty = form.formState.dirtyFields.items?.[idx];
+      return dirty != null && Object.keys(dirty).length > 0;
     });
 
     const purchase_request_template_detail: CreatePrtDto["purchase_request_template_detail"] =
@@ -133,60 +129,17 @@ export function PrtForm({ template }: PrtFormProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() =>
-              router.push("/procurement/purchase-request-template")
-            }
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{labels.title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="prt-form"
-                disabled={isPending}
-              >
-                {isPending ? labels.pending : labels.submit}
-              </Button>
-            </>
-          )}
-          {isEdit && template && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deletePrt.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity="Purchase Request Template"
+        mode={mode}
+        formId="prt-form"
+        isPending={isPending}
+        onBack={() => router.push("/procurement/purchase-request-template")}
+        onEdit={() => setMode("edit")}
+        onCancel={handleCancel}
+        onDelete={template ? () => setShowDelete(true) : undefined}
+        deleteIsPending={deletePrt.isPending}
+      />
 
       <form
         id="prt-form"

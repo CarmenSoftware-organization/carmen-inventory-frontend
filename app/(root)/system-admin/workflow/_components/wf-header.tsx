@@ -82,7 +82,7 @@ export function WfHeader({
                 size="sm"
                 onClick={onCancel}
                 disabled={isPending}
-                className="h-7 text-xs"
+                className="text-xs"
               >
                 Cancel
               </Button>
@@ -91,14 +91,14 @@ export function WfHeader({
                 size="sm"
                 form={formId}
                 disabled={isPending}
-                className="h-7 text-xs"
+                className="text-xs"
               >
                 {isPending ? "Saving..." : "Save Changes"}
               </Button>
             </>
           ) : (
             <>
-              <Button size="sm" onClick={onEdit} className="h-7 text-xs">
+              <Button size="sm" onClick={onEdit} className="text-xs">
                 <Pencil className="size-3" />
                 Edit
               </Button>
@@ -107,7 +107,7 @@ export function WfHeader({
                 size="sm"
                 onClick={() => setShowDelete(true)}
                 disabled={deleteWorkflow.isPending}
-                className="h-7 text-xs"
+                className="text-xs"
               >
                 <Trash2 className="size-3" />
                 Delete

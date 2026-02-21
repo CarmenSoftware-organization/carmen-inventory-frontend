@@ -1,40 +1,112 @@
 export const QUERY_KEYS = {
-  PROFILE: "profile",
+  ADJUSTMENT_TYPES: "adjustment-types",
+  APPROVAL_PENDING: "approval-pending",
+  APPROVAL_PENDING_SUMMARY: "approval-pending-summary",
+  APPLICATION_ROLES: "application-roles",
   BUSINESS_TYPES: "business-types",
-  EXTRA_COSTS: "extra-costs",
-  UNITS: "units",
+  CN_REASONS: "cn-reasons",
+  CREDIT_NOTES: "credit-notes",
+  CREDIT_TERMS: "credit-terms",
+  CUISINES: "cuisines",
+  CURRENCIES: "currencies",
+  RECIPE_CATEGORIES: "recipe-categories",
+  RECIPES: "recipes",
   DELIVERY_POINTS: "delivery-points",
   DEPARTMENTS: "departments",
+  DOCUMENTS: "documents",
+  EXCHANGE_RATES: "exchange-rates",
+  EXTRA_COSTS: "extra-costs",
+  GOODS_RECEIVE_NOTES: "goods-receive-notes",
+  INVENTORY_ADJUSTMENTS: "inventory-adjustments",
   LOCATIONS: "locations",
-  ADJUSTMENT_TYPES: "adjustment-types",
-  TAX_PROFILES: "tax-profiles",
-  CURRENCIES: "currencies",
-  PRODUCTS: "products",
-  PRODUCT_CATEGORIES: "product-categories",
-  PRODUCT_SUB_CATEGORIES: "product-sub-categories",
-  PRODUCT_ITEM_GROUPS: "product-item-groups",
-  VENDORS: "vendors",
+  MY_PENDING_PURCHASE_REQUESTS: "my-pending-purchase-requests",
+  PERIOD_ENDS: "period-ends",
+  PERMISSIONS: "permissions",
+  PHYSICAL_COUNTS: "physical-counts",
   PRICE_LISTS: "price-lists",
   PRICE_LIST_TEMPLATES: "price-list-templates",
-  REQUEST_PRICE_LISTS: "request-price-lists",
-  PERMISSIONS: "permissions",
-  APPLICATION_ROLES: "application-roles",
-  STORE_REQUISITIONS: "store-requisitions",
-  WORKFLOWS: "workflows",
-  INVENTORY_ADJUSTMENTS: "inventory-adjustments",
-  PURCHASE_REQUESTS: "purchase-requests",
-  MY_PENDING_PURCHASE_REQUESTS: "my-pending-purchase-requests",
-  PURCHASE_REQUEST_WORKFLOW_STAGES: "purchase-request-workflow-stages",
-  PURCHASE_REQUEST_TEMPLATES: "purchase-request-templates",
-  PURCHASE_REQUEST_COMMENTS: "purchase-request-comments",
+  PRODUCTS: "products",
+  PRODUCTS_BY_LOCATION: "products-by-location",
+  PRODUCT_INVENTORY: "product-inventory",
+  PRODUCT_UNITS: "product-units",
+  PRODUCT_CATEGORIES: "product-categories",
+  PRODUCT_ITEM_GROUPS: "product-item-groups",
+  PRODUCT_SUB_CATEGORIES: "product-sub-categories",
+  PROFILE: "profile",
   PURCHASE_ORDERS: "purchase-orders",
-  CREDIT_NOTES: "credit-notes",
-  GOODS_RECEIVE_NOTES: "goods-receive-notes",
+  PURCHASE_REQUESTS: "purchase-requests",
+  PURCHASE_REQUEST_COMMENTS: "purchase-request-comments",
+  PURCHASE_REQUEST_TEMPLATES: "purchase-request-templates",
+  PURCHASE_REQUEST_WORKFLOW_STAGES: "purchase-request-workflow-stages",
+  REQUEST_PRICE_LISTS: "request-price-lists",
   SPOT_CHECKS: "spot-checks",
-  PHYSICAL_COUNTS: "physical-counts",
-  PERIOD_ENDS: "period-ends",
+  STORE_REQUISITIONS: "store-requisitions",
+  TAX_PROFILES: "tax-profiles",
+  UNITS: "units",
   USERS: "users",
-  DOCUMENTS: "documents",
+  VENDORS: "vendors",
+  WORKFLOWS: "workflows",
+  // External
+  PRICE_LIST_EXTERNAL: "price-list-external",
 } as const;
 
 export type QueryKey = (typeof QUERY_KEYS)[keyof typeof QUERY_KEYS];
+
+// Type-safe query key factories
+import type { ParamsDto } from "@/types/params";
+
+export const queryKeys = {
+  purchaseRequests: {
+    all: () => [QUERY_KEYS.PURCHASE_REQUESTS] as const,
+    lists: () => [...queryKeys.purchaseRequests.all(), "list"] as const,
+    list: (buCode: string, params?: ParamsDto) =>
+      [...queryKeys.purchaseRequests.lists(), buCode, params] as const,
+    details: () => [...queryKeys.purchaseRequests.all(), "detail"] as const,
+    detail: (buCode: string, id: string) =>
+      [...queryKeys.purchaseRequests.details(), buCode, id] as const,
+    comments: (buCode: string, prId: string) =>
+      [QUERY_KEYS.PURCHASE_REQUEST_COMMENTS, buCode, prId] as const,
+  },
+  purchaseOrders: {
+    all: () => [QUERY_KEYS.PURCHASE_ORDERS] as const,
+    list: (buCode: string, params?: ParamsDto) =>
+      [...queryKeys.purchaseOrders.all(), "list", buCode, params] as const,
+    detail: (buCode: string, id: string) =>
+      [...queryKeys.purchaseOrders.all(), "detail", buCode, id] as const,
+  },
+  vendors: {
+    all: () => [QUERY_KEYS.VENDORS] as const,
+    list: (buCode: string, params?: ParamsDto) =>
+      [...queryKeys.vendors.all(), "list", buCode, params] as const,
+    detail: (buCode: string, id: string) =>
+      [...queryKeys.vendors.all(), "detail", buCode, id] as const,
+  },
+  products: {
+    all: () => [QUERY_KEYS.PRODUCTS] as const,
+    list: (buCode: string, params?: ParamsDto) =>
+      [...queryKeys.products.all(), "list", buCode, params] as const,
+    detail: (buCode: string, id: string) =>
+      [...queryKeys.products.all(), "detail", buCode, id] as const,
+  },
+  goodsReceiveNotes: {
+    all: () => [QUERY_KEYS.GOODS_RECEIVE_NOTES] as const,
+    list: (buCode: string, params?: ParamsDto) =>
+      [...queryKeys.goodsReceiveNotes.all(), "list", buCode, params] as const,
+    detail: (buCode: string, id: string) =>
+      [...queryKeys.goodsReceiveNotes.all(), "detail", buCode, id] as const,
+  },
+  creditNotes: {
+    all: () => [QUERY_KEYS.CREDIT_NOTES] as const,
+    list: (buCode: string, params?: ParamsDto) =>
+      [...queryKeys.creditNotes.all(), "list", buCode, params] as const,
+    detail: (buCode: string, id: string) =>
+      [...queryKeys.creditNotes.all(), "detail", buCode, id] as const,
+  },
+  storeRequisitions: {
+    all: () => [QUERY_KEYS.STORE_REQUISITIONS] as const,
+    list: (buCode: string, params?: ParamsDto) =>
+      [...queryKeys.storeRequisitions.all(), "list", buCode, params] as const,
+    detail: (buCode: string, id: string) =>
+      [...queryKeys.storeRequisitions.all(), "detail", buCode, id] as const,
+  },
+} as const;

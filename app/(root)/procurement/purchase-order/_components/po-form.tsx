@@ -4,8 +4,7 @@ import { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { FormToolbar } from "@/components/ui/form-toolbar";
 import { toast } from "sonner";
 import {
   useCreatePurchaseOrder,
@@ -13,7 +12,7 @@ import {
   useDeletePurchaseOrder,
 } from "@/hooks/use-purchase-order";
 import type { PurchaseOrder, CreatePoDto } from "@/types/purchase-order";
-import { type FormMode, getModeLabels } from "@/types/form";
+import type { FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { PoGeneralFields } from "./po-general-fields";
 import { PoItemFields } from "./po-item-fields";
@@ -41,9 +40,10 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
   const [showDelete, setShowDelete] = useState(false);
   const isPending = createPo.isPending || updatePo.isPending;
   const isDisabled = isView || isPending;
-  const labels = getModeLabels(mode, "Purchase Order");
 
   const defaultValues = getDefaultValues(purchaseOrder);
+
+  const title = purchaseOrder?.po_no ?? "Purchase Order";
 
   const form = useForm<PoFormValues>({
     resolver: zodResolver(poSchema) as Resolver<PoFormValues>,
@@ -65,9 +65,9 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
       .map((item) => ({ id: item.id }));
 
     const updatedItems = existingItems.filter((item) => {
-      const original = defaultValues.items.find((d) => d.id === item.id);
-      if (!original) return false;
-      return JSON.stringify(item) !== JSON.stringify(original);
+      const idx = values.items.findIndex((v) => v.id === item.id);
+      const dirty = form.formState.dirtyFields.items?.[idx];
+      return dirty != null && Object.keys(dirty).length > 0;
     });
 
     const details: CreatePoDto["details"] = {};
@@ -137,58 +137,17 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => router.push("/procurement/purchase-order")}
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{labels.title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="po-form"
-                disabled={isPending}
-              >
-                {isPending ? labels.pending : labels.submit}
-              </Button>
-            </>
-          )}
-          {isEdit && purchaseOrder && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deletePo.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity={title}
+        mode={mode}
+        formId="po-form"
+        isPending={isPending}
+        onBack={() => router.push("/procurement/purchase-order")}
+        onEdit={() => setMode("edit")}
+        onCancel={handleCancel}
+        onDelete={purchaseOrder ? () => setShowDelete(true) : undefined}
+        deleteIsPending={deletePo.isPending}
+      />
 
       <form
         id="po-form"

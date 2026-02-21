@@ -128,7 +128,7 @@ export function WfRouting({
               variant="outline"
               size="xs"
               onClick={handleAddRule}
-              className="h-6 text-[10px] px-1.5"
+              className="h-6 text-xs px-1.5"
             >
               <Plus className="size-2.5" />
               Add
@@ -137,7 +137,7 @@ export function WfRouting({
         </div>
 
         {fields.length === 0 ? (
-          <p className="text-[10px] text-muted-foreground py-3 text-center">
+          <p className="text-xs text-muted-foreground py-3 text-center">
             No routing rules. Add a rule to customize routing.
           </p>
         ) : (
@@ -225,9 +225,10 @@ export function WfRouting({
               <Field>
                 <FieldLabel className="text-[11px]">Description</FieldLabel>
                 <Textarea
-                  className="text-xs min-h-[48px]"
+                  className="text-xs min-h-12"
                   disabled={isDisabled}
                   placeholder="Optional"
+                  maxLength={256}
                   {...form.register(
                     `data.routing_rules.${safeIndex}.description`,
                   )}
@@ -471,7 +472,7 @@ const DepartmentCheckboxList = ({
       <FieldLabel className="text-[11px]">Departments</FieldLabel>
       <div className="max-h-32 space-y-1 overflow-y-auto rounded border p-1.5">
         {departments.length === 0 ? (
-          <p className="text-[10px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             No departments available
           </p>
         ) : (
@@ -542,7 +543,7 @@ const CategoryCheckboxList = ({
       <FieldLabel className="text-[11px]">Categories</FieldLabel>
       <div className="max-h-32 space-y-1 overflow-y-auto rounded border p-1.5">
         {categories.length === 0 ? (
-          <p className="text-[10px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             No categories available. Add products first.
           </p>
         ) : (

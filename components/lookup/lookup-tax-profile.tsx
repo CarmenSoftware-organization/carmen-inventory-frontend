@@ -27,7 +27,7 @@ export function LookupTaxProfile({
   className,
   size = "sm",
 }: LookupTaxProfileProps) {
-  const { data } = useTaxProfile({ perpage: 9999 });
+  const { data } = useTaxProfile({ perpage: -1 });
   const taxProfiles = useMemo(
     () => data?.data?.filter((t) => t.is_active) ?? [],
     [data?.data],

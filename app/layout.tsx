@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import Providers from "@/components/providers";
@@ -16,22 +17,32 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Carmen Inventory",
+  title: {
+    default: "Carmen Inventory",
+    template: "%s | Carmen",
+  },
   description: "ERP for Hospitality Hotel",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = (await headers()).get("x-nonce") ?? "";
+
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextTopLoader color={"var(--primary)"} height={3} />
-        <Providers>{children}</Providers>
+        <NextTopLoader
+          color={"var(--primary)"}
+          showSpinner={false}
+          height={3}
+          nonce={nonce}
+        />
+        <Providers nonce={nonce}>{children}</Providers>
         <Toaster richColors position="top-right" />
       </body>
     </html>

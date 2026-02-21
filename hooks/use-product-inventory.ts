@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { httpClient } from "@/lib/http-client";
+import { QUERY_KEYS } from "@/constant/query-keys";
+import { CACHE_DYNAMIC } from "@/lib/cache-config";
+import {
+  getProductInventory,
+  type InventoryBalance,
+} from "@/lib/api/products";
 
-export interface InventoryBalance {
-  on_hand_qty: number;
-  on_order_qty: number;
-  re_order_qty: number;
-  re_stock_qty: number;
-}
+export type { InventoryBalance };
 
 export function useProductInventory(
   buCode: string | undefined,
@@ -14,16 +14,9 @@ export function useProductInventory(
   productId: string | undefined,
 ) {
   return useQuery<InventoryBalance>({
-    queryKey: ["product-inventory", buCode, locationId, productId],
-    queryFn: async () => {
-      const res = await httpClient.get(
-        `/api/proxy/api/${buCode}/locations/${locationId}/product/${productId}/inventory`,
-      );
-      if (!res.ok) throw new Error("Failed to fetch inventory");
-      const json = await res.json();
-      return json.data;
-    },
+    queryKey: [QUERY_KEYS.PRODUCT_INVENTORY, buCode, locationId, productId],
+    queryFn: () => getProductInventory(buCode!, locationId!, productId!),
     enabled: !!buCode && !!locationId && !!productId,
-    staleTime: 30_000,
+    ...CACHE_DYNAMIC,
   });
 }

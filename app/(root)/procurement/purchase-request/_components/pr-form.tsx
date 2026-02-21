@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -24,11 +25,13 @@ import { STAGE_ROLE } from "@/types/stage-role";
 import { type FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Badge } from "@/components/reui/badge";
+import { Badge } from "@/components/ui/badge";
 import { PR_STATUS_CONFIG } from "@/constant/purchase-request";
 import { PrGeneralFields } from "./pr-general-fields";
 import { PrItemFields } from "./pr-item-fields";
-import { PrCommentSheet } from "./pr-comment-sheet";
+const PrCommentSheet = dynamic(() =>
+  import("./pr-comment-sheet").then((mod) => mod.PrCommentSheet),
+);
 import { PrFormActions } from "./pr-form-actions";
 import { PrActionDialog } from "./pr-action-dialog";
 import { PrWorkflowStep } from "./pr-workflow-step";
@@ -157,9 +160,9 @@ export function PurchaseRequestForm({
 
     // Existing items that changed → update
     const updatedItems = existingItems.filter((item) => {
-      const original = defaultValues.items.find((d) => d.id === item.id);
-      if (!original) return false;
-      return JSON.stringify(item) !== JSON.stringify(original);
+      const idx = values.items.findIndex((v) => v.id === item.id);
+      const dirty = form.formState.dirtyFields.items?.[idx];
+      return dirty != null && Object.keys(dirty).length > 0;
     });
 
     const purchase_request_detail: CreatePurchaseRequestDto["details"]["purchase_request_detail"] =
@@ -225,8 +228,6 @@ export function PurchaseRequestForm({
       router.push("/procurement/purchase-request");
     }
   };
-
-  // --- Workflow Action Handlers ---
 
   const prepareStageDetails = (
     defaultMessage: string = "",
@@ -419,8 +420,14 @@ export function PurchaseRequestForm({
               <h1 className="font-semibold text-lg">
                 {purchaseRequest?.pr_no}
               </h1>
-              <Badge variant={PR_STATUS_CONFIG[purchaseRequest?.pr_status ?? "draft"]?.variant}>
-                {PR_STATUS_CONFIG[purchaseRequest?.pr_status ?? "draft"]?.label ?? purchaseRequest?.pr_status}
+              <Badge
+                variant={
+                  PR_STATUS_CONFIG[purchaseRequest?.pr_status ?? "draft"]
+                    ?.variant
+                }
+              >
+                {PR_STATUS_CONFIG[purchaseRequest?.pr_status ?? "draft"]
+                  ?.label ?? purchaseRequest?.pr_status}
               </Badge>
             </div>
           )}
@@ -468,7 +475,7 @@ export function PurchaseRequestForm({
           <TabsContent value="items">
             <PrItemFields
               form={form}
-              disabled={isDisabled}
+              isDisabled={isDisabled}
               role={role}
               prId={purchaseRequest?.id}
               prStatus={purchaseRequest?.pr_status}

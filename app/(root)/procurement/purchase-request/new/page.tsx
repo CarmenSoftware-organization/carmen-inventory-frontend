@@ -29,7 +29,13 @@ function NewPurchaseRequestContent() {
 
 export default function NewPurchaseRequestPage() {
   return (
-    <Suspense>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="size-6 animate-spin text-muted-foreground" />
+        </div>
+      }
+    >
       <NewPurchaseRequestContent />
     </Suspense>
   );

@@ -3,12 +3,13 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
+import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/ui/cell-action";
 import {
   selectColumn,
   indexColumn,
   actionColumn,
-} from "@/lib/data-grid/columns";
+} from "@/components/ui/data-grid/columns";
 import type { User } from "@/types/workflows";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
@@ -41,13 +42,9 @@ export function useUserTable({
         <DataGridColumnHeader column={column} title="First Name" />
       ),
       cell: ({ row }) => (
-        <button
-          type="button"
-          className="font-medium hover:underline text-left text-xs"
-          onClick={() => onEdit(row.original)}
-        >
+        <CellAction onClick={() => onEdit(row.original)}>
           {row.getValue("firstname")}
-        </button>
+        </CellAction>
       ),
     },
     {

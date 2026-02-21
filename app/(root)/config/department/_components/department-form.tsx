@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm, Controller, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -16,24 +14,36 @@ import {
   FieldError,
 } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
+import { Transfer, type TransferItem } from "@/components/ui/transfer";
+import { FormToolbar } from "@/components/ui/form-toolbar";
+import { UserTable } from "@/components/ui/user-table";
+import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { toast } from "sonner";
 import {
   useCreateDepartment,
   useUpdateDepartment,
   useDeleteDepartment,
 } from "@/hooks/use-department";
-import type { Department, DepartmentUser } from "@/types/department";
+import { useAllUsers } from "@/hooks/use-all-users";
+import {
+  transferHandler,
+  transferPayloadSchema,
+} from "@/utils/transfer-handler";
+import type { Department } from "@/types/department";
 import type { FormMode } from "@/types/form";
-import { DeleteDialog } from "@/components/ui/delete-dialog";
 
 const departmentSchema = z.object({
   code: z.string().min(1, "Code is required"),
   name: z.string().min(1, "Name is required"),
   description: z.string(),
   is_active: z.boolean(),
+  department_users: transferPayloadSchema,
+  hod_users: transferPayloadSchema,
 });
 
 type DepartmentFormValues = z.infer<typeof departmentSchema>;
+
+const emptyTransfer = { add: [], remove: [] };
 
 interface DepartmentFormProps {
   readonly department?: Department;
@@ -53,6 +63,42 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
   const isPending = createDepartment.isPending || updateDepartment.isPending;
   const isDisabled = isView || isPending;
 
+  // Fetch all users for Transfer
+  const { data: allUsers = [], isLoading: isLoadingUsers } = useAllUsers();
+
+  // Department users source: users without department + users already in this department
+  const departmentUserSource: TransferItem[] = useMemo(() => {
+    const currentDeptUserIds = new Set(
+      department?.department_users.map((u) => u.user_id) ?? [],
+    );
+    return allUsers
+      .filter(
+        (user) => !user.department?.id || currentDeptUserIds.has(user.user_id),
+      )
+      .map((user) => ({
+        key: user.user_id,
+        title: `${user.firstname} ${user.lastname}`,
+      }));
+  }, [allUsers, department]);
+
+  // HOD users source: all users (no filter)
+  const hodUserSource: TransferItem[] = useMemo(
+    () =>
+      allUsers.map((user) => ({
+        key: user.user_id,
+        title: `${user.firstname} ${user.lastname}`,
+      })),
+    [allUsers],
+  );
+
+  // Target keys state
+  const [deptUserTargetKeys, setDeptUserTargetKeys] = useState<string[]>(
+    () => department?.department_users.map((u) => u.user_id) ?? [],
+  );
+  const [hodUserTargetKeys, setHodUserTargetKeys] = useState<string[]>(
+    () => department?.hod_users.map((u) => u.user_id) ?? [],
+  );
+
   const form = useForm<DepartmentFormValues>({
     resolver: zodResolver(departmentSchema) as Resolver<DepartmentFormValues>,
     defaultValues: department
@@ -61,9 +107,37 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
           name: department.name,
           description: department.description,
           is_active: department.is_active,
+          department_users: { ...emptyTransfer },
+          hod_users: { ...emptyTransfer },
         }
-      : { code: "", name: "", description: "", is_active: true },
+      : {
+          code: "",
+          name: "",
+          description: "",
+          is_active: true,
+          department_users: { ...emptyTransfer },
+          hod_users: { ...emptyTransfer },
+        },
   });
+
+  // Transfer onChange handlers
+  const handleDeptUsersChange = (
+    nextTargetKeys: string[],
+    direction: "left" | "right",
+    moveKeys: string[],
+  ) => {
+    setDeptUserTargetKeys(nextTargetKeys);
+    transferHandler(form, "department_users", moveKeys, direction);
+  };
+
+  const handleHodUsersChange = (
+    nextTargetKeys: string[],
+    direction: "left" | "right",
+    moveKeys: string[],
+  ) => {
+    setHodUserTargetKeys(nextTargetKeys);
+    transferHandler(form, "hod_users", moveKeys, direction);
+  };
 
   const onSubmit = (values: DepartmentFormValues) => {
     const payload = {
@@ -71,6 +145,8 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
       name: values.name,
       description: values.description ?? "",
       is_active: values.is_active,
+      department_users: values.department_users,
+      hod_users: values.hod_users,
     };
 
     if (isEdit && department) {
@@ -102,79 +178,30 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
         name: department.name,
         description: department.description,
         is_active: department.is_active,
+        department_users: { ...emptyTransfer },
+        hod_users: { ...emptyTransfer },
       });
+      setDeptUserTargetKeys(department.department_users.map((u) => u.user_id));
+      setHodUserTargetKeys(department.hod_users.map((u) => u.user_id));
       setMode("view");
     } else {
       router.push("/config/department");
     }
   };
 
-  const title = isAdd
-    ? "Add Department"
-    : isEdit
-      ? "Edit Department"
-      : "Department";
-
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => router.push("/config/department")}
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="department-form"
-                disabled={isPending}
-              >
-                {isPending
-                  ? isEdit
-                    ? "Saving..."
-                    : "Creating..."
-                  : isEdit
-                    ? "Save"
-                    : "Create"}
-              </Button>
-            </>
-          )}
-          {isEdit && department && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deleteDepartment.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity="Department"
+        mode={mode}
+        formId="department-form"
+        isPending={isPending}
+        onBack={() => router.push("/config/department")}
+        onEdit={() => setMode("edit")}
+        onCancel={handleCancel}
+        onDelete={department ? () => setShowDelete(true) : undefined}
+        deleteIsPending={deleteDepartment.isPending}
+      />
 
       <form
         id="department-form"
@@ -182,33 +209,37 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
         className="max-w-2xl space-y-4"
       >
         <FieldGroup className="gap-3">
-          <Field data-invalid={!!form.formState.errors.code}>
-            <FieldLabel htmlFor="department-code" className="text-xs">
-              Code
-            </FieldLabel>
-            <Input
-              id="department-code"
-              placeholder="e.g. IT, HR, FIN"
-              className="h-8 text-sm"
-              disabled={isDisabled}
-              {...form.register("code")}
-            />
-            <FieldError>{form.formState.errors.code?.message}</FieldError>
-          </Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field data-invalid={!!form.formState.errors.code}>
+              <FieldLabel htmlFor="department-code" className="text-xs" required>
+                Code
+              </FieldLabel>
+              <Input
+                id="department-code"
+                placeholder="e.g. IT, HR, FIN"
+                className="h-8 text-sm"
+                disabled={isDisabled}
+                maxLength={10}
+                {...form.register("code")}
+              />
+              <FieldError>{form.formState.errors.code?.message}</FieldError>
+            </Field>
 
-          <Field data-invalid={!!form.formState.errors.name}>
-            <FieldLabel htmlFor="department-name" className="text-xs">
-              Name
-            </FieldLabel>
-            <Input
-              id="department-name"
-              placeholder="e.g. Information Technology"
-              className="h-8 text-sm"
-              disabled={isDisabled}
-              {...form.register("name")}
-            />
-            <FieldError>{form.formState.errors.name?.message}</FieldError>
-          </Field>
+            <Field data-invalid={!!form.formState.errors.name}>
+              <FieldLabel htmlFor="department-name" className="text-xs" required>
+                Name
+              </FieldLabel>
+              <Input
+                id="department-name"
+                placeholder="e.g. Information Technology"
+                className="h-8 text-sm"
+                disabled={isDisabled}
+                maxLength={100}
+                {...form.register("name")}
+              />
+              <FieldError>{form.formState.errors.name?.message}</FieldError>
+            </Field>
+          </div>
 
           <Field>
             <FieldLabel htmlFor="department-description" className="text-xs">
@@ -219,6 +250,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
               placeholder="Optional"
               className="text-sm"
               disabled={isDisabled}
+              maxLength={256}
               {...form.register("description")}
             />
           </Field>
@@ -243,18 +275,59 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
         </FieldGroup>
       </form>
 
-      {department && (
-        <div className="max-w-2xl space-y-4 pt-4">
-          <UserSection
-            title="Head of Department"
-            users={department.hod_users}
-          />
-          <UserSection
-            title="Department Members"
-            users={department.department_users}
-          />
-        </div>
-      )}
+      <div className="space-y-6 pt-6">
+        <section>
+          <div className="mb-2 flex items-center gap-2">
+            <h3 className="text-sm font-semibold">Department Members</h3>
+            {isView && (
+              <span className="inline-flex h-4.5 min-w-5 items-center justify-center rounded bg-muted px-1 text-[10px] font-medium tabular-nums text-muted-foreground">
+                {department?.department_users.length ?? 0}
+              </span>
+            )}
+          </div>
+          {isView ? (
+            <UserTable
+              users={department?.department_users ?? []}
+              className="max-w-2xl"
+            />
+          ) : (
+            <Transfer
+              dataSource={departmentUserSource}
+              targetKeys={deptUserTargetKeys}
+              onChange={handleDeptUsersChange}
+              disabled={isDisabled}
+              loading={isLoadingUsers}
+              titles={["Available Users", "Department Members"]}
+            />
+          )}
+        </section>
+
+        <section>
+          <div className="mb-2 flex items-center gap-2">
+            <h3 className="text-sm font-semibold">Head of Department</h3>
+            {isView && (
+              <span className="inline-flex h-4.5 min-w-5 items-center justify-center rounded bg-muted px-1 text-[10px] font-medium tabular-nums text-muted-foreground">
+                {department?.hod_users.length ?? 0}
+              </span>
+            )}
+          </div>
+          {isView ? (
+            <UserTable
+              users={department?.hod_users ?? []}
+              className="max-w-2xl"
+            />
+          ) : (
+            <Transfer
+              dataSource={hodUserSource}
+              targetKeys={hodUserTargetKeys}
+              onChange={handleHodUsersChange}
+              disabled={isDisabled}
+              loading={isLoadingUsers}
+              titles={["Available Users", "HOD"]}
+            />
+          )}
+        </section>
+      </div>
 
       {department && (
         <DeleteDialog
@@ -275,48 +348,6 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
             });
           }}
         />
-      )}
-    </div>
-  );
-}
-
-function UserSection({
-  title,
-  users,
-}: {
-  title: string;
-  users: DepartmentUser[];
-}) {
-  return (
-    <div className="space-y-2">
-      <h3 className="text-xs font-medium text-muted-foreground">{title}</h3>
-      {users.length === 0 ? (
-        <p className="text-xs text-muted-foreground">No users assigned</p>
-      ) : (
-        <div className="rounded-md border">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b bg-muted/50">
-                <th className="px-3 py-1.5 text-left font-medium">Name</th>
-                <th className="px-3 py-1.5 text-left font-medium">
-                  Telephone
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user.id} className="border-b last:border-0">
-                  <td className="px-3 py-1.5">
-                    {user.firstname} {user.lastname}
-                  </td>
-                  <td className="px-3 py-1.5 text-muted-foreground">
-                    {user.telephone}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
       )}
     </div>
   );

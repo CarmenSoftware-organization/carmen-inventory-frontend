@@ -22,14 +22,12 @@ export function PrGeneralFields({
 }: PrGeneralFieldsProps) {
   return (
     <div className="sticky top-0 z-10 bg-background pb-2 max-w-2xl space-y-4">
-      {/* Read-only info strip */}
       <div className="grid grid-cols-3 gap-px">
         <InfoCell label="PR Date" value={prDateDisplay} />
         <InfoCell label="Requestor" value={reqName} />
         <InfoCell label="Department" value={departmentName} />
       </div>
 
-      {/* Editable fields */}
       <FieldGroup className="gap-3">
         <div className="grid grid-cols-2 gap-3">
           <Field>
@@ -52,9 +50,10 @@ export function PrGeneralFields({
         <Field>
           <FieldLabel className="text-xs">Description</FieldLabel>
           <Textarea
-            placeholder="Optional description"
+            placeholder="Enter description..."
             className="text-sm"
             rows={2}
+            maxLength={256}
             disabled={disabled}
             {...form.register("description")}
           />

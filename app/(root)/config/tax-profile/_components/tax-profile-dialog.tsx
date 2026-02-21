@@ -117,6 +117,7 @@ export function TaxProfileDialog({
                 placeholder="e.g. VAT 7%, None"
                 className="h-8 text-sm"
                 disabled={isPending}
+                maxLength={100}
                 {...form.register("name")}
               />
               <FieldError>{form.formState.errors.name?.message}</FieldError>

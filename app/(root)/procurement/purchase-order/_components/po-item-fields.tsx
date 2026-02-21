@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import {
   DataGrid,
   DataGridContainer,
-} from "@/components/reui/data-grid/data-grid";
-import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import type { PoFormValues } from "./po-form-schema";

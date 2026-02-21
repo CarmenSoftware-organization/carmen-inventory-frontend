@@ -2,14 +2,15 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
+import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/ui/cell-action";
 import {
   selectColumn,
   indexColumn,
   actionColumn,
   columnSkeletons,
-} from "@/lib/data-grid/columns";
-import { Badge } from "@/components/reui/badge";
+} from "@/components/ui/data-grid/columns";
+import { Badge } from "@/components/ui/badge";
 import { useProfile } from "@/hooks/use-profile";
 import { formatDate } from "@/lib/date-utils";
 import { PR_STATUS_CONFIG } from "@/constant/purchase-request";
@@ -43,13 +44,9 @@ export function usePurchaseRequestTable({
         <DataGridColumnHeader column={column} title="PR No." />
       ),
       cell: ({ row }) => (
-        <button
-          type="button"
-          className="font-medium hover:underline text-left text-xs"
-          onClick={() => onEdit(row.original)}
-        >
+        <CellAction onClick={() => onEdit(row.original)}>
           {row.getValue("pr_no")}
-        </button>
+        </CellAction>
       ),
       size: 160,
       meta: { skeleton: columnSkeletons.text },

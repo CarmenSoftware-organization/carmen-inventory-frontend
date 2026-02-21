@@ -1,27 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { DocumentFile } from "@/types/document";
-import type { ParamsDto } from "@/types/params";
-
-interface DocumentListResponse {
-  data: DocumentFile[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
+import type { PaginatedResponse, ParamsDto } from "@/types/params";
+import { CACHE_DYNAMIC } from "@/lib/cache-config";
 
 export function useDocument(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
-  return useQuery<DocumentListResponse>({
+  return useQuery<PaginatedResponse<DocumentFile>>({
     queryKey: [QUERY_KEYS.DOCUMENTS, buCode, params],
     queryFn: async () => {
       if (!buCode) throw new Error("Missing buCode");
@@ -31,11 +22,12 @@ export function useDocument(params?: ParamsDto) {
       return res.json();
     },
     enabled: !!buCode,
+    ...CACHE_DYNAMIC,
   });
 }
 
 export function useUploadDocument() {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
   const queryClient = useQueryClient();
 
   return useMutation<unknown, Error, File>({
@@ -62,9 +54,7 @@ export function useUploadDocument() {
 export function useDeleteDocument() {
   return useApiMutation<string>({
     mutationFn: (fileToken, buCode) =>
-      httpClient.delete(
-        `${API_ENDPOINTS.DOCUMENTS(buCode)}/${fileToken}`,
-      ),
+      httpClient.delete(`${API_ENDPOINTS.DOCUMENTS(buCode)}/${fileToken}`),
     invalidateKeys: [QUERY_KEYS.DOCUMENTS],
     errorMessage: "Failed to delete document",
   });

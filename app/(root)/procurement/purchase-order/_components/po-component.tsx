@@ -7,9 +7,9 @@ import { toast } from "sonner";
 import {
   DataGrid,
   DataGridContainer,
-} from "@/components/reui/data-grid/data-grid";
-import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
-import { DataGridPagination } from "@/components/reui/data-grid/data-grid-pagination";
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
+import { DataGridPagination } from "@/components/ui/data-grid/data-grid-pagination";
 import { Button } from "@/components/ui/button";
 import {
   usePurchaseOrder,
@@ -23,7 +23,11 @@ import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
 import DisplayTemplate from "@/components/display-template";
 import { usePoTable } from "./use-po-table";
-import { CreatePODialog } from "./po-create-dialog";
+import dynamic from "next/dynamic";
+
+const CreatePODialog = dynamic(
+  () => import("./po-create-dialog").then((mod) => mod.CreatePODialog),
+);
 
 export default function PoComponent() {
   const router = useRouter();

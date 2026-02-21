@@ -1,10 +1,23 @@
 export const API_ENDPOINTS = {
   ADJUSTMENT_TYPES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/adjustment-type`,
+  APPROVAL_PENDING: "/api/proxy/api/my-approve",
+  APPROVAL_PENDING_SUMMARY: "/api/proxy/api/my-approve/pending",
   APPLICATION_ROLES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/application-roles`,
+  CN_REASONS: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/credit-note-reason`,
   CREDIT_NOTE: (buCode: string) => `/api/proxy/api/${buCode}/credit-note`,
+  CREDIT_TERMS: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/credit-term`,
+  CUISINES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/recipe-cuisine`,
   CURRENCIES: (buCode: string) => `/api/proxy/api/config/${buCode}/currencies`,
+  RECIPE_CATEGORIES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/recipe-category`,
+  RECIPES: (buCode: string) => `/api/proxy/api/config/${buCode}/recipe`,
+  EXCHANGE_RATES: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/exchange-rate`,
   DEPARTMENTS: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/departments`,
   DELIVERY_POINTS: (buCode: string) =>
@@ -13,7 +26,7 @@ export const API_ENDPOINTS = {
   EXTRA_COST_TYPES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/extra-cost-type`,
   GOODS_RECEIVE_NOTE: (buCode: string) =>
-    `/api/proxy/api/${buCode}/goods-receive-note`,
+    `/api/proxy/api/${buCode}/good-received-note`,
   INVENTORY_ADJUSTMENTS: (buCode: string) =>
     `/api/proxy/api/${buCode}/inventory-adjustment`,
   LOCATIONS: (buCode: string) => `/api/proxy/api/config/${buCode}/locations`,
@@ -24,6 +37,12 @@ export const API_ENDPOINTS = {
     `/api/proxy/api/notifications/mark-all-read/${userId}`,
   PROFILE: "/api/proxy/api/user/profile",
   PRODUCTS: (buCode: string) => `/api/proxy/api/config/${buCode}/products`,
+  PRODUCTS_BY_LOCATION: (buCode: string, locationId: string) =>
+    `/api/proxy/api/${buCode}/products/locations/${locationId}`,
+  PRODUCT_UNITS_FOR_ORDER: (buCode: string, productId: string) =>
+    `/api/proxy/api/${buCode}/unit/order/product/${productId}`,
+  PRODUCT_INVENTORY: (buCode: string, locationId: string, productId: string) =>
+    `/api/proxy/api/${buCode}/locations/${locationId}/product/${productId}/inventory`,
   PRODUCT_CATEGORIES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/products/category`,
   PRODUCT_SUB_CATEGORIES: (buCode: string) =>
@@ -36,6 +55,10 @@ export const API_ENDPOINTS = {
   PURCHASE_REQUESTS: "/api/proxy/api/purchase-request",
   PURCHASE_REQUEST: (buCode: string) =>
     `/api/proxy/api/${buCode}/purchase-request`,
+  PURCHASE_REQUEST_COMMENT: (buCode: string) =>
+    `/api/proxy/api/${buCode}/purchase-request-comment`,
+  PURCHASE_REQUEST_COMMENT_ATTACHMENT: (buCode: string, prId: string) =>
+    `/api/proxy/api/${buCode}/purchase-request-comment/${prId}/attachment`,
   PURCHASE_REQUEST_WORKFLOW_STAGES: (buCode: string) =>
     `/api/proxy/api/${buCode}/purchase-request/workflow-stages`,
   PURCHASE_REQUEST_TEMPLATES: (buCode: string) =>
@@ -63,5 +86,12 @@ export const API_ENDPOINTS = {
     `/api/proxy/api/config/${buCode}/user-application-roles`,
   VENDOR_BUSINESS_TYPES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/vendor-business-type`,
+  WORKFLOW_BY_TYPE: (buCode: string, type: string) =>
+    `/api/proxy/api/${buCode}/workflow/type/${type}`,
   WORKFLOWS: (buCode: string) => `/api/proxy/api/config/${buCode}/workflows`,
+  // External (no auth)
+  PRICE_LIST_EXTERNAL_CHECK: (urlToken: string) =>
+    `/api/external/api/check-price-list/${urlToken}`,
+  PRICE_LIST_EXTERNAL: (urlToken: string) =>
+    `/api/external/api/price-list-external/${urlToken}`,
 } as const;

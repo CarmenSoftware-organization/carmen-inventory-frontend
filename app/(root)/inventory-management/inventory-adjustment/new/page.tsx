@@ -2,6 +2,7 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { Loader2 } from "lucide-react";
 import { InventoryAdjustmentForm } from "../_components/inventory-adjustment-form";
 import { ErrorState } from "@/components/ui/error-state";
 import type { InventoryAdjustmentType } from "@/types/inventory-adjustment";
@@ -19,7 +20,13 @@ function NewInventoryAdjustmentContent() {
 
 export default function NewInventoryAdjustmentPage() {
   return (
-    <Suspense>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="size-6 animate-spin text-muted-foreground" />
+        </div>
+      }
+    >
       <NewInventoryAdjustmentContent />
     </Suspense>
   );

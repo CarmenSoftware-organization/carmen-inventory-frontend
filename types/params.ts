@@ -5,3 +5,13 @@ export interface ParamsDto {
   sort?: string;
   filter?: string;
 }
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  paginate: {
+    total: number;
+    page: number;
+    perpage: number;
+    pages: number;
+  };
+}

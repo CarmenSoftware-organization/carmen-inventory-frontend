@@ -2,7 +2,7 @@
 
 import { use } from "react";
 import { useRequestPriceListById } from "@/hooks/use-request-price-list";
-import { RequestPriceListForm } from "../_components/request-price-list-form";
+import { RequestPriceListForm } from "../_components/rpl-form";
 import { ErrorState } from "@/components/ui/error-state";
 
 export default function EditRequestPriceListPage({
@@ -19,9 +19,7 @@ export default function EditRequestPriceListPage({
   } = useRequestPriceListById(id);
 
   if (isLoading)
-    return (
-      <div className="p-6 text-sm text-muted-foreground">Loading...</div>
-    );
+    return <div className="p-6 text-sm text-muted-foreground">Loading...</div>;
   if (error)
     return <ErrorState message={error.message} onRetry={() => refetch()} />;
   if (!requestPriceList)

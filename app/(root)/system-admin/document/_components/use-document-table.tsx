@@ -11,15 +11,17 @@ import {
   FileArchive,
   FileCode,
 } from "lucide-react";
-import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
+import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
 import {
   selectColumn,
   indexColumn,
   actionColumn,
-} from "@/lib/data-grid/columns";
+} from "@/components/ui/data-grid/columns";
 import type { DocumentFile } from "@/types/document";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
+import { useProfile } from "@/hooks/use-profile";
+import { formatDate } from "@/lib/date-utils";
 
 interface UseDocumentTableOptions {
   documents: DocumentFile[];
@@ -62,10 +64,7 @@ function getFileTypeInfo(contentType: string) {
     };
   if (contentType.includes("text/plain"))
     return { icon: FileText, label: "TXT", className: "text-gray-500" };
-  if (
-    contentType.includes("word") ||
-    contentType.includes("document")
-  )
+  if (contentType.includes("word") || contentType.includes("document"))
     return {
       icon: FileText,
       label: "DOC",
@@ -89,6 +88,8 @@ export function useDocumentTable({
 }: UseDocumentTableOptions) {
   "use no memo";
 
+  const { dateFormat } = useProfile();
+
   const columns: ColumnDef<DocumentFile>[] = [
     selectColumn<DocumentFile>(),
     indexColumn<DocumentFile>(params),
@@ -99,7 +100,7 @@ export function useDocumentTable({
       ),
       cell: ({ row }) => (
         <span
-          className="font-medium text-xs block truncate max-w-[400px]"
+          className="font-medium text-xs block truncate max-w-100"
           title={row.getValue("originalName")}
         >
           {row.getValue("originalName")}
@@ -137,8 +138,7 @@ export function useDocumentTable({
       header: ({ column }) => (
         <DataGridColumnHeader column={column} title="Last Modified" />
       ),
-      cell: ({ row }) =>
-        new Date(row.getValue("lastModified")).toLocaleDateString(),
+      cell: ({ row }) => formatDate(row.getValue("lastModified"), dateFormat),
       size: 120,
     },
     actionColumn<DocumentFile>(onDelete),

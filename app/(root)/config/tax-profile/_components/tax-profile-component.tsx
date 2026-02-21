@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { Download, Plus, Printer } from "lucide-react";
 import { toast } from "sonner";
 import {
   DataGrid,
   DataGridContainer,
-} from "@/components/reui/data-grid/data-grid";
-import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
-import { DataGridPagination } from "@/components/reui/data-grid/data-grid-pagination";
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
+import { DataGridPagination } from "@/components/ui/data-grid/data-grid-pagination";
 import { Button } from "@/components/ui/button";
 import { useTaxProfile, useDeleteTaxProfile } from "@/hooks/use-tax-profile";
 import { useDataGridState } from "@/hooks/use-data-grid-state";
@@ -17,7 +18,9 @@ import SearchInput from "@/components/search-input";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
-import { TaxProfileDialog } from "./tax-profile-dialog";
+const TaxProfileDialog = dynamic(() =>
+  import("./tax-profile-dialog").then((mod) => mod.TaxProfileDialog),
+);
 import DisplayTemplate from "@/components/display-template";
 import { useTaxProfileTable } from "./use-tax-profile-table";
 

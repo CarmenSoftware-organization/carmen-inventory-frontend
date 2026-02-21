@@ -1,3 +1,5 @@
+export type StatusRfp = "active" | "inactive" | "draft" | "submit" | "completed";
+
 export interface RequestPriceListVendor {
   id: string;
   sequence_no: number;
@@ -23,6 +25,7 @@ export interface RequestPriceListVendor {
 export interface RequestPriceList {
   id: string;
   name: string;
+  status?: StatusRfp;
   start_date: string;
   end_date: string;
   custom_message: string;

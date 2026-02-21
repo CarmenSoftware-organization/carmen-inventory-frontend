@@ -2,14 +2,15 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
-import { Badge } from "@/components/reui/badge";
+import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/ui/cell-action";
+import { Badge } from "@/components/ui/badge";
 import {
   selectColumn,
   indexColumn,
   actionColumn,
   columnSkeletons,
-} from "@/lib/data-grid/columns";
+} from "@/components/ui/data-grid/columns";
 import type { PriceListTemplate } from "@/types/price-list-template";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
@@ -38,13 +39,9 @@ export function usePriceListTemplateTable({
         <DataGridColumnHeader column={column} title="Name" />
       ),
       cell: ({ row }) => (
-        <button
-          type="button"
-          className="font-medium hover:underline text-left text-xs"
-          onClick={() => onEdit(row.original)}
-        >
+        <CellAction onClick={() => onEdit(row.original)}>
           {row.getValue("name")}
-        </button>
+        </CellAction>
       ),
       meta: { skeleton: columnSkeletons.text },
     },

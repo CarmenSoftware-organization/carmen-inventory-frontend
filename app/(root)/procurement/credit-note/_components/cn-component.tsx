@@ -2,19 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Download, Plus, Printer } from "lucide-react";
+import { Download, File, Plus, Printer } from "lucide-react";
 import { toast } from "sonner";
 import {
   DataGrid,
   DataGridContainer,
-} from "@/components/reui/data-grid/data-grid";
-import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
-import { DataGridPagination } from "@/components/reui/data-grid/data-grid-pagination";
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
+import { DataGridPagination } from "@/components/ui/data-grid/data-grid-pagination";
 import { Button } from "@/components/ui/button";
-import {
-  useCreditNote,
-  useDeleteCreditNote,
-} from "@/hooks/use-credit-note";
+import { useCreditNote, useDeleteCreditNote } from "@/hooks/use-credit-note";
 import { useDataGridState } from "@/hooks/use-data-grid-state";
 import type { CreditNote } from "@/types/credit-note";
 import SearchInput from "@/components/search-input";
@@ -23,6 +20,7 @@ import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
 import DisplayTemplate from "@/components/display-template";
 import { useCnTable } from "./use-cn-table";
+import EmptyComponent from "@/components/empty-component";
 
 export default function CnComponent() {
   const router = useRouter();
@@ -44,6 +42,17 @@ export default function CnComponent() {
     onDelete: setDeleteTarget,
   });
 
+  const newCreditnote = () => {
+    router.push("/procurement/credit-note/new");
+  };
+
+  const newCnBtn = (
+    <Button size="sm" onClick={newCreditnote}>
+      <Plus />
+      Add Credit Note
+    </Button>
+  );
+
   if (error)
     return <ErrorState message={error.message} onRetry={() => refetch()} />;
 
@@ -59,13 +68,7 @@ export default function CnComponent() {
       }
       actions={
         <>
-          <Button
-            size="sm"
-            onClick={() => router.push("/procurement/credit-note/new")}
-          >
-            <Plus />
-            Add Credit Note
-          </Button>
+          {newCnBtn}
           <Button size="sm" variant="outline" disabled>
             <Download />
             Export
@@ -83,6 +86,14 @@ export default function CnComponent() {
         isLoading={isLoading}
         tableLayout={{ dense: true }}
         tableClassNames={{ base: "text-xs" }}
+        emptyMessage={
+          <EmptyComponent
+            icon={File}
+            title="No Items Yet"
+            description="Add items to this credit note."
+            content={newCnBtn}
+          />
+        }
       >
         <DataGridContainer>
           <DataGridTable />

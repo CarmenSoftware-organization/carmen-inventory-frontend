@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { usePermission } from "@/hooks/use-permission";
+import EmptyComponent from "@/components/empty-component";
 
 const ALL_ACTIONS = [
   "view",
@@ -53,14 +54,11 @@ export function PermissionMatrix({
   onChange,
   disabled,
 }: PermissionMatrixProps) {
-  const { data: permData } = usePermission({ perpage: 9999 });
-  const permissions = permData?.data ?? [];
+  const { data: permData } = usePermission({ perpage: -1 });
+  const permissions = useMemo(() => permData?.data ?? [], [permData?.data]);
 
   const grouped = useMemo(() => {
-    const categoryMap = new Map<
-      string,
-      Map<string, Map<string, string>>
-    >();
+    const categoryMap = new Map<string, Map<string, Map<string, string>>>();
 
     for (const perm of permissions) {
       const dotIndex = perm.resource.indexOf(".");
@@ -70,8 +68,7 @@ export function PermissionMatrix({
 
       if (!categoryMap.has(category)) categoryMap.set(category, new Map());
       const resMap = categoryMap.get(category)!;
-      if (!resMap.has(resourceName))
-        resMap.set(resourceName, new Map());
+      if (!resMap.has(resourceName)) resMap.set(resourceName, new Map());
       resMap.get(resourceName)!.set(perm.action, perm.id);
     }
 
@@ -101,7 +98,10 @@ export function PermissionMatrix({
 
   if (permissions.length === 0) {
     return (
-      <p className="text-xs text-muted-foreground">Loading permissions...</p>
+      <EmptyComponent
+        title="No permissions found"
+        description="You have no permissions to manage."
+      />
     );
   }
 
@@ -110,14 +110,9 @@ export function PermissionMatrix({
       <table className="w-full text-xs border-collapse">
         <thead>
           <tr className="border-b bg-muted/30">
-            <th className="text-left p-2 font-medium min-w-[180px]">
-              Resource
-            </th>
+            <th className="text-left p-2 font-medium min-w-45">Resource</th>
             {ALL_ACTIONS.map((action) => (
-              <th
-                key={action}
-                className="p-2 text-center font-medium w-20"
-              >
+              <th key={action} className="p-2 text-center font-medium w-20">
                 {ACTION_LABELS[action]}
               </th>
             ))}
@@ -175,7 +170,10 @@ function PermissionGroupRows({
             const permissionId = resource.actions.get(action);
             if (!permissionId) {
               return (
-                <td key={action} className="p-2 text-center text-muted-foreground">
+                <td
+                  key={action}
+                  className="p-2 text-center text-muted-foreground"
+                >
                   —
                 </td>
               );

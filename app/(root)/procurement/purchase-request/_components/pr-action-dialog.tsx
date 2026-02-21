@@ -63,6 +63,7 @@ export function PrActionDialog({
           <Textarea
             className="text-xs placeholder:text-xs"
             placeholder="Enter reason (optional)..."
+            maxLength={256}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             disabled={isPending}

@@ -38,6 +38,7 @@ export function WfGeneral({ form, isDisabled }: WfGeneralProps) {
               placeholder="e.g. Purchase Request Approval"
               className="h-8 text-xs"
               disabled={isDisabled}
+              maxLength={100}
               {...form.register("name")}
             />
             <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -86,8 +87,9 @@ export function WfGeneral({ form, isDisabled }: WfGeneralProps) {
           <Textarea
             id="wf-description"
             placeholder="Optional description"
-            className="text-xs min-h-[60px]"
+            className="text-xs min-h-15"
             disabled={isDisabled}
+            maxLength={256}
             {...form.register("description")}
           />
         </Field>

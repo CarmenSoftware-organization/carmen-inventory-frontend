@@ -13,13 +13,12 @@ import {
   getExpandedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useState, useMemo } from "react";
+import { memo, useState, useMemo } from "react";
 import { ChevronDown, ChevronRight, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DataGridTableRowSelect } from "@/components/reui/data-grid/data-grid-table";
-import { formatDate } from "@/lib/date-utils";
+import { DataGridTableRowSelect } from "@/components/ui/data-grid/data-grid-table";
 import { DatePicker } from "@/components/ui/date-picker";
 import { LookupLocation } from "@/components/lookup/lookup-location";
 import { LookupProductInLocation } from "@/components/lookup/lookup-product-in-location";
@@ -31,7 +30,7 @@ import type { PrFormValues } from "./pr-form-schema";
 import { PrItemExpand } from "./pr-item-expand";
 import { Badge } from "@/components/ui/badge";
 
-function StatusCell({
+const StatusCell = memo(function StatusCell({
   control,
   index,
 }: {
@@ -41,25 +40,26 @@ function StatusCell({
   const status =
     useWatch({ control, name: `items.${index}.current_stage_status` }) ||
     "pending";
-  const { variant, label } = PR_ITEM_STATUS_CONFIG[status] ?? PR_ITEM_STATUS_CONFIG.pending;
+  const { variant, label } =
+    PR_ITEM_STATUS_CONFIG[status] ?? PR_ITEM_STATUS_CONFIG.pending;
   return (
     <Badge variant={variant} className="text-[11px]">
       {label}
     </Badge>
   );
-}
+});
 
 /** Watches location_id via useWatch — only re-renders when location changes, not on every form change */
-function ProductCell({
+const ProductCell = memo(function ProductCell({
   control,
   form,
   index,
-  disabled,
+  isDisabled,
 }: {
   control: Control<PrFormValues>;
   form: UseFormReturn<PrFormValues>;
   index: number;
-  disabled: boolean;
+  isDisabled: boolean;
 }) {
   const locationId =
     useWatch({ control, name: `items.${index}.location_id` }) ?? "";
@@ -80,17 +80,16 @@ function ProductCell({
             form.setValue(`items.${index}.foc_unit_id`, "");
             form.setValue(`items.${index}.approved_unit_id`, "");
           }}
-          disabled={disabled}
-          className="w-full text-[11px]"
-          size="xs"
+          disabled={isDisabled}
+          className="w-full h-6 text-[11px]"
         />
       )}
     />
   );
-}
+});
 
 /** Watches product_id via useWatch — only re-renders when product changes */
-function WatchedProductUnit({
+const WatchedProductUnit = memo(function WatchedProductUnit({
   control,
   index,
   unitField,
@@ -118,20 +117,19 @@ function WatchedProductUnit({
             onExtraChange?.(value);
           }}
           disabled={disabled}
-          className="w-full text-[11px]"
-          size="xs"
+          className="w-full h-6 text-[11px]"
         />
       )}
     />
   );
-}
+});
 
 export type ItemField = FieldArrayWithId<PrFormValues, "items", "id">;
 
 interface UsePrItemTableOptions {
   form: UseFormReturn<PrFormValues>;
   itemFields: ItemField[];
-  disabled: boolean;
+  isDisabled: boolean;
   prStatus?: string;
   dateFormat: string;
   buCode?: string;
@@ -141,9 +139,8 @@ interface UsePrItemTableOptions {
 export function usePrItemTable({
   form,
   itemFields,
-  disabled,
+  isDisabled,
   prStatus,
-  dateFormat,
   buCode,
   onDelete,
 }: UsePrItemTableOptions) {
@@ -219,7 +216,7 @@ export function usePrItemTable({
           <PrItemExpand
             item={item}
             form={form}
-            disabled={disabled}
+            disabled={isDisabled}
             itemFields={itemFields}
             buCode={buCode}
           />
@@ -251,9 +248,8 @@ export function usePrItemTable({
               <LookupLocation
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
-                disabled={disabled}
-                className="w-full text-[11px]"
-                size="xs"
+                disabled={isDisabled}
+                className="w-full h-6 text-[11px]"
               />
             )}
           />
@@ -268,10 +264,10 @@ export function usePrItemTable({
             control={form.control}
             form={form}
             index={row.index}
-            disabled={disabled}
+            isDisabled={isDisabled}
           />
         ),
-        size: 280,
+        size: 350,
       },
       {
         accessorKey: "current_stage_status",
@@ -291,7 +287,7 @@ export function usePrItemTable({
               min={1}
               placeholder="Qty"
               className="h-6 text-[11px] md:text-[11px] text-right"
-              disabled={disabled}
+              disabled={isDisabled}
               {...form.register(`items.${row.index}.requested_qty`, {
                 valueAsNumber: true,
               })}
@@ -300,7 +296,7 @@ export function usePrItemTable({
               control={form.control}
               index={row.index}
               unitField="requested_unit_id"
-              disabled={disabled}
+              disabled={isDisabled}
               onExtraChange={(value) => {
                 form.setValue(`items.${row.index}.foc_unit_id`, value);
                 form.setValue(`items.${row.index}.approved_unit_id`, value);
@@ -320,7 +316,7 @@ export function usePrItemTable({
               min={0}
               placeholder="Qty"
               className="h-6 text-[11px] md:text-[11px] text-right"
-              disabled={disabled}
+              disabled={isDisabled}
               {...form.register(`items.${row.index}.approved_qty`, {
                 valueAsNumber: true,
               })}
@@ -329,7 +325,7 @@ export function usePrItemTable({
               control={form.control}
               index={row.index}
               unitField="approved_unit_id"
-              disabled={disabled}
+              disabled={isDisabled}
             />
           </div>
         ),
@@ -345,7 +341,7 @@ export function usePrItemTable({
               min={0}
               placeholder="Qty"
               className="h-6 text-[11px] md:text-[11px] text-right"
-              disabled={disabled}
+              disabled={isDisabled}
               {...form.register(`items.${row.index}.foc_qty`, {
                 valueAsNumber: true,
               })}
@@ -354,7 +350,7 @@ export function usePrItemTable({
               control={form.control}
               index={row.index}
               unitField="foc_unit_id"
-              disabled={disabled}
+              disabled={isDisabled}
             />
           </div>
         ),
@@ -372,7 +368,7 @@ export function usePrItemTable({
               <LookupCurrency
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
-                disabled={disabled}
+                disabled={isDisabled}
                 className="w-full text-[11px]"
                 size="xs"
               />
@@ -392,9 +388,8 @@ export function usePrItemTable({
               <LookupDeliveryPoint
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
-                disabled={disabled}
-                className="w-full text-[11px]"
-                size="xs"
+                disabled={isDisabled}
+                className="w-full h-6 text-[11px]"
               />
             )}
           />
@@ -404,31 +399,22 @@ export function usePrItemTable({
       {
         accessorKey: "delivery_date",
         header: "Delivery Date",
-        cell: ({ row }) =>
-          disabled ? (
-            <span className="text-[11px]">
-              {form.getValues(`items.${row.index}.delivery_date`)
-                ? formatDate(
-                    form.getValues(`items.${row.index}.delivery_date`),
-                    dateFormat,
-                  )
-                : "—"}
-            </span>
-          ) : (
-            <Controller
-              control={form.control}
-              name={`items.${row.index}.delivery_date`}
-              render={({ field }) => (
-                <DatePicker
-                  value={field.value}
-                  onValueChange={field.onChange}
-                  fromDate={today}
-                  className="w-full text-[11px]"
-                  size="xs"
-                />
-              )}
-            />
-          ),
+        cell: ({ row }) => (
+          <Controller
+            control={form.control}
+            name={`items.${row.index}.delivery_date`}
+            render={({ field }) => (
+              <DatePicker
+                value={field.value}
+                onValueChange={field.onChange}
+                fromDate={today}
+                disabled={isDisabled}
+                className="w-full text-[11px]"
+                size="xs"
+              />
+            )}
+          />
+        ),
         size: 150,
       },
     ];
@@ -458,15 +444,23 @@ export function usePrItemTable({
     const hiddenInDraft = new Set(["foc", "approved"]);
 
     return [
-      expandColumn,
-      prSelectColumn,
+      ...(!isDraft ? [expandColumn, prSelectColumn] : []),
       indexColumn,
       ...(isDraft
         ? dataColumns.filter((col) => !hiddenInDraft.has(col.id ?? ""))
         : dataColumns),
-      ...(!disabled ? [actionColumn] : []),
+      ...(!isDisabled ? [actionColumn] : []),
     ];
-  }, [form, disabled, prStatus, dateFormat, buCode, itemFields, onDelete, setSelectDialogOpen, today]);
+  }, [
+    form,
+    isDisabled,
+    prStatus,
+    buCode,
+    itemFields,
+    onDelete,
+    setSelectDialogOpen,
+    today,
+  ]);
 
   const table = useReactTable({
     data: itemFields,
@@ -482,13 +476,14 @@ export function usePrItemTable({
   };
 
   const handleSelectPending = () => {
-    table.resetRowSelection();
-    itemFields.forEach((_item: ItemField, index: number) => {
-      const status = form.getValues(`items.${index}.current_stage_status`);
+    const selection: Record<string, boolean> = {};
+    for (let i = 0; i < itemFields.length; i++) {
+      const status = form.getValues(`items.${i}.current_stage_status`);
       if (!status || status === "pending") {
-        table.getRowModel().rows[index]?.toggleSelected(true);
+        selection[i] = true;
       }
-    });
+    }
+    table.setRowSelection(selection);
     setSelectDialogOpen(false);
   };
 

@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Download, Plus, Printer } from "lucide-react";
+import { BoxIcon, Download, Plus, Printer } from "lucide-react";
 import { toast } from "sonner";
 import {
   DataGrid,
   DataGridContainer,
-} from "@/components/reui/data-grid/data-grid";
-import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
-import { DataGridPagination } from "@/components/reui/data-grid/data-grid-pagination";
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
+import { DataGridPagination } from "@/components/ui/data-grid/data-grid-pagination";
 import { Button } from "@/components/ui/button";
 import {
   useGoodsReceiveNote,
@@ -23,10 +23,13 @@ import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
 import DisplayTemplate from "@/components/display-template";
 import { useGrnTable } from "./use-grn-table";
+import EmptyComponent from "@/components/empty-component";
 
 export default function GrnComponent() {
   const router = useRouter();
-  const [deleteTarget, setDeleteTarget] = useState<GoodsReceiveNote | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<GoodsReceiveNote | null>(
+    null,
+  );
   const deleteGrn = useDeleteGoodsReceiveNote();
   const { params, search, setSearch, filter, setFilter, tableConfig } =
     useDataGridState();
@@ -34,6 +37,17 @@ export default function GrnComponent() {
 
   const goodsReceiveNotes = data?.data ?? [];
   const totalRecords = data?.paginate?.total ?? 0;
+
+  const newgrn = () => {
+    router.push("/procurement/goods-receive-note/new");
+  };
+
+  const newGrnBtn = (
+    <Button size="sm" onClick={newgrn}>
+      <Plus />
+      Add GRN
+    </Button>
+  );
 
   const table = useGrnTable({
     goodsReceiveNotes,
@@ -83,6 +97,14 @@ export default function GrnComponent() {
         isLoading={isLoading}
         tableLayout={{ dense: true }}
         tableClassNames={{ base: "text-xs" }}
+        emptyMessage={
+          <EmptyComponent
+            icon={BoxIcon}
+            title="No GRN Yet"
+            description="No goods receive notes found."
+            content={newGrnBtn}
+          />
+        }
       >
         <DataGridContainer>
           <DataGridTable />
@@ -96,7 +118,7 @@ export default function GrnComponent() {
           !open && !deleteGrn.isPending && setDeleteTarget(null)
         }
         title="Delete Goods Receive Note"
-        description={`Are you sure you want to delete goods receive note "${deleteTarget?.grn_number}"? This action cannot be undone.`}
+        description={`Are you sure you want to delete goods receive note "${deleteTarget?.invoice_no || deleteTarget?.id.slice(0, 8)}"? This action cannot be undone.`}
         isPending={deleteGrn.isPending}
         onConfirm={() => {
           if (!deleteTarget) return;

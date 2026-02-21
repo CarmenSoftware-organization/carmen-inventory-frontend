@@ -155,7 +155,7 @@ export function WfStageDetail({
             variant="destructive"
             size="xs"
             onClick={() => setShowDeleteAlert(true)}
-            className="h-7 text-[10px]"
+            className="text-xs"
           >
             <Trash2 className="size-2.5" />
             Delete
@@ -165,13 +165,13 @@ export function WfStageDetail({
 
       <Tabs defaultValue="general">
         <TabsList variant="line">
-          <TabsTrigger value="general" className="text-[11px]">
+          <TabsTrigger value="general" className="text-xs">
             General
           </TabsTrigger>
-          <TabsTrigger value="notifications" className="text-[11px]">
+          <TabsTrigger value="notifications" className="text-xs">
             Notifications
           </TabsTrigger>
-          <TabsTrigger value="users" className="text-[11px]">
+          <TabsTrigger value="users" className="text-xs">
             Assigned Users
           </TabsTrigger>
         </TabsList>
@@ -183,7 +183,7 @@ export function WfStageDetail({
               <Field>
                 <FieldLabel className="text-[11px]">Stage Name</FieldLabel>
                 <Input
-                  className="h-8 text-[10px]"
+                  className="h-8 text-sm"
                   disabled={isDisabled}
                   {...form.register(`data.stages.${index}.name`)}
                 />
@@ -223,9 +223,10 @@ export function WfStageDetail({
             <Field>
               <FieldLabel className="text-[11px]">Description</FieldLabel>
               <Textarea
-                className="text-xs min-h-[48px]"
+                className="text-xs min-h-12"
                 disabled={isDisabled}
                 placeholder="Optional"
+                maxLength={256}
                 {...form.register(`data.stages.${index}.description`)}
               />
             </Field>
@@ -278,7 +279,7 @@ export function WfStageDetail({
                 <FieldLabel className="text-[11px]">SLA</FieldLabel>
                 <Input
                   type="number"
-                  className="h-8 text-xs"
+                  className="h-8 text-sm"
                   disabled={isDisabled}
                   {...form.register(`data.stages.${index}.sla`)}
                 />
@@ -570,7 +571,7 @@ export function WfStageDetail({
           {isHod ? (
             <div className="flex items-center gap-1.5 rounded border border-amber-200 bg-amber-50 px-2 py-1.5 dark:border-amber-900 dark:bg-amber-950">
               <Lock className="size-3 text-amber-600 dark:text-amber-400" />
-              <p className="text-[10px] text-amber-700 dark:text-amber-400">
+              <p className="text-xs text-amber-700 dark:text-amber-400">
                 HOD mode enabled. Approval routed to Head of Department.
               </p>
             </div>
@@ -595,7 +596,7 @@ export function WfStageDetail({
                       onClick={() =>
                         assignAll(userSearch ? filteredUsers : users)
                       }
-                      className="h-6 text-[10px] px-1.5"
+                      className="h-6 text-xs px-1.5"
                     >
                       {userSearch ? "Assign Filtered" : "Assign All"}
                     </Button>
@@ -606,7 +607,7 @@ export function WfStageDetail({
                       onClick={() =>
                         unassignAll(userSearch ? filteredUsers : users)
                       }
-                      className="h-6 text-[10px] px-1.5"
+                      className="h-6 text-xs px-1.5"
                     >
                       {userSearch ? "Unassign Filtered" : "Unassign All"}
                     </Button>
@@ -648,7 +649,7 @@ export function WfStageDetail({
                             variant={isAssigned ? "destructive" : "outline"}
                             size="xs"
                             onClick={() => toggleUser(user)}
-                            className="h-5 text-[9px] px-1.5"
+                            className="h-6 text-xs px-1.5"
                           >
                             {isAssigned ? "Unassign" : "Assign"}
                           </Button>

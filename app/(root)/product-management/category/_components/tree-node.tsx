@@ -44,18 +44,21 @@ export function TreeNode({
     const regex = new RegExp(`(${escaped})`, "gi");
     const parts = text.split(regex);
     if (parts.length === 1) return text;
-    return parts.map((part, i) =>
-      regex.test(part) ? (
+    let offset = 0;
+    return parts.map((part) => {
+      const key = offset;
+      offset += part.length;
+      return regex.test(part) ? (
         <mark
-          key={i}
+          key={key}
           className="bg-yellow-200/80 dark:bg-yellow-800/40 rounded-sm px-px"
         >
           {part}
         </mark>
       ) : (
-        <span key={i}>{part}</span>
-      ),
-    );
+        <span key={key}>{part}</span>
+      );
+    });
   };
 
   const iconCls = "h-3 w-3 text-muted-foreground/60 shrink-0";
@@ -86,7 +89,7 @@ export function TreeNode({
           {hasChildren ? (
             <ChevronRight
               className={cn(
-                "h-3 w-3 text-muted-foreground transition-transform duration-150",
+                "h-3 w-3 cursor-pointer text-muted-foreground transition-transform duration-150",
                 isExpanded && "rotate-90",
               )}
             />
@@ -128,19 +131,12 @@ export function TreeNode({
           </span>
         )}
 
-        {/* Child count */}
-        {hasChildren && (
-          <span className="text-[10px] text-muted-foreground/50 tabular-nums mr-1">
-            {node.children?.length}
-          </span>
-        )}
-
         {/* Actions - visible on hover */}
-        <div className="hidden items-center group-hover/node:flex ml-auto pr-1">
+        <div className="hidden items-center group-hover/node:flex ml-auto pr-2">
           {node.type !== NODE_TYPE.ITEM_GROUP && (
             <button
               type="button"
-              className="p-0.5 rounded hover:bg-primary/10 hover:text-primary transition-colors"
+              className="p-1 rounded hover:bg-primary/10 hover:text-primary transition-colors"
               onClick={() => onAdd(node)}
               title="Add child"
             >
@@ -149,7 +145,7 @@ export function TreeNode({
           )}
           <button
             type="button"
-            className="p-0.5 rounded hover:bg-primary/10 hover:text-primary transition-colors"
+            className="p-1 rounded hover:bg-primary/10 hover:text-primary transition-colors"
             onClick={() => onEdit(node)}
             title="Edit"
           >
@@ -157,7 +153,7 @@ export function TreeNode({
           </button>
           <button
             type="button"
-            className="p-0.5 rounded hover:bg-destructive/10 hover:text-destructive transition-colors"
+            className="p-1 rounded hover:bg-destructive/10 hover:text-destructive transition-colors"
             onClick={() => onDelete(node)}
             title="Delete"
           >

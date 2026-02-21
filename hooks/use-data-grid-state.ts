@@ -32,10 +32,10 @@ export function useDataGridState(options?: UseDataGridStateOptions) {
     return [{ id, desc: dir === "desc" }];
   }, [sort]);
 
-  const pagination: PaginationState = {
-    pageIndex: pageNumber - 1,
-    pageSize: perpageNumber,
-  };
+  const pagination: PaginationState = useMemo(
+    () => ({ pageIndex: pageNumber - 1, pageSize: perpageNumber }),
+    [pageNumber, perpageNumber],
+  );
 
   const combinedFilter = [filter, stage ? `workflow_current_stage:${stage}` : ""]
     .filter(Boolean)

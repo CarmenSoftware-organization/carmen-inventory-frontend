@@ -1,13 +1,14 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { DataGridColumnHeader } from "@/components/reui/data-grid/data-grid-column-header";
-import { Badge } from "@/components/reui/badge";
+import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
+import { CellAction } from "@/components/ui/cell-action";
+import { Badge } from "@/components/ui/badge";
 import {
   selectColumn,
   indexColumn,
   actionColumn,
   columnSkeletons,
-} from "@/lib/data-grid/columns";
+} from "@/components/ui/data-grid/columns";
 import type { Product } from "@/types/product";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
@@ -33,33 +34,26 @@ export function useProductTable({
 
   const dataColumns: ColumnDef<Product>[] = [
     {
-      accessorKey: "code",
-      header: ({ column }) => (
-        <DataGridColumnHeader column={column} title="Code" />
-      ),
-      cell: ({ row }) => (
-        <button
-          type="button"
-          className="font-medium hover:underline text-left text-xs"
-          onClick={() => onEdit(row.original)}
-        >
-          {row.getValue("code")}
-        </button>
-      ),
-      size: 120,
-      meta: { skeleton: columnSkeletons.textShort },
-    },
-    {
       accessorKey: "name",
       header: ({ column }) => (
         <DataGridColumnHeader column={column} title="Name" />
       ),
-      meta: { skeleton: columnSkeletons.text },
+      cell: ({ row }) => (
+        <CellAction onClick={() => onEdit(row.original)}>
+          <Badge size={"xs"} variant={"secondary"}>
+            {row.original.code}
+          </Badge>{" "}
+          - {row.original.name}
+        </CellAction>
+      ),
+      size: 350,
+      meta: { skeleton: columnSkeletons.textShort },
     },
     {
       accessorKey: "local_name",
       header: "Local Name",
       enableSorting: false,
+      size: 300,
       meta: { skeleton: columnSkeletons.text },
     },
     {
@@ -74,6 +68,13 @@ export function useProductTable({
       id: "product_item_group_name",
       accessorFn: (row) => row.product_item_group?.name ?? "",
       header: "Item Group",
+      enableSorting: false,
+      meta: { skeleton: columnSkeletons.text },
+    },
+    {
+      id: "product_sub_category",
+      accessorFn: (row) => row.product_sub_category?.name ?? "",
+      header: "Sub Category",
       enableSorting: false,
       meta: { skeleton: columnSkeletons.text },
     },

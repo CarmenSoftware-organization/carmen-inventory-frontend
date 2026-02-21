@@ -7,9 +7,9 @@ import { toast } from "sonner";
 import {
   DataGrid,
   DataGridContainer,
-} from "@/components/reui/data-grid/data-grid";
-import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
-import { DataGridPagination } from "@/components/reui/data-grid/data-grid-pagination";
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
+import { DataGridPagination } from "@/components/ui/data-grid/data-grid-pagination";
 import { Button } from "@/components/ui/button";
 import {
   useAdjustmentType,
@@ -22,6 +22,8 @@ import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
 import DisplayTemplate from "@/components/display-template";
+import EmptyComponent from "@/components/empty-component";
+import { Settings } from "lucide-react";
 import { useAdjustmentTypeTable } from "./use-adjustment-type-table";
 
 export default function AdjustmentTypeComponent() {
@@ -86,6 +88,13 @@ export default function AdjustmentTypeComponent() {
         isLoading={isLoading}
         tableLayout={{ dense: true }}
         tableClassNames={{ base: "text-xs" }}
+        emptyMessage={
+          <EmptyComponent
+            icon={Settings}
+            title="No Adjustment Types"
+            description="No adjustment types found."
+          />
+        }
       >
         <DataGridContainer>
           <DataGridTable />

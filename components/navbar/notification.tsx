@@ -8,7 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Badge } from "@/components/reui/badge";
+import { Badge } from "@/components/ui/badge";
 import { useNotification } from "@/hooks/use-notification";
 import { useProfile } from "@/hooks/use-profile";
 import type { Notification } from "@/types/notification";

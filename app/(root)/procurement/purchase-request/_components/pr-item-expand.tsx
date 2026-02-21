@@ -3,109 +3,27 @@ import {
   Controller,
   useWatch,
   type UseFormReturn,
-  type Control,
   type FieldArrayWithId,
 } from "react-hook-form";
+import dynamic from "next/dynamic";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Progress } from "@/components/ui/progress";
-import { Skeleton } from "@/components/ui/skeleton";
 import { LookupVendor } from "@/components/lookup/lookup-vendor";
 import { LookupTaxProfile } from "@/components/lookup/lookup-tax-profile";
-import { useProductInventory } from "@/hooks/use-product-inventory";
 import type { PrFormValues } from "./pr-form-schema";
-import { PrPricelistDialog, type PricelistEntry } from "./pr-pricelist-dialog";
+import type { PricelistEntry } from "./pr-pricelist-dialog";
+import InventoryRow from "./inventory-row";
 
-/** Round to 2 decimal places using exponential shift to avoid floating-point errors (e.g. 1.005 → 1.01) */
+const PrPricelistDialog = dynamic(() =>
+  import("./pr-pricelist-dialog").then((mod) => mod.PrPricelistDialog),
+);
+
 const round2 = (n: number): number =>
-  Number(Math.round(parseFloat(n + "e2")) + "e-2");
+  Number(Math.round(Number.parseFloat(n + "e2")) + "e-2");
 
 type ItemField = FieldArrayWithId<PrFormValues, "items", "id">;
-
-function InventoryRow({
-  control,
-  index,
-  buCode,
-}: {
-  control: Control<PrFormValues>;
-  index: number;
-  buCode?: string;
-}) {
-  const locationId = useWatch({ control, name: `items.${index}.location_id` }) ?? "";
-  const productId = useWatch({ control, name: `items.${index}.product_id` }) ?? "";
-
-  const { data, isLoading } = useProductInventory(buCode, locationId, productId);
-
-  if (!locationId || !productId) return null;
-
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-12 gap-2 items-end">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="col-span-2">
-            <Skeleton className="h-3 w-12 mb-1" />
-            <Skeleton className="h-5 w-full" />
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  if (!data) return null;
-
-  const { on_hand_qty, on_order_qty, re_order_qty, re_stock_qty } = data;
-  const pct = re_stock_qty > 0 ? Math.min(Math.round((on_hand_qty / re_stock_qty) * 100), 100) : 0;
-
-  let indicatorColor = "bg-emerald-500";
-  if (on_hand_qty < re_order_qty) {
-    indicatorColor = "bg-red-500";
-  } else if (on_hand_qty < re_stock_qty) {
-    indicatorColor = "bg-amber-500";
-  }
-
-  return (
-    <div className="grid grid-cols-12 gap-2 items-end">
-      <div className="col-span-2">
-        <label className="text-[10px] text-muted-foreground">On Hand</label>
-        <div className="h-6 leading-6 text-[11px] font-medium tabular-nums">
-          {on_hand_qty.toLocaleString()}
-        </div>
-      </div>
-      <div className="col-span-2">
-        <label className="text-[10px] text-muted-foreground">On Order</label>
-        <div className="h-6 leading-6 text-[11px] font-medium tabular-nums">
-          {on_order_qty.toLocaleString()}
-        </div>
-      </div>
-      <div className="col-span-2">
-        <label className="text-[10px] text-muted-foreground">Re-order Pt.</label>
-        <div className="h-6 leading-6 text-[11px] tabular-nums text-muted-foreground">
-          {re_order_qty.toLocaleString()}
-        </div>
-      </div>
-      <div className="col-span-2">
-        <label className="text-[10px] text-muted-foreground">Re-stock</label>
-        <div className="h-6 leading-6 text-[11px] tabular-nums text-muted-foreground">
-          {re_stock_qty.toLocaleString()}
-        </div>
-      </div>
-      <div className="col-span-4">
-        <label className="text-[10px] text-muted-foreground">
-          Stock Level ({pct}%)
-        </label>
-        <div className="h-6 flex items-center">
-          <Progress
-            value={pct}
-            className="h-2"
-            indicatorClassName={indicatorColor}
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 interface PrItemExpandProps {
   item: ItemField;
@@ -125,45 +43,75 @@ export function PrItemExpand({
   const index = itemFields.findIndex((f) => f.id === item.id);
   const [showPricelist, setShowPricelist] = useState(false);
 
-  // Watch entire item via useWatch — scoped re-render only when this item changes
-  // (form.watch re-renders on ANY form field change; useWatch is targeted)
   const i = Math.max(index, 0);
-  const watched = useWatch({ control: form.control, name: `items.${i}` });
-  const watchPrice = watched?.pricelist_price ?? 0;
-  const watchQty = watched?.requested_qty ?? 0;
-  const watchTaxRate = watched?.tax_rate ?? 0;
-  const watchIsTaxAdj = watched?.is_tax_adjustment ?? false;
-  const watchTaxAmt = watched?.tax_amount ?? 0;
-  const watchDiscRate = watched?.discount_rate ?? 0;
-  const watchIsDiscAdj = watched?.is_discount_adjustment ?? false;
-  const watchDiscAmt = watched?.discount_amount ?? 0;
 
-  // Compute derived values (memoized to avoid recalculating on unrelated renders)
+  const [
+    watchPrice,
+    watchQty,
+    watchTaxRate,
+    watchIsTaxAdj,
+    watchTaxAmt,
+    watchDiscRate,
+    watchIsDiscAdj,
+    watchDiscAmt,
+  ] = useWatch({
+    control: form.control,
+    name: [
+      `items.${i}.pricelist_price`,
+      `items.${i}.requested_qty`,
+      `items.${i}.tax_rate`,
+      `items.${i}.is_tax_adjustment`,
+      `items.${i}.tax_amount`,
+      `items.${i}.discount_rate`,
+      `items.${i}.is_discount_adjustment`,
+      `items.${i}.discount_amount`,
+    ] as const,
+  });
+
+  const price = watchPrice ?? 0;
+  const qty = watchQty ?? 0;
+  const taxRate = watchTaxRate ?? 0;
+  const isTaxAdj = watchIsTaxAdj ?? false;
+  const taxAmt = watchTaxAmt ?? 0;
+  const discRate = watchDiscRate ?? 0;
+  const isDiscAdj = watchIsDiscAdj ?? false;
+  const discAmt = watchDiscAmt ?? 0;
+
   const { discountAmount, netAmount, taxAmount, totalPrice } = useMemo(() => {
-    const sub = round2(watchPrice * watchQty);
-    const disc = watchIsDiscAdj
-      ? watchDiscAmt
-      : round2((sub * watchDiscRate) / 100);
+    const sub = round2(price * qty);
+    const disc = isDiscAdj ? discAmt : round2((sub * discRate) / 100);
     const net = round2(sub - disc);
-    const tax = watchIsTaxAdj
-      ? watchTaxAmt
-      : round2((net * watchTaxRate) / 100);
+    const tax = isTaxAdj ? taxAmt : round2((net * taxRate) / 100);
     const total = round2(net + tax);
-    return { discountAmount: disc, netAmount: net, taxAmount: tax, totalPrice: total };
-  }, [watchPrice, watchQty, watchDiscRate, watchIsDiscAdj, watchDiscAmt, watchTaxRate, watchIsTaxAdj, watchTaxAmt]);
+    return {
+      discountAmount: disc,
+      netAmount: net,
+      taxAmount: tax,
+      totalPrice: total,
+    };
+  }, [price, qty, discRate, isDiscAdj, discAmt, taxRate, isTaxAdj, taxAmt]);
 
   // Sync computed values back to form
   useEffect(() => {
     if (index === -1) return;
-    if (!watchIsDiscAdj) {
+    if (!isDiscAdj) {
       form.setValue(`items.${index}.discount_amount`, discountAmount);
     }
-    if (!watchIsTaxAdj) {
+    if (!isTaxAdj) {
       form.setValue(`items.${index}.tax_amount`, taxAmount);
     }
     form.setValue(`items.${index}.net_amount`, netAmount);
     form.setValue(`items.${index}.total_price`, totalPrice);
-  }, [index, discountAmount, taxAmount, netAmount, totalPrice, watchIsDiscAdj, watchIsTaxAdj, form]);
+  }, [
+    index,
+    discountAmount,
+    taxAmount,
+    netAmount,
+    totalPrice,
+    isDiscAdj,
+    isTaxAdj,
+    form,
+  ]);
 
   if (index === -1) return null;
 
@@ -192,11 +140,11 @@ export function PrItemExpand({
   };
 
   return (
-    <div className="px-3 py-1.5 bg-muted/40 border-t border-border space-y-1">
+    <div className="px-3 py-1.5">
       {/* Row 1: Vendor | Unit Price | Pricelist */}
       <div className="grid grid-cols-12 gap-2 items-end">
         <div className="col-span-5">
-          <label className="text-[10px] text-muted-foreground">Vendor</label>
+          <span className="text-[10px] text-muted-foreground">Vendor</span>
           <Controller
             control={form.control}
             name={`items.${index}.vendor_id`}
@@ -205,17 +153,20 @@ export function PrItemExpand({
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
                 disabled={disabled}
-                size="xs"
-                className="w-full text-[11px]"
+                className="w-full h-6 text-[11px]"
               />
             )}
           />
         </div>
         <div className="col-span-2">
-          <label className="text-[10px] text-muted-foreground">
+          <label
+            htmlFor={`items-${index}-pricelist-price`}
+            className="text-[10px] text-muted-foreground"
+          >
             Unit Price
           </label>
           <Input
+            id={`items-${index}-pricelist-price`}
             type="number"
             min={0}
             step="0.01"
@@ -228,7 +179,7 @@ export function PrItemExpand({
           />
         </div>
         <div className="col-span-3">
-          <label className="text-[10px] text-muted-foreground">Pricelist</label>
+          <span className="text-[10px] text-muted-foreground">Pricelist</span>
           <div className="flex items-center gap-0.5">
             <span className="flex-1 h-6 leading-6 text-[11px] text-muted-foreground truncate">
               {pricelistNo || "—"}
@@ -246,9 +197,7 @@ export function PrItemExpand({
           </div>
         </div>
         <div className="col-span-2">
-          <label className="text-[10px] text-muted-foreground">
-            Net Amount
-          </label>
+          <span className="text-[10px] text-muted-foreground">Net Amount</span>
           <div className="h-6 leading-6 text-[11px] text-right font-medium tabular-nums">
             {netAmount.toLocaleString(undefined, {
               minimumFractionDigits: 2,
@@ -261,9 +210,7 @@ export function PrItemExpand({
       {/* Row 2: Tax Profile | Tax % | Tax Amt [✓] | Disc % | Disc Amt [✓] | Total */}
       <div className="grid grid-cols-12 gap-2 items-end">
         <div className="col-span-3">
-          <label className="text-[10px] text-muted-foreground">
-            Tax Profile
-          </label>
+          <span className="text-[10px] text-muted-foreground">Tax Profile</span>
           <Controller
             control={form.control}
             name={`items.${index}.tax_profile_id`}
@@ -282,8 +229,14 @@ export function PrItemExpand({
           />
         </div>
         <div className="col-span-1">
-          <label className="text-[10px] text-muted-foreground">Tax %</label>
+          <label
+            htmlFor={`items-${index}-tax-rate`}
+            className="text-[10px] text-muted-foreground"
+          >
+            Tax %
+          </label>
           <Input
+            id={`items-${index}-tax-rate`}
             type="number"
             min={0}
             step="0.01"
@@ -297,7 +250,7 @@ export function PrItemExpand({
         </div>
         <div className="col-span-2">
           <div className="flex items-center gap-1">
-            <label className="text-[10px] text-muted-foreground">Tax Amt</label>
+            <span className="text-[10px] text-muted-foreground">Tax Amt</span>
             <Controller
               control={form.control}
               name={`items.${index}.is_tax_adjustment`}
@@ -312,20 +265,27 @@ export function PrItemExpand({
             />
           </div>
           <Input
+            id={`items-${index}-tax-amount`}
             type="number"
             min={0}
             step="0.01"
             placeholder="0.00"
             className="h-6 text-[11px] md:text-[11px] text-right"
-            disabled={disabled || !watchIsTaxAdj}
+            disabled={disabled || !isTaxAdj}
             {...form.register(`items.${index}.tax_amount`, {
               valueAsNumber: true,
             })}
           />
         </div>
         <div className="col-span-1">
-          <label className="text-[10px] text-muted-foreground">Disc %</label>
+          <label
+            htmlFor={`items-${index}-discount-rate`}
+            className="text-[10px] text-muted-foreground"
+          >
+            Disc %
+          </label>
           <Input
+            id={`items-${index}-discount-rate`}
             type="number"
             min={0}
             step="0.01"
@@ -339,9 +299,7 @@ export function PrItemExpand({
         </div>
         <div className="col-span-2">
           <div className="flex items-center gap-1">
-            <label className="text-[10px] text-muted-foreground">
-              Disc Amt
-            </label>
+            <span className="text-[10px] text-muted-foreground">Disc Amt</span>
             <Controller
               control={form.control}
               name={`items.${index}.is_discount_adjustment`}
@@ -356,19 +314,20 @@ export function PrItemExpand({
             />
           </div>
           <Input
+            id={`items-${index}-discount-amount`}
             type="number"
             min={0}
             step="0.01"
             placeholder="0.00"
             className="h-6 text-[11px] md:text-[11px] text-right"
-            disabled={disabled || !watchIsDiscAdj}
+            disabled={disabled || !isDiscAdj}
             {...form.register(`items.${index}.discount_amount`, {
               valueAsNumber: true,
             })}
           />
         </div>
         <div className="col-span-3">
-          <label className="text-[10px] text-muted-foreground">Total</label>
+          <span className="text-[10px] text-muted-foreground">Total</span>
           <div className="h-6 leading-6 text-[11px] text-right font-semibold tabular-nums">
             {totalPrice.toLocaleString(undefined, {
               minimumFractionDigits: 2,
@@ -378,8 +337,11 @@ export function PrItemExpand({
         </div>
       </div>
 
-      {/* Row 3: Inventory */}
-      <InventoryRow control={form.control} index={index} buCode={buCode} />
+      <InventoryRow
+        control={form.control}
+        index={index}
+        buCode={buCode ?? ""}
+      />
 
       <PrPricelistDialog
         open={showPricelist}

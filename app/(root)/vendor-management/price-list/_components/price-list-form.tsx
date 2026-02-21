@@ -5,8 +5,9 @@ import { useForm, useFieldArray, Controller, type Resolver } from "react-hook-fo
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FormToolbar } from "@/components/ui/form-toolbar";
 import { Input } from "@/components/ui/input";
 import {
   Field,
@@ -96,16 +97,16 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
   const isPending = createPriceList.isPending || updatePriceList.isPending;
   const isDisabled = isView || isPending;
 
-  const { data: vendorData } = useVendor({ perpage: 9999 });
+  const { data: vendorData } = useVendor({ perpage: -1 });
   const vendors = vendorData?.data?.filter((v) => v.is_active) ?? [];
 
-  const { data: currencyData } = useCurrency({ perpage: 9999 });
+  const { data: currencyData } = useCurrency({ perpage: -1 });
   const currencies = currencyData?.data?.filter((c) => c.is_active) ?? [];
 
-  const { data: productData } = useProduct({ perpage: 9999 });
+  const { data: productData } = useProduct({ perpage: -1 });
   const products = productData?.data ?? [];
 
-  const { data: taxProfileData } = useTaxProfile({ perpage: 9999 });
+  const { data: taxProfileData } = useTaxProfile({ perpage: -1 });
   const taxProfiles = taxProfileData?.data?.filter((tp) => tp.is_active) ?? [];
 
   const dates = priceList
@@ -215,72 +216,19 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
     }
   };
 
-  const title = isAdd
-    ? "Add Price List"
-    : isEdit
-      ? "Edit Price List"
-      : "Price List";
-
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => router.push("/vendor-management/price-list")}
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="price-list-form"
-                disabled={isPending}
-              >
-                {isPending
-                  ? isEdit
-                    ? "Saving..."
-                    : "Creating..."
-                  : isEdit
-                    ? "Save"
-                    : "Create"}
-              </Button>
-            </>
-          )}
-          {isEdit && priceList && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deletePriceList.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity="Price List"
+        mode={mode}
+        formId="price-list-form"
+        isPending={isPending}
+        onBack={() => router.push("/vendor-management/price-list")}
+        onCancel={handleCancel}
+        onEdit={() => setMode("edit")}
+        onDelete={() => setShowDelete(true)}
+        deleteIsPending={deletePriceList.isPending}
+      />
 
       <form
         id="price-list-form"
@@ -306,6 +254,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
                   placeholder="e.g. Quotation - Fresh Produce"
                   className="h-8 text-sm"
                   disabled={isDisabled}
+                  maxLength={100}
                   {...form.register("name")}
                 />
                 <FieldError>
@@ -319,6 +268,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
                   placeholder="Optional"
                   className="text-sm"
                   disabled={isDisabled}
+                  maxLength={256}
                   {...form.register("description")}
                 />
               </Field>
@@ -441,6 +391,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
                   placeholder="Optional"
                   className="text-sm"
                   disabled={isDisabled}
+                  maxLength={256}
                   {...form.register("note")}
                 />
               </Field>

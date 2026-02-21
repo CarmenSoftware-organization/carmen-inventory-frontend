@@ -7,9 +7,9 @@ import { toast } from "sonner";
 import {
   DataGrid,
   DataGridContainer,
-} from "@/components/reui/data-grid/data-grid";
-import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
-import { DataGridPagination } from "@/components/reui/data-grid/data-grid-pagination";
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
+import { DataGridPagination } from "@/components/ui/data-grid/data-grid-pagination";
 import { Button } from "@/components/ui/button";
 import {
   usePurchaseRequest,
@@ -34,7 +34,11 @@ import DisplayTemplate from "@/components/display-template";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { PURCHASE_REQUEST_STATUS_OPTIONS } from "@/constant/purchase-request";
 import { usePurchaseRequestTable } from "./pr-table";
-import { CreatePRDialog } from "./pr-create-dialog";
+import dynamic from "next/dynamic";
+
+const CreatePRDialog = dynamic(
+  () => import("./pr-create-dialog").then((mod) => mod.CreatePRDialog),
+);
 
 export default function PurchaseRequestComponent() {
   const router = useRouter();

@@ -1,23 +1,18 @@
 "use client";
 
-import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
+import { Check, ChevronsUpDown, Loader2, Ruler } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Command, CommandInput } from "@/components/ui/command";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
-import { useProfile } from "@/hooks/use-profile";
-import { httpClient } from "@/lib/http-client";
-
-interface ProductUnit {
-  id: string;
-  name: string;
-  conversion: number;
-}
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { VirtualCommandList } from "@/components/ui/virtual-command-list";
+import { useProductUnits } from "@/hooks/use-product-units";
+import EmptyComponent from "../empty-component";
 
 interface LookupProductUnitProps {
   readonly productId: string;
@@ -26,7 +21,6 @@ interface LookupProductUnitProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
-  readonly size?: "xs" | "sm" | "default";
 }
 
 export function LookupProductUnit({
@@ -36,23 +30,10 @@ export function LookupProductUnit({
   disabled,
   placeholder = "Select unit",
   className,
-  size = "sm",
 }: LookupProductUnitProps) {
-  const { buCode } = useProfile();
-
-  const { data: units = [], isLoading } = useQuery<ProductUnit[]>({
-    queryKey: ["product-units", buCode, productId],
-    queryFn: async () => {
-      if (!buCode || !productId) return [];
-      const res = await httpClient.get(
-        `/api/proxy/api/${buCode}/unit/order/product/${productId}`,
-      );
-      if (!res.ok) throw new Error("Failed to fetch product units");
-      const json = await res.json();
-      return json.data ?? [];
-    },
-    enabled: !!buCode && !!productId,
-  });
+  const { data: units = [], isLoading } = useProductUnits(
+    productId || undefined,
+  );
 
   useEffect(() => {
     if (units.length > 0 && !value) {
@@ -60,26 +41,100 @@ export function LookupProductUnit({
     }
   }, [units, value, onValueChange]);
 
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const filteredUnits = useMemo(() => {
+    if (!search) return units;
+    const q = search.toLowerCase();
+    return units.filter((u) => u.name.toLowerCase().includes(q));
+  }, [units, search]);
+
+  const selectedName = useMemo(() => {
+    if (!value) return null;
+    return units.find((u) => u.id === value)?.name ?? null;
+  }, [value, units]);
+
   return (
-    <Select
-      value={value}
-      onValueChange={onValueChange}
-      disabled={disabled || !productId}
+    <Popover
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        if (!o) setSearch("");
+      }}
     >
-      <SelectTrigger size={size} align="end" className={className ?? "text-xs"}>
-        {isLoading ? (
-          <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
-        ) : (
-          <SelectValue placeholder={placeholder} />
-        )}
-      </SelectTrigger>
-      <SelectContent>
-        {units.map((unit) => (
-          <SelectItem key={unit.id} value={unit.id} className="text-xs">
-            {unit.name}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          aria-expanded={open}
+          className={cn(
+            "flex justify-between items-center pl-3 pr-1 text-sm",
+            className,
+          )}
+          disabled={disabled || !productId}
+        >
+          {isLoading ? (
+            <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
+          ) : (
+            <span className={cn(!selectedName && "text-muted-foreground")}>
+              {selectedName ?? placeholder}
+            </span>
+          )}
+          <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+
+      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+        <Command shouldFilter={false}>
+          <CommandInput
+            placeholder="Search unit..."
+            className="placeholder:text-xs"
+            value={search}
+            onValueChange={setSearch}
+          />
+          {isLoading ? (
+            <div className="flex items-center justify-center py-3">
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            </div>
+          ) : (
+            <VirtualCommandList
+              items={filteredUnits}
+              emptyMessage={
+                <EmptyComponent
+                  icon={Ruler}
+                  title="No unit found"
+                  description="Try adjusting your search or filter to find what you're looking for."
+                />
+              }
+            >
+              {(unit) => (
+                <button
+                  type="button"
+                  aria-pressed={value === unit.id}
+                  data-value={unit.name}
+                  className={cn(
+                    "relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
+                    "hover:bg-accent hover:text-accent-foreground",
+                    "focus:bg-accent focus:text-accent-foreground focus:outline-none",
+                  )}
+                  onClick={() => {
+                    onValueChange(unit.id);
+                    setOpen(false);
+                  }}
+                >
+                  {unit.name}
+                  <Check
+                    className={cn(
+                      "ml-auto h-4 w-4",
+                      value === unit.id ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                </button>
+              )}
+            </VirtualCommandList>
+          )}
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }

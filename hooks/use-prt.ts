@@ -1,22 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
-import { httpClient } from "@/lib/http-client";
-import { buildUrl } from "@/utils/build-query-string";
-import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import type { PurchaseRequestTemplate } from "@/types/purchase-request";
-import type { ParamsDto } from "@/types/params";
-
-interface PaginatedResponse {
-  data: PurchaseRequestTemplate[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
+import type { ParamsDto, PaginatedResponse } from "@/types/params";
+import { CACHE_STATIC } from "@/lib/cache-config";
+import * as api from "@/lib/api/prt";
 
 export interface PrtDetailPayload {
   location_id: string | null;
@@ -61,47 +50,29 @@ export interface CreatePrtDto {
 }
 
 export function usePrt(params?: ParamsDto) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
-  return useQuery<PaginatedResponse>({
+  return useQuery<PaginatedResponse<PurchaseRequestTemplate>>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUEST_TEMPLATES, buCode, params],
-    queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
-      const url = buildUrl(
-        API_ENDPOINTS.PURCHASE_REQUEST_TEMPLATES(buCode),
-        params,
-      );
-      const res = await httpClient.get(url);
-      if (!res.ok)
-        throw new Error("Failed to fetch purchase request templates");
-      return res.json();
-    },
+    queryFn: () => api.getPrts(buCode!, params),
     enabled: !!buCode,
+    ...CACHE_STATIC,
   });
 }
 
 export function usePrtById(id: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<PurchaseRequestTemplate>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUEST_TEMPLATES, buCode, id],
-    queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
-      const res = await httpClient.get(
-        `${API_ENDPOINTS.PURCHASE_REQUEST_TEMPLATES(buCode)}/${id}`,
-      );
-      if (!res.ok) throw new Error("Failed to fetch purchase request template");
-      const json = await res.json();
-      return json.data;
-    },
+    queryFn: () => api.getPrtById(buCode!, id!),
     enabled: !!buCode && !!id,
   });
 }
 
 export function useCreatePrt() {
   return useApiMutation<CreatePrtDto>({
-    mutationFn: (data, buCode) =>
-      httpClient.post(API_ENDPOINTS.PURCHASE_REQUEST_TEMPLATES(buCode), data),
+    mutationFn: (data, buCode) => api.createPrt(buCode, data),
     invalidateKeys: [QUERY_KEYS.PURCHASE_REQUEST_TEMPLATES],
     errorMessage: "Failed to create purchase request template",
   });
@@ -109,11 +80,7 @@ export function useCreatePrt() {
 
 export function useUpdatePrt() {
   return useApiMutation<CreatePrtDto & { id: string }>({
-    mutationFn: ({ id, ...data }, buCode) =>
-      httpClient.put(
-        `${API_ENDPOINTS.PURCHASE_REQUEST_TEMPLATES(buCode)}/${id}`,
-        data,
-      ),
+    mutationFn: ({ id, ...data }, buCode) => api.updatePrt(buCode, id, data),
     invalidateKeys: [QUERY_KEYS.PURCHASE_REQUEST_TEMPLATES],
     errorMessage: "Failed to update purchase request template",
   });
@@ -121,10 +88,7 @@ export function useUpdatePrt() {
 
 export function useDeletePrt() {
   return useApiMutation<string>({
-    mutationFn: (id, buCode) =>
-      httpClient.delete(
-        `${API_ENDPOINTS.PURCHASE_REQUEST_TEMPLATES(buCode)}/${id}`,
-      ),
+    mutationFn: (id, buCode) => api.deletePrt(buCode, id),
     invalidateKeys: [QUERY_KEYS.PURCHASE_REQUEST_TEMPLATES],
     errorMessage: "Failed to delete purchase request template",
   });

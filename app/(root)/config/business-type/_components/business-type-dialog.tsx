@@ -116,6 +116,7 @@ export function BusinessTypeDialog({
                 placeholder="e.g. Manufacturer, Distributor"
                 className="h-8 text-sm"
                 disabled={isPending}
+                maxLength={100}
                 {...form.register("name")}
               />
               <FieldError>{form.formState.errors.name?.message}</FieldError>

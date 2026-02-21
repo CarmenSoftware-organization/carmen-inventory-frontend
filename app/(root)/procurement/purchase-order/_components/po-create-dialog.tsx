@@ -10,7 +10,11 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { SelectPRDialog } from "./po-select-pr-dialog";
+import dynamic from "next/dynamic";
+
+const SelectPRDialog = dynamic(
+  () => import("./po-select-pr-dialog").then((mod) => mod.SelectPRDialog),
+);
 
 interface CreatePODialogProps {
   open: boolean;

@@ -38,9 +38,10 @@ interface UnitDialogProps {
   readonly open: boolean;
   readonly onOpenChange: (open: boolean) => void;
   readonly unit?: Unit | null;
+  readonly onSuccess?: (id: string) => void;
 }
 
-export function UnitDialog({ open, onOpenChange, unit }: UnitDialogProps) {
+export function UnitDialog({ open, onOpenChange, unit, onSuccess }: UnitDialogProps) {
   const isEdit = !!unit;
   const createUnit = useCreateUnit();
   const updateUnit = useUpdateUnit();
@@ -56,7 +57,11 @@ export function UnitDialog({ open, onOpenChange, unit }: UnitDialogProps) {
     if (open) {
       form.reset(
         unit
-          ? { name: unit.name, description: unit.description, is_active: unit.is_active }
+          ? {
+              name: unit.name,
+              description: unit.description,
+              is_active: unit.is_active,
+            }
           : { name: "", description: "", is_active: true },
       );
     }
@@ -82,9 +87,11 @@ export function UnitDialog({ open, onOpenChange, unit }: UnitDialogProps) {
       );
     } else {
       createUnit.mutate(payload, {
-        onSuccess: () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onSuccess: (res: any) => {
           toast.success("Unit created successfully");
           onOpenChange(false);
+          if (res?.id) onSuccess?.(res.id);
         },
         onError: (err) => toast.error(err.message),
       });
@@ -95,12 +102,17 @@ export function UnitDialog({ open, onOpenChange, unit }: UnitDialogProps) {
     <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
       <DialogContent className="sm:max-w-sm gap-3 p-4">
         <DialogHeader className="gap-0 pb-1">
-          <DialogTitle className="text-sm">
-            {labels.title}
-          </DialogTitle>
+          <DialogTitle className="text-sm">{labels.title}</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit(onSubmit)(e);
+          }}
+          className="space-y-3"
+        >
           <FieldGroup className="gap-3">
             <Field data-invalid={!!form.formState.errors.name}>
               <FieldLabel htmlFor="unit-name" className="text-xs">
@@ -111,6 +123,7 @@ export function UnitDialog({ open, onOpenChange, unit }: UnitDialogProps) {
                 placeholder="e.g. TRAY"
                 className="h-8 text-sm"
                 disabled={isPending}
+                maxLength={100}
                 {...form.register("name")}
               />
               <FieldError>{form.formState.errors.name?.message}</FieldError>
@@ -125,6 +138,7 @@ export function UnitDialog({ open, onOpenChange, unit }: UnitDialogProps) {
                 placeholder="Optional"
                 className="h-8 text-sm"
                 disabled={isPending}
+                maxLength={256}
                 {...form.register("description")}
               />
             </Field>

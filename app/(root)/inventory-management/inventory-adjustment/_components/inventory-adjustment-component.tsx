@@ -7,9 +7,9 @@ import { toast } from "sonner";
 import {
   DataGrid,
   DataGridContainer,
-} from "@/components/reui/data-grid/data-grid";
-import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
-import { DataGridPagination } from "@/components/reui/data-grid/data-grid-pagination";
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
+import { DataGridPagination } from "@/components/ui/data-grid/data-grid-pagination";
 import { Button } from "@/components/ui/button";
 import {
   useInventoryAdjustment,
@@ -44,7 +44,7 @@ export default function InventoryAdjustmentComponent() {
     tableConfig,
     onEdit: (item) =>
       router.push(
-        `/inventory-management/inventory-adjustment/${item.id}?type=${item.type}`,
+        `/inventory-management/inventory-adjustment/${item.id}`,
       ),
     onDelete: setDeleteTarget,
   });

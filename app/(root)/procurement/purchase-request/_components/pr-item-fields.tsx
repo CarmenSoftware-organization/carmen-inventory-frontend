@@ -19,8 +19,8 @@ import { Button } from "@/components/ui/button";
 import {
   DataGrid,
   DataGridContainer,
-} from "@/components/reui/data-grid/data-grid";
-import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
@@ -30,7 +30,11 @@ import type { BusinessUnit } from "@/types/profile";
 import type { PrFormValues } from "./pr-form-schema";
 import { usePrItemTable } from "./pr-item-table";
 import { PrActionDialog } from "./pr-action-dialog";
-import { PrSelectDialog } from "./pr-select-dialog";
+import dynamic from "next/dynamic";
+
+const PrSelectDialog = dynamic(
+  () => import("./pr-select-dialog").then((mod) => mod.PrSelectDialog),
+);
 import EmptyComponent from "@/components/empty-component";
 import { PR_ITEM } from "./pr-form-schema";
 
@@ -46,7 +50,7 @@ function getDeleteDescription(
 
 interface PrItemFieldsProps {
   form: UseFormReturn<PrFormValues>;
-  disabled: boolean;
+  isDisabled: boolean;
   role?: string;
   prId?: string;
   prStatus?: string;
@@ -58,7 +62,7 @@ interface PrItemFieldsProps {
 
 export function PrItemFields({
   form,
-  disabled,
+  isDisabled,
   role,
   prId,
   prStatus,
@@ -101,7 +105,7 @@ export function PrItemFields({
   } = usePrItemTable({
     form,
     itemFields,
-    disabled,
+    isDisabled,
     prStatus,
     dateFormat,
     buCode,
@@ -233,7 +237,7 @@ export function PrItemFields({
 
         <div className="flex flex-col  gap-2">
           <div className="flex items-center justify-end gap-1.5">
-            {!disabled && role !== STAGE_ROLE.PURCHASE && (
+            {!isDisabled && role !== STAGE_ROLE.PURCHASE && (
               <Button type="button" size="xs" onClick={() => handleAddItem()}>
                 <Plus /> Add Item
               </Button>
@@ -311,7 +315,7 @@ export function PrItemFields({
             title="No Products Yet"
             description="You haven't created any Products yet."
             content={
-              !disabled && (
+              !isDisabled && (
                 <Button type="button" size="xs" onClick={() => handleAddItem()}>
                   <Plus /> Add Item
                 </Button>

@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useInventoryAdjustmentById } from "@/hooks/use-inventory-adjustment";
 import { InventoryAdjustmentForm } from "../_components/inventory-adjustment-form";
 import { ErrorState } from "@/components/ui/error-state";
-import type { InventoryAdjustmentType } from "@/types/inventory-adjustment";
+import { InventoryAdjustmentType } from "@/types/inventory-adjustment";
 
 function EditInventoryAdjustmentContent({
   id,
@@ -34,7 +34,7 @@ function EditContent({
     isLoading,
     error,
     refetch,
-  } = useInventoryAdjustmentById(id, type);
+  } = useInventoryAdjustmentById(id);
 
   if (isLoading)
     return (
@@ -47,7 +47,7 @@ function EditContent({
 
   return (
     <InventoryAdjustmentForm
-      adjustmentType={type}
+      adjustmentType={inventoryAdjustment.type}
       inventoryAdjustment={inventoryAdjustment}
     />
   );

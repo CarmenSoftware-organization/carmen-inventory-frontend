@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export type PurchaseRequestStatus =
   | "draft"
   | "submitted"
@@ -166,3 +168,26 @@ export interface PurchaseRequest {
   created_at: string;
   updated_at: string;
 }
+
+// --- Zod runtime validation schema (for list API response) ---
+const purchaseRequestDetailSummarySchema = z.looseObject({
+  price: z.number(),
+  total_price: z.number(),
+});
+
+export const purchaseRequestSchema = z.looseObject({
+  id: z.string(),
+  pr_no: z.string(),
+  pr_date: z.string(),
+  description: z.string(),
+  requestor_name: z.string(),
+  pr_status: z.string(),
+  workflow_name: z.string(),
+  workflow_current_stage: z.string(),
+  workflow_next_stage: z.string().nullable(),
+  workflow_previous_stage: z.string().nullable(),
+  last_action: z.string().nullable(),
+  department_name: z.string(),
+  created_at: z.string(),
+  purchase_request_detail: z.array(purchaseRequestDetailSummarySchema),
+});

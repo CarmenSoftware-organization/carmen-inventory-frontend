@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createConfigCrud } from "@/hooks/use-config-crud";
 import { useApiMutation } from "@/hooks/use-api-mutation";
-import { useProfile } from "@/hooks/use-profile";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import { httpClient } from "@/lib/http-client";
@@ -18,7 +18,7 @@ export const useUser = crud.useList;
 export const useDeleteUser = crud.useDelete;
 
 export function useUserById(id: string | undefined) {
-  const { buCode } = useProfile();
+  const buCode = useBuCode();
 
   return useQuery<UserDetail>({
     queryKey: [QUERY_KEYS.USERS, buCode, id],

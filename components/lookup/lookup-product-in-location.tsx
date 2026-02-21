@@ -1,16 +1,20 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
+import { Check, ChevronsUpDown, PackageSearch } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Command, CommandInput } from "@/components/ui/command";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useProfile } from "@/hooks/use-profile";
-import { httpClient } from "@/lib/http-client";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { VirtualCommandList } from "@/components/ui/virtual-command-list";
+import { useProductsByLocation } from "@/hooks/use-products-by-location";
 import type { Product } from "@/types/product";
+import EmptyComponent from "../empty-component";
+import { Badge } from "../ui/badge";
 
 interface LookupProductInLocationProps {
   readonly locationId: string;
@@ -19,7 +23,6 @@ interface LookupProductInLocationProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
-  readonly size?: "xs" | "sm" | "default";
 }
 
 export function LookupProductInLocation({
@@ -29,43 +32,100 @@ export function LookupProductInLocation({
   disabled,
   placeholder = "Select product",
   className,
-  size = "sm",
 }: LookupProductInLocationProps) {
-  const { buCode } = useProfile();
+  const { data: products = [] } = useProductsByLocation(
+    locationId || undefined,
+  );
 
-  const { data: products = [] } = useQuery<Product[]>({
-    queryKey: ["products-in-location", buCode, locationId],
-    queryFn: async () => {
-      if (!buCode || !locationId) return [];
-      const res = await httpClient.get(
-        `/api/proxy/api/${buCode}/products/locations/${locationId}`,
-      );
-      if (!res.ok) throw new Error("Failed to fetch products");
-      const json = await res.json();
-      return json.data ?? [];
-    },
-    enabled: !!buCode && !!locationId,
-  });
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const filteredProducts = useMemo(() => {
+    if (!search) return products;
+    const q = search.toLowerCase();
+    return products.filter((p) => p.name.toLowerCase().includes(q));
+  }, [products, search]);
+
+  const selectedName = useMemo(() => {
+    if (!value) return null;
+    return products.find((p) => p.id === value)?.name ?? null;
+  }, [value, products]);
 
   return (
-    <Select
-      value={value}
-      onValueChange={(val) => {
-        const product = products.find((p) => p.id === val);
-        onValueChange(val, product);
+    <Popover
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        if (!o) setSearch("");
       }}
-      disabled={disabled || !locationId}
     >
-      <SelectTrigger size={size} className={className ?? "text-xs"}>
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {products.map((product) => (
-          <SelectItem key={product.id} value={product.id} className="text-xs">
-            {product.name}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          aria-expanded={open}
+          className={cn(
+            "flex justify-between items-center pl-3 pr-1 text-sm",
+            className,
+          )}
+          disabled={disabled || !locationId}
+        >
+          <span className={cn("truncate", !selectedName && "text-muted-foreground")}>
+            {selectedName ?? placeholder}
+          </span>
+          <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+
+      <PopoverContent className="p-0 w-90" align="start">
+        <Command shouldFilter={false}>
+          <CommandInput
+            placeholder="Search product..."
+            className="placeholder:text-xs"
+            value={search}
+            onValueChange={setSearch}
+          />
+          <VirtualCommandList
+            items={filteredProducts}
+            emptyMessage={
+              <EmptyComponent
+                icon={PackageSearch}
+                title="No product found"
+                description="Try adjusting your search or filter to find what you're looking for."
+              />
+            }
+          >
+            {(product) => (
+              <button
+                type="button"
+                aria-pressed={value === product.id}
+                data-value={product.name}
+                className={cn(
+                  "relative flex items-start w-full cursor-default gap-2 rounded-sm px-2 py-1.5 text-xs outline-hidden select-none",
+                  "hover:bg-accent hover:text-accent-foreground",
+                  "focus:bg-accent focus:text-accent-foreground focus:outline-none",
+                )}
+                onClick={() => {
+                  onValueChange(product.id, product);
+                  setOpen(false);
+                }}
+              >
+                <Badge size="xs" variant="secondary" className="shrink-0">
+                  {product.code}
+                </Badge>
+                <span className="flex-1 text-left truncate">
+                  {product.name}
+                </span>
+                <Check
+                  className={cn(
+                    "shrink-0 h-4 w-4",
+                    value === product.id ? "opacity-100" : "opacity-0",
+                  )}
+                />
+              </button>
+            )}
+          </VirtualCommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }

@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { Download, Plus, Printer } from "lucide-react";
 import { toast } from "sonner";
 import {
   DataGrid,
   DataGridContainer,
-} from "@/components/reui/data-grid/data-grid";
-import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
-import { DataGridPagination } from "@/components/reui/data-grid/data-grid-pagination";
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
+import { DataGridPagination } from "@/components/ui/data-grid/data-grid-pagination";
 import { Button } from "@/components/ui/button";
 import { useExtraCost, useDeleteExtraCost } from "@/hooks/use-extra-cost";
 import { useDataGridState } from "@/hooks/use-data-grid-state";
@@ -17,7 +18,9 @@ import SearchInput from "@/components/search-input";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
-import { ExtraCostDialog } from "./extra-cost-dialog";
+const ExtraCostDialog = dynamic(() =>
+  import("./extra-cost-dialog").then((mod) => mod.ExtraCostDialog),
+);
 import DisplayTemplate from "@/components/display-template";
 import { useExtraCostTable } from "./use-extra-cost-table";
 

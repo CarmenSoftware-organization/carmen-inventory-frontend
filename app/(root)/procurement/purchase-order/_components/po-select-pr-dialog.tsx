@@ -16,12 +16,13 @@ import {
 import {
   DataGrid,
   DataGridContainer,
-} from "@/components/reui/data-grid/data-grid";
-import { DataGridTable } from "@/components/reui/data-grid/data-grid-table";
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
 import { usePurchaseRequest } from "@/hooks/use-purchase-request";
 import { useProfile } from "@/hooks/use-profile";
 import { formatDate } from "@/lib/date-utils";
 import type { PurchaseRequest } from "@/types/purchase-request";
+import { CellAction } from "@/components/ui/cell-action";
 import EmptyComponent from "@/components/empty-component";
 import { FileText } from "lucide-react";
 
@@ -39,7 +40,7 @@ export function SelectPRDialog({
   "use no memo";
 
   const { dateFormat } = useProfile();
-  const { data, isLoading } = usePurchaseRequest({ perpage: 9999 });
+  const { data, isLoading } = usePurchaseRequest({ perpage: -1 });
   const purchaseRequests = data?.data ?? [];
 
   const columns: ColumnDef<PurchaseRequest>[] = [
@@ -47,13 +48,9 @@ export function SelectPRDialog({
       accessorKey: "pr_no",
       header: "PR No.",
       cell: ({ row }) => (
-        <button
-          type="button"
-          className="font-medium hover:underline text-left text-xs"
-          onClick={() => onSelect(row.original.id)}
-        >
+        <CellAction onClick={() => onSelect(row.original.id)}>
           {row.getValue("pr_no")}
-        </button>
+        </CellAction>
       ),
       size: 150,
     },

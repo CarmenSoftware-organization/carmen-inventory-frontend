@@ -1,19 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import { useProfile } from "@/hooks/use-profile";
+import {
+  useQuery,
+  type UseQueryResult,
+  type UseMutationResult,
+} from "@tanstack/react-query";
+import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
-import { httpClient } from "@/lib/http-client";
-import { buildUrl } from "@/utils/build-query-string";
-import type { ParamsDto } from "@/types/params";
-
-interface PaginatedResponse<T> {
-  data: T[];
-  paginate: {
-    total: number;
-    page: number;
-    perpage: number;
-    pages: number;
-  };
-}
+import { createConfigApi } from "@/lib/api/config-crud";
+import { CACHE_STATIC } from "@/lib/cache-config";
+import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
 interface ConfigCrudOptions {
   queryKey: string;
@@ -27,55 +21,49 @@ export function createConfigCrud<T, TCreate>({
   endpoint,
   label,
   updateMethod = "PUT",
-}: ConfigCrudOptions) {
+}: ConfigCrudOptions): {
+  useList: (params?: ParamsDto) => UseQueryResult<PaginatedResponse<T>>;
+  useById: (id: string | undefined) => UseQueryResult<T>;
+  useCreate: () => UseMutationResult<unknown, Error, TCreate>;
+  useUpdate: () => UseMutationResult<unknown, Error, TCreate & { id: string }>;
+  useDelete: () => UseMutationResult<unknown, Error, string>;
+} {
+  const api = createConfigApi<T, TCreate>({ endpoint, label, updateMethod });
+
   function useList(params?: ParamsDto) {
-    const { buCode } = useProfile();
+    const buCode = useBuCode();
 
     return useQuery<PaginatedResponse<T>>({
       queryKey: [queryKey, buCode, params],
-      queryFn: async () => {
-        if (!buCode) throw new Error("Missing buCode");
-        const url = buildUrl(endpoint(buCode), params);
-        const res = await httpClient.get(url);
-        if (!res.ok) throw new Error(`Failed to fetch ${label}s`);
-        return res.json();
-      },
+      queryFn: () => api.getList(buCode!, params),
       enabled: !!buCode,
+      ...CACHE_STATIC,
     });
   }
 
   function useById(id: string | undefined) {
-    const { buCode } = useProfile();
+    const buCode = useBuCode();
 
     return useQuery<T>({
       queryKey: [queryKey, buCode, id],
-      queryFn: async () => {
-        if (!buCode) throw new Error("Missing buCode");
-        const res = await httpClient.get(`${endpoint(buCode)}/${id}`);
-        if (!res.ok) throw new Error(`Failed to fetch ${label}`);
-        const json = await res.json();
-        return json.data;
-      },
+      queryFn: () => api.getById(buCode!, id!),
       enabled: !!buCode && !!id,
+      ...CACHE_STATIC,
     });
   }
 
   function useCreate() {
     return useApiMutation<TCreate>({
-      mutationFn: (data, buCode) =>
-        httpClient.post(endpoint(buCode), data),
+      mutationFn: (data, buCode) => api.create(buCode, data),
       invalidateKeys: [queryKey],
       errorMessage: `Failed to create ${label}`,
     });
   }
 
-  const methodMap = { PUT: "put", PATCH: "patch" } as const;
-  const httpMethod = methodMap[updateMethod];
-
   function useUpdate() {
     return useApiMutation<TCreate & { id: string }>({
       mutationFn: ({ id, ...data }, buCode) =>
-        httpClient[httpMethod](`${endpoint(buCode)}/${id}`, data),
+        api.update(buCode, id, data as TCreate),
       invalidateKeys: [queryKey],
       errorMessage: `Failed to update ${label}`,
     });
@@ -83,8 +71,7 @@ export function createConfigCrud<T, TCreate>({
 
   function useDelete() {
     return useApiMutation<string>({
-      mutationFn: (id, buCode) =>
-        httpClient.delete(`${endpoint(buCode)}/${id}`),
+      mutationFn: (id, buCode) => api.remove(buCode, id),
       invalidateKeys: [queryKey],
       errorMessage: `Failed to delete ${label}`,
     });

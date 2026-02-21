@@ -4,16 +4,15 @@ import { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { FormToolbar } from "@/components/ui/form-toolbar";
 import {
   useCreateSpotCheck,
   useUpdateSpotCheck,
   useDeleteSpotCheck,
 } from "@/hooks/use-spot-check";
 import type { SpotCheck, CreateSpotCheckDto } from "@/types/spot-check";
-import { type FormMode, getModeLabels } from "@/types/form";
+import type { FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ScGeneralFields } from "./sc-general-fields";
 import {
@@ -39,7 +38,6 @@ export function ScForm({ spotCheck }: ScFormProps) {
   const [showDelete, setShowDelete] = useState(false);
   const isPending = createSc.isPending || updateSc.isPending;
   const isDisabled = isView || isPending;
-  const labels = getModeLabels(mode, "Spot Check");
 
   const defaultValues = getDefaultValues(spotCheck);
 
@@ -86,58 +84,17 @@ export function ScForm({ spotCheck }: ScFormProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => router.push("/inventory-management/spot-check")}
-          >
-            <ArrowLeft />
-          </Button>
-          <h1 className="text-lg font-semibold">{labels.title}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          {isView ? (
-            <Button size="sm" onClick={() => setMode("edit")}>
-              <Pencil />
-              Edit
-            </Button>
-          ) : (
-            <>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleCancel}
-                disabled={isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                form="sc-form"
-                disabled={isPending}
-              >
-                {isPending ? labels.pending : labels.submit}
-              </Button>
-            </>
-          )}
-          {isEdit && spotCheck && (
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => setShowDelete(true)}
-              disabled={isPending || deleteSc.isPending}
-            >
-              <Trash2 />
-              Delete
-            </Button>
-          )}
-        </div>
-      </div>
+      <FormToolbar
+        entity="Spot Check"
+        mode={mode}
+        formId="sc-form"
+        isPending={isPending}
+        onBack={() => router.push("/inventory-management/spot-check")}
+        onCancel={handleCancel}
+        onEdit={() => setMode("edit")}
+        onDelete={spotCheck ? () => setShowDelete(true) : undefined}
+        deleteIsPending={deleteSc.isPending}
+      />
 
       <form
         id="sc-form"

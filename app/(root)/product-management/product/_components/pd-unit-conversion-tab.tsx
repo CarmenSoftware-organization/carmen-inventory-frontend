@@ -1,11 +1,158 @@
-import { useMemo } from "react";
-import { Controller, useFieldArray } from "react-hook-form";
-import type { ProductFormInstance } from "@/types/product";
-import { Button } from "@/components/ui/button";
+"use no memo";
+
+import { useState, useMemo } from "react";
+import {
+  Controller,
+  useFieldArray,
+  useWatch,
+  type Control,
+  type FieldArrayWithId,
+} from "react-hook-form";
+import {
+  type ColumnDef,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { Plus, X } from "lucide-react";
-import { LookupUnit } from "@/components/lookup/lookup-unit";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DataGrid,
+  DataGridContainer,
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
+import { DeleteDialog } from "@/components/ui/delete-dialog";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { LookupUnit } from "@/components/lookup/lookup-unit";
 import { useUnit } from "@/hooks/use-unit";
+import EmptyComponent from "@/components/empty-component";
+import type { ProductFormInstance, ProductFormValues } from "@/types/product";
+
+type UnitField = FieldArrayWithId<
+  ProductFormValues,
+  "order_units" | "ingredient_units",
+  "id"
+>;
+
+/* ------------------------------------------------------------------ */
+/* Cell components                                                     */
+/* ------------------------------------------------------------------ */
+
+const FromUnitCell = ({
+  control,
+  name,
+  index,
+  isOrder,
+  inventoryUnitName,
+  disabled,
+  onUnitChange,
+  usedIds,
+}: {
+  control: Control<ProductFormValues>;
+  name: "order_units" | "ingredient_units";
+  index: number;
+  isOrder: boolean;
+  inventoryUnitName: string;
+  disabled: boolean;
+  onUnitChange: (index: number, unitId: string) => void;
+  usedIds: string[];
+}) => {
+  if (!isOrder) {
+    return (
+      <span className="px-2 text-[11px] text-muted-foreground">
+        {inventoryUnitName}
+      </span>
+    );
+  }
+  return (
+    <Controller
+      control={control}
+      name={`${name}.${index}.from_unit_id`}
+      render={({ field }) => (
+        <LookupUnit
+          value={field.value}
+          onValueChange={(v) => onUnitChange(index, v)}
+          disabled={disabled}
+          excludeIds={usedIds.filter((id) => id !== field.value)}
+        />
+      )}
+    />
+  );
+};
+
+const ToUnitCell = ({
+  control,
+  name,
+  index,
+  isOrder,
+  inventoryUnitName,
+  disabled,
+  onUnitChange,
+  usedIds,
+}: {
+  control: Control<ProductFormValues>;
+  name: "order_units" | "ingredient_units";
+  index: number;
+  isOrder: boolean;
+  inventoryUnitName: string;
+  disabled: boolean;
+  onUnitChange: (index: number, unitId: string) => void;
+  usedIds: string[];
+}) => {
+  if (isOrder) {
+    return (
+      <span className="px-2 text-[11px] text-muted-foreground">
+        {inventoryUnitName}
+      </span>
+    );
+  }
+  return (
+    <Controller
+      control={control}
+      name={`${name}.${index}.to_unit_id`}
+      render={({ field }) => (
+        <LookupUnit
+          value={field.value}
+          onValueChange={(v) => onUnitChange(index, v)}
+          disabled={disabled}
+          excludeIds={usedIds.filter((id) => id !== field.value)}
+        />
+      )}
+    />
+  );
+};
+
+const ConversionPreview = ({
+  control,
+  name,
+  index,
+  unitMap,
+}: {
+  control: Control<ProductFormValues>;
+  name: "order_units" | "ingredient_units";
+  index: number;
+  unitMap: Map<string, string>;
+}) => {
+  const fromId = useWatch({ control, name: `${name}.${index}.from_unit_id` });
+  const toId = useWatch({ control, name: `${name}.${index}.to_unit_id` });
+  const fromQty = useWatch({ control, name: `${name}.${index}.from_unit_qty` });
+  const toQty = useWatch({ control, name: `${name}.${index}.to_unit_qty` });
+
+  if (!fromId || !toId) return <span className="text-muted-foreground">—</span>;
+
+  const fromName = unitMap.get(fromId) ?? "?";
+  const toName = unitMap.get(toId) ?? "?";
+  return (
+    <span className="text-muted-foreground whitespace-nowrap">
+      {fromQty} {fromName} = {toQty} {toName}
+    </span>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/* Main component                                                      */
+/* ------------------------------------------------------------------ */
 
 interface UnitConversionTabProps {
   form: ProductFormInstance;
@@ -25,12 +172,20 @@ export default function UnitConversionTab({
     name,
   });
 
-  const isOrder = name === "order_units";
-  const inventoryUnitId = form.watch("inventory_unit_id");
-  const isUsedInRecipe = form.watch("is_used_in_recipe");
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
 
-  /* ---- Resolve unit names for preview ---- */
-  const { data: unitData } = useUnit({ perpage: 9999 });
+  const isOrder = name === "order_units";
+  const inventoryUnitId = useWatch({
+    control: form.control,
+    name: "inventory_unit_id",
+  });
+  const isUsedInRecipe = useWatch({
+    control: form.control,
+    name: "is_used_in_recipe",
+  });
+
+  /* ---- Resolve unit names ---- */
+  const { data: unitData } = useUnit({ perpage: -1 });
   const unitMap = useMemo(() => {
     const m = new Map<string, string>();
     for (const u of unitData?.data ?? []) {
@@ -39,15 +194,22 @@ export default function UnitConversionTab({
     return m;
   }, [unitData?.data]);
 
+  const inventoryUnitName = unitMap.get(inventoryUnitId) ?? "—";
+
+  /* ---- Collect used unit IDs for exclude filtering ---- */
+  const watchedUnits = useWatch({ control: form.control, name });
+  const usedSelectableIds = useMemo(() => {
+    if (!watchedUnits) return [];
+    if (isOrder) return watchedUnits.map((u) => u.from_unit_id).filter(Boolean);
+    return watchedUnits.map((u) => u.to_unit_id).filter(Boolean);
+  }, [watchedUnits, isOrder]);
+
   /* ---- Add disabled conditions ---- */
   const addDisabled =
-    isDisabled ||
-    !inventoryUnitId ||
-    (!isOrder && !isUsedInRecipe);
+    isDisabled || !inventoryUnitId || (!isOrder && !isUsedInRecipe);
 
   /* ---- Handle default (radio-like) ---- */
-  const handleDefaultChange = (index: number, checked: boolean) => {
-    if (!checked) return;
+  const handleDefaultChange = (index: number) => {
     fields.forEach((field, i) => {
       if (i !== index && field.is_default) {
         update(i, { ...field, is_default: false });
@@ -76,17 +238,207 @@ export default function UnitConversionTab({
     }
   };
 
-  /* ---- Conversion preview ---- */
-  const getPreview = (index: number) => {
-    const fromId = form.getValues(`${name}.${index}.from_unit_id`);
-    const toId = form.getValues(`${name}.${index}.to_unit_id`);
-    const fromQty = form.getValues(`${name}.${index}.from_unit_qty`);
-    const toQty = form.getValues(`${name}.${index}.to_unit_qty`);
-    if (!fromId || !toId) return null;
-    const fromName = unitMap.get(fromId) ?? "?";
-    const toName = unitMap.get(toId) ?? "?";
-    return `${fromQty} ${fromName} = ${toQty} ${toName}`;
+  /* ---- Handle add ---- */
+  const handleAdd = () => {
+    append({
+      from_unit_id: isOrder ? "" : inventoryUnitId,
+      from_unit_qty: 1,
+      to_unit_id: isOrder ? inventoryUnitId : "",
+      to_unit_qty: 1,
+      description: "",
+      is_default: fields.length === 0,
+      is_active: true,
+    });
   };
+
+  /* ---- Handle delete ---- */
+  const handleDelete = (index: number) => {
+    setDeleteIndex(index);
+  };
+
+  const confirmDelete = () => {
+    if (deleteIndex !== null) {
+      remove(deleteIndex);
+      setDeleteIndex(null);
+    }
+  };
+
+  /* ---- Column definitions ---- */
+  const columns = useMemo<ColumnDef<UnitField>[]>(() => {
+    const indexCol: ColumnDef<UnitField> = {
+      id: "index",
+      header: "#",
+      cell: ({ row }) => row.index + 1,
+      enableSorting: false,
+      size: 32,
+      meta: {
+        headerClassName: "text-center",
+        cellClassName: "text-center text-muted-foreground",
+      },
+    };
+
+    const dataCols: ColumnDef<UnitField>[] = [
+      {
+        accessorKey: "from_unit_id",
+        header: "From Unit",
+        cell: ({ row }) => (
+          <FromUnitCell
+            control={form.control}
+            name={name}
+            index={row.index}
+            isOrder={isOrder}
+            inventoryUnitName={inventoryUnitName}
+            disabled={isDisabled}
+            onUnitChange={handleFromUnitChange}
+            usedIds={usedSelectableIds}
+          />
+        ),
+        size: 160,
+      },
+      {
+        accessorKey: "from_unit_qty",
+        header: "From Qty",
+        cell: ({ row }) => (
+          <Input
+            type="number"
+            step="any"
+            min={1}
+            className="h-6 text-[11px] md:text-[11px] text-right"
+            disabled={isDisabled}
+            {...form.register(`${name}.${row.index}.from_unit_qty`)}
+          />
+        ),
+        size: 90,
+        meta: { headerClassName: "text-right" },
+      },
+      {
+        accessorKey: "to_unit_id",
+        header: "To Unit",
+        cell: ({ row }) => (
+          <ToUnitCell
+            control={form.control}
+            name={name}
+            index={row.index}
+            isOrder={isOrder}
+            inventoryUnitName={inventoryUnitName}
+            disabled={isDisabled}
+            onUnitChange={handleToUnitChange}
+            usedIds={usedSelectableIds}
+          />
+        ),
+        size: 160,
+      },
+      {
+        accessorKey: "to_unit_qty",
+        header: "To Qty",
+        cell: ({ row }) => (
+          <Input
+            type="number"
+            step="any"
+            min={1}
+            className="h-6 text-[11px] md:text-[11px] text-right"
+            disabled={isDisabled}
+            {...form.register(`${name}.${row.index}.to_unit_qty`)}
+          />
+        ),
+        size: 90,
+        meta: { headerClassName: "text-right" },
+      },
+      {
+        id: "conversion",
+        header: "Conversion",
+        cell: ({ row }) => (
+          <ConversionPreview
+            control={form.control}
+            name={name}
+            index={row.index}
+            unitMap={unitMap}
+          />
+        ),
+        enableSorting: false,
+        size: 160,
+      },
+      {
+        accessorKey: "is_default",
+        header: "Default",
+        cell: ({ row }) => (
+          <Controller
+            control={form.control}
+            name={`${name}.${row.index}.is_default`}
+            render={({ field: f }) => (
+              <input
+                type="radio"
+                name={`${name}-default`}
+                checked={f.value}
+                onChange={() => handleDefaultChange(row.index)}
+                disabled={isDisabled}
+                className="h-3.5 w-3.5 accent-primary"
+              />
+            )}
+          />
+        ),
+        enableSorting: false,
+        size: 60,
+        meta: {
+          headerClassName: "text-center",
+          cellClassName: "text-center",
+        },
+      },
+      {
+        accessorKey: "is_active",
+        header: "Active",
+        cell: ({ row }) => (
+          <Controller
+            control={form.control}
+            name={`${name}.${row.index}.is_active`}
+            render={({ field: f }) => (
+              <Checkbox
+                checked={f.value}
+                onCheckedChange={f.onChange}
+                disabled={isDisabled}
+                className="size-3.5"
+              />
+            )}
+          />
+        ),
+        enableSorting: false,
+        size: 60,
+        meta: {
+          headerClassName: "text-center",
+          cellClassName: "text-center",
+        },
+      },
+    ];
+
+    const actionCol: ColumnDef<UnitField> = {
+      id: "action",
+      header: () => "",
+      cell: ({ row }) => (
+        <Button
+          type="button"
+          variant="ghost"
+          size="xs"
+          onClick={() => handleDelete(row.index)}
+        >
+          <X />
+        </Button>
+      ),
+      enableSorting: false,
+      size: 40,
+      meta: {
+        headerClassName: "text-right",
+        cellClassName: "text-right",
+      },
+    };
+
+    return [indexCol, ...dataCols, ...(isDisabled ? [] : [actionCol])];
+  }, [form, name, isOrder, isDisabled, inventoryUnitName, unitMap]);
+
+  const table = useReactTable({
+    data: fields,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
     <div className="space-y-2">
@@ -100,20 +452,9 @@ export default function UnitConversionTab({
         {!isDisabled && (
           <Button
             type="button"
-            variant="outline"
             size="xs"
             disabled={addDisabled}
-            onClick={() =>
-              append({
-                from_unit_id: isOrder ? "" : inventoryUnitId,
-                from_unit_qty: 1,
-                to_unit_id: isOrder ? inventoryUnitId : "",
-                to_unit_qty: 1,
-                description: "",
-                is_default: fields.length === 0,
-                is_active: true,
-              })
-            }
+            onClick={handleAdd}
           >
             <Plus />
             Add {label}
@@ -123,201 +464,40 @@ export default function UnitConversionTab({
 
       {!isOrder && !isUsedInRecipe && (
         <p className="text-xs text-muted-foreground">
-          Enable &quot;Used in Recipe&quot; in Product Info to add ingredient units.
+          Enable &quot;Used in Recipe&quot; in Product Info to add ingredient
+          units.
         </p>
       )}
 
-      {fields.length === 0 ? (
-        <p className="text-xs text-muted-foreground">
-          No {label.toLowerCase()}s defined
-        </p>
-      ) : (
-        <div className="rounded-md border">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b bg-muted/50">
-                <th className="px-3 py-1.5 text-left font-medium w-12">#</th>
-                <th className="px-3 py-1.5 text-left font-medium">
-                  {isOrder ? "From Unit" : "From Unit"}
-                </th>
-                <th className="px-3 py-1.5 text-left font-medium w-20">
-                  From Qty
-                </th>
-                <th className="px-3 py-1.5 text-left font-medium">To Unit</th>
-                <th className="px-3 py-1.5 text-left font-medium w-20">
-                  To Qty
-                </th>
-                <th className="px-3 py-1.5 text-left font-medium">
-                  Conversion
-                </th>
-                <th className="px-3 py-1.5 text-left font-medium">
-                  Description
-                </th>
-                <th className="px-3 py-1.5 text-center font-medium w-16">
-                  Default
-                </th>
-                <th className="px-3 py-1.5 text-center font-medium w-16">
-                  Active
-                </th>
-                {!isDisabled && <th className="px-3 py-1.5 w-10" />}
-              </tr>
-            </thead>
-            <tbody>
-              {fields.map((field, index) => {
-                const isNew = !field.id;
-                const preview = getPreview(index);
-                const rowBg = isNew ? "bg-green-50/50" : "bg-amber-50/30";
+      <DataGrid
+        table={table}
+        recordCount={fields.length}
+        tableLayout={{ dense: true }}
+        tableClassNames={{ base: "text-[11px]" }}
+        emptyMessage={
+          <EmptyComponent
+            title={`No ${label.toLowerCase()}s`}
+            description={`No ${label.toLowerCase()}s defined`}
+          />
+        }
+      >
+        <DataGridContainer>
+          <ScrollArea className="w-full pb-4">
+            <DataGridTable />
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </DataGridContainer>
+      </DataGrid>
 
-                return (
-                  <tr
-                    key={field.id ?? `new-${index}`}
-                    className={`border-b last:border-0 ${rowBg}`}
-                  >
-                    <td className="px-3 py-1.5 text-muted-foreground">
-                      {index + 1}
-                    </td>
-
-                    {/* From Unit */}
-                    <td className="px-1 py-1">
-                      {isOrder ? (
-                        <Controller
-                          control={form.control}
-                          name={`${name}.${index}.from_unit_id`}
-                          render={({ field: f }) => (
-                            <LookupUnit
-                              value={f.value}
-                              onValueChange={(v) =>
-                                handleFromUnitChange(index, v)
-                              }
-                              disabled={isDisabled}
-                              size="sm"
-                            />
-                          )}
-                        />
-                      ) : (
-                        <span className="px-2 text-xs text-muted-foreground">
-                          {unitMap.get(inventoryUnitId) ?? "—"}
-                        </span>
-                      )}
-                    </td>
-
-                    {/* From Qty */}
-                    <td className="px-1 py-1">
-                      <Input
-                        type="number"
-                        step="any"
-                        min="1"
-                        className="h-7 text-xs border-0 shadow-none bg-transparent px-1"
-                        disabled={isDisabled}
-                        {...form.register(`${name}.${index}.from_unit_qty`)}
-                      />
-                    </td>
-
-                    {/* To Unit */}
-                    <td className="px-1 py-1">
-                      {isOrder ? (
-                        <span className="px-2 text-xs text-muted-foreground">
-                          {unitMap.get(inventoryUnitId) ?? "—"}
-                        </span>
-                      ) : (
-                        <Controller
-                          control={form.control}
-                          name={`${name}.${index}.to_unit_id`}
-                          render={({ field: f }) => (
-                            <LookupUnit
-                              value={f.value}
-                              onValueChange={(v) =>
-                                handleToUnitChange(index, v)
-                              }
-                              disabled={isDisabled}
-                              size="sm"
-                            />
-                          )}
-                        />
-                      )}
-                    </td>
-
-                    {/* To Qty */}
-                    <td className="px-1 py-1">
-                      <Input
-                        type="number"
-                        step="any"
-                        min="1"
-                        className="h-7 text-xs border-0 shadow-none bg-transparent px-1"
-                        disabled={isDisabled}
-                        {...form.register(`${name}.${index}.to_unit_qty`)}
-                      />
-                    </td>
-
-                    {/* Conversion Preview */}
-                    <td className="px-3 py-1.5 text-muted-foreground whitespace-nowrap">
-                      {preview ?? "—"}
-                    </td>
-
-                    {/* Description */}
-                    <td className="px-1 py-1">
-                      <Input
-                        placeholder="e.g. 1 bag = 250g"
-                        className="h-7 text-xs border-0 shadow-none bg-transparent px-1"
-                        disabled={isDisabled}
-                        {...form.register(`${name}.${index}.description`)}
-                      />
-                    </td>
-
-                    {/* Default (radio-like) */}
-                    <td className="px-3 py-1.5 text-center">
-                      <Controller
-                        control={form.control}
-                        name={`${name}.${index}.is_default`}
-                        render={({ field: f }) => (
-                          <input
-                            type="radio"
-                            name={`${name}-default`}
-                            checked={f.value}
-                            onChange={() => handleDefaultChange(index, true)}
-                            disabled={isDisabled}
-                            className="h-3.5 w-3.5 accent-primary"
-                          />
-                        )}
-                      />
-                    </td>
-
-                    {/* Active */}
-                    <td className="px-3 py-1.5 text-center">
-                      <Controller
-                        control={form.control}
-                        name={`${name}.${index}.is_active`}
-                        render={({ field: f }) => (
-                          <input
-                            type="checkbox"
-                            checked={f.value}
-                            onChange={(e) => f.onChange(e.target.checked)}
-                            disabled={isDisabled}
-                            className="h-3.5 w-3.5 accent-primary"
-                          />
-                        )}
-                      />
-                    </td>
-
-                    {!isDisabled && (
-                      <td className="px-2 py-1.5">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-xs"
-                          onClick={() => remove(index)}
-                        >
-                          <X />
-                        </Button>
-                      </td>
-                    )}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <DeleteDialog
+        open={deleteIndex !== null}
+        onOpenChange={(o) => {
+          if (!o) setDeleteIndex(null);
+        }}
+        title={`Remove ${label}`}
+        description={`Are you sure you want to remove this ${label.toLowerCase()}?`}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }
