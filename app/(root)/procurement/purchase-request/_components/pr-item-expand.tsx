@@ -139,12 +139,23 @@ export function PrItemExpand({
     form.setValue(`items.${index}.pricelist_no`, entry.pricelist_no);
   };
 
+  const fmt = (n: number) =>
+    n.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
   return (
-    <div className="px-3 py-1.5">
-      {/* Row 1: Vendor | Unit Price | Pricelist */}
-      <div className="grid grid-cols-12 gap-2 items-end">
-        <div className="col-span-5">
-          <span className="text-xs text-muted-foreground">Vendor</span>
+    <div className="px-3 py-2 space-y-3">
+      {/* ── Vendor & Pricing ── */}
+      <div className="grid grid-cols-[1fr_8rem_1fr] gap-3 items-end">
+        <div>
+          <label
+            htmlFor={`items-${index}-vendor`}
+            className="text-xs text-muted-foreground"
+          >
+            Vendor
+          </label>
           <Controller
             control={form.control}
             name={`items.${index}.vendor_id`}
@@ -158,7 +169,7 @@ export function PrItemExpand({
             )}
           />
         </div>
-        <div className="col-span-2">
+        <div>
           <label
             htmlFor={`items-${index}-pricelist-price`}
             className="text-xs text-muted-foreground"
@@ -178,10 +189,10 @@ export function PrItemExpand({
             })}
           />
         </div>
-        <div className="col-span-3">
-          <span className="text-xs text-muted-foreground">Pricelist</span>
-          <div className="flex items-center gap-0.5">
-            <span className="flex-1 h-7 leading-6 text-xs text-muted-foreground truncate">
+        <div>
+          <label className="text-xs text-muted-foreground">Pricelist</label>
+          <div className="flex items-center gap-1">
+            <span className="flex-1 h-7 leading-7 text-xs text-muted-foreground truncate">
               {pricelistNo || "—"}
             </span>
             {!disabled && productId && unitId && currencyId && (
@@ -189,6 +200,7 @@ export function PrItemExpand({
                 type="button"
                 size="icon-xs"
                 className="shrink-0"
+                aria-label="Search pricelist"
                 onClick={() => setShowPricelist(true)}
               >
                 <Search className="size-3" />
@@ -196,21 +208,18 @@ export function PrItemExpand({
             )}
           </div>
         </div>
-        <div className="col-span-2">
-          <span className="text-xs text-muted-foreground">Net Amount</span>
-          <div className="h-7 leading-6 text-xs text-right font-medium tabular-nums">
-            {netAmount.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </div>
-        </div>
       </div>
 
-      {/* Row 2: Tax Profile | Tax % | Tax Amt [✓] | Disc % | Disc Amt [✓] | Total */}
-      <div className="grid grid-cols-12 gap-2 items-end">
-        <div className="col-span-3">
-          <span className="text-xs text-muted-foreground">Tax Profile</span>
+      {/* ── Tax & Discount | Summary ── */}
+      <div className="border-t pt-3 grid grid-cols-[1fr_5rem_10rem_5rem_10rem_auto] gap-x-3 gap-y-2 items-end">
+        {/* Tax row */}
+        <div>
+          <label
+            htmlFor={`items-${index}-tax-profile`}
+            className="text-xs text-muted-foreground"
+          >
+            Tax Profile
+          </label>
           <Controller
             control={form.control}
             name={`items.${index}.tax_profile_id`}
@@ -228,7 +237,7 @@ export function PrItemExpand({
             )}
           />
         </div>
-        <div className="col-span-1">
+        <div>
           <label
             htmlFor={`items-${index}-tax-rate`}
             className="text-xs text-muted-foreground"
@@ -248,9 +257,14 @@ export function PrItemExpand({
             })}
           />
         </div>
-        <div className="col-span-2">
+        <div>
           <div className="flex items-center justify-between">
-            <span className="text-xs text-muted-foreground">Tax Amt</span>
+            <label
+              htmlFor={`items-${index}-tax-amount`}
+              className="text-xs text-muted-foreground"
+            >
+              Tax Amt
+            </label>
             <Controller
               control={form.control}
               name={`items.${index}.is_tax_adjustment`}
@@ -262,7 +276,7 @@ export function PrItemExpand({
                     disabled={disabled}
                     className="size-3.5"
                   />
-                  <span className="text-[10px] text-muted-foreground select-none">
+                  <span className="text-xs text-muted-foreground select-none">
                     Manual
                   </span>
                 </label>
@@ -282,7 +296,7 @@ export function PrItemExpand({
             })}
           />
         </div>
-        <div className="col-span-1">
+        <div>
           <label
             htmlFor={`items-${index}-discount-rate`}
             className="text-xs text-muted-foreground"
@@ -302,9 +316,14 @@ export function PrItemExpand({
             })}
           />
         </div>
-        <div className="col-span-2">
+        <div>
           <div className="flex items-center justify-between">
-            <span className="text-xs text-muted-foreground">Disc Amt</span>
+            <label
+              htmlFor={`items-${index}-discount-amount`}
+              className="text-xs text-muted-foreground"
+            >
+              Disc Amt
+            </label>
             <Controller
               control={form.control}
               name={`items.${index}.is_discount_adjustment`}
@@ -316,7 +335,7 @@ export function PrItemExpand({
                     disabled={disabled}
                     className="size-3.5"
                   />
-                  <span className="text-[10px] text-muted-foreground select-none">
+                  <span className="text-xs text-muted-foreground select-none">
                     Manual
                   </span>
                 </label>
@@ -336,13 +355,15 @@ export function PrItemExpand({
             })}
           />
         </div>
-        <div className="col-span-3">
-          <span className="text-xs text-muted-foreground">Total</span>
-          <div className="h-7 leading-6 text-xs text-right font-semibold tabular-nums">
-            {totalPrice.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+        {/* Summary column */}
+        <div className="text-xs tabular-nums text-right space-y-0.5 pl-3 border-l">
+          <div>
+            <span className="text-muted-foreground">Net </span>
+            <span className="font-medium">{fmt(netAmount)}</span>
+          </div>
+          <div>
+            <span className="text-muted-foreground">Total </span>
+            <span className="font-semibold">{fmt(totalPrice)}</span>
           </div>
         </div>
       </div>

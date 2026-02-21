@@ -436,7 +436,7 @@ export function PurchaseRequestForm({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="sticky top-0 z-10 bg-background flex items-center justify-between py-2">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
