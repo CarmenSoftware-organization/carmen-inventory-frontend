@@ -40,7 +40,6 @@ export default async function RootLayout({
           color={"var(--primary)"}
           showSpinner={false}
           height={3}
-          nonce={nonce}
         />
         <Providers nonce={nonce}>{children}</Providers>
         <Toaster richColors position="top-right" />
