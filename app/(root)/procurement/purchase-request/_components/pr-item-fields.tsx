@@ -3,7 +3,7 @@
 "use no memo";
 
 import { useState } from "react";
-import { useFieldArray, type UseFormReturn } from "react-hook-form";
+import { useFieldArray, useWatch, type UseFormReturn } from "react-hook-form";
 import {
   BoxIcon,
   Check,
@@ -332,6 +332,10 @@ export function PrItemFields({
         </DataGridContainer>
       </DataGrid>
 
+      {itemFields.length > 0 && (
+        <GrandTotal control={form.control} itemCount={itemFields.length} />
+      )}
+
       <DeleteDialog
         open={deleteIndex !== null}
         onOpenChange={(o) => {
@@ -365,6 +369,36 @@ export function PrItemFields({
         onSelectAll={handleSelectAll}
         onSelectPending={handleSelectPending}
       />
+    </div>
+  );
+}
+
+function GrandTotal({
+  control,
+  itemCount,
+}: {
+  readonly control: UseFormReturn<PrFormValues>["control"];
+  readonly itemCount: number;
+}) {
+  const items = useWatch({ control, name: "items" });
+
+  const grandTotal = items.reduce(
+    (sum, item) => sum + Number(item?.total_price ?? 0),
+    0,
+  );
+
+  return (
+    <div className="flex items-center justify-end gap-3 border-t pt-2 text-sm">
+      <span className="text-muted-foreground">
+        {itemCount} {itemCount === 1 ? "item" : "items"}
+      </span>
+      <span className="font-semibold tabular-nums">
+        Total:{" "}
+        {grandTotal.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+      </span>
     </div>
   );
 }

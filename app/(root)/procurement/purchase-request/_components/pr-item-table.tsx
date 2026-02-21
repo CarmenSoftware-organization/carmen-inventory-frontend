@@ -49,6 +49,25 @@ const StatusCell = memo(function StatusCell({
   );
 });
 
+const AmountCell = memo(function AmountCell({
+  control,
+  index,
+}: {
+  control: Control<PrFormValues>;
+  index: number;
+}) {
+  const totalPrice =
+    useWatch({ control, name: `items.${index}.total_price` }) ?? 0;
+  return (
+    <span className="tabular-nums font-medium">
+      {Number(totalPrice).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}
+    </span>
+  );
+});
+
 /** Watches location_id via useWatch — only re-renders when location changes, not on every form change */
 const ProductCell = memo(function ProductCell({
   control,
@@ -355,6 +374,18 @@ export function usePrItemTable({
           </div>
         ),
         size: 110,
+      },
+      {
+        id: "amount",
+        header: "Amount",
+        cell: ({ row }) => (
+          <AmountCell control={form.control} index={row.index} />
+        ),
+        size: 120,
+        meta: {
+          headerClassName: "text-right",
+          cellClassName: "text-right",
+        },
       },
 
       {
