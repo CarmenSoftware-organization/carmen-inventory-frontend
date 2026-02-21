@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/lib/cookies";
-import { BACKEND_URL } from "@/lib/env";
+import { BACKEND_URL, X_APP_ID } from "@/lib/env";
 
 export async function POST() {
   const cookieStore = await cookies();
@@ -13,7 +13,7 @@ export async function POST() {
 
   const res = await fetch(`${BACKEND_URL}/api/auth/refresh`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "x-app-id": X_APP_ID },
     body: JSON.stringify({ refresh_token: refreshToken }),
     signal: AbortSignal.timeout(10_000),
   });
@@ -38,7 +38,10 @@ export async function POST() {
   cookieStore.set({
     ...ACCESS_TOKEN_COOKIE,
     value: data.access_token,
-    maxAge: data.expires_in ?? ACCESS_TOKEN_COOKIE.maxAge,
+    maxAge:
+      typeof data.expires_in === "number" && data.expires_in > 0
+        ? data.expires_in
+        : ACCESS_TOKEN_COOKIE.maxAge,
   });
 
   if (data.refresh_token) {

@@ -4,8 +4,17 @@ import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/lib/cookies";
 import { BACKEND_URL, X_APP_ID } from "@/lib/env";
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const { email, password } = body;
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid request body" },
+      { status: 400 },
+    );
+  }
+
+  const { email, password } = body as Record<string, unknown>;
 
   if (!email || !password) {
     return NextResponse.json(
@@ -18,12 +27,13 @@ export async function POST(request: Request) {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-app-id": X_APP_ID },
     body: JSON.stringify({ email, password }),
+    signal: AbortSignal.timeout(10_000),
   });
 
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
     return NextResponse.json(
-      { error: data.message || "Login failed" },
+      { error: "Login failed" },
       { status: res.status },
     );
   }
@@ -43,7 +53,10 @@ export async function POST(request: Request) {
   cookieStore.set({
     ...ACCESS_TOKEN_COOKIE,
     value: access_token,
-    maxAge: expires_in ?? ACCESS_TOKEN_COOKIE.maxAge,
+    maxAge:
+      typeof expires_in === "number" && expires_in > 0
+        ? expires_in
+        : ACCESS_TOKEN_COOKIE.maxAge,
   });
 
   cookieStore.set({
