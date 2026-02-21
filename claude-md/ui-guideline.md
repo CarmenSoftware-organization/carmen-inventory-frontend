@@ -172,6 +172,40 @@ Tab trigger สามารถมี Lucide icon ได้:
 </TabsTrigger>
 ```
 
+## Table Expand Row
+
+Expand row content จะ inherit ความกว้างเต็ม table ซึ่งมักจะกว้างเกินไป:
+
+- ใช้ `max-w-3xl` บน wrapper div เสมอ เพื่อ constrain ความกว้าง
+- ใช้ fixed-width grid columns (เช่น `grid-cols-[14rem_5rem_10rem]`) แทน `1fr` สำหรับ form fields — ป้องกัน field ยืดเกิน
+- **ห้ามใช้ `ml-auto`** ดัน element ไปชิดขวา — จะเกิดช่องว่างกว้างมาก ให้วาง element ติดกันแทน
+- แบ่ง fields เป็นหลายแถวแทนการยัดทุกอย่างในแถวเดียว
+
+```tsx
+{/* Expand row wrapper */}
+<div className="px-3 py-2 space-y-3 max-w-3xl">
+  {/* Section 1 */}
+  <div className="grid grid-cols-[1fr_8rem_1fr] gap-3 items-end">
+    ...
+  </div>
+  {/* Section 2 — fixed-width columns */}
+  <div className="border-t pt-3 space-y-2">
+    <div className="grid grid-cols-[14rem_5rem_10rem] gap-3 items-end">
+      ...
+    </div>
+    <div className="flex items-end gap-3">
+      <div className="grid grid-cols-[5rem_10rem] gap-3 items-end">
+        ...
+      </div>
+      {/* Summary ติดกับ fields ไม่ดันชิดขวา */}
+      <div className="text-xs tabular-nums text-right space-y-0.5 pl-3 border-l">
+        ...
+      </div>
+    </div>
+  </div>
+</div>
+```
+
 ## DataGrid / Table
 
 โปรเจคนี้ใช้ **dense mode เป็นค่าเริ่มต้น** ทุก DataGrid:

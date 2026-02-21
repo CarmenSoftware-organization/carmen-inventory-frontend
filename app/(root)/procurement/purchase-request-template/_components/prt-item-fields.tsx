@@ -63,7 +63,14 @@ export function PrtItemFields({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold">Items</h2>
+        <h2 className="text-sm font-semibold">
+          Items
+          {itemFields.length > 0 && (
+            <span className="ml-1.5 text-xs font-normal text-muted-foreground">
+              ({itemFields.length})
+            </span>
+          )}
+        </h2>
         {!disabled && (
           <Button type="button" size="xs" onClick={handleAddItem}>
             <Plus /> Add Item

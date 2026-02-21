@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Download, Plus, Printer } from "lucide-react";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import {
   DataGrid,
@@ -57,25 +57,15 @@ export default function PrtComponent() {
         </>
       }
       actions={
-        <>
-          <Button
-            size="sm"
-            onClick={() =>
-              router.push("/procurement/purchase-request-template/new")
-            }
-          >
-            <Plus />
-            Add Template
-          </Button>
-          <Button size="sm" variant="outline" disabled>
-            <Download />
-            Export
-          </Button>
-          <Button size="sm" variant="outline" disabled>
-            <Printer />
-            Print
-          </Button>
-        </>
+        <Button
+          size="sm"
+          onClick={() =>
+            router.push("/procurement/purchase-request-template/new")
+          }
+        >
+          <Plus />
+          Add Template
+        </Button>
       }
     >
       <DataGrid
