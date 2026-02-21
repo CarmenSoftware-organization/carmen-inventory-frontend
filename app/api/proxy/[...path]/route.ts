@@ -59,10 +59,7 @@ async function refreshAccessToken(
   return data.access_token;
 }
 
-async function proxyRequest(
-  request: NextRequest,
-  params: { path: string[] },
-) {
+async function proxyRequest(request: NextRequest, params: { path: string[] }) {
   // --- SERVER-SIDE RATE LIMIT ---
   const rateLimited = checkServerRateLimit(
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null,
@@ -82,9 +79,9 @@ async function proxyRequest(
 
   if (!accessToken) {
     accessToken = await refreshAccessToken(cookieStore);
-    if (!accessToken) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  }
+  if (!accessToken) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const url = new URL(`${BACKEND_URL}/${backendPath}`);
@@ -109,7 +106,7 @@ async function proxyRequest(
 
   // --- BODY SIZE LIMIT ---
   if (!["GET", "HEAD"].includes(request.method)) {
-    const contentLength = parseInt(
+    const contentLength = Number.parseInt(
       request.headers.get("content-length") || "0",
     );
     if (contentLength > MAX_BODY_SIZE) {
@@ -132,19 +129,15 @@ async function proxyRequest(
     // Auto-refresh on 401 and retry once
     if (res.status === 401) {
       const newToken = await refreshAccessToken(cookieStore);
-      if (newToken) {
-        headers["Authorization"] = `Bearer ${newToken}`;
-        res = await fetch(url.toString(), {
-          ...init,
-          headers,
-          signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-        });
-      } else {
-        return NextResponse.json(
-          { error: "Session expired" },
-          { status: 401 },
-        );
+      if (!newToken) {
+        return NextResponse.json({ error: "Session expired" }, { status: 401 });
       }
+      headers["Authorization"] = `Bearer ${newToken}`;
+      res = await fetch(url.toString(), {
+        ...init,
+        headers,
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      });
     }
 
     const body = await res.text();
