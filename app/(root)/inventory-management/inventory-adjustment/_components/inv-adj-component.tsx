@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Download, Plus, Printer } from "lucide-react";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import {
   DataGrid,
@@ -23,12 +23,13 @@ import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
 import DisplayTemplate from "@/components/display-template";
 import { INVENTORY_ADJUSTMENT_STATUS_OPTIONS } from "@/constant/inventory-adjustment";
-import { useInventoryAdjustmentTable } from "./use-inventory-adjustment-table";
+import { useInventoryAdjustmentTable } from "./use-inv-adj-table";
 
 export default function InventoryAdjustmentComponent() {
   const router = useRouter();
-  const [deleteTarget, setDeleteTarget] =
-    useState<InventoryAdjustment | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<InventoryAdjustment | null>(
+    null,
+  );
   const deleteInventoryAdjustment = useDeleteInventoryAdjustment();
   const { params, search, setSearch, filter, setFilter, tableConfig } =
     useDataGridState();
@@ -43,9 +44,7 @@ export default function InventoryAdjustmentComponent() {
     params,
     tableConfig,
     onEdit: (item) =>
-      router.push(
-        `/inventory-management/inventory-adjustment/${item.id}`,
-      ),
+      router.push(`/inventory-management/inventory-adjustment/${item.id}`),
     onDelete: setDeleteTarget,
   });
 
@@ -91,14 +90,6 @@ export default function InventoryAdjustmentComponent() {
             <Plus />
             Add Stock Out
           </Button>
-          <Button size="sm" variant="outline">
-            <Download />
-            Export
-          </Button>
-          <Button size="sm" variant="outline">
-            <Printer />
-            Print
-          </Button>
         </>
       }
     >
@@ -118,9 +109,7 @@ export default function InventoryAdjustmentComponent() {
       <DeleteDialog
         open={!!deleteTarget}
         onOpenChange={(open) =>
-          !open &&
-          !deleteInventoryAdjustment.isPending &&
-          setDeleteTarget(null)
+          !open && !deleteInventoryAdjustment.isPending && setDeleteTarget(null)
         }
         title="Delete Inventory Adjustment"
         description={`Are you sure you want to delete "${deleteTarget?.document_no}"? This action cannot be undone.`}

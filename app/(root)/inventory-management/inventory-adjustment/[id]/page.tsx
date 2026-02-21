@@ -2,7 +2,7 @@
 
 import { use } from "react";
 import { useInventoryAdjustmentById } from "@/hooks/use-inventory-adjustment";
-import { InventoryAdjustmentForm } from "../_components/inventory-adjustment-form";
+import { InventoryAdjustmentForm } from "../_components/inv-adj-form";
 import { ErrorState } from "@/components/ui/error-state";
 
 export default function EditInventoryAdjustmentPage({

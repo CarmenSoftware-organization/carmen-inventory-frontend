@@ -21,6 +21,7 @@ interface LookupProductProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
+  readonly excludeIds?: string[];
 }
 
 export function LookupProduct({
@@ -29,13 +30,16 @@ export function LookupProduct({
   disabled,
   placeholder = "Select product",
   className,
+  excludeIds,
 }: LookupProductProps) {
   const { data } = useProduct({ perpage: -1 });
-  const products = useMemo(
-    () =>
-      data?.data?.filter((p) => p.product_status_type === "active") ?? [],
-    [data?.data],
-  );
+  const products = useMemo(() => {
+    const active =
+      data?.data?.filter((p) => p.product_status_type === "active") ?? [];
+    if (!excludeIds || excludeIds.length === 0) return active;
+    const excluded = new Set(excludeIds);
+    return active.filter((p) => !excluded.has(p.id));
+  }, [data?.data, excludeIds]);
 
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
