@@ -54,7 +54,12 @@ export function PoItemFields({ form, disabled }: PoItemFieldsProps) {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold">Items</h2>
+        <h2 className="text-sm font-semibold">
+          Items{" "}
+          <span className="text-muted-foreground font-normal">
+            ({itemFields.length})
+          </span>
+        </h2>
         {!disabled && (
           <Button type="button" size="xs" onClick={handleAddItem}>
             <Plus /> Add Item
@@ -66,7 +71,7 @@ export function PoItemFields({ form, disabled }: PoItemFieldsProps) {
         table={table}
         recordCount={itemFields.length}
         tableLayout={{ dense: true }}
-        tableClassNames={{ base: "text-[11px]" }}
+        tableClassNames={{ base: "text-xs" }}
         emptyMessage={
           <EmptyComponent
             icon={BoxIcon}
