@@ -7,6 +7,8 @@ import { useFieldArray, useWatch, type UseFormReturn } from "react-hook-form";
 import {
   BoxIcon,
   Check,
+  ChevronsDownUp,
+  ChevronsUpDown,
   Eye,
   Loader2,
   Plus,
@@ -235,22 +237,28 @@ export function PrItemFields({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold">Items</h2>
-          {itemFields.length > 0 && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="xs"
-              onClick={() => table.toggleAllRowsExpanded(!table.getIsAllRowsExpanded())}
-            >
-              {table.getIsAllRowsExpanded() ? "Collapse All" : "Expand All"}
-            </Button>
-          )}
-        </div>
+        <h2 className="text-sm font-semibold">Items</h2>
 
-        <div className="flex flex-col  gap-2">
+        <div className="flex flex-col gap-2">
           <div className="flex items-center justify-end gap-1.5">
+            {itemFields.length > 0 && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="xs"
+                onClick={() => table.toggleAllRowsExpanded(!table.getIsAllRowsExpanded())}
+              >
+                {table.getIsAllRowsExpanded() ? (
+                  <>
+                    <ChevronsDownUp /> Collapse All
+                  </>
+                ) : (
+                  <>
+                    <ChevronsUpDown /> Expand All
+                  </>
+                )}
+              </Button>
+            )}
             {!isDisabled && role !== STAGE_ROLE.PURCHASE && (
               <Button type="button" size="xs" onClick={() => handleAddItem()}>
                 <Plus /> Add Item
