@@ -2,7 +2,7 @@
 // cause stale closure issues when auto-memoized.
 "use no memo";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useFieldArray, useWatch, type UseFormReturn } from "react-hook-form";
 import {
   BoxIcon,
@@ -347,7 +347,11 @@ export function PrItemFields({
       </DataGrid>
 
       {itemFields.length > 0 && (
-        <GrandTotal control={form.control} itemCount={itemFields.length} />
+        <GrandTotal
+          control={form.control}
+          itemCount={itemFields.length}
+          currencyCode={defaultBu?.config.default_currency.code ?? ""}
+        />
       )}
 
       <DeleteDialog
@@ -390,29 +394,81 @@ export function PrItemFields({
 function GrandTotal({
   control,
   itemCount,
+  currencyCode,
 }: {
   readonly control: UseFormReturn<PrFormValues>["control"];
   readonly itemCount: number;
+  readonly currencyCode: string;
 }) {
   const items = useWatch({ control, name: "items" });
 
-  const grandTotal = items.reduce(
-    (sum, item) => sum + Number(item?.total_price ?? 0),
-    0,
-  );
+  const summary = useMemo(() => {
+    let subtotal = 0;
+    let totalDiscount = 0;
+    let totalNet = 0;
+    let totalTax = 0;
+    let grandTotal = 0;
+
+    for (const item of items) {
+      const price = Number(item?.pricelist_price ?? 0);
+      const qty = Number(item?.requested_qty ?? 0);
+      subtotal += price * qty;
+      totalDiscount += Number(item?.discount_amount ?? 0);
+      totalNet += Number(item?.net_amount ?? 0);
+      totalTax += Number(item?.tax_amount ?? 0);
+      grandTotal += Number(item?.total_price ?? 0);
+    }
+
+    return { subtotal, totalDiscount, totalNet, totalTax, grandTotal };
+  }, [items]);
+
+  const fmt = (n: number) =>
+    n.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+  const rows: { label: string; value: string; className?: string }[] = [
+    { label: "Subtotal", value: fmt(summary.subtotal) },
+    {
+      label: "Discount",
+      value: summary.totalDiscount > 0
+        ? `-${fmt(summary.totalDiscount)}`
+        : fmt(0),
+      className: summary.totalDiscount > 0 ? "text-destructive" : undefined,
+    },
+    { label: "Net", value: fmt(summary.totalNet) },
+    { label: "Tax", value: fmt(summary.totalTax) },
+  ];
 
   return (
-    <div className="flex items-center justify-end gap-3 border-t pt-2 text-sm">
-      <span className="text-muted-foreground">
+    <div className="flex items-start justify-between border-t pt-3 text-sm">
+      <span className="text-muted-foreground text-xs pt-0.5">
         {itemCount} {itemCount === 1 ? "item" : "items"}
       </span>
-      <span className="font-semibold tabular-nums">
-        Total:{" "}
-        {grandTotal.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
-      </span>
+      <div className="w-56">
+        {rows.map((row) => (
+          <div
+            key={row.label}
+            className="flex items-center justify-between py-0.5 text-xs tabular-nums"
+          >
+            <span className="text-muted-foreground">{row.label}</span>
+            <span className={row.className}>{row.value}</span>
+          </div>
+        ))}
+        <div className="border-t my-1" />
+        <div className="flex items-center justify-between">
+          <span className="font-semibold text-sm">Total</span>
+          <span className="font-semibold text-sm tabular-nums">
+            {fmt(summary.grandTotal)}{" "}
+            {currencyCode && (
+              <span className="text-muted-foreground font-normal text-xs">
+                {currencyCode}
+              </span>
+            )}
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
