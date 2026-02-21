@@ -24,6 +24,16 @@ import type {
 import { STAGE_ROLE } from "@/types/stage-role";
 import { type FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { PR_STATUS_CONFIG } from "@/constant/purchase-request";
@@ -84,6 +94,8 @@ export function PurchaseRequestForm({
 
   const [showDelete, setShowDelete] = useState(false);
   const [showComment, setShowComment] = useState(false);
+  const [showDiscard, setShowDiscard] = useState(false);
+  const [discardAction, setDiscardAction] = useState<(() => void) | null>(null);
   const [actionDialog, setActionDialog] = useState<ActionDialogState>({
     type: null,
   });
@@ -221,11 +233,31 @@ export function PurchaseRequestForm({
   };
 
   const handleCancel = () => {
-    if (isEdit && purchaseRequest) {
-      form.reset(defaultValues);
-      setMode("view");
+    const doCancel = () => {
+      if (isEdit && purchaseRequest) {
+        form.reset(defaultValues);
+        setMode("view");
+      } else {
+        router.push("/procurement/purchase-request");
+      }
+    };
+
+    if (form.formState.isDirty) {
+      setDiscardAction(() => doCancel);
+      setShowDiscard(true);
     } else {
-      router.push("/procurement/purchase-request");
+      doCancel();
+    }
+  };
+
+  const handleBack = () => {
+    const doBack = () => router.push("/procurement/purchase-request");
+
+    if ((isEdit || isAdd) && form.formState.isDirty) {
+      setDiscardAction(() => doBack);
+      setShowDiscard(true);
+    } else {
+      doBack();
     }
   };
 
@@ -409,7 +441,7 @@ export function PurchaseRequestForm({
           <Button
             variant="ghost"
             size="icon-sm"
-            onClick={() => router.push("/procurement/purchase-request")}
+            onClick={handleBack}
           >
             <ArrowLeft />
           </Button>
@@ -538,6 +570,29 @@ export function PurchaseRequestForm({
         open={showComment}
         onOpenChange={setShowComment}
       />
+
+      <AlertDialog open={showDiscard} onOpenChange={setShowDiscard}>
+        <AlertDialogContent size="sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Discard changes?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have unsaved changes that will be lost.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Keep editing</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={() => {
+                discardAction?.();
+                setDiscardAction(null);
+              }}
+            >
+              Discard
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
