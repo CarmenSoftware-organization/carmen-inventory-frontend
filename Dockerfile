@@ -19,6 +19,11 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
+ARG BACKEND_URL
+ARG X_APP_ID
+ENV BACKEND_URL=$BACKEND_URL
+ENV X_APP_ID=$X_APP_ID
+
 RUN if [ -f bun.lock ]; then bun run build; \
     else npm run build; fi
 
