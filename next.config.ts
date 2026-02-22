@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
       "@tanstack/react-table",
       "react-day-picker",
       "cmdk",
+      "lucide-react",
+      "date-fns",
     ],
   },
   headers: async () => [

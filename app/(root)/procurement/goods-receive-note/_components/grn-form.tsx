@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import { MessageSquare } from "lucide-react";
 import {
   Tabs,
   TabsContent,
@@ -11,6 +13,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { FormToolbar } from "@/components/ui/form-toolbar";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
   useCreateGoodsReceiveNote,
@@ -31,6 +34,10 @@ import {
   mapDetailToPayload,
   mapExtraCostToPayload,
 } from "./grn-form-schema";
+
+const GrnCommentSheet = dynamic(() =>
+  import("./grn-comment-sheet").then((mod) => mod.GrnCommentSheet),
+);
 
 function textToObject(value: string): Record<string, unknown> | null {
   if (!value.trim()) return null;
@@ -58,6 +65,7 @@ export function GrnForm({ goodsReceiveNote }: GrnFormProps) {
   const updateGrn = useUpdateGoodsReceiveNote();
   const deleteGrn = useDeleteGoodsReceiveNote();
   const [showDelete, setShowDelete] = useState(false);
+  const [showComment, setShowComment] = useState(false);
   const isPending = createGrn.isPending || updateGrn.isPending;
   const isDisabled = isView || isPending;
 
@@ -216,7 +224,14 @@ export function GrnForm({ goodsReceiveNote }: GrnFormProps) {
           goodsReceiveNote ? () => setShowDelete(true) : undefined
         }
         deleteIsPending={deleteGrn.isPending}
-      />
+      >
+        {goodsReceiveNote && (
+          <Button size="sm" onClick={() => setShowComment(true)}>
+            <MessageSquare aria-hidden="true" />
+            Comment
+          </Button>
+        )}
+      </FormToolbar>
 
       <form
         id="grn-form"
@@ -257,24 +272,31 @@ export function GrnForm({ goodsReceiveNote }: GrnFormProps) {
       </form>
 
       {goodsReceiveNote && (
-        <DeleteDialog
-          open={showDelete}
-          onOpenChange={(open) =>
-            !open && !deleteGrn.isPending && setShowDelete(false)
-          }
-          title="Delete Goods Receive Note"
-          description={`Are you sure you want to delete this goods receive note? This action cannot be undone.`}
-          isPending={deleteGrn.isPending}
-          onConfirm={() => {
-            deleteGrn.mutate(goodsReceiveNote.id, {
-              onSuccess: () => {
-                toast.success("Goods receive note deleted successfully");
-                router.push("/procurement/goods-receive-note");
-              },
-              onError: (err) => toast.error(err.message),
-            });
-          }}
-        />
+        <>
+          <DeleteDialog
+            open={showDelete}
+            onOpenChange={(open) =>
+              !open && !deleteGrn.isPending && setShowDelete(false)
+            }
+            title="Delete Goods Receive Note"
+            description={`Are you sure you want to delete this goods receive note? This action cannot be undone.`}
+            isPending={deleteGrn.isPending}
+            onConfirm={() => {
+              deleteGrn.mutate(goodsReceiveNote.id, {
+                onSuccess: () => {
+                  toast.success("Goods receive note deleted successfully");
+                  router.push("/procurement/goods-receive-note");
+                },
+                onError: (err) => toast.error(err.message),
+              });
+            }}
+          />
+          <GrnCommentSheet
+            grnId={goodsReceiveNote.id}
+            open={showComment}
+            onOpenChange={setShowComment}
+          />
+        </>
       )}
     </div>
   );

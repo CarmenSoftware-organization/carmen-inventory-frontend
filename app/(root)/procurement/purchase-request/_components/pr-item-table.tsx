@@ -43,9 +43,28 @@ const StatusCell = memo(function StatusCell({
   const { variant, label } =
     PR_ITEM_STATUS_CONFIG[status] ?? PR_ITEM_STATUS_CONFIG.pending;
   return (
-    <Badge variant={variant} className="text-[11px]">
+    <Badge variant={variant} className="text-xs">
       {label}
     </Badge>
+  );
+});
+
+const AmountCell = memo(function AmountCell({
+  control,
+  index,
+}: {
+  control: Control<PrFormValues>;
+  index: number;
+}) {
+  const totalPrice =
+    useWatch({ control, name: `items.${index}.total_price` }) ?? 0;
+  return (
+    <span className="tabular-nums font-medium">
+      {Number(totalPrice).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}
+    </span>
   );
 });
 
@@ -81,7 +100,7 @@ const ProductCell = memo(function ProductCell({
             form.setValue(`items.${index}.approved_unit_id`, "");
           }}
           disabled={isDisabled}
-          className="w-full h-6 text-[11px]"
+          className="w-full h-7 text-xs"
         />
       )}
     />
@@ -117,7 +136,7 @@ const WatchedProductUnit = memo(function WatchedProductUnit({
             onExtraChange?.(value);
           }}
           disabled={disabled}
-          className="w-full h-6 text-[11px]"
+          className="w-full h-7 text-xs"
         />
       )}
     />
@@ -198,6 +217,7 @@ export function usePrItemTable({
           type="button"
           variant="ghost"
           size="icon-xs"
+          aria-label={row.getIsExpanded() ? "Collapse row" : "Expand row"}
           onClick={() => row.toggleExpanded()}
         >
           {row.getIsExpanded() ? (
@@ -249,7 +269,7 @@ export function usePrItemTable({
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
                 disabled={isDisabled}
-                className="w-full h-6 text-[11px]"
+                className="w-full h-7 text-xs"
               />
             )}
           />
@@ -286,7 +306,7 @@ export function usePrItemTable({
               type="number"
               min={1}
               placeholder="Qty"
-              className="h-6 text-[11px] md:text-[11px] text-right"
+              className="h-7 text-xs text-right"
               disabled={isDisabled}
               {...form.register(`items.${row.index}.requested_qty`, {
                 valueAsNumber: true,
@@ -315,7 +335,7 @@ export function usePrItemTable({
               type="number"
               min={0}
               placeholder="Qty"
-              className="h-6 text-[11px] md:text-[11px] text-right"
+              className="h-7 text-xs text-right"
               disabled={isDisabled}
               {...form.register(`items.${row.index}.approved_qty`, {
                 valueAsNumber: true,
@@ -340,7 +360,7 @@ export function usePrItemTable({
               type="number"
               min={0}
               placeholder="Qty"
-              className="h-6 text-[11px] md:text-[11px] text-right"
+              className="h-7 text-xs text-right"
               disabled={isDisabled}
               {...form.register(`items.${row.index}.foc_qty`, {
                 valueAsNumber: true,
@@ -356,6 +376,18 @@ export function usePrItemTable({
         ),
         size: 110,
       },
+      {
+        id: "amount",
+        header: "Amount",
+        cell: ({ row }) => (
+          <AmountCell control={form.control} index={row.index} />
+        ),
+        size: 120,
+        meta: {
+          headerClassName: "text-right",
+          cellClassName: "text-right",
+        },
+      },
 
       {
         accessorKey: "currency_id",
@@ -369,7 +401,7 @@ export function usePrItemTable({
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
                 disabled={isDisabled}
-                className="w-full text-[11px]"
+                className="w-full text-xs"
                 size="xs"
               />
             )}
@@ -389,7 +421,7 @@ export function usePrItemTable({
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
                 disabled={isDisabled}
-                className="w-full h-6 text-[11px]"
+                className="w-full h-7 text-xs"
               />
             )}
           />
@@ -409,7 +441,7 @@ export function usePrItemTable({
                 onValueChange={field.onChange}
                 fromDate={today}
                 disabled={isDisabled}
-                className="w-full text-[11px]"
+                className="w-full text-xs"
                 size="xs"
               />
             )}
@@ -444,7 +476,8 @@ export function usePrItemTable({
     const hiddenInDraft = new Set(["foc", "approved"]);
 
     return [
-      ...(!isDraft ? [expandColumn, prSelectColumn] : []),
+      expandColumn,
+      ...(!isDraft ? [prSelectColumn] : []),
       indexColumn,
       ...(isDraft
         ? dataColumns.filter((col) => !hiddenInDraft.has(col.id ?? ""))

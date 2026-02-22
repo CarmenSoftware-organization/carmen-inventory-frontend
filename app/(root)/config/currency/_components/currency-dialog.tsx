@@ -14,13 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { LookupCurrencyIso } from "@/components/lookup/lookup-currency-iso";
 import {
   Field,
   FieldGroup,
@@ -172,22 +166,12 @@ export function CurrencyDialog({
                 control={form.control}
                 name="code"
                 render={({ field }) => (
-                  <Select
+                  <LookupCurrencyIso
                     value={field.value}
                     onValueChange={field.onChange}
                     disabled={isEdit || isPending}
-                  >
-                    <SelectTrigger className="h-8 w-full text-sm">
-                      <SelectValue placeholder="Select currency code" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {currenciesIso.map((c) => (
-                        <SelectItem key={c.code} value={c.code}>
-                          {c.code} — {c.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    className="w-full"
+                  />
                 )}
               />
               <FieldError>{form.formState.errors.code?.message}</FieldError>

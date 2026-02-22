@@ -21,8 +21,8 @@ export function PrGeneralFields({
   prDateDisplay,
 }: PrGeneralFieldsProps) {
   return (
-    <div className="sticky top-0 z-10 bg-background pb-2 max-w-2xl space-y-4">
-      <div className="grid grid-cols-3 gap-px">
+    <div className="max-w-2xl space-y-4">
+      <div className="grid grid-cols-3 gap-4 border-b pb-3">
         <InfoCell label="PR Date" value={prDateDisplay} />
         <InfoCell label="Requestor" value={reqName} />
         <InfoCell label="Department" value={departmentName} />
@@ -48,8 +48,9 @@ export function PrGeneralFields({
         </div>
 
         <Field>
-          <FieldLabel className="text-xs">Description</FieldLabel>
+          <FieldLabel htmlFor="pr-description" className="text-xs">Description</FieldLabel>
           <Textarea
+            id="pr-description"
             placeholder="Enter description..."
             className="text-sm"
             rows={2}

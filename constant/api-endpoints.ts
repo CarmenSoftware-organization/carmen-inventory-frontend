@@ -8,6 +8,10 @@ export const API_ENDPOINTS = {
   CN_REASONS: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/credit-note-reason`,
   CREDIT_NOTE: (buCode: string) => `/api/proxy/api/${buCode}/credit-note`,
+  CREDIT_NOTE_COMMENT: (buCode: string) =>
+    `/api/proxy/api/${buCode}/credit-note-comment`,
+  CREDIT_NOTE_COMMENT_ATTACHMENT: (buCode: string, cnId: string) =>
+    `/api/proxy/api/${buCode}/credit-note-comment/${cnId}/attachment`,
   CREDIT_TERMS: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/credit-term`,
   CUISINES: (buCode: string) =>
@@ -27,6 +31,10 @@ export const API_ENDPOINTS = {
     `/api/proxy/api/config/${buCode}/extra-cost-type`,
   GOODS_RECEIVE_NOTE: (buCode: string) =>
     `/api/proxy/api/${buCode}/good-received-note`,
+  GOODS_RECEIVE_NOTE_COMMENT: (buCode: string) =>
+    `/api/proxy/api/${buCode}/good-received-note-comment`,
+  GOODS_RECEIVE_NOTE_COMMENT_ATTACHMENT: (buCode: string, grnId: string) =>
+    `/api/proxy/api/${buCode}/good-received-note-comment/${grnId}/attachment`,
   INVENTORY_ADJUSTMENTS: (buCode: string) =>
     `/api/proxy/api/${buCode}/inventory-adjustment`,
   LOCATIONS: (buCode: string) => `/api/proxy/api/config/${buCode}/locations`,
@@ -64,6 +72,10 @@ export const API_ENDPOINTS = {
   PURCHASE_REQUEST_TEMPLATES: (buCode: string) =>
     `/api/proxy/api/${buCode}/purchase-request-template`,
   PURCHASE_ORDER: (buCode: string) => `/api/proxy/api/${buCode}/purchase-order`,
+  PURCHASE_ORDER_COMMENT: (buCode: string) =>
+    `/api/proxy/api/${buCode}/purchase-order-comment`,
+  PURCHASE_ORDER_COMMENT_ATTACHMENT: (buCode: string, poId: string) =>
+    `/api/proxy/api/${buCode}/purchase-order-comment/${poId}/attachment`,
   PERMISSIONS: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/permissions`,
   PHYSICAL_COUNT: (buCode: string) => `/api/proxy/api/${buCode}/physical-count`,

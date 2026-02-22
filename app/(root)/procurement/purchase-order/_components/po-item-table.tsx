@@ -58,11 +58,13 @@ const ProductCell = memo(function ProductCell({
   form,
   index,
   disabled,
+  hasError,
 }: {
   control: Control<PoFormValues>;
   form: UseFormReturn<PoFormValues>;
   index: number;
   disabled: boolean;
+  hasError: boolean;
 }) {
   return (
     <Controller
@@ -75,7 +77,7 @@ const ProductCell = memo(function ProductCell({
             setProductToItem(form, index, value, product)
           }
           disabled={disabled}
-          className="w-full text-[11px]"
+          className={`w-full text-[11px]${hasError ? " ring-1 ring-destructive rounded-md" : ""}`}
         />
       )}
     />
@@ -128,22 +130,7 @@ const AdjustableAmountCell = memo(function AdjustableAmountCell({
   const isManual =
     useWatch({ control, name: `items.${index}.${toggleField}` }) ?? false;
   return (
-    <div className="flex flex-col gap-0.5">
-      <div className="flex items-center gap-1">
-        <Controller
-          control={control}
-          name={`items.${index}.${toggleField}`}
-          render={({ field }) => (
-            <Checkbox
-              checked={field.value ?? false}
-              onCheckedChange={field.onChange}
-              disabled={disabled}
-              className="size-3"
-            />
-          )}
-        />
-        <span className="text-[10px] text-muted-foreground">Manual</span>
-      </div>
+    <div className="space-y-0.5">
       <Input
         type="number"
         min={0}
@@ -155,6 +142,21 @@ const AdjustableAmountCell = memo(function AdjustableAmountCell({
           valueAsNumber: true,
         })}
       />
+      <label className="flex items-center gap-1 cursor-pointer">
+        <Controller
+          control={control}
+          name={`items.${index}.${toggleField}`}
+          render={({ field }) => (
+            <Checkbox
+              checked={field.value ?? false}
+              onCheckedChange={field.onChange}
+              disabled={disabled}
+              className="size-3.5"
+            />
+          )}
+        />
+        <span className="text-xs text-muted-foreground select-none">Manual</span>
+      </label>
     </div>
   );
 });
@@ -191,26 +193,34 @@ export function usePoItemTable({
       {
         accessorKey: "product_id",
         header: "Product",
-        cell: ({ row }) => (
-          <ProductCell
-            control={form.control}
-            form={form}
-            index={row.index}
-            disabled={disabled}
-          />
-        ),
+        cell: ({ row }) => {
+          const hasError =
+            !!form.formState.errors.items?.[row.index]?.product_id;
+          return (
+            <ProductCell
+              control={form.control}
+              form={form}
+              index={row.index}
+              disabled={disabled}
+              hasError={hasError}
+            />
+          );
+        },
         size: 280,
       },
       {
         id: "order",
         header: "Order Qty",
-        cell: ({ row }) => (
+        cell: ({ row }) => {
+          const hasError =
+            !!form.formState.errors.items?.[row.index]?.order_qty;
+          return (
           <div className="flex flex-col gap-0.5">
             <Input
               type="number"
               min={1}
               placeholder="Qty"
-              className="h-6 text-[11px] md:text-[11px] text-right"
+              className={`h-6 text-[11px] md:text-[11px] text-right${hasError ? " ring-1 ring-destructive" : ""}`}
               disabled={disabled}
               {...form.register(`items.${row.index}.order_qty`, {
                 valueAsNumber: true,
@@ -222,7 +232,8 @@ export function usePoItemTable({
               disabled={disabled}
             />
           </div>
-        ),
+          );
+        },
         size: 110,
       },
       {
@@ -267,6 +278,25 @@ export function usePoItemTable({
           />
         ),
         size: 140,
+      },
+      {
+        id: "tax_rate",
+        header: "Tax %",
+        cell: ({ row }) => (
+          <Input
+            type="number"
+            placeholder="0"
+            className="h-6 text-[11px] md:text-[11px] text-right"
+            disabled
+            {...form.register(`items.${row.index}.tax_rate`, {
+              valueAsNumber: true,
+            })}
+          />
+        ),
+        size: 70,
+        meta: {
+          headerClassName: "text-right",
+        },
       },
       {
         id: "tax_amount",

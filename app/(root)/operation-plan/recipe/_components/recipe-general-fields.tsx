@@ -66,10 +66,11 @@ export function RecipeGeneralFields({
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-3 gap-2">
             <Field data-invalid={!!form.formState.errors.code}>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel htmlFor="recipe-code" className="text-xs" required>
                 Code
               </FieldLabel>
               <Input
+                id="recipe-code"
                 placeholder="e.g. RCP-001"
                 className="h-8 text-sm"
                 disabled={isDisabled}
@@ -85,10 +86,11 @@ export function RecipeGeneralFields({
               data-invalid={!!form.formState.errors.name}
               className="col-span-2"
             >
-              <FieldLabel className="text-xs" required>
+              <FieldLabel htmlFor="recipe-name" className="text-xs" required>
                 Name
               </FieldLabel>
               <Input
+                id="recipe-name"
                 placeholder="e.g. Tom Yum Goong"
                 className="h-8 text-sm"
                 disabled={isDisabled}
@@ -241,8 +243,9 @@ export function RecipeGeneralFields({
         <h2 className="text-sm font-semibold">Additional Information</h2>
         <FieldGroup className="gap-3">
           <Field>
-            <FieldLabel className="text-xs">Description</FieldLabel>
+            <FieldLabel htmlFor="recipe-description" className="text-xs">Description</FieldLabel>
             <Textarea
+              id="recipe-description"
               placeholder="Brief description of the recipe, visible in listings..."
               className="text-sm"
               rows={3}
@@ -256,8 +259,9 @@ export function RecipeGeneralFields({
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">Internal Note</FieldLabel>
+            <FieldLabel htmlFor="recipe-note" className="text-xs">Internal Note</FieldLabel>
             <Textarea
+              id="recipe-note"
               placeholder="Internal notes for kitchen staff..."
               className="text-sm"
               rows={2}

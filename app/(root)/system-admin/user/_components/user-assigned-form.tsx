@@ -91,6 +91,7 @@ export function UserAssignedForm({ user }: UserAssignedFormProps) {
           <Button
             variant="ghost"
             size="icon-sm"
+            aria-label="Go back"
             onClick={() => router.push("/system-admin/user")}
           >
             <ArrowLeft />

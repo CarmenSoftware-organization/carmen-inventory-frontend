@@ -2,11 +2,13 @@
 // cause stale closure issues when auto-memoized.
 "use no memo";
 
-import { useState } from "react";
-import { useFieldArray, type UseFormReturn } from "react-hook-form";
+import { useState, useMemo } from "react";
+import { useFieldArray, useWatch, type UseFormReturn } from "react-hook-form";
 import {
   BoxIcon,
   Check,
+  ChevronsDownUp,
+  ChevronsUpDown,
   Eye,
   Loader2,
   Plus,
@@ -121,6 +123,7 @@ export function PrItemFields({
     if (items.length === 0) return;
 
     setIsAllocating(true);
+    const toastId = toast.loading(`Allocating ${items.length} items...`);
     let allocated = 0;
 
     const results = await Promise.allSettled(
@@ -157,6 +160,7 @@ export function PrItemFields({
       }),
     );
 
+    toast.dismiss(toastId);
     const failed = results.filter((r) => r.status === "rejected").length;
     if (allocated > 0) {
       toast.success(`Allocated ${allocated} of ${items.length} items`);
@@ -235,8 +239,26 @@ export function PrItemFields({
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold">Items</h2>
 
-        <div className="flex flex-col  gap-2">
+        <div className="flex flex-col gap-2">
           <div className="flex items-center justify-end gap-1.5">
+            {itemFields.length > 0 && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="xs"
+                onClick={() => table.toggleAllRowsExpanded(!table.getIsAllRowsExpanded())}
+              >
+                {table.getIsAllRowsExpanded() ? (
+                  <>
+                    <ChevronsDownUp /> Collapse All
+                  </>
+                ) : (
+                  <>
+                    <ChevronsUpDown /> Expand All
+                  </>
+                )}
+              </Button>
+            )}
             {!isDisabled && role !== STAGE_ROLE.PURCHASE && (
               <Button type="button" size="xs" onClick={() => handleAddItem()}>
                 <Plus /> Add Item
@@ -308,12 +330,12 @@ export function PrItemFields({
         table={table}
         recordCount={itemFields.length}
         tableLayout={{ dense: true }}
-        tableClassNames={{ base: "text-[11px]" }}
+        tableClassNames={{ base: "text-xs" }}
         emptyMessage={
           <EmptyComponent
             icon={BoxIcon}
-            title="No Products Yet"
-            description="You haven't created any Products yet."
+            title="No items added yet"
+            description="Start by adding items to this purchase request."
             content={
               !isDisabled && (
                 <Button type="button" size="xs" onClick={() => handleAddItem()}>
@@ -331,6 +353,14 @@ export function PrItemFields({
           </ScrollArea>
         </DataGridContainer>
       </DataGrid>
+
+      {itemFields.length > 0 && (
+        <GrandTotal
+          control={form.control}
+          itemCount={itemFields.length}
+          currencyCode={defaultBu?.config.default_currency.code ?? ""}
+        />
+      )}
 
       <DeleteDialog
         open={deleteIndex !== null}
@@ -365,6 +395,88 @@ export function PrItemFields({
         onSelectAll={handleSelectAll}
         onSelectPending={handleSelectPending}
       />
+    </div>
+  );
+}
+
+function GrandTotal({
+  control,
+  itemCount,
+  currencyCode,
+}: {
+  readonly control: UseFormReturn<PrFormValues>["control"];
+  readonly itemCount: number;
+  readonly currencyCode: string;
+}) {
+  const items = useWatch({ control, name: "items" });
+
+  const summary = useMemo(() => {
+    let subtotal = 0;
+    let totalDiscount = 0;
+    let totalNet = 0;
+    let totalTax = 0;
+    let grandTotal = 0;
+
+    for (const item of items) {
+      const price = Number(item?.pricelist_price ?? 0);
+      const qty = Number(item?.requested_qty ?? 0);
+      subtotal += price * qty;
+      totalDiscount += Number(item?.discount_amount ?? 0);
+      totalNet += Number(item?.net_amount ?? 0);
+      totalTax += Number(item?.tax_amount ?? 0);
+      grandTotal += Number(item?.total_price ?? 0);
+    }
+
+    return { subtotal, totalDiscount, totalNet, totalTax, grandTotal };
+  }, [items]);
+
+  const fmt = (n: number) =>
+    n.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+  const rows: { label: string; value: string; className?: string }[] = [
+    { label: "Subtotal", value: fmt(summary.subtotal) },
+    {
+      label: "Discount",
+      value: summary.totalDiscount > 0
+        ? `-${fmt(summary.totalDiscount)}`
+        : fmt(0),
+      className: summary.totalDiscount > 0 ? "text-destructive" : undefined,
+    },
+    { label: "Net", value: fmt(summary.totalNet) },
+    { label: "Tax", value: fmt(summary.totalTax) },
+  ];
+
+  return (
+    <div className="flex items-start justify-between border-t pt-3 text-sm">
+      <span className="text-muted-foreground text-xs pt-0.5">
+        {itemCount} {itemCount === 1 ? "item" : "items"}
+      </span>
+      <div className="w-56">
+        {rows.map((row) => (
+          <div
+            key={row.label}
+            className="flex items-center justify-between py-0.5 text-xs tabular-nums"
+          >
+            <span className="text-muted-foreground">{row.label}</span>
+            <span className={row.className}>{row.value}</span>
+          </div>
+        ))}
+        <div className="border-t my-1" />
+        <div className="flex items-center justify-between">
+          <span className="font-semibold text-sm">Total</span>
+          <span className="font-semibold text-sm tabular-nums">
+            {fmt(summary.grandTotal)}{" "}
+            {currencyCode && (
+              <span className="text-muted-foreground font-normal text-xs">
+                {currencyCode}
+              </span>
+            )}
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

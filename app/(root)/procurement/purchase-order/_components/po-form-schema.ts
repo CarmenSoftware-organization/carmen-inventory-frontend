@@ -107,7 +107,10 @@ export const EMPTY_FORM: PoFormValues = {
 
 // --- Helpers ---
 
-export function getDefaultValues(po?: PurchaseOrder): PoFormValues {
+export function getDefaultValues(
+  po?: PurchaseOrder,
+  options?: { defaultCurrencyId?: string },
+): PoFormValues {
   if (po) {
     return {
       vendor_id: po.vendor_id ?? "",
@@ -157,7 +160,10 @@ export function getDefaultValues(po?: PurchaseOrder): PoFormValues {
         })) ?? [],
     };
   }
-  return EMPTY_FORM;
+  return {
+    ...EMPTY_FORM,
+    currency_id: options?.defaultCurrencyId ?? "",
+  };
 }
 
 export function mapItemToPayload(

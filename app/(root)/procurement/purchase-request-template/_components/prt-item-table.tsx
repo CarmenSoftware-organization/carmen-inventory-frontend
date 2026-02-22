@@ -71,6 +71,7 @@ const ProductCell = ({
 }) => {
   const locationId =
     useWatch({ control, name: `items.${index}.location_id` }) ?? "";
+  const hasError = !!form.formState.errors.items?.[index]?.product_id;
   return (
     <Controller
       control={control}
@@ -83,7 +84,7 @@ const ProductCell = ({
             setProductToItem(form, index, value, product)
           }
           disabled={disabled}
-          className="w-full text-[11px]"
+          className={`w-full text-[11px] ${hasError ? "ring-1 ring-destructive" : ""}`}
         />
       )}
     />
@@ -143,22 +144,7 @@ const AdjustableAmountCell = ({
   const isManual =
     useWatch({ control, name: `items.${index}.${toggleField}` }) ?? false;
   return (
-    <div className="flex flex-col gap-0.5">
-      <div className="flex items-center gap-1">
-        <Controller
-          control={control}
-          name={`items.${index}.${toggleField}`}
-          render={({ field }) => (
-            <Checkbox
-              checked={field.value ?? false}
-              onCheckedChange={field.onChange}
-              disabled={disabled}
-              className="size-3"
-            />
-          )}
-        />
-        <span className="text-[10px] text-muted-foreground">Manual</span>
-      </div>
+    <div className="space-y-0.5">
       <Input
         type="number"
         min={0}
@@ -170,6 +156,21 @@ const AdjustableAmountCell = ({
           valueAsNumber: true,
         })}
       />
+      <label className="flex items-center gap-1 cursor-pointer">
+        <Controller
+          control={control}
+          name={`items.${index}.${toggleField}`}
+          render={({ field }) => (
+            <Checkbox
+              checked={field.value ?? false}
+              onCheckedChange={field.onChange}
+              disabled={disabled}
+              className="size-3.5"
+            />
+          )}
+        />
+        <span className="text-xs text-muted-foreground select-none">Manual</span>
+      </label>
     </div>
   );
 };
@@ -257,13 +258,15 @@ export function usePrtItemTable({
       {
         id: "requested",
         header: "Requested",
-        cell: ({ row }) => (
+        cell: ({ row }) => {
+          const hasError = !!form.formState.errors.items?.[row.index]?.requested_qty;
+          return (
           <div className="flex flex-col gap-0.5">
             <Input
               type="number"
               min={1}
               placeholder="Qty"
-              className="h-6 text-[11px] md:text-[11px] text-right"
+              className={`h-6 text-[11px] md:text-[11px] text-right ${hasError ? "ring-1 ring-destructive" : ""}`}
               disabled={disabled}
               {...form.register(`items.${row.index}.requested_qty`, {
                 valueAsNumber: true,
@@ -279,7 +282,8 @@ export function usePrtItemTable({
               }}
             />
           </div>
-        ),
+          );
+        },
         size: 110,
       },
       {
@@ -349,6 +353,24 @@ export function usePrtItemTable({
         size: 140,
       },
       {
+        accessorKey: "tax_rate",
+        header: "Tax %",
+        cell: ({ row }) => (
+          <Input
+            type="number"
+            min={0}
+            step="0.01"
+            placeholder="0"
+            className="h-6 text-[11px] md:text-[11px] text-right"
+            disabled
+            {...form.register(`items.${row.index}.tax_rate`, {
+              valueAsNumber: true,
+            })}
+          />
+        ),
+        size: 70,
+      },
+      {
         id: "tax_amount",
         header: "Tax Amt",
         cell: ({ row }) => (
@@ -364,6 +386,24 @@ export function usePrtItemTable({
         size: 90,
       },
       {
+        accessorKey: "discount_rate",
+        header: "Disc %",
+        cell: ({ row }) => (
+          <Input
+            type="number"
+            min={0}
+            step="0.01"
+            placeholder="0"
+            className="h-6 text-[11px] md:text-[11px] text-right"
+            disabled={disabled}
+            {...form.register(`items.${row.index}.discount_rate`, {
+              valueAsNumber: true,
+            })}
+          />
+        ),
+        size: 70,
+      },
+      {
         id: "discount_amount",
         header: "Disc Amt",
         cell: ({ row }) => (
@@ -377,6 +417,29 @@ export function usePrtItemTable({
           />
         ),
         size: 90,
+      },
+      {
+        accessorKey: "is_active",
+        header: "Active",
+        cell: ({ row }) => (
+          <Controller
+            control={form.control}
+            name={`items.${row.index}.is_active`}
+            render={({ field }) => (
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                disabled={disabled}
+                className="size-3.5"
+              />
+            )}
+          />
+        ),
+        size: 50,
+        meta: {
+          headerClassName: "text-center",
+          cellClassName: "text-center",
+        },
       },
     ];
 

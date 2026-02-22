@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
 
   const res = await fetch(
     `https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${baseCurrency}`,
+    { signal: AbortSignal.timeout(10_000) },
   );
 
   if (!res.ok) {

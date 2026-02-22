@@ -139,12 +139,23 @@ export function PrItemExpand({
     form.setValue(`items.${index}.pricelist_no`, entry.pricelist_no);
   };
 
+  const fmt = (n: number) =>
+    n.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
   return (
-    <div className="px-3 py-1.5">
-      {/* Row 1: Vendor | Unit Price | Pricelist */}
-      <div className="grid grid-cols-12 gap-2 items-end">
-        <div className="col-span-5">
-          <span className="text-[10px] text-muted-foreground">Vendor</span>
+    <div className="px-3 py-2 space-y-3 max-w-4xl">
+      {/* ── Vendor & Pricing ── */}
+      <div className="grid grid-cols-[1fr_8rem_1fr] gap-3 items-end">
+        <div>
+          <label
+            htmlFor={`items-${index}-vendor`}
+            className="text-xs text-muted-foreground"
+          >
+            Vendor
+          </label>
           <Controller
             control={form.control}
             name={`items.${index}.vendor_id`}
@@ -153,15 +164,15 @@ export function PrItemExpand({
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
                 disabled={disabled}
-                className="w-full h-6 text-[11px]"
+                className="w-full h-7 text-xs"
               />
             )}
           />
         </div>
-        <div className="col-span-2">
+        <div>
           <label
             htmlFor={`items-${index}-pricelist-price`}
-            className="text-[10px] text-muted-foreground"
+            className="text-xs text-muted-foreground"
           >
             Unit Price
           </label>
@@ -171,17 +182,17 @@ export function PrItemExpand({
             min={0}
             step="0.01"
             placeholder="0.00"
-            className="h-6 text-[11px] md:text-[11px] text-right"
+            className="h-7 text-xs text-right"
             disabled={disabled}
             {...form.register(`items.${index}.pricelist_price`, {
               valueAsNumber: true,
             })}
           />
         </div>
-        <div className="col-span-3">
-          <span className="text-[10px] text-muted-foreground">Pricelist</span>
-          <div className="flex items-center gap-0.5">
-            <span className="flex-1 h-6 leading-6 text-[11px] text-muted-foreground truncate">
+        <div>
+          <label className="text-xs text-muted-foreground">Pricelist</label>
+          <div className="flex items-center gap-1">
+            <span className="flex-1 h-7 leading-7 text-xs text-muted-foreground truncate">
               {pricelistNo || "—"}
             </span>
             {!disabled && productId && unitId && currencyId && (
@@ -189,6 +200,7 @@ export function PrItemExpand({
                 type="button"
                 size="icon-xs"
                 className="shrink-0"
+                aria-label="Search pricelist"
                 onClick={() => setShowPricelist(true)}
               >
                 <Search className="size-3" />
@@ -196,143 +208,168 @@ export function PrItemExpand({
             )}
           </div>
         </div>
-        <div className="col-span-2">
-          <span className="text-[10px] text-muted-foreground">Net Amount</span>
-          <div className="h-6 leading-6 text-[11px] text-right font-medium tabular-nums">
-            {netAmount.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </div>
-        </div>
       </div>
 
-      {/* Row 2: Tax Profile | Tax % | Tax Amt [✓] | Disc % | Disc Amt [✓] | Total */}
-      <div className="grid grid-cols-12 gap-2 items-end">
-        <div className="col-span-3">
-          <span className="text-[10px] text-muted-foreground">Tax Profile</span>
-          <Controller
-            control={form.control}
-            name={`items.${index}.tax_profile_id`}
-            render={({ field }) => (
-              <LookupTaxProfile
-                value={field.value ?? ""}
-                onValueChange={(value, taxRate) => {
-                  field.onChange(value || null);
-                  form.setValue(`items.${index}.tax_rate`, taxRate);
-                }}
-                disabled={disabled}
-                className="w-full text-[11px]"
-                size="xs"
+      {/* ── Tax & Discount ── */}
+      <div className="border-t pt-3 space-y-2">
+        {/* Tax row */}
+        <div className="grid grid-cols-[14rem_5rem_10rem] gap-3 items-end">
+          <div>
+            <label
+              htmlFor={`items-${index}-tax-profile`}
+              className="text-xs text-muted-foreground"
+            >
+              Tax Profile
+            </label>
+            <Controller
+              control={form.control}
+              name={`items.${index}.tax_profile_id`}
+              render={({ field }) => (
+                <LookupTaxProfile
+                  value={field.value ?? ""}
+                  onValueChange={(value, taxRate) => {
+                    field.onChange(value || null);
+                    form.setValue(`items.${index}.tax_rate`, taxRate);
+                  }}
+                  disabled={disabled}
+                  className="w-full h-7 text-xs"
+                />
+              )}
+            />
+          </div>
+          <div>
+            <label
+              htmlFor={`items-${index}-tax-rate`}
+              className="text-xs text-muted-foreground"
+            >
+              Tax %
+            </label>
+            <Input
+              id={`items-${index}-tax-rate`}
+              type="number"
+              min={0}
+              step="0.01"
+              placeholder="0"
+              className="h-7 text-xs text-right"
+              disabled
+              {...form.register(`items.${index}.tax_rate`, {
+                valueAsNumber: true,
+              })}
+            />
+          </div>
+          <div>
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor={`items-${index}-tax-amount`}
+                className="text-xs text-muted-foreground"
+              >
+                Tax Amt
+              </label>
+              <Controller
+                control={form.control}
+                name={`items.${index}.is_tax_adjustment`}
+                render={({ field }) => (
+                  <label className="flex items-center gap-1 cursor-pointer">
+                    <Checkbox
+                      checked={field.value ?? false}
+                      onCheckedChange={field.onChange}
+                      disabled={disabled}
+                      className="size-3.5"
+                    />
+                    <span className="text-xs text-muted-foreground select-none">
+                      Manual
+                    </span>
+                  </label>
+                )}
               />
-            )}
-          />
-        </div>
-        <div className="col-span-1">
-          <label
-            htmlFor={`items-${index}-tax-rate`}
-            className="text-[10px] text-muted-foreground"
-          >
-            Tax %
-          </label>
-          <Input
-            id={`items-${index}-tax-rate`}
-            type="number"
-            min={0}
-            step="0.01"
-            placeholder="0"
-            className="h-6 text-[11px] md:text-[11px] text-right"
-            disabled
-            {...form.register(`items.${index}.tax_rate`, {
-              valueAsNumber: true,
-            })}
-          />
-        </div>
-        <div className="col-span-2">
-          <div className="flex items-center gap-1">
-            <span className="text-[10px] text-muted-foreground">Tax Amt</span>
-            <Controller
-              control={form.control}
-              name={`items.${index}.is_tax_adjustment`}
-              render={({ field }) => (
-                <Checkbox
-                  checked={field.value ?? false}
-                  onCheckedChange={field.onChange}
-                  disabled={disabled}
-                  className="size-3"
-                />
-              )}
+            </div>
+            <Input
+              id={`items-${index}-tax-amount`}
+              type="number"
+              min={0}
+              step="0.01"
+              placeholder="0.00"
+              className="h-7 text-xs text-right"
+              disabled={disabled || !isTaxAdj}
+              {...form.register(`items.${index}.tax_amount`, {
+                valueAsNumber: true,
+              })}
             />
           </div>
-          <Input
-            id={`items-${index}-tax-amount`}
-            type="number"
-            min={0}
-            step="0.01"
-            placeholder="0.00"
-            className="h-6 text-[11px] md:text-[11px] text-right"
-            disabled={disabled || !isTaxAdj}
-            {...form.register(`items.${index}.tax_amount`, {
-              valueAsNumber: true,
-            })}
-          />
         </div>
-        <div className="col-span-1">
-          <label
-            htmlFor={`items-${index}-discount-rate`}
-            className="text-[10px] text-muted-foreground"
-          >
-            Disc %
-          </label>
-          <Input
-            id={`items-${index}-discount-rate`}
-            type="number"
-            min={0}
-            step="0.01"
-            placeholder="0"
-            className="h-6 text-[11px] md:text-[11px] text-right"
-            disabled={disabled}
-            {...form.register(`items.${index}.discount_rate`, {
-              valueAsNumber: true,
-            })}
-          />
-        </div>
-        <div className="col-span-2">
-          <div className="flex items-center gap-1">
-            <span className="text-[10px] text-muted-foreground">Disc Amt</span>
-            <Controller
-              control={form.control}
-              name={`items.${index}.is_discount_adjustment`}
-              render={({ field }) => (
-                <Checkbox
-                  checked={field.value ?? false}
-                  onCheckedChange={field.onChange}
-                  disabled={disabled}
-                  className="size-3"
+        {/* Discount row + Summary */}
+        <div className="flex items-end gap-3">
+          <div className="grid grid-cols-[5rem_10rem] gap-3 items-end">
+            <div>
+              <label
+                htmlFor={`items-${index}-discount-rate`}
+                className="text-xs text-muted-foreground"
+              >
+                Disc %
+              </label>
+              <Input
+                id={`items-${index}-discount-rate`}
+                type="number"
+                min={0}
+                step="0.01"
+                placeholder="0"
+                className="h-7 text-xs text-right"
+                disabled={disabled}
+                {...form.register(`items.${index}.discount_rate`, {
+                  valueAsNumber: true,
+                })}
+              />
+            </div>
+            <div>
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor={`items-${index}-discount-amount`}
+                  className="text-xs text-muted-foreground"
+                >
+                  Disc Amt
+                </label>
+                <Controller
+                  control={form.control}
+                  name={`items.${index}.is_discount_adjustment`}
+                  render={({ field }) => (
+                    <label className="flex items-center gap-1 cursor-pointer">
+                      <Checkbox
+                        checked={field.value ?? false}
+                        onCheckedChange={field.onChange}
+                        disabled={disabled}
+                        className="size-3.5"
+                      />
+                      <span className="text-xs text-muted-foreground select-none">
+                        Manual
+                      </span>
+                    </label>
+                  )}
                 />
-              )}
-            />
+              </div>
+              <Input
+                id={`items-${index}-discount-amount`}
+                type="number"
+                min={0}
+                step="0.01"
+                placeholder="0.00"
+                className="h-7 text-xs text-right"
+                disabled={disabled || !isDiscAdj}
+                {...form.register(`items.${index}.discount_amount`, {
+                  valueAsNumber: true,
+                })}
+              />
+            </div>
           </div>
-          <Input
-            id={`items-${index}-discount-amount`}
-            type="number"
-            min={0}
-            step="0.01"
-            placeholder="0.00"
-            className="h-6 text-[11px] md:text-[11px] text-right"
-            disabled={disabled || !isDiscAdj}
-            {...form.register(`items.${index}.discount_amount`, {
-              valueAsNumber: true,
-            })}
-          />
-        </div>
-        <div className="col-span-3">
-          <span className="text-[10px] text-muted-foreground">Total</span>
-          <div className="h-6 leading-6 text-[11px] text-right font-semibold tabular-nums">
-            {totalPrice.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+          {/* Summary */}
+          <div className="text-xs tabular-nums text-right space-y-0.5 pl-3 border-l">
+            <div>
+              <span className="text-muted-foreground">Net </span>
+              <span className="font-medium">{fmt(netAmount)}</span>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Total </span>
+              <span className="font-semibold">{fmt(totalPrice)}</span>
+            </div>
           </div>
         </div>
       </div>

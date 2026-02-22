@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { InventoryAdjustmentForm } from "../_components/inventory-adjustment-form";
+import { InventoryAdjustmentForm } from "../_components/inv-adj-form";
 import { ErrorState } from "@/components/ui/error-state";
 import type { InventoryAdjustmentType } from "@/types/inventory-adjustment";
 

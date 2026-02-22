@@ -3,9 +3,9 @@
 import { use, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useInventoryAdjustmentById } from "@/hooks/use-inventory-adjustment";
-import { InventoryAdjustmentForm } from "../_components/inventory-adjustment-form";
+import { InventoryAdjustmentForm } from "../_components/inv-adj-form";
 import { ErrorState } from "@/components/ui/error-state";
-import { InventoryAdjustmentType } from "@/types/inventory-adjustment";
+import type { InventoryAdjustmentType } from "@/types/inventory-adjustment";
 
 function EditInventoryAdjustmentContent({
   id,
@@ -34,12 +34,12 @@ function EditContent({
     isLoading,
     error,
     refetch,
-  } = useInventoryAdjustmentById(id);
+  } = useInventoryAdjustmentById(id, type);
 
+  if (!type)
+    return <ErrorState message="Invalid adjustment type" />;
   if (isLoading)
-    return (
-      <div className="p-6 text-sm text-muted-foreground">Loading...</div>
-    );
+    return <div className="p-6 text-sm text-muted-foreground">Loading...</div>;
   if (error)
     return <ErrorState message={error.message} onRetry={() => refetch()} />;
   if (!inventoryAdjustment)
@@ -47,7 +47,7 @@ function EditContent({
 
   return (
     <InventoryAdjustmentForm
-      adjustmentType={inventoryAdjustment.type}
+      adjustmentType={type}
       inventoryAdjustment={inventoryAdjustment}
     />
   );

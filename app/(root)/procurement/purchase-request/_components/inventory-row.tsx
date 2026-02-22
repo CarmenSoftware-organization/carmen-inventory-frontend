@@ -24,7 +24,7 @@ export default function InventoryRow({ control, index, buCode }: Props) {
 
   if (!locationId || !productId) return null;
 
-  if (isLoading) {
+  if (!data && isLoading) {
     return (
       <div className="grid grid-cols-12 gap-2 items-end">
         {["on-hand", "on-order", "reorder", "restock", "level"].map((key) => (

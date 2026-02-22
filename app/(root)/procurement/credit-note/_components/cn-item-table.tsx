@@ -11,7 +11,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,17 +33,19 @@ const setProductToItem = (
   });
 };
 
-const ProductCell = ({
+const ProductCell = memo(function ProductCell({
   control,
   form,
   index,
   disabled,
+  hasError,
 }: {
   control: Control<CnFormValues>;
   form: UseFormReturn<CnFormValues>;
   index: number;
   disabled: boolean;
-}) => {
+  hasError: boolean;
+}) {
   return (
     <Controller
       control={control}
@@ -55,12 +57,12 @@ const ProductCell = ({
             setProductToItem(form, index, value, product)
           }
           disabled={disabled}
-          className="w-full text-[11px]"
+          className={`w-full text-[11px]${hasError ? " ring-1 ring-destructive rounded-md" : ""}`}
         />
       )}
     />
   );
-};
+});
 
 export type CnItemField = FieldArrayWithId<CnFormValues, "items", "id">;
 
@@ -94,31 +96,40 @@ export function useCnItemTable({
       {
         accessorKey: "item_id",
         header: "Product",
-        cell: ({ row }) => (
-          <ProductCell
-            control={form.control}
-            form={form}
-            index={row.index}
-            disabled={disabled}
-          />
-        ),
+        cell: ({ row }) => {
+          const hasError =
+            !!form.formState.errors.items?.[row.index]?.item_id;
+          return (
+            <ProductCell
+              control={form.control}
+              form={form}
+              index={row.index}
+              disabled={disabled}
+              hasError={hasError}
+            />
+          );
+        },
         size: 280,
       },
       {
         accessorKey: "quantity",
         header: "Quantity",
-        cell: ({ row }) => (
-          <Input
-            type="number"
-            min={1}
-            placeholder="Qty"
-            className="h-6 text-[11px] md:text-[11px] text-right"
-            disabled={disabled}
-            {...form.register(`items.${row.index}.quantity`, {
-              valueAsNumber: true,
-            })}
-          />
-        ),
+        cell: ({ row }) => {
+          const hasError =
+            !!form.formState.errors.items?.[row.index]?.quantity;
+          return (
+            <Input
+              type="number"
+              min={1}
+              placeholder="Qty"
+              className={`h-6 text-[11px] md:text-[11px] text-right${hasError ? " ring-1 ring-destructive" : ""}`}
+              disabled={disabled}
+              {...form.register(`items.${row.index}.quantity`, {
+                valueAsNumber: true,
+              })}
+            />
+          );
+        },
         size: 100,
         meta: {
           headerClassName: "text-right",

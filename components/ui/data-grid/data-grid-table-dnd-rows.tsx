@@ -68,10 +68,10 @@ function DataGridTableDndRowHandle({ className }: { className?: string }) {
           "size-7 cursor-move opacity-70 hover:bg-transparent hover:opacity-100",
           className
         )}
+        aria-label="Drag to reorder"
         disabled
       >
-        <GripHorizontalIcon
-        />
+        <GripHorizontalIcon />
       </Button>
     )
   }
@@ -84,11 +84,11 @@ function DataGridTableDndRowHandle({ className }: { className?: string }) {
         "size-7 cursor-move opacity-70 hover:bg-transparent hover:opacity-100",
         className
       )}
+      aria-label="Drag to reorder"
       {...context.attributes}
       {...context.listeners}
     >
-      <GripHorizontalIcon
-      />
+      <GripHorizontalIcon />
     </Button>
   )
 }

@@ -11,17 +11,28 @@ export const srDetailSchema = z.object({
   current_stage_status: z.string(),
 });
 
-export const srSchema = z.object({
-  sr_date: z.string().min(1, "SR date is required"),
-  expected_date: z.string().min(1, "Expected date is required"),
-  description: z.string(),
-  workflow_id: z.string(),
-  requestor_id: z.string(),
-  department_id: z.string().min(1, "Department is required"),
-  from_location_id: z.string().min(1, "From location is required"),
-  to_location_id: z.string().min(1, "To location is required"),
-  items: z.array(srDetailSchema),
-});
+export const srSchema = z
+  .object({
+    sr_date: z.string().min(1, "SR date is required"),
+    expected_date: z.string().min(1, "Expected date is required"),
+    description: z.string(),
+    workflow_id: z.string(),
+    requestor_id: z.string(),
+    department_id: z.string().min(1, "Department is required"),
+    from_location_id: z.string().min(1, "From location is required"),
+    to_location_id: z.string().min(1, "To location is required"),
+    items: z.array(srDetailSchema),
+  })
+  .refine(
+    (data) => {
+      if (!data.sr_date || !data.expected_date) return true;
+      return new Date(data.expected_date) >= new Date(data.sr_date);
+    },
+    {
+      message: "Expected date must not be before SR date",
+      path: ["expected_date"],
+    },
+  );
 
 export type SrFormValues = z.infer<typeof srSchema>;
 

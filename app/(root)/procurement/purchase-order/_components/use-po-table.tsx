@@ -1,6 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
 import { CellAction } from "@/components/ui/cell-action";
+import { Badge } from "@/components/ui/badge";
 import { useConfigTable } from "@/components/ui/data-grid/use-config-table";
 import type { PurchaseOrder } from "@/types/purchase-order";
 import type { ParamsDto } from "@/types/params";
@@ -85,6 +86,21 @@ export function usePoTable({
       meta: {
         cellClassName: "text-right",
       },
+    },
+    {
+      accessorKey: "is_active",
+      header: ({ column }) => (
+        <DataGridColumnHeader column={column} title="Status" />
+      ),
+      cell: ({ row }) => {
+        const active = row.getValue("is_active");
+        return (
+          <Badge variant={active ? "success-light" : "warning-light"} size="sm">
+            {active ? "Active" : "Inactive"}
+          </Badge>
+        );
+      },
+      size: 80,
     },
   ];
 

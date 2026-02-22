@@ -24,6 +24,16 @@ import type {
 import { STAGE_ROLE } from "@/types/stage-role";
 import { type FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { PR_STATUS_CONFIG } from "@/constant/purchase-request";
@@ -78,12 +88,14 @@ export function PurchaseRequestForm({
   const approvePr = useUpdatePr("approve");
   const purchaseApprovePr = useUpdatePr("purchase");
   const rejectPr = useUpdatePr("reject");
-  const send_backPr = useUpdatePr("send_back");
+  const sendBackPr = useUpdatePr("send_back");
   const reviewPr = useUpdatePr("review");
   const splitPr = useSplitPurchaseRequest();
 
   const [showDelete, setShowDelete] = useState(false);
   const [showComment, setShowComment] = useState(false);
+  const [showDiscard, setShowDiscard] = useState(false);
+  const [discardAction, setDiscardAction] = useState<(() => void) | null>(null);
   const [actionDialog, setActionDialog] = useState<ActionDialogState>({
     type: null,
   });
@@ -95,7 +107,7 @@ export function PurchaseRequestForm({
     approvePr.isPending ||
     purchaseApprovePr.isPending ||
     rejectPr.isPending ||
-    send_backPr.isPending ||
+    sendBackPr.isPending ||
     reviewPr.isPending ||
     splitPr.isPending;
 
@@ -221,11 +233,31 @@ export function PurchaseRequestForm({
   };
 
   const handleCancel = () => {
-    if (isEdit && purchaseRequest) {
-      form.reset(defaultValues);
-      setMode("view");
+    const doCancel = () => {
+      if (isEdit && purchaseRequest) {
+        form.reset(defaultValues);
+        setMode("view");
+      } else {
+        router.push("/procurement/purchase-request");
+      }
+    };
+
+    if (form.formState.isDirty) {
+      setDiscardAction(() => doCancel);
+      setShowDiscard(true);
     } else {
-      router.push("/procurement/purchase-request");
+      doCancel();
+    }
+  };
+
+  const handleBack = () => {
+    const doBack = () => router.push("/procurement/purchase-request");
+
+    if ((isEdit || isAdd) && form.formState.isDirty) {
+      setDiscardAction(() => doBack);
+      setShowDiscard(true);
+    } else {
+      doBack();
     }
   };
 
@@ -332,7 +364,7 @@ export function PurchaseRequestForm({
         successMsg: "Purchase request rejected",
       },
       send_back: {
-        mutation: send_backPr,
+        mutation: sendBackPr,
         successMsg: "Purchase request sent back",
       },
       review: {
@@ -404,12 +436,13 @@ export function PurchaseRequestForm({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="sticky top-0 z-10 bg-background flex items-center justify-between py-2">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="icon-sm"
-            onClick={() => router.push("/procurement/purchase-request")}
+            aria-label="Go back"
+            onClick={handleBack}
           >
             <ArrowLeft />
           </Button>
@@ -465,6 +498,14 @@ export function PurchaseRequestForm({
           prDateDisplay={prDateDisplay}
         />
 
+        {purchaseRequest?.workflow_current_stage && (
+          <PrWorkflowStep
+            previousStage={purchaseRequest.workflow_previous_stage}
+            currentStage={purchaseRequest.workflow_current_stage}
+            nextStage={purchaseRequest.workflow_next_stage}
+          />
+        )}
+
         <Tabs defaultValue="items">
           <TabsList variant="line">
             <TabsTrigger value="items">Items</TabsTrigger>
@@ -484,13 +525,6 @@ export function PurchaseRequestForm({
               dateFormat={dateFormat}
               onSplit={handleSplit}
             />
-            {purchaseRequest?.workflow_current_stage && (
-              <PrWorkflowStep
-                previousStage={purchaseRequest.workflow_previous_stage}
-                currentStage={purchaseRequest.workflow_current_stage}
-                nextStage={purchaseRequest.workflow_next_stage}
-              />
-            )}
           </TabsContent>
           {(purchaseRequest?.workflow_history?.length ?? 0) > 0 && (
             <TabsContent value="history">
@@ -538,6 +572,29 @@ export function PurchaseRequestForm({
         open={showComment}
         onOpenChange={setShowComment}
       />
+
+      <AlertDialog open={showDiscard} onOpenChange={setShowDiscard}>
+        <AlertDialogContent size="sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Discard changes?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have unsaved changes that will be lost.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Keep editing</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={() => {
+                discardAction?.();
+                setDiscardAction(null);
+              }}
+            >
+              Discard
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

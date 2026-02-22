@@ -505,6 +505,7 @@ function DetailRow({
             type="button"
             variant="ghost"
             size="icon-xs"
+            aria-label="Remove item"
             onClick={onRemove}
           >
             <X />

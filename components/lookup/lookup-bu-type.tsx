@@ -78,9 +78,11 @@ export function LookupBuType({
                   <div
                     role="button"
                     tabIndex={0}
-                    className="ml-1 rounded-full outline-none"
+                    aria-label={`Remove ${item.name}`}
+                    className="ml-1 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
                         handleRemove(e as unknown as React.MouseEvent, item.id);
                       }
                     }}

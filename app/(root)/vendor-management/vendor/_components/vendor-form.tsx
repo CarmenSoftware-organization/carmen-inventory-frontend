@@ -356,6 +356,7 @@ export function VendorForm({ vendor }: VendorFormProps) {
                             <button
                               type="button"
                               className="hover:text-destructive"
+                              aria-label={`Remove ${bt?.name ?? "business type"}`}
                               onClick={() =>
                                 form.setValue(
                                   "business_type_ids",
@@ -460,6 +461,7 @@ export function VendorForm({ vendor }: VendorFormProps) {
                           type="button"
                           variant="ghost"
                           size="icon-xs"
+                          aria-label="Remove info"
                           onClick={() => removeInfo(index)}
                         >
                           <X />
@@ -637,6 +639,7 @@ function AddressRow({ form, index, isDisabled, onRemove }: AddressRowProps) {
             variant="ghost"
             size="icon-xs"
             className="ml-2 mt-5"
+            aria-label="Remove address"
             onClick={onRemove}
           >
             <X />
@@ -795,6 +798,7 @@ function ContactRow({ form, index, isDisabled, onRemove }: ContactRowProps) {
             variant="ghost"
             size="icon-xs"
             className="ml-auto"
+            aria-label="Remove contact"
             onClick={onRemove}
           >
             <X />

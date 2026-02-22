@@ -12,6 +12,7 @@ interface FormToolbarProps {
   readonly onEdit: () => void;
   readonly onDelete?: () => void;
   readonly deleteIsPending?: boolean;
+  readonly children?: React.ReactNode;
 }
 
 export function FormToolbar({
@@ -24,6 +25,7 @@ export function FormToolbar({
   onEdit,
   onDelete,
   deleteIsPending = false,
+  children,
 }: FormToolbarProps) {
   const isView = mode === "view";
   const isEdit = mode === "edit";
@@ -32,7 +34,7 @@ export function FormToolbar({
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon-sm" onClick={onBack}>
+        <Button variant="ghost" size="icon-sm" onClick={onBack} aria-label="Go back">
           <ArrowLeft />
         </Button>
         <h1 className="text-lg font-semibold">{labels.title}</h1>
@@ -76,6 +78,7 @@ export function FormToolbar({
             Delete
           </Button>
         )}
+        {children}
       </div>
     </div>
   );

@@ -2,9 +2,7 @@ import { cookies } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/lib/cookies";
 import { checkServerRateLimit } from "@/lib/rate-limit";
-
-const BACKEND_URL = process.env.BACKEND_URL;
-const X_APP_ID = process.env.X_APP_ID!;
+import { BACKEND_URL, X_APP_ID } from "@/lib/env";
 
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
@@ -23,8 +21,9 @@ async function refreshAccessToken(
 
   const res = await fetch(`${BACKEND_URL}/api/auth/refresh`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "x-app-id": X_APP_ID },
     body: JSON.stringify({ refresh_token: refreshToken }),
+    signal: AbortSignal.timeout(10_000),
   });
 
   if (!res.ok) {
@@ -35,10 +34,19 @@ async function refreshAccessToken(
 
   const data = await res.json();
 
+  if (!data.access_token) {
+    cookieStore.delete("access_token");
+    cookieStore.delete("refresh_token");
+    return null;
+  }
+
   cookieStore.set({
     ...ACCESS_TOKEN_COOKIE,
     value: data.access_token,
-    maxAge: data.expires_in ?? ACCESS_TOKEN_COOKIE.maxAge,
+    maxAge:
+      typeof data.expires_in === "number" && data.expires_in > 0
+        ? data.expires_in
+        : ACCESS_TOKEN_COOKIE.maxAge,
   });
 
   if (data.refresh_token) {
@@ -51,10 +59,7 @@ async function refreshAccessToken(
   return data.access_token;
 }
 
-async function proxyRequest(
-  request: NextRequest,
-  params: { path: string[] },
-) {
+async function proxyRequest(request: NextRequest, params: { path: string[] }) {
   // --- SERVER-SIDE RATE LIMIT ---
   const rateLimited = checkServerRateLimit(
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null,
@@ -74,9 +79,9 @@ async function proxyRequest(
 
   if (!accessToken) {
     accessToken = await refreshAccessToken(cookieStore);
-    if (!accessToken) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  }
+  if (!accessToken) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const url = new URL(`${BACKEND_URL}/${backendPath}`);
@@ -101,7 +106,7 @@ async function proxyRequest(
 
   // --- BODY SIZE LIMIT ---
   if (!["GET", "HEAD"].includes(request.method)) {
-    const contentLength = parseInt(
+    const contentLength = Number.parseInt(
       request.headers.get("content-length") || "0",
     );
     if (contentLength > MAX_BODY_SIZE) {
@@ -124,19 +129,15 @@ async function proxyRequest(
     // Auto-refresh on 401 and retry once
     if (res.status === 401) {
       const newToken = await refreshAccessToken(cookieStore);
-      if (newToken) {
-        headers["Authorization"] = `Bearer ${newToken}`;
-        res = await fetch(url.toString(), {
-          ...init,
-          headers,
-          signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-        });
-      } else {
-        return NextResponse.json(
-          { error: "Session expired" },
-          { status: 401 },
-        );
+      if (!newToken) {
+        return NextResponse.json({ error: "Session expired" }, { status: 401 });
       }
+      headers["Authorization"] = `Bearer ${newToken}`;
+      res = await fetch(url.toString(), {
+        ...init,
+        headers,
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      });
     }
 
     const body = await res.text();

@@ -1,6 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
 import { CellAction } from "@/components/ui/cell-action";
+import { Badge } from "@/components/ui/badge";
 import { useConfigTable } from "@/components/ui/data-grid/use-config-table";
 import type { CreditNote } from "@/types/credit-note";
 import type { ParamsDto } from "@/types/params";
@@ -41,6 +42,17 @@ export function useCnTable({
       size: 150,
     },
     {
+      accessorKey: "credit_note_type",
+      header: ({ column }) => (
+        <DataGridColumnHeader column={column} title="Type" />
+      ),
+      cell: ({ row }) => {
+        const type = row.getValue<string>("credit_note_type");
+        return type === "quantity_return" ? "Quantity Return" : "Amount Discount";
+      },
+      size: 130,
+    },
+    {
       accessorKey: "credit_note_date",
       header: ({ column }) => (
         <DataGridColumnHeader column={column} title="Date" className="justify-center" />
@@ -75,6 +87,21 @@ export function useCnTable({
       meta: {
         cellClassName: "text-right",
       },
+    },
+    {
+      accessorKey: "is_active",
+      header: ({ column }) => (
+        <DataGridColumnHeader column={column} title="Status" />
+      ),
+      cell: ({ row }) => {
+        const active = row.getValue("is_active");
+        return (
+          <Badge variant={active ? "success-light" : "warning-light"} size="sm">
+            {active ? "Active" : "Inactive"}
+          </Badge>
+        );
+      },
+      size: 80,
     },
   ];
 

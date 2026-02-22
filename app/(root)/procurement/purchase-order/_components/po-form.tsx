@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import { MessageSquare } from "lucide-react";
 import { FormToolbar } from "@/components/ui/form-toolbar";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
   useCreatePurchaseOrder,
@@ -13,6 +16,7 @@ import {
 } from "@/hooks/use-purchase-order";
 import type { PurchaseOrder, CreatePoDto } from "@/types/purchase-order";
 import type { FormMode } from "@/types/form";
+import { useProfile } from "@/hooks/use-profile";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { PoGeneralFields } from "./po-general-fields";
 import { PoItemFields } from "./po-item-fields";
@@ -23,11 +27,16 @@ import {
   mapItemToPayload,
 } from "./po-form-schema";
 
+const PoCommentSheet = dynamic(() =>
+  import("./po-comment-sheet").then((mod) => mod.PoCommentSheet),
+);
+
 interface PoFormProps {
   readonly purchaseOrder?: PurchaseOrder;
 }
 
 export function PoForm({ purchaseOrder }: PoFormProps) {
+  const { defaultCurrencyId } = useProfile();
   const router = useRouter();
   const [mode, setMode] = useState<FormMode>(purchaseOrder ? "view" : "add");
   const isView = mode === "view";
@@ -38,10 +47,11 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
   const updatePo = useUpdatePurchaseOrder();
   const deletePo = useDeletePurchaseOrder();
   const [showDelete, setShowDelete] = useState(false);
+  const [showComment, setShowComment] = useState(false);
   const isPending = createPo.isPending || updatePo.isPending;
   const isDisabled = isView || isPending;
 
-  const defaultValues = getDefaultValues(purchaseOrder);
+  const defaultValues = getDefaultValues(purchaseOrder, { defaultCurrencyId });
 
   const title = purchaseOrder?.po_no ?? "Purchase Order";
 
@@ -49,6 +59,12 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
     resolver: zodResolver(poSchema) as Resolver<PoFormValues>,
     defaultValues,
   });
+
+  useEffect(() => {
+    if (!purchaseOrder && defaultCurrencyId && !form.getValues("currency_id")) {
+      form.setValue("currency_id", defaultCurrencyId);
+    }
+  }, [defaultCurrencyId, purchaseOrder, form]);
 
   const onSubmit = (values: PoFormValues) => {
     const newItems = values.items.filter((item) => !item.id);
@@ -147,7 +163,14 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
         onCancel={handleCancel}
         onDelete={purchaseOrder ? () => setShowDelete(true) : undefined}
         deleteIsPending={deletePo.isPending}
-      />
+      >
+        {purchaseOrder && (
+          <Button size="sm" onClick={() => setShowComment(true)}>
+            <MessageSquare aria-hidden="true" />
+            Comment
+          </Button>
+        )}
+      </FormToolbar>
 
       <form
         id="po-form"
@@ -159,24 +182,31 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
       </form>
 
       {purchaseOrder && (
-        <DeleteDialog
-          open={showDelete}
-          onOpenChange={(open) =>
-            !open && !deletePo.isPending && setShowDelete(false)
-          }
-          title="Delete Purchase Order"
-          description={`Are you sure you want to delete purchase order "${purchaseOrder.po_no}"? This action cannot be undone.`}
-          isPending={deletePo.isPending}
-          onConfirm={() => {
-            deletePo.mutate(purchaseOrder.id, {
-              onSuccess: () => {
-                toast.success("Purchase order deleted successfully");
-                router.push("/procurement/purchase-order");
-              },
-              onError: (err) => toast.error(err.message),
-            });
-          }}
-        />
+        <>
+          <DeleteDialog
+            open={showDelete}
+            onOpenChange={(open) =>
+              !open && !deletePo.isPending && setShowDelete(false)
+            }
+            title="Delete Purchase Order"
+            description={`Are you sure you want to delete purchase order "${purchaseOrder.po_no}"? This action cannot be undone.`}
+            isPending={deletePo.isPending}
+            onConfirm={() => {
+              deletePo.mutate(purchaseOrder.id, {
+                onSuccess: () => {
+                  toast.success("Purchase order deleted successfully");
+                  router.push("/procurement/purchase-order");
+                },
+                onError: (err) => toast.error(err.message),
+              });
+            }}
+          />
+          <PoCommentSheet
+            poId={purchaseOrder.id}
+            open={showComment}
+            onOpenChange={setShowComment}
+          />
+        </>
       )}
     </div>
   );

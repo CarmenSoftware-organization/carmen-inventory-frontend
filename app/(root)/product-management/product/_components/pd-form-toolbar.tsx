@@ -37,7 +37,7 @@ export default function FormToolbar({
   return (
     <div className="sticky top-0 z-10 flex items-center justify-between bg-background py-2">
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon-sm" onClick={onBack}>
+        <Button variant="ghost" size="icon-sm" onClick={onBack} aria-label="Go back">
           <ArrowLeft />
         </Button>
         <h1 className="text-lg font-semibold">{title}</h1>

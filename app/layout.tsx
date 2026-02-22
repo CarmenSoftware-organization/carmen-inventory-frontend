@@ -36,11 +36,16 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-2 focus:bg-background focus:text-foreground"
+        >
+          Skip to content
+        </a>
         <NextTopLoader
           color={"var(--primary)"}
           showSpinner={false}
           height={3}
-          nonce={nonce}
         />
         <Providers nonce={nonce}>{children}</Providers>
         <Toaster richColors position="top-right" />

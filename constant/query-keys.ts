@@ -6,6 +6,7 @@ export const QUERY_KEYS = {
   BUSINESS_TYPES: "business-types",
   CN_REASONS: "cn-reasons",
   CREDIT_NOTES: "credit-notes",
+  CREDIT_NOTE_COMMENTS: "credit-note-comments",
   CREDIT_TERMS: "credit-terms",
   CUISINES: "cuisines",
   CURRENCIES: "currencies",
@@ -17,6 +18,7 @@ export const QUERY_KEYS = {
   EXCHANGE_RATES: "exchange-rates",
   EXTRA_COSTS: "extra-costs",
   GOODS_RECEIVE_NOTES: "goods-receive-notes",
+  GOODS_RECEIVE_NOTE_COMMENTS: "goods-receive-note-comments",
   INVENTORY_ADJUSTMENTS: "inventory-adjustments",
   LOCATIONS: "locations",
   MY_PENDING_PURCHASE_REQUESTS: "my-pending-purchase-requests",
@@ -34,6 +36,7 @@ export const QUERY_KEYS = {
   PRODUCT_SUB_CATEGORIES: "product-sub-categories",
   PROFILE: "profile",
   PURCHASE_ORDERS: "purchase-orders",
+  PURCHASE_ORDER_COMMENTS: "purchase-order-comments",
   PURCHASE_REQUESTS: "purchase-requests",
   PURCHASE_REQUEST_COMMENTS: "purchase-request-comments",
   PURCHASE_REQUEST_TEMPLATES: "purchase-request-templates",
@@ -73,6 +76,8 @@ export const queryKeys = {
       [...queryKeys.purchaseOrders.all(), "list", buCode, params] as const,
     detail: (buCode: string, id: string) =>
       [...queryKeys.purchaseOrders.all(), "detail", buCode, id] as const,
+    comments: (buCode: string, poId: string) =>
+      [QUERY_KEYS.PURCHASE_ORDER_COMMENTS, buCode, poId] as const,
   },
   vendors: {
     all: () => [QUERY_KEYS.VENDORS] as const,
@@ -94,6 +99,8 @@ export const queryKeys = {
       [...queryKeys.goodsReceiveNotes.all(), "list", buCode, params] as const,
     detail: (buCode: string, id: string) =>
       [...queryKeys.goodsReceiveNotes.all(), "detail", buCode, id] as const,
+    comments: (buCode: string, grnId: string) =>
+      [QUERY_KEYS.GOODS_RECEIVE_NOTE_COMMENTS, buCode, grnId] as const,
   },
   creditNotes: {
     all: () => [QUERY_KEYS.CREDIT_NOTES] as const,
@@ -101,6 +108,8 @@ export const queryKeys = {
       [...queryKeys.creditNotes.all(), "list", buCode, params] as const,
     detail: (buCode: string, id: string) =>
       [...queryKeys.creditNotes.all(), "detail", buCode, id] as const,
+    comments: (buCode: string, cnId: string) =>
+      [QUERY_KEYS.CREDIT_NOTE_COMMENTS, buCode, cnId] as const,
   },
   storeRequisitions: {
     all: () => [QUERY_KEYS.STORE_REQUISITIONS] as const,

@@ -28,12 +28,12 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
   return (
     <div className="space-y-3">
       {/* ── Order Information ── */}
-      <section className="space-y-2">
+      <section className="space-y-3">
         <h2 className="text-xs font-semibold">Order Information</h2>
-        <FieldGroup className="gap-2">
-          <div className="grid grid-cols-3 gap-2">
+        <FieldGroup className="gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <Field data-invalid={!!form.formState.errors.vendor_id}>
-              <FieldLabel className="text-[11px]" required>Vendor</FieldLabel>
+              <FieldLabel className="text-xs" required>Vendor</FieldLabel>
               <Controller
                 control={form.control}
                 name="vendor_id"
@@ -49,7 +49,7 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
             </Field>
 
             <Field data-invalid={!!form.formState.errors.order_date}>
-              <FieldLabel className="text-[11px]" required>Order Date</FieldLabel>
+              <FieldLabel className="text-xs" required>Order Date</FieldLabel>
               <Controller
                 control={form.control}
                 name="order_date"
@@ -67,7 +67,7 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
             </Field>
 
             <Field data-invalid={!!form.formState.errors.delivery_date}>
-              <FieldLabel className="text-[11px]" required>Delivery Date</FieldLabel>
+              <FieldLabel className="text-xs" required>Delivery Date</FieldLabel>
               <Controller
                 control={form.control}
                 name="delivery_date"
@@ -90,12 +90,12 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
       </section>
 
       {/* ── Currency & Payment ── */}
-      <section className="space-y-2">
+      <section className="space-y-3">
         <h2 className="text-xs font-semibold">Currency & Payment</h2>
-        <FieldGroup className="gap-2">
-          <div className="grid grid-cols-3 gap-2">
+        <FieldGroup className="gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <Field data-invalid={!!form.formState.errors.currency_id}>
-              <FieldLabel className="text-[11px]" required>Currency</FieldLabel>
+              <FieldLabel className="text-xs" required>Currency</FieldLabel>
               <Controller
                 control={form.control}
                 name="currency_id"
@@ -115,7 +115,7 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
             </Field>
 
             <Field>
-              <FieldLabel className="text-[11px]">Exchange Rate</FieldLabel>
+              <FieldLabel className="text-xs">Exchange Rate</FieldLabel>
               <div className="justify-end flex h-8 items-center rounded-md border bg-muted/50 px-3 text-xs text-muted-foreground">
                 {formatExchangeRate(
                   exchangeRate,
@@ -126,8 +126,9 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
             </Field>
 
             <Field>
-              <FieldLabel className="text-[11px]">Credit Term</FieldLabel>
+              <FieldLabel htmlFor="po-credit-term" className="text-xs">Credit Term</FieldLabel>
               <Input
+                id="po-credit-term"
                 placeholder="e.g. 30 days"
                 className="h-8 text-xs"
                 disabled={disabled}
@@ -139,13 +140,14 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
       </section>
 
       {/* ── Contact & Remarks ── */}
-      <section className="space-y-2">
+      <section className="space-y-3">
         <h2 className="text-xs font-semibold">Contact & Remarks</h2>
-        <FieldGroup className="gap-2">
-          <div className="grid grid-cols-3 gap-2">
+        <FieldGroup className="gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <Field>
-              <FieldLabel className="text-[11px]">Buyer</FieldLabel>
+              <FieldLabel htmlFor="po-buyer-name" className="text-xs">Buyer</FieldLabel>
               <Input
+                id="po-buyer-name"
                 placeholder="Buyer name"
                 className="h-8 text-xs"
                 disabled={disabled}
@@ -154,8 +156,9 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
             </Field>
 
             <Field className="col-span-2">
-              <FieldLabel className="text-[11px]">Email</FieldLabel>
+              <FieldLabel htmlFor="po-email" className="text-xs">Email</FieldLabel>
               <Input
+                id="po-email"
                 type="email"
                 placeholder="buyer@example.com"
                 className="h-8 text-xs"
@@ -165,10 +168,11 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
             </Field>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             <Field>
-              <FieldLabel className="text-[11px]">Description</FieldLabel>
+              <FieldLabel htmlFor="po-description" className="text-xs">Description</FieldLabel>
               <Textarea
+                id="po-description"
                 placeholder="Optional"
                 className="text-xs min-h-13"
                 rows={2}
@@ -179,8 +183,9 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
             </Field>
 
             <Field>
-              <FieldLabel className="text-[11px]">Note</FieldLabel>
+              <FieldLabel htmlFor="po-note" className="text-xs">Note</FieldLabel>
               <Textarea
+                id="po-note"
                 placeholder="Optional"
                 className="text-xs min-h-13"
                 rows={2}
