@@ -217,6 +217,7 @@ export function usePrItemTable({
           type="button"
           variant="ghost"
           size="icon-xs"
+          aria-label={row.getIsExpanded() ? "Collapse row" : "Expand row"}
           onClick={() => row.toggleExpanded()}
         >
           {row.getIsExpanded() ? (

@@ -70,8 +70,9 @@ export function GrnGeneralFields({ form, disabled }: GrnGeneralFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">Invoice No.</FieldLabel>
+            <FieldLabel htmlFor="grn-invoice-no" className="text-xs">Invoice No.</FieldLabel>
             <Input
+              id="grn-invoice-no"
               placeholder="e.g. INV-001"
               className="h-9 text-sm"
               disabled={disabled}
@@ -185,13 +186,14 @@ export function GrnGeneralFields({ form, disabled }: GrnGeneralFieldsProps) {
             name="is_consignment"
             render={({ field }) => (
               <Checkbox
+                id="grn-consignment"
                 checked={field.value}
                 onCheckedChange={field.onChange}
                 disabled={disabled}
               />
             )}
           />
-          <FieldLabel className="text-xs">Consignment</FieldLabel>
+          <FieldLabel htmlFor="grn-consignment" className="text-xs">Consignment</FieldLabel>
         </Field>
 
         <Field orientation="horizontal" className="self-end pb-1.5">
@@ -200,13 +202,14 @@ export function GrnGeneralFields({ form, disabled }: GrnGeneralFieldsProps) {
             name="is_cash"
             render={({ field }) => (
               <Checkbox
+                id="grn-cash"
                 checked={field.value}
                 onCheckedChange={field.onChange}
                 disabled={disabled}
               />
             )}
           />
-          <FieldLabel className="text-xs">Cash</FieldLabel>
+          <FieldLabel htmlFor="grn-cash" className="text-xs">Cash</FieldLabel>
         </Field>
       </div>
 

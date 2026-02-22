@@ -45,6 +45,7 @@ export function WfHeader({
           <Button
             variant="ghost"
             size="icon-sm"
+            aria-label="Go back"
             onClick={() => router.push("/system-admin/workflow")}
           >
             <ArrowLeft className="size-3.5" />

@@ -243,6 +243,7 @@ export function PrCommentSheet({
                       <div className="flex gap-1">
                         <Button
                           size="icon-xs"
+                          aria-label="Save comment"
                           onClick={() => handleUpdate(c)}
                           disabled={
                             !editMessage.trim() || updateComment.isPending
@@ -257,6 +258,7 @@ export function PrCommentSheet({
                         <Button
                           size="icon-xs"
                           variant="ghost"
+                          aria-label="Cancel edit"
                           onClick={cancelEdit}
                         >
                           <X className="size-3" />
@@ -325,6 +327,7 @@ export function PrCommentSheet({
                       type="button"
                       onClick={() => removePendingFile(i)}
                       className="shrink-0 hover:text-foreground"
+                      aria-label={`Remove ${file.fileName}`}
                     >
                       <X className="size-2.5" />
                     </button>
@@ -345,6 +348,7 @@ export function PrCommentSheet({
                 type="button"
                 size="icon-xs"
                 variant="ghost"
+                aria-label="Attach file"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploading}
               >
@@ -370,6 +374,7 @@ export function PrCommentSheet({
               />
               <Button
                 size="icon-xs"
+                aria-label="Send comment"
                 onClick={handleSubmit}
                 disabled={
                   (!message.trim() && pendingFiles.length === 0) ||

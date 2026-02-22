@@ -27,10 +27,11 @@ export function PrtGeneralFields({ form, disabled }: PrtGeneralFieldsProps) {
         {/* Name + Active */}
         <div className="grid grid-cols-2 gap-3">
           <Field data-invalid={!!form.formState.errors.name}>
-            <FieldLabel className="text-xs" required>
+            <FieldLabel htmlFor="prt-name" className="text-xs" required>
               Name
             </FieldLabel>
             <Input
+              id="prt-name"
               placeholder="e.g. Food Template"
               className="h-8 text-sm"
               disabled={disabled}
@@ -103,8 +104,9 @@ export function PrtGeneralFields({ form, disabled }: PrtGeneralFieldsProps) {
         {/* Description + Note */}
         <div className="grid grid-cols-2 gap-3">
           <Field>
-            <FieldLabel className="text-xs">Description</FieldLabel>
+            <FieldLabel htmlFor="prt-description" className="text-xs">Description</FieldLabel>
             <Textarea
+              id="prt-description"
               placeholder="Optional"
               className="text-sm"
               rows={2}
@@ -115,8 +117,9 @@ export function PrtGeneralFields({ form, disabled }: PrtGeneralFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">Note</FieldLabel>
+            <FieldLabel htmlFor="prt-note" className="text-xs">Note</FieldLabel>
             <Textarea
+              id="prt-note"
               placeholder="Optional"
               className="text-sm"
               rows={2}

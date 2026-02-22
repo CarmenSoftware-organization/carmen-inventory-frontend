@@ -185,8 +185,9 @@ export function InventoryAdjustmentForm({
             </div>
 
             <Field>
-              <FieldLabel className="text-xs">Description</FieldLabel>
+              <FieldLabel htmlFor="inv-adj-description" className="text-xs">Description</FieldLabel>
               <Textarea
+                id="inv-adj-description"
                 placeholder="Optional description"
                 className="text-xs min-h-13"
                 disabled={isDisabled}
@@ -196,8 +197,9 @@ export function InventoryAdjustmentForm({
             </Field>
 
             <Field>
-              <FieldLabel className="text-xs">Note</FieldLabel>
+              <FieldLabel htmlFor="inv-adj-note" className="text-xs">Note</FieldLabel>
               <Textarea
+                id="inv-adj-note"
                 placeholder="Optional note"
                 className="text-xs min-h-13"
                 disabled={isDisabled}

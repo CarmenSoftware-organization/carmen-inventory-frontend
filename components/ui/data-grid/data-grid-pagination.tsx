@@ -91,6 +91,8 @@ function DataGridPagination(props: DataGridPaginationProps): React.JSX.Element {
           className={cn(btnBaseClasses, "text-muted-foreground", {
             "bg-accent text-accent-foreground": pageIndex === i,
           })}
+          aria-current={pageIndex === i ? "page" : undefined}
+          aria-label={`Page ${i + 1}`}
           onClick={() => {
             if (pageIndex !== i) {
               table.setPageIndex(i);
@@ -112,6 +114,7 @@ function DataGridPagination(props: DataGridPaginationProps): React.JSX.Element {
           size="icon-sm"
           className={btnBaseClasses}
           variant="ghost"
+          aria-label="Previous pages"
           onClick={() => table.setPageIndex(currentGroupStart - 1)}
         >
           {mergedProps.ellipsisText}
@@ -129,6 +132,7 @@ function DataGridPagination(props: DataGridPaginationProps): React.JSX.Element {
           className={btnBaseClasses}
           variant="ghost"
           size="icon-sm"
+          aria-label="Next pages"
           onClick={() => table.setPageIndex(currentGroupEnd)}
         >
           {mergedProps.ellipsisText}

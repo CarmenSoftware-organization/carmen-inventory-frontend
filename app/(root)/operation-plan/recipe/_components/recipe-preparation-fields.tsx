@@ -40,9 +40,10 @@ export function RecipePreparationFields({
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-2">
             <Field>
-              <FieldLabel className="text-xs">Prep Time</FieldLabel>
+              <FieldLabel htmlFor="recipe-prep-time" className="text-xs">Prep Time</FieldLabel>
               <div className="relative">
                 <Input
+                  id="recipe-prep-time"
                   type="number"
                   min={0}
                   className="h-8 pr-12 text-right text-sm"
@@ -59,9 +60,10 @@ export function RecipePreparationFields({
             </Field>
 
             <Field>
-              <FieldLabel className="text-xs">Cook Time</FieldLabel>
+              <FieldLabel htmlFor="recipe-cook-time" className="text-xs">Cook Time</FieldLabel>
               <div className="relative">
                 <Input
+                  id="recipe-cook-time"
                   type="number"
                   min={0}
                   className="h-8 pr-12 text-right text-sm"
@@ -86,8 +88,9 @@ export function RecipePreparationFields({
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-2">
             <Field>
-              <FieldLabel className="text-xs">Base Yield</FieldLabel>
+              <FieldLabel htmlFor="recipe-base-yield" className="text-xs">Base Yield</FieldLabel>
               <Input
+                id="recipe-base-yield"
                 type="number"
                 min={0}
                 step="0.01"
@@ -101,10 +104,11 @@ export function RecipePreparationFields({
             </Field>
 
             <Field data-invalid={!!form.formState.errors.base_yield_unit}>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel htmlFor="recipe-yield-unit" className="text-xs" required>
                 Yield Unit
               </FieldLabel>
               <Input
+                id="recipe-yield-unit"
                 placeholder="e.g. portions, servings, liters"
                 className="h-8 text-sm"
                 disabled={isDisabled}

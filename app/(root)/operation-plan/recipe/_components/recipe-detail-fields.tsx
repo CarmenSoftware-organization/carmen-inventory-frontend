@@ -32,8 +32,9 @@ export function RecipeDetailFields({
         </div>
         <FieldGroup className="gap-3">
           <Field>
-            <FieldLabel className="text-xs">Allergens</FieldLabel>
+            <FieldLabel htmlFor="recipe-allergens" className="text-xs">Allergens</FieldLabel>
             <Textarea
+              id="recipe-allergens"
               placeholder={"Gluten\nDairy\nNuts\nShellfish"}
               className="font-mono text-sm"
               rows={4}
@@ -49,9 +50,10 @@ export function RecipeDetailFields({
 
           <div className="grid grid-cols-2 gap-2">
             <Field>
-              <FieldLabel className="text-xs">Carbon Footprint</FieldLabel>
+              <FieldLabel htmlFor="recipe-carbon-footprint" className="text-xs">Carbon Footprint</FieldLabel>
               <div className="relative">
                 <Input
+                  id="recipe-carbon-footprint"
                   type="number"
                   step="0.01"
                   placeholder="0.00"
@@ -76,8 +78,9 @@ export function RecipeDetailFields({
         <h2 className="text-sm font-semibold">Organization</h2>
         <FieldGroup className="gap-3">
           <Field>
-            <FieldLabel className="text-xs">Tags</FieldLabel>
+            <FieldLabel htmlFor="recipe-tags" className="text-xs">Tags</FieldLabel>
             <Textarea
+              id="recipe-tags"
               placeholder={"seasonal\nsignature\nhigh-margin\ngluten-free"}
               className="font-mono text-sm"
               rows={3}
@@ -98,8 +101,9 @@ export function RecipeDetailFields({
         <h2 className="text-sm font-semibold">Media</h2>
         <FieldGroup className="gap-3">
           <Field>
-            <FieldLabel className="text-xs">Image URLs</FieldLabel>
+            <FieldLabel htmlFor="recipe-images" className="text-xs">Image URLs</FieldLabel>
             <Textarea
+              id="recipe-images"
               placeholder={
                 "https://cdn.example.com/recipe-photo-1.jpg\nhttps://cdn.example.com/recipe-photo-2.jpg"
               }

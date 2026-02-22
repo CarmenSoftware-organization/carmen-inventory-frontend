@@ -48,8 +48,9 @@ export function PrGeneralFields({
         </div>
 
         <Field>
-          <FieldLabel className="text-xs">Description</FieldLabel>
+          <FieldLabel htmlFor="pr-description" className="text-xs">Description</FieldLabel>
           <Textarea
+            id="pr-description"
             placeholder="Enter description..."
             className="text-sm"
             rows={2}

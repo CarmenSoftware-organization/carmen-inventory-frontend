@@ -48,13 +48,14 @@ export function RequestPriceListGeneralFields({ form, disabled }: Props) {
   return (
     <FieldGroup className="max-w-2xl gap-3 pt-4">
       <Field data-invalid={!!form.formState.errors.name} className="col-span-2">
-        <FieldLabel className="text-xs">Name</FieldLabel>
+        <FieldLabel htmlFor="rpl-name" className="text-xs">Name</FieldLabel>
         <Controller
           control={form.control}
           name="name"
           render={({ field }) => (
             <Input
               {...field}
+              id="rpl-name"
               placeholder="e.g. RFQ - Fresh Produce Feb 2026"
               className="h-8 text-sm"
               disabled={disabled}
@@ -212,8 +213,9 @@ export function RequestPriceListGeneralFields({ form, disabled }: Props) {
       </Field>
 
       <Field>
-        <FieldLabel className="text-xs">Custom Message</FieldLabel>
+        <FieldLabel htmlFor="rpl-custom-message" className="text-xs">Custom Message</FieldLabel>
         <Textarea
+          id="rpl-custom-message"
           placeholder="Optional message for vendors"
           className="text-sm"
           rows={6}

@@ -126,8 +126,9 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
             </Field>
 
             <Field>
-              <FieldLabel className="text-xs">Credit Term</FieldLabel>
+              <FieldLabel htmlFor="po-credit-term" className="text-xs">Credit Term</FieldLabel>
               <Input
+                id="po-credit-term"
                 placeholder="e.g. 30 days"
                 className="h-8 text-xs"
                 disabled={disabled}
@@ -144,8 +145,9 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-3 gap-3">
             <Field>
-              <FieldLabel className="text-xs">Buyer</FieldLabel>
+              <FieldLabel htmlFor="po-buyer-name" className="text-xs">Buyer</FieldLabel>
               <Input
+                id="po-buyer-name"
                 placeholder="Buyer name"
                 className="h-8 text-xs"
                 disabled={disabled}
@@ -154,8 +156,9 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
             </Field>
 
             <Field className="col-span-2">
-              <FieldLabel className="text-xs">Email</FieldLabel>
+              <FieldLabel htmlFor="po-email" className="text-xs">Email</FieldLabel>
               <Input
+                id="po-email"
                 type="email"
                 placeholder="buyer@example.com"
                 className="h-8 text-xs"
@@ -167,8 +170,9 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
 
           <div className="grid grid-cols-2 gap-3">
             <Field>
-              <FieldLabel className="text-xs">Description</FieldLabel>
+              <FieldLabel htmlFor="po-description" className="text-xs">Description</FieldLabel>
               <Textarea
+                id="po-description"
                 placeholder="Optional"
                 className="text-xs min-h-13"
                 rows={2}
@@ -179,8 +183,9 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
             </Field>
 
             <Field>
-              <FieldLabel className="text-xs">Note</FieldLabel>
+              <FieldLabel htmlFor="po-note" className="text-xs">Note</FieldLabel>
               <Textarea
+                id="po-note"
                 placeholder="Optional"
                 className="text-xs min-h-13"
                 rows={2}

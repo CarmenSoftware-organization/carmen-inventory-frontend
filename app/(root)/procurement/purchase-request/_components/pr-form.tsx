@@ -441,6 +441,7 @@ export function PurchaseRequestForm({
           <Button
             variant="ghost"
             size="icon-sm"
+            aria-label="Go back"
             onClick={handleBack}
           >
             <ArrowLeft />

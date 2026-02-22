@@ -352,8 +352,9 @@ export function StoreRequisitionForm({
               </div>
 
               <Field>
-                <FieldLabel className="text-xs">Description</FieldLabel>
+                <FieldLabel htmlFor="sr-description" className="text-xs">Description</FieldLabel>
                 <Textarea
+                  id="sr-description"
                   placeholder="Optional description"
                   className="text-xs min-h-13"
                   disabled={isDisabled}

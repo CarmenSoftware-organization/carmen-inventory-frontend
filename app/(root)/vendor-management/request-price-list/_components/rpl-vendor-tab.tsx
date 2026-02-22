@@ -240,6 +240,7 @@ export default function RplVendorsTab({
               type="button"
               variant="ghost"
               size="icon-xs"
+              aria-label="Cancel"
               onClick={() => setIsAdding(false)}
             >
               <X className="h-3.5 w-3.5" />
@@ -374,6 +375,7 @@ function VendorActions({
             size="icon-xs"
             onClick={handleSendEmail}
             title={`Send email to ${vendor.contact_email}`}
+            aria-label={`Send email to ${vendor.contact_email}`}
           >
             <Mail className="h-3.5 w-3.5" />
           </Button>
@@ -383,6 +385,7 @@ function VendorActions({
             size="icon-xs"
             onClick={handleCopyUrl}
             title="Copy vendor URL"
+            aria-label="Copy vendor URL"
           >
             {copied ? (
               <Check className="h-3.5 w-3.5 text-green-600" />
@@ -396,6 +399,7 @@ function VendorActions({
             size="icon-xs"
             onClick={handleOpenUrl}
             title="Open vendor URL"
+            aria-label="Open vendor URL"
           >
             <ExternalLink className="h-3.5 w-3.5" />
           </Button>
@@ -403,6 +407,7 @@ function VendorActions({
             type="button"
             variant="ghost"
             size="icon-xs"
+            aria-label="Remove vendor"
             onClick={onRemove}
           >
             <Trash2 className="h-3.5 w-3.5" />

@@ -443,6 +443,7 @@ function ProductRow({
             type="button"
             variant="ghost"
             size="icon-xs"
+            aria-label="Remove product"
             onClick={onRemove}
           >
             <X />
@@ -524,6 +525,7 @@ function ProductRow({
                       type="button"
                       variant="ghost"
                       size="icon-xs"
+                      aria-label="Remove MOQ"
                       onClick={() => removeMoq(moqIndex)}
                     >
                       <X />
