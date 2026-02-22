@@ -18,6 +18,7 @@ export const QUERY_KEYS = {
   EXCHANGE_RATES: "exchange-rates",
   EXTRA_COSTS: "extra-costs",
   GOODS_RECEIVE_NOTES: "goods-receive-notes",
+  GOODS_RECEIVE_NOTE_COMMENTS: "goods-receive-note-comments",
   INVENTORY_ADJUSTMENTS: "inventory-adjustments",
   LOCATIONS: "locations",
   MY_PENDING_PURCHASE_REQUESTS: "my-pending-purchase-requests",
@@ -98,6 +99,8 @@ export const queryKeys = {
       [...queryKeys.goodsReceiveNotes.all(), "list", buCode, params] as const,
     detail: (buCode: string, id: string) =>
       [...queryKeys.goodsReceiveNotes.all(), "detail", buCode, id] as const,
+    comments: (buCode: string, grnId: string) =>
+      [QUERY_KEYS.GOODS_RECEIVE_NOTE_COMMENTS, buCode, grnId] as const,
   },
   creditNotes: {
     all: () => [QUERY_KEYS.CREDIT_NOTES] as const,
