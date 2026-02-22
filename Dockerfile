@@ -19,10 +19,21 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
+# Server-only (used at build time for API proxy config)
 ARG BACKEND_URL
 ARG X_APP_ID
 ENV BACKEND_URL=$BACKEND_URL
 ENV X_APP_ID=$X_APP_ID
+
+# Public (inlined into JS bundle at build time by Next.js)
+ARG NEXT_PUBLIC_FRONTEND_URL
+ARG NEXT_PUBLIC_WS_URL
+ARG NEXT_PUBLIC_X_APP_ID
+ARG NEXT_PUBLIC_SENTRY_DSN
+ENV NEXT_PUBLIC_FRONTEND_URL=$NEXT_PUBLIC_FRONTEND_URL
+ENV NEXT_PUBLIC_WS_URL=$NEXT_PUBLIC_WS_URL
+ENV NEXT_PUBLIC_X_APP_ID=$NEXT_PUBLIC_X_APP_ID
+ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
 
 RUN if [ -f bun.lock ]; then bun run build; \
     else npm run build; fi
@@ -35,6 +46,12 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
+
+# Server-only runtime env (can be overridden by docker-compose environment)
+ARG BACKEND_URL
+ARG X_APP_ID
+ENV BACKEND_URL=$BACKEND_URL
+ENV X_APP_ID=$X_APP_ID
 
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
