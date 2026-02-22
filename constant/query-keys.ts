@@ -34,6 +34,7 @@ export const QUERY_KEYS = {
   PRODUCT_SUB_CATEGORIES: "product-sub-categories",
   PROFILE: "profile",
   PURCHASE_ORDERS: "purchase-orders",
+  PURCHASE_ORDER_COMMENTS: "purchase-order-comments",
   PURCHASE_REQUESTS: "purchase-requests",
   PURCHASE_REQUEST_COMMENTS: "purchase-request-comments",
   PURCHASE_REQUEST_TEMPLATES: "purchase-request-templates",
@@ -73,6 +74,8 @@ export const queryKeys = {
       [...queryKeys.purchaseOrders.all(), "list", buCode, params] as const,
     detail: (buCode: string, id: string) =>
       [...queryKeys.purchaseOrders.all(), "detail", buCode, id] as const,
+    comments: (buCode: string, poId: string) =>
+      [QUERY_KEYS.PURCHASE_ORDER_COMMENTS, buCode, poId] as const,
   },
   vendors: {
     all: () => [QUERY_KEYS.VENDORS] as const,

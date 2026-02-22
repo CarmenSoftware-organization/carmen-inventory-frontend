@@ -12,6 +12,7 @@ interface FormToolbarProps {
   readonly onEdit: () => void;
   readonly onDelete?: () => void;
   readonly deleteIsPending?: boolean;
+  readonly children?: React.ReactNode;
 }
 
 export function FormToolbar({
@@ -24,6 +25,7 @@ export function FormToolbar({
   onEdit,
   onDelete,
   deleteIsPending = false,
+  children,
 }: FormToolbarProps) {
   const isView = mode === "view";
   const isEdit = mode === "edit";
@@ -76,6 +78,7 @@ export function FormToolbar({
             Delete
           </Button>
         )}
+        {children}
       </div>
     </div>
   );

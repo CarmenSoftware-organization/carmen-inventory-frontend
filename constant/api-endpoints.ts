@@ -64,6 +64,10 @@ export const API_ENDPOINTS = {
   PURCHASE_REQUEST_TEMPLATES: (buCode: string) =>
     `/api/proxy/api/${buCode}/purchase-request-template`,
   PURCHASE_ORDER: (buCode: string) => `/api/proxy/api/${buCode}/purchase-order`,
+  PURCHASE_ORDER_COMMENT: (buCode: string) =>
+    `/api/proxy/api/${buCode}/purchase-order-comment`,
+  PURCHASE_ORDER_COMMENT_ATTACHMENT: (buCode: string, poId: string) =>
+    `/api/proxy/api/${buCode}/purchase-order-comment/${poId}/attachment`,
   PERMISSIONS: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/permissions`,
   PHYSICAL_COUNT: (buCode: string) => `/api/proxy/api/${buCode}/physical-count`,
