@@ -4,7 +4,10 @@ import { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import { MessageSquare } from "lucide-react";
 import { FormToolbar } from "@/components/ui/form-toolbar";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
   useCreateCreditNote,
@@ -24,6 +27,10 @@ import {
 } from "./cn-form-schema";
 import { useProfile } from "@/hooks/use-profile";
 
+const CnCommentSheet = dynamic(() =>
+  import("./cn-comment-sheet").then((mod) => mod.CnCommentSheet),
+);
+
 interface CnFormProps {
   readonly creditNote?: CreditNote;
 }
@@ -40,6 +47,7 @@ export function CnForm({ creditNote }: CnFormProps) {
   const updateCn = useUpdateCreditNote();
   const deleteCn = useDeleteCreditNote();
   const [showDelete, setShowDelete] = useState(false);
+  const [showComment, setShowComment] = useState(false);
   const isPending = createCn.isPending || updateCn.isPending;
   const isDisabled = isView || isPending;
 
@@ -143,7 +151,14 @@ export function CnForm({ creditNote }: CnFormProps) {
         onCancel={handleCancel}
         onDelete={creditNote ? () => setShowDelete(true) : undefined}
         deleteIsPending={deleteCn.isPending}
-      />
+      >
+        {creditNote && (
+          <Button size="sm" onClick={() => setShowComment(true)}>
+            <MessageSquare aria-hidden="true" />
+            Comment
+          </Button>
+        )}
+      </FormToolbar>
 
       <form
         id="cn-form"
@@ -155,24 +170,31 @@ export function CnForm({ creditNote }: CnFormProps) {
       </form>
 
       {creditNote && (
-        <DeleteDialog
-          open={showDelete}
-          onOpenChange={(open) =>
-            !open && !deleteCn.isPending && setShowDelete(false)
-          }
-          title="Delete Credit Note"
-          description={`Are you sure you want to delete credit note "${creditNote.credit_note_number}"? This action cannot be undone.`}
-          isPending={deleteCn.isPending}
-          onConfirm={() => {
-            deleteCn.mutate(creditNote.id, {
-              onSuccess: () => {
-                toast.success("Credit note deleted successfully");
-                router.push("/procurement/credit-note");
-              },
-              onError: (err) => toast.error(err.message),
-            });
-          }}
-        />
+        <>
+          <DeleteDialog
+            open={showDelete}
+            onOpenChange={(open) =>
+              !open && !deleteCn.isPending && setShowDelete(false)
+            }
+            title="Delete Credit Note"
+            description={`Are you sure you want to delete credit note "${creditNote.credit_note_number}"? This action cannot be undone.`}
+            isPending={deleteCn.isPending}
+            onConfirm={() => {
+              deleteCn.mutate(creditNote.id, {
+                onSuccess: () => {
+                  toast.success("Credit note deleted successfully");
+                  router.push("/procurement/credit-note");
+                },
+                onError: (err) => toast.error(err.message),
+              });
+            }}
+          />
+          <CnCommentSheet
+            cnId={creditNote.id}
+            open={showComment}
+            onOpenChange={setShowComment}
+          />
+        </>
       )}
     </div>
   );

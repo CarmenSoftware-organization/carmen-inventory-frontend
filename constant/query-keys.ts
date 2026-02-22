@@ -6,6 +6,7 @@ export const QUERY_KEYS = {
   BUSINESS_TYPES: "business-types",
   CN_REASONS: "cn-reasons",
   CREDIT_NOTES: "credit-notes",
+  CREDIT_NOTE_COMMENTS: "credit-note-comments",
   CREDIT_TERMS: "credit-terms",
   CUISINES: "cuisines",
   CURRENCIES: "currencies",
@@ -104,6 +105,8 @@ export const queryKeys = {
       [...queryKeys.creditNotes.all(), "list", buCode, params] as const,
     detail: (buCode: string, id: string) =>
       [...queryKeys.creditNotes.all(), "detail", buCode, id] as const,
+    comments: (buCode: string, cnId: string) =>
+      [QUERY_KEYS.CREDIT_NOTE_COMMENTS, buCode, cnId] as const,
   },
   storeRequisitions: {
     all: () => [QUERY_KEYS.STORE_REQUISITIONS] as const,

@@ -8,6 +8,10 @@ export const API_ENDPOINTS = {
   CN_REASONS: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/credit-note-reason`,
   CREDIT_NOTE: (buCode: string) => `/api/proxy/api/${buCode}/credit-note`,
+  CREDIT_NOTE_COMMENT: (buCode: string) =>
+    `/api/proxy/api/${buCode}/credit-note-comment`,
+  CREDIT_NOTE_COMMENT_ATTACHMENT: (buCode: string, cnId: string) =>
+    `/api/proxy/api/${buCode}/credit-note-comment/${cnId}/attachment`,
   CREDIT_TERMS: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/credit-term`,
   CUISINES: (buCode: string) =>
