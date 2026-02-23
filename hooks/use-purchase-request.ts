@@ -44,7 +44,7 @@ export interface PurchaseRequestDetailPayload {
 }
 
 export interface CreatePurchaseRequestDto {
-  state_role: string;
+  stage_role: string;
   details: {
     pr_date: string;
     description: string;
@@ -252,10 +252,7 @@ export interface CreatePurchaseRequestCommentDto {
 export function useCreatePurchaseRequestComment() {
   return useApiMutation<CreatePurchaseRequestCommentDto>({
     mutationFn: (data, buCode) =>
-      httpClient.post(
-        API_ENDPOINTS.PURCHASE_REQUEST_COMMENT(buCode),
-        data,
-      ),
+      httpClient.post(API_ENDPOINTS.PURCHASE_REQUEST_COMMENT(buCode), data),
     invalidateKeys: [QUERY_KEYS.PURCHASE_REQUEST_COMMENTS],
     errorMessage: "Failed to add comment",
   });
@@ -344,7 +341,7 @@ export interface ApproveDetail {
 
 export interface PrActionPayload {
   id: string;
-  state_role: string;
+  stage_role: string;
   details: (WorkflowStageDetail | ApproveDetail)[];
   des_stage?: string;
 }

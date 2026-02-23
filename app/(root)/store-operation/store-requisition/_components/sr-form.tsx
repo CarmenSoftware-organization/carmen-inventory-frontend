@@ -64,7 +64,8 @@ export function StoreRequisitionForm({
   const [showDelete, setShowDelete] = useState(false);
   const [showSubmit, setShowSubmit] = useState(false);
 
-  const isPending = createSr.isPending || updateSr.isPending || submitSr.isPending;
+  const isPending =
+    createSr.isPending || updateSr.isPending || submitSr.isPending;
   const isDisabled = isView || isPending;
 
   const requestorName = profile
@@ -115,7 +116,10 @@ export function StoreRequisitionForm({
     defaultValues,
   });
 
-  const fromLocationId = useWatch({ control: form.control, name: "from_location_id" });
+  const fromLocationId = useWatch({
+    control: form.control,
+    name: "from_location_id",
+  });
   const srDate = useWatch({ control: form.control, name: "sr_date" });
 
   useEffect(() => {
@@ -127,9 +131,19 @@ export function StoreRequisitionForm({
       form.setValue("department_id", defaultDepartmentId);
     }
     if (isAdd && !hasDepartment) {
-      toast.warning("Your profile does not have a department assigned. Please contact your administrator.");
+      toast.warning(
+        "Your profile does not have a department assigned. Please contact your administrator.",
+      );
     }
-  }, [profile, defaultBu, form, defaultRequestorId, defaultDepartmentId, isAdd, hasDepartment]);
+  }, [
+    profile,
+    defaultBu,
+    form,
+    defaultRequestorId,
+    defaultDepartmentId,
+    isAdd,
+    hasDepartment,
+  ]);
 
   const mapItemToPayload = (item: SrFormValues["items"][number]) => ({
     product_id: item.product_id,
@@ -194,7 +208,7 @@ export function StoreRequisitionForm({
       updateSr.mutate(
         {
           id: storeRequisition.id,
-          state_role: "create",
+          stage_role: "create",
           details,
         },
         {
@@ -207,7 +221,7 @@ export function StoreRequisitionForm({
       );
     } else if (isAdd) {
       createSr.mutate(
-        { state_role: "create", details },
+        { stage_role: "create", details },
         {
           onSuccess: () => {
             toast.success("Store requisition created successfully");
@@ -234,7 +248,7 @@ export function StoreRequisitionForm({
     submitSr.mutate(
       {
         id: storeRequisition.id,
-        state_role: "create",
+        stage_role: "create",
         details: {
           sr_date: values.sr_date,
           expected_date: values.expected_date,
@@ -416,7 +430,9 @@ export function StoreRequisitionForm({
                         value={field.value}
                         onValueChange={field.onChange}
                         disabled={isDisabled || !fromLocationId}
-                        excludeIds={fromLocationId ? [fromLocationId] : undefined}
+                        excludeIds={
+                          fromLocationId ? [fromLocationId] : undefined
+                        }
                         className="w-full"
                       />
                     )}
@@ -439,7 +455,11 @@ export function StoreRequisitionForm({
                         onValueChange={(val) => {
                           field.onChange(val);
                           const expected = form.getValues("expected_date");
-                          if (val && expected && new Date(expected) < new Date(val)) {
+                          if (
+                            val &&
+                            expected &&
+                            new Date(expected) < new Date(val)
+                          ) {
                             form.setValue("expected_date", "");
                           }
                         }}
@@ -477,7 +497,9 @@ export function StoreRequisitionForm({
               </div>
 
               <Field>
-                <FieldLabel htmlFor="sr-description" className="text-xs">Description</FieldLabel>
+                <FieldLabel htmlFor="sr-description" className="text-xs">
+                  Description
+                </FieldLabel>
                 <Textarea
                   id="sr-description"
                   placeholder="Optional description"

@@ -68,7 +68,13 @@ export function PurchaseRequestForm({
   purchaseRequest,
   template,
 }: PurchaseRequestFormProps) {
-  const { data: profile, defaultBu, buCode, dateFormat, hasDepartment } = useProfile();
+  const {
+    data: profile,
+    defaultBu,
+    buCode,
+    dateFormat,
+    hasDepartment,
+  } = useProfile();
 
   const router = useRouter();
   const [mode, setMode] = useState<FormMode>(purchaseRequest ? "view" : "add");
@@ -133,7 +139,8 @@ export function PurchaseRequestForm({
 
   const reqName = defaultRequestorName ?? requestorName;
 
-  const departmentName = defaultDepartmentName ?? defaultBu?.department?.name ?? "";
+  const departmentName =
+    defaultDepartmentName ?? defaultBu?.department?.name ?? "";
 
   const [todayIso] = useState(() => new Date().toISOString());
   const prDateDisplay = formatDate(defaultPrDate || todayIso, dateFormat);
@@ -150,9 +157,19 @@ export function PurchaseRequestForm({
       form.setValue("department_id", defaultDefaultId);
     }
     if (isAdd && !hasDepartment) {
-      toast.warning("Your profile does not have a department assigned. Please contact your administrator.");
+      toast.warning(
+        "Your profile does not have a department assigned. Please contact your administrator.",
+      );
     }
-  }, [profile, defaultBu, form, defaultRequestorId, defaultDefaultId, isAdd, hasDepartment]);
+  }, [
+    profile,
+    defaultBu,
+    form,
+    defaultRequestorId,
+    defaultDefaultId,
+    isAdd,
+    hasDepartment,
+  ]);
 
   // --- CRUD Handlers ---
 
@@ -206,7 +223,7 @@ export function PurchaseRequestForm({
       updatePr.mutate(
         {
           id: purchaseRequest.id,
-          state_role: "create",
+          stage_role: "create",
           details,
         },
         {
@@ -219,7 +236,7 @@ export function PurchaseRequestForm({
       );
     } else if (isAdd) {
       createPr.mutate(
-        { state_role: "create", details },
+        { stage_role: "create", details },
         {
           onSuccess: (data) => {
             toast.success("Purchase request created successfully");
@@ -305,7 +322,7 @@ export function PurchaseRequestForm({
     submitPr.mutate(
       {
         id: purchaseRequest.id,
-        state_role: STAGE_ROLE.CREATE,
+        stage_role: STAGE_ROLE.CREATE,
         details: prepareStageDetails(),
       },
       {
@@ -320,7 +337,7 @@ export function PurchaseRequestForm({
     approvePr.mutate(
       {
         id: purchaseRequest.id,
-        state_role: role || STAGE_ROLE.APPROVE,
+        stage_role: role || STAGE_ROLE.APPROVE,
         details: prepareApproveDetails(),
       },
       {
@@ -335,7 +352,7 @@ export function PurchaseRequestForm({
     purchaseApprovePr.mutate(
       {
         id: purchaseRequest.id,
-        state_role: STAGE_ROLE.PURCHASE,
+        stage_role: STAGE_ROLE.PURCHASE,
         details: prepareApproveDetails(),
       },
       {
@@ -355,7 +372,7 @@ export function PurchaseRequestForm({
     const details = prepareStageDetails(message);
     const payload = {
       id: purchaseRequest.id,
-      state_role: role || STAGE_ROLE.CREATE,
+      stage_role: role || STAGE_ROLE.CREATE,
       details,
     };
 

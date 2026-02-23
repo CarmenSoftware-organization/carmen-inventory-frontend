@@ -19,7 +19,7 @@ export interface SrDetailPayload {
 }
 
 export interface CreateStoreRequisitionDto {
-  state_role: string;
+  stage_role: string;
   details: {
     sr_date: string;
     expected_date: string;
@@ -55,7 +55,12 @@ export function useStoreRequisition(params?: ParamsDto) {
       const entry = json.data?.[0];
       return {
         data: entry?.data ?? [],
-        paginate: entry?.paginate ?? { total: 0, page: 1, perpage: 10, pages: 0 },
+        paginate: entry?.paginate ?? {
+          total: 0,
+          page: 1,
+          perpage: 10,
+          pages: 0,
+        },
       };
     },
     enabled: !!buCode,
