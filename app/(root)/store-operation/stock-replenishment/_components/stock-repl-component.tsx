@@ -7,6 +7,7 @@ import {
   FileText,
   MapPin,
   Package,
+  RefreshCcw,
   ShoppingCart,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -36,7 +37,12 @@ function filterLocations(locations: Location[], search: string): Location[] {
 }
 
 export default function StockReplComponent() {
-  const { data: locations, isLoading, error, refetch } = useStockReplenishment();
+  const {
+    data: locations,
+    isLoading,
+    error,
+    refetch,
+  } = useStockReplenishment();
   const [selections, setSelections] = useState<Map<string, Set<string>>>(
     new Map(),
   );
@@ -135,24 +141,34 @@ export default function StockReplComponent() {
     <DisplayTemplate
       title="Stock Replenishment"
       description="Monitor stock levels and replenishment needs across locations."
-      toolbar={
-        <SearchInput defaultValue={search} onSearch={setSearch} />
-      }
+      toolbar={<SearchInput defaultValue={search} onSearch={setSearch} />}
       actions={
         <>
-          <Button
-            size="sm"
-            variant="outline"
-            disabled={!hasSelection}
-            onClick={handleCreatePR}
-          >
-            <FileText />
-            Create PR{hasSelection && ` (${totalSelected})`}
+          <Button size="sm" variant="outline" onClick={() => refetch()}>
+            <RefreshCcw />
+            Refresh
           </Button>
-          <Button size="sm" disabled={!hasSelection} onClick={handleCreateSR}>
-            <ShoppingCart />
-            Create SR{hasSelection && ` (${totalSelected})`}
-          </Button>
+          {hasSelection && (
+            <>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={!hasSelection}
+                onClick={handleCreatePR}
+              >
+                <FileText />
+                Create PR{hasSelection && ` (${totalSelected})`}
+              </Button>
+              <Button
+                size="sm"
+                disabled={!hasSelection}
+                onClick={handleCreateSR}
+              >
+                <ShoppingCart />
+                Create SR{hasSelection && ` (${totalSelected})`}
+              </Button>
+            </>
+          )}
         </>
       }
     >
@@ -184,7 +200,10 @@ export default function StockReplComponent() {
             </Badge>
             <span className="text-muted-foreground/40">|</span>
             <span className="font-medium">
-              Total need: <span className="tabular-nums">{summary.totalNeed.toLocaleString()}</span>
+              Total need:{" "}
+              <span className="tabular-nums">
+                {summary.totalNeed.toLocaleString()}
+              </span>
             </span>
             <span className="ml-auto">
               <Button

@@ -1,5 +1,8 @@
 "use client";
+"use no memo";
 
+import type { ColumnDef } from "@tanstack/react-table";
+import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
 import {
   Collapsible,
@@ -8,6 +11,11 @@ import {
 } from "@/components/ui/collapsible";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import {
+  DataGrid,
+  DataGridContainer,
+} from "@/components/ui/data-grid/data-grid";
+import { DataGridTable } from "@/components/ui/data-grid/data-grid-table";
 import type { Location, ProductLocation } from "@/types/stock-replenishment";
 
 const STATUS_CONFIG = {
@@ -62,6 +70,132 @@ export function StockReplLocation({
     onSelectionChange(location.location_id, next);
   };
 
+  const columns: ColumnDef<ProductLocation>[] = [
+    {
+      id: "select",
+      header: () => (
+        <Checkbox
+          checked={allSelected}
+          {...(someSelected ? { "data-state": "indeterminate" } : {})}
+          onCheckedChange={(checked) => handleSelectAll(checked === true)}
+          aria-label={`Select all products in ${location.location_name}`}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={selectedIds.has(row.original.id)}
+          onCheckedChange={(checked) =>
+            handleSelectProduct(row.original, checked === true)
+          }
+          aria-label={`Select ${row.original.name}`}
+        />
+      ),
+      enableSorting: false,
+      size: 40,
+      meta: { headerClassName: "text-center", cellClassName: "text-center" },
+    },
+    {
+      id: "index",
+      header: "#",
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">{row.index + 1}</span>
+      ),
+      enableSorting: false,
+      size: 40,
+      meta: { headerClassName: "text-center", cellClassName: "text-center" },
+    },
+    {
+      accessorKey: "name",
+      header: "Product",
+      cell: ({ row }) => row.getValue("name"),
+      enableSorting: false,
+    },
+    {
+      id: "category",
+      header: "Category",
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {row.original.category.name}
+        </span>
+      ),
+      enableSorting: false,
+    },
+    {
+      id: "sub_category",
+      header: "Sub Category",
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {row.original.sub_category.name}
+        </span>
+      ),
+      enableSorting: false,
+    },
+    {
+      id: "item_group",
+      header: "Item Group",
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {row.original.item_group.name}
+        </span>
+      ),
+      enableSorting: false,
+    },
+    {
+      accessorKey: "current",
+      header: "Current",
+      cell: ({ row }) => (
+        <span className="tabular-nums">{row.getValue("current")}</span>
+      ),
+      enableSorting: false,
+      size: 80,
+      meta: { headerClassName: "text-right", cellClassName: "text-right" },
+    },
+    {
+      accessorKey: "par_level",
+      header: "Par Level",
+      cell: ({ row }) => (
+        <span className="tabular-nums">{row.getValue("par_level")}</span>
+      ),
+      enableSorting: false,
+      size: 80,
+      meta: { headerClassName: "text-right", cellClassName: "text-right" },
+    },
+    {
+      accessorKey: "need",
+      header: "Need",
+      cell: ({ row }) => (
+        <span className="tabular-nums font-semibold">
+          {row.getValue("need")}
+        </span>
+      ),
+      enableSorting: false,
+      size: 80,
+      meta: { headerClassName: "text-right", cellClassName: "text-right" },
+    },
+    {
+      id: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const config = STATUS_CONFIG[row.original.status];
+        return (
+          <Badge variant={config.variant} size="xs">
+            {config.label}
+          </Badge>
+        );
+      },
+      enableSorting: false,
+      size: 80,
+      meta: { headerClassName: "text-center", cellClassName: "text-center" },
+    },
+  ];
+
+  const table = useReactTable({
+    data: products,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getRowId: (row) => row.id,
+  });
+
   return (
     <Collapsible open={open} onOpenChange={onOpenChange}>
       <CollapsibleTrigger className="flex w-full items-center gap-2 rounded-md border bg-muted/40 px-3 py-2 text-left text-sm font-medium hover:bg-muted/70 transition-colors">
@@ -90,100 +224,17 @@ export function StockReplLocation({
       </CollapsibleTrigger>
 
       <CollapsibleContent>
-        <div className="mt-1 rounded-md border">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b bg-muted/30">
-                <th scope="col" className="w-10 px-2 py-1.5">
-                  <Checkbox
-                    checked={allSelected}
-                    {...(someSelected ? { "data-state": "indeterminate" } : {})}
-                    onCheckedChange={(checked) =>
-                      handleSelectAll(checked === true)
-                    }
-                    aria-label={`Select all products in ${location.location_name}`}
-                  />
-                </th>
-                <th scope="col" className="w-10 px-2 py-1.5 text-left">
-                  #
-                </th>
-                <th scope="col" className="px-2 py-1.5 text-left">
-                  Product
-                </th>
-                <th scope="col" className="px-2 py-1.5 text-left">
-                  Category
-                </th>
-                <th scope="col" className="px-2 py-1.5 text-left">
-                  Sub Category
-                </th>
-                <th scope="col" className="px-2 py-1.5 text-left">
-                  Item Group
-                </th>
-                <th scope="col" className="w-20 px-2 py-1.5 text-right">
-                  Current
-                </th>
-                <th scope="col" className="w-20 px-2 py-1.5 text-right">
-                  Par Level
-                </th>
-                <th scope="col" className="w-20 px-2 py-1.5 text-right">
-                  Need
-                </th>
-                <th scope="col" className="w-20 px-2 py-1.5 text-center">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product, index) => {
-                const config = STATUS_CONFIG[product.status];
-                const isSelected = selectedIds.has(product.id);
-
-                return (
-                  <tr
-                    key={product.id}
-                    className={`border-b last:border-b-0 transition-colors ${isSelected ? "bg-primary/5" : "hover:bg-muted/20"}`}
-                  >
-                    <td className="px-4 py-1.5">
-                      <Checkbox
-                        checked={isSelected}
-                        onCheckedChange={(checked) =>
-                          handleSelectProduct(product, checked === true)
-                        }
-                        aria-label={`Select ${product.name}`}
-                      />
-                    </td>
-                    <td className="px-2 py-1.5 text-muted-foreground">
-                      {index + 1}
-                    </td>
-                    <td className="px-2 py-1.5">{product.name}</td>
-                    <td className="px-2 py-1.5 text-muted-foreground">
-                      {product.category.name}
-                    </td>
-                    <td className="px-2 py-1.5 text-muted-foreground">
-                      {product.sub_category.name}
-                    </td>
-                    <td className="px-2 py-1.5 text-muted-foreground">
-                      {product.item_group.name}
-                    </td>
-                    <td className="px-2 py-1.5 text-right tabular-nums">
-                      {product.current}
-                    </td>
-                    <td className="px-2 py-1.5 text-right tabular-nums">
-                      {product.par_level}
-                    </td>
-                    <td className="px-2 py-1.5 text-right tabular-nums font-semibold">
-                      {product.need}
-                    </td>
-                    <td className="px-2 py-1.5 text-center">
-                      <Badge variant={config.variant} size="xs">
-                        {config.label}
-                      </Badge>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="mt-1">
+          <DataGrid
+            table={table}
+            recordCount={products.length}
+            tableLayout={{ dense: true }}
+            tableClassNames={{ base: "text-xs" }}
+          >
+            <DataGridContainer>
+              <DataGridTable />
+            </DataGridContainer>
+          </DataGrid>
         </div>
       </CollapsibleContent>
     </Collapsible>
