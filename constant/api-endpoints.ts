@@ -46,6 +46,8 @@ export const API_ENDPOINTS = {
   NOTIFICATIONS_MARK_ALL_READ: (userId: string) =>
     `/api/proxy/api/notifications/mark-all-read/${userId}`,
   PROFILE: "/api/proxy/api/user/profile",
+  PROFILE_UPDATE: "/api/proxy/api/user/update-profile",
+  PROFILE_CHANGE_PASSWORD: "/api/proxy/api/auth/change-password",
   PRODUCTS: (buCode: string) => `/api/proxy/api/config/${buCode}/products`,
   PRODUCTS_BY_LOCATION: (buCode: string, locationId: string) =>
     `/api/proxy/api/${buCode}/products/locations/${locationId}`,

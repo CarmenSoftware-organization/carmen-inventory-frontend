@@ -1,9 +1,14 @@
 import { useEffect, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import type { UserProfile } from "@/types/profile";
+import type {
+  ChangePasswordDto,
+  UpdateProfileDto,
+  UserProfile,
+} from "@/types/profile";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
+import { ApiError } from "@/lib/api-error";
 import { httpClient } from "@/lib/http-client";
 
 export const profileQueryKey = [QUERY_KEYS.PROFILE] as const;
@@ -65,4 +70,56 @@ export function useProfile() {
     userId,
     hasDepartment,
   };
+}
+
+export function useUpdateProfile() {
+  const queryClient = useQueryClient();
+
+  return useMutation<unknown, ApiError, UpdateProfileDto>({
+    mutationFn: async (data) => {
+      const res = await httpClient.patch(API_ENDPOINTS.PROFILE_UPDATE, data);
+      if (!res.ok) {
+        let serverMessage: string | undefined;
+        try {
+          const err = await res.json();
+          serverMessage = err.message;
+        } catch {
+          // JSON parse failed
+        }
+        throw ApiError.fromResponse(
+          res,
+          serverMessage || "Failed to update profile",
+        );
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: profileQueryKey });
+    },
+  });
+}
+
+export function useChangePassword() {
+  return useMutation<unknown, ApiError, ChangePasswordDto>({
+    mutationFn: async (data) => {
+      const res = await httpClient.post(
+        API_ENDPOINTS.PROFILE_CHANGE_PASSWORD,
+        data,
+      );
+      if (!res.ok) {
+        let serverMessage: string | undefined;
+        try {
+          const err = await res.json();
+          serverMessage = err.message;
+        } catch {
+          // JSON parse failed
+        }
+        throw ApiError.fromResponse(
+          res,
+          serverMessage || "Failed to change password",
+        );
+      }
+      return res.json();
+    },
+  });
 }

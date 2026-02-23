@@ -1,3 +1,16 @@
+export interface UpdateProfileDto {
+  alias_name: string;
+  firstname: string;
+  middlename: string;
+  lastname: string;
+  telephone: string;
+}
+
+export interface ChangePasswordDto {
+  current_password: string;
+  new_password: string;
+}
+
 export interface UserProfile {
   id: string;
   email: string;
