@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useProfile } from "@/hooks/use-profile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/ui/error-state";
@@ -12,6 +13,12 @@ function getGreeting() {
 }
 
 export default function MainDashboard() {
+  const [greeting, setGreeting] = useState("");
+
+  useEffect(() => {
+    setGreeting(getGreeting());
+  }, []);
+
   const {
     data: profile,
     isLoading,
@@ -44,7 +51,7 @@ export default function MainDashboard() {
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-4 p-6">
-      <h1 className="text-2xl font-bold">{getGreeting()}, {name}</h1>
+      <h1 className="text-2xl font-bold">{greeting ? `${greeting}, ` : ""}{name}</h1>
       {defaultBu && (
         <p className="text-muted-foreground">
           {defaultBu.name} &middot; {defaultBu.department?.name}

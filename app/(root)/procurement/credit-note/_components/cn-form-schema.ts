@@ -48,7 +48,7 @@ export const EMPTY_FORM: CnFormValues = {
   grn_id: "",
   vendor_id: "",
   credit_note_number: "",
-  credit_note_date: new Date().toISOString(),
+  credit_note_date: "",
   reference_number: "",
   description: "",
   currency_code: "",
@@ -92,6 +92,7 @@ export function getDefaultValues(
   }
   return {
     ...EMPTY_FORM,
+    credit_note_date: new Date().toISOString(),
     currency_code: options?.defaultCurrencyId ?? "",
   };
 }

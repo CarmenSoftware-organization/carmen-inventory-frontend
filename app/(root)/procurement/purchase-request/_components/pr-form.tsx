@@ -135,10 +135,8 @@ export function PurchaseRequestForm({
 
   const departmentName = defaultDepartmentName ?? defaultBu?.department.name;
 
-  const prDateDisplay = formatDate(
-    defaultPrDate || new Date().toISOString(),
-    dateFormat,
-  );
+  const [todayIso] = useState(() => new Date().toISOString());
+  const prDateDisplay = formatDate(defaultPrDate || todayIso, dateFormat);
 
   useEffect(() => {
     if (!form.getValues("pr_date")) {

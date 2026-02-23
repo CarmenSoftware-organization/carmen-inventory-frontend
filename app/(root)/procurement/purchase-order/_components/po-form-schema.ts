@@ -93,7 +93,7 @@ export const EMPTY_FORM: PoFormValues = {
   currency_name: "",
   exchange_rate: 1,
   description: "",
-  order_date: new Date().toISOString(),
+  order_date: "",
   credit_term_id: "",
   credit_term_name: "",
   credit_term_value: 0,
@@ -162,6 +162,7 @@ export function getDefaultValues(
   }
   return {
     ...EMPTY_FORM,
+    order_date: new Date().toISOString(),
     currency_id: options?.defaultCurrencyId ?? "",
   };
 }
