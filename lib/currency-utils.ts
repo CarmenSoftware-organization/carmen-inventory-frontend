@@ -1,3 +1,13 @@
+export function formatCurrency(
+  value: number,
+  decimals: number = 2,
+): string {
+  return value.toLocaleString(undefined, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+}
+
 export function formatExchangeRate(
   rate: number | null | undefined,
   decimalPlaces?: number | null,

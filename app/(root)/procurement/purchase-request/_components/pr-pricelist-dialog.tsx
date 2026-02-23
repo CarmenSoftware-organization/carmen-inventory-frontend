@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { formatCurrency } from "@/lib/currency-utils";
 import { FileText } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -70,10 +71,7 @@ function buildColumns(dateFormat: string): ColumnDef<PricelistEntry>[] {
       },
       size: 80,
       cell: ({ getValue }) =>
-        getValue<number>().toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }),
+        formatCurrency(getValue<number>()),
     },
     {
       accessorKey: "currency",

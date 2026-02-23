@@ -8,6 +8,7 @@ import {
 import dynamic from "next/dynamic";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { formatCurrency } from "@/lib/currency-utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { LookupVendor } from "@/components/lookup/lookup-vendor";
@@ -139,11 +140,6 @@ export function PrItemExpand({
     form.setValue(`items.${index}.pricelist_no`, entry.pricelist_no);
   };
 
-  const fmt = (n: number) =>
-    n.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
 
   return (
     <div className="px-3 py-2 space-y-3 max-w-4xl">
@@ -364,11 +360,11 @@ export function PrItemExpand({
           <div className="text-xs tabular-nums text-right space-y-0.5 pl-3 border-l">
             <div>
               <span className="text-muted-foreground">Net </span>
-              <span className="font-medium">{fmt(netAmount)}</span>
+              <span className="font-medium">{formatCurrency(netAmount)}</span>
             </div>
             <div>
               <span className="text-muted-foreground">Total </span>
-              <span className="font-semibold">{fmt(totalPrice)}</span>
+              <span className="font-semibold">{formatCurrency(totalPrice)}</span>
             </div>
           </div>
         </div>

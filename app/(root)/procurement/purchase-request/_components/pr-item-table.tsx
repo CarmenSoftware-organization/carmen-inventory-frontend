@@ -7,6 +7,7 @@ import {
   type Control,
   type FieldArrayWithId,
 } from "react-hook-form";
+import { formatCurrency } from "@/lib/currency-utils";
 import {
   type ColumnDef,
   getCoreRowModel,
@@ -60,10 +61,7 @@ const AmountCell = memo(function AmountCell({
     useWatch({ control, name: `items.${index}.total_price` }) ?? 0;
   return (
     <span className="tabular-nums font-medium">
-      {Number(totalPrice).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}
+      {formatCurrency(Number(totalPrice))}
     </span>
   );
 });

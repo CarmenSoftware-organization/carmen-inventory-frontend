@@ -2,8 +2,8 @@
 // cause stale closure issues when auto-memoized.
 "use no memo";
 
-import { useState, useMemo } from "react";
-import { useFieldArray, useWatch, type UseFormReturn } from "react-hook-form";
+import { useState } from "react";
+import { useFieldArray, type UseFormReturn } from "react-hook-form";
 import {
   BoxIcon,
   Check,
@@ -34,11 +34,12 @@ import { usePrItemTable } from "./pr-item-table";
 import { PrActionDialog } from "./pr-action-dialog";
 import dynamic from "next/dynamic";
 
-const PrSelectDialog = dynamic(
-  () => import("./pr-select-dialog").then((mod) => mod.PrSelectDialog),
+const PrSelectDialog = dynamic(() =>
+  import("./pr-select-dialog").then((mod) => mod.PrSelectDialog),
 );
 import EmptyComponent from "@/components/empty-component";
 import { PR_ITEM } from "./pr-form-schema";
+import GrandTotal from "./pr-grand-total";
 
 function getDeleteDescription(
   index: number | null,
@@ -53,6 +54,7 @@ function getDeleteDescription(
 interface PrItemFieldsProps {
   form: UseFormReturn<PrFormValues>;
   isDisabled: boolean;
+  isAdd?: boolean;
   role?: string;
   prId?: string;
   prStatus?: string;
@@ -65,6 +67,7 @@ interface PrItemFieldsProps {
 export function PrItemFields({
   form,
   isDisabled,
+  isAdd,
   role,
   prId,
   prStatus,
@@ -246,7 +249,9 @@ export function PrItemFields({
                 type="button"
                 variant="ghost"
                 size="xs"
-                onClick={() => table.toggleAllRowsExpanded(!table.getIsAllRowsExpanded())}
+                onClick={() =>
+                  table.toggleAllRowsExpanded(!table.getIsAllRowsExpanded())
+                }
               >
                 {table.getIsAllRowsExpanded() ? (
                   <>
@@ -354,7 +359,7 @@ export function PrItemFields({
         </DataGridContainer>
       </DataGrid>
 
-      {itemFields.length > 0 && (
+      {!isAdd && itemFields.length > 0 && (
         <GrandTotal
           control={form.control}
           itemCount={itemFields.length}
@@ -395,88 +400,6 @@ export function PrItemFields({
         onSelectAll={handleSelectAll}
         onSelectPending={handleSelectPending}
       />
-    </div>
-  );
-}
-
-function GrandTotal({
-  control,
-  itemCount,
-  currencyCode,
-}: {
-  readonly control: UseFormReturn<PrFormValues>["control"];
-  readonly itemCount: number;
-  readonly currencyCode: string;
-}) {
-  const items = useWatch({ control, name: "items" });
-
-  const summary = useMemo(() => {
-    let subtotal = 0;
-    let totalDiscount = 0;
-    let totalNet = 0;
-    let totalTax = 0;
-    let grandTotal = 0;
-
-    for (const item of items) {
-      const price = Number(item?.pricelist_price ?? 0);
-      const qty = Number(item?.requested_qty ?? 0);
-      subtotal += price * qty;
-      totalDiscount += Number(item?.discount_amount ?? 0);
-      totalNet += Number(item?.net_amount ?? 0);
-      totalTax += Number(item?.tax_amount ?? 0);
-      grandTotal += Number(item?.total_price ?? 0);
-    }
-
-    return { subtotal, totalDiscount, totalNet, totalTax, grandTotal };
-  }, [items]);
-
-  const fmt = (n: number) =>
-    n.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-
-  const rows: { label: string; value: string; className?: string }[] = [
-    { label: "Subtotal", value: fmt(summary.subtotal) },
-    {
-      label: "Discount",
-      value: summary.totalDiscount > 0
-        ? `-${fmt(summary.totalDiscount)}`
-        : fmt(0),
-      className: summary.totalDiscount > 0 ? "text-destructive" : undefined,
-    },
-    { label: "Net", value: fmt(summary.totalNet) },
-    { label: "Tax", value: fmt(summary.totalTax) },
-  ];
-
-  return (
-    <div className="flex items-start justify-between border-t pt-3 text-sm">
-      <span className="text-muted-foreground text-xs pt-0.5">
-        {itemCount} {itemCount === 1 ? "item" : "items"}
-      </span>
-      <div className="w-56">
-        {rows.map((row) => (
-          <div
-            key={row.label}
-            className="flex items-center justify-between py-0.5 text-xs tabular-nums"
-          >
-            <span className="text-muted-foreground">{row.label}</span>
-            <span className={row.className}>{row.value}</span>
-          </div>
-        ))}
-        <div className="border-t my-1" />
-        <div className="flex items-center justify-between">
-          <span className="font-semibold text-sm">Total</span>
-          <span className="font-semibold text-sm tabular-nums">
-            {fmt(summary.grandTotal)}{" "}
-            {currencyCode && (
-              <span className="text-muted-foreground font-normal text-xs">
-                {currencyCode}
-              </span>
-            )}
-          </span>
-        </div>
-      </div>
     </div>
   );
 }

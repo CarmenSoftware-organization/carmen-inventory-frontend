@@ -8,6 +8,7 @@ import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
 import { useProfile } from "@/hooks/use-profile";
 import { formatDate } from "@/lib/date-utils";
+import { formatCurrency } from "@/lib/currency-utils";
 
 interface UsePoTableOptions {
   purchaseOrders: PurchaseOrder[];
@@ -76,10 +77,7 @@ export function usePoTable({
         const amount = row.getValue<number>("total_amount");
         return (
           <span>
-            {amount?.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {amount != null ? formatCurrency(amount) : ""}
           </span>
         );
       },

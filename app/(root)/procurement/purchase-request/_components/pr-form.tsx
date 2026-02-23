@@ -515,6 +515,7 @@ export function PurchaseRequestForm({
             <PrItemFields
               form={form}
               isDisabled={isDisabled}
+              isAdd={isAdd}
               role={role}
               prId={purchaseRequest?.id}
               prStatus={purchaseRequest?.pr_status}

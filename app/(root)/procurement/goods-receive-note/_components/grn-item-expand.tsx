@@ -8,6 +8,7 @@ import {
 } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { formatCurrency } from "@/lib/currency-utils";
 import { LookupTaxProfile } from "@/components/lookup/lookup-tax-profile";
 import { LookupProductUnit } from "@/components/lookup/lookup-product-unit";
 import type { GrnFormValues } from "./grn-form-schema";
@@ -188,10 +189,7 @@ export function GrnItemExpand({
           <div className="col-span-2">
             <span className={LABEL_CLS}>Total Price</span>
             <div className="h-6 leading-6 text-[11px] text-right font-medium tabular-nums">
-              {totalPrice.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
+              {formatCurrency(totalPrice)}
             </div>
           </div>
           <div className="col-span-2">
@@ -425,10 +423,7 @@ export function GrnItemExpand({
           <div className="col-span-2">
             <span className={LABEL_CLS}>Total Amount</span>
             <div className="h-6 leading-6 text-[11px] text-right font-semibold tabular-nums">
-              {totalAmount.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
+              {formatCurrency(totalAmount)}
             </div>
           </div>
         </div>
