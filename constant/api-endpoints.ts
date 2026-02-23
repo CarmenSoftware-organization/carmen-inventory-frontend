@@ -98,6 +98,7 @@ export const API_ENDPOINTS = {
   VENDORS: (buCode: string) => `/api/proxy/api/config/${buCode}/vendors`,
   WASTAGE_REPORT: (buCode: string) => `/api/${buCode}/wastage-report`,
   UNITS: (buCode: string) => `/api/proxy/api/config/${buCode}/units`,
+  USER_LOCATIONS: (buCode: string) => `/api/proxy/api/${buCode}/locations`,
   USERS: (buCode: string) => `/api/proxy/api/${buCode}/users`,
   USER_APPLICATION_ROLES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/user-application-roles`,

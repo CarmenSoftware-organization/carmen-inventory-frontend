@@ -48,6 +48,7 @@ export const QUERY_KEYS = {
   STORE_REQUISITIONS: "store-requisitions",
   TAX_PROFILES: "tax-profiles",
   UNITS: "units",
+  USER_LOCATIONS: "user-locations",
   USERS: "users",
   VENDORS: "vendors",
   WASTAGE_REPORTS: "wastage-reports",

@@ -21,7 +21,6 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataGridTableRowSelect } from "@/components/ui/data-grid/data-grid-table";
 import { DatePicker } from "@/components/ui/date-picker";
-import { LookupLocation } from "@/components/lookup/lookup-location";
 import { LookupProductInLocation } from "@/components/lookup/lookup-product-in-location";
 import { LookupProductUnit } from "@/components/lookup/lookup-product-unit";
 import { LookupCurrency } from "@/components/lookup/lookup-currency";
@@ -30,6 +29,7 @@ import { PR_ITEM_STATUS_CONFIG } from "@/constant/purchase-request";
 import type { PrFormValues } from "./pr-form-schema";
 import { PrItemExpand } from "./pr-item-expand";
 import { Badge } from "@/components/ui/badge";
+import { LookupUserLocation } from "@/components/lookup/lookup-user-location";
 
 const StatusCell = memo(function StatusCell({
   control,
@@ -263,7 +263,7 @@ export function usePrItemTable({
             control={form.control}
             name={`items.${row.index}.location_id`}
             render={({ field }) => (
-              <LookupLocation
+              <LookupUserLocation
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
                 disabled={isDisabled}
