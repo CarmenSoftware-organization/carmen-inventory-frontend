@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { usePurchaseRequestTemplates } from "@/hooks/use-purchase-request";
 import EmptyComponent from "@/components/empty-component";
+import PrSelectTemplate from "./pr-select-template";
 
 interface CreatePRDialogProps {
   open: boolean;
@@ -41,77 +42,74 @@ export function CreatePRDialog({ open, onOpenChange }: CreatePRDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className={
+          view === "choice" ? "gap-3 p-4 sm:max-w-sm" : "gap-3 p-4 sm:max-w-lg"
+        }
+      >
         {view === "choice" ? (
           <>
-            <DialogHeader>
-              <DialogTitle>Create Purchase Request</DialogTitle>
-              <DialogDescription>
+            <DialogHeader className="gap-1">
+              <DialogTitle className="text-sm">
+                Create Purchase Request
+              </DialogTitle>
+              <DialogDescription className="text-xs">
                 Choose how you want to create a new purchase request.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={handleBlankPR}
-                className="flex flex-col items-center gap-2 rounded-lg border p-6 text-sm hover:bg-accent transition-colors"
+                className="flex flex-col items-center gap-1.5 rounded-lg border p-4 text-xs hover:bg-accent transition-colors"
               >
-                <FileText className="size-8 text-muted-foreground" />
+                <FileText className="size-6 text-muted-foreground" />
                 <span className="font-medium">Blank PR</span>
               </button>
               <button
                 type="button"
                 onClick={() => setView("template")}
-                className="flex flex-col items-center gap-2 rounded-lg border p-6 text-sm hover:bg-accent transition-colors"
+                className="flex flex-col items-center gap-1.5 rounded-lg border p-4 text-xs hover:bg-accent transition-colors"
               >
-                <LayoutTemplate className="size-8 text-muted-foreground" />
+                <LayoutTemplate className="size-6 text-muted-foreground" />
                 <span className="font-medium">PR Template</span>
               </button>
             </div>
           </>
         ) : (
           <>
-            <DialogHeader>
-              <div className="flex items-center gap-2">
+            <DialogHeader className="gap-1">
+              <div className="flex items-center gap-1.5">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-7"
+                  className="size-6"
                   onClick={() => setView("choice")}
+                  aria-label="Go back"
                 >
-                  <ArrowLeft className="size-4" />
+                  <ArrowLeft className="size-3.5" />
                 </Button>
-                <DialogTitle>Select Template</DialogTitle>
+                <DialogTitle className="text-sm">Select Template</DialogTitle>
               </div>
-              <DialogDescription>
+              <DialogDescription className="text-xs">
                 Choose a template to prefill your purchase request.
               </DialogDescription>
             </DialogHeader>
-            <div className="max-h-80 overflow-auto space-y-2">
+            <div className="max-h-112 overflow-auto space-y-2">
               {isLoading && (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="size-6 animate-spin text-muted-foreground" />
+                <div className="flex items-center justify-center py-6">
+                  <Loader2 className="size-5 animate-spin text-muted-foreground" />
                 </div>
               )}
               {!isLoading &&
                 templates &&
                 templates.length > 0 &&
                 templates.map((template) => (
-                  <button
+                  <PrSelectTemplate
                     key={template.id}
-                    type="button"
-                    onClick={() => handleSelectTemplate(template.id)}
-                    className="flex w-full flex-col gap-1 rounded-lg border p-3 text-left text-sm hover:bg-accent transition-colors"
-                  >
-                    <span className="font-medium">{template.name}</span>
-                    <div className="flex gap-3 text-xs text-muted-foreground">
-                      <span>{template.department_name}</span>
-                      <span>{template.workflow_name}</span>
-                      <span>
-                        {template.purchase_request_template_detail.length} items
-                      </span>
-                    </div>
-                  </button>
+                    template={template}
+                    onSelect={handleSelectTemplate}
+                  />
                 ))}
               {!isLoading && (!templates || templates.length === 0) && (
                 <EmptyComponent
