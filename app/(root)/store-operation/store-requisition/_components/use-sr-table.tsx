@@ -13,7 +13,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useProfile } from "@/hooks/use-profile";
 import { formatDate } from "@/lib/date-utils";
-import type { StoreRequisition, StoreRequisitionStatus } from "@/types/store-requisition";
+import type {
+  StoreRequisition,
+  StoreRequisitionStatus,
+} from "@/types/store-requisition";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
 
@@ -28,10 +31,10 @@ interface UseStoreRequisitionTableOptions {
 
 const statusVariantMap: Record<
   StoreRequisitionStatus,
-  "outline" | "secondary" | "success" | "destructive"
+  "outline" | "secondary" | "success" | "destructive" | "info"
 > = {
-  draft: "outline",
-  submitted: "secondary",
+  draft: "secondary",
+  submitted: "info",
   approved: "success",
   rejected: "destructive",
 };
@@ -58,6 +61,7 @@ export function useStoreRequisitionTable({
         </CellAction>
       ),
       meta: { skeleton: columnSkeletons.text },
+      size: 150,
     },
     {
       accessorKey: "sr_date",
@@ -66,6 +70,7 @@ export function useStoreRequisitionTable({
       ),
       cell: ({ row }) => formatDate(row.getValue("sr_date"), dateFormat),
       meta: { skeleton: columnSkeletons.text },
+      size: 120,
     },
     {
       accessorKey: "requestor_name",
@@ -86,6 +91,7 @@ export function useStoreRequisitionTable({
       header: "From → To",
       enableSorting: false,
       meta: { skeleton: columnSkeletons.text },
+      size: 220,
     },
     {
       accessorKey: "doc_status",
@@ -95,11 +101,12 @@ export function useStoreRequisitionTable({
         const status = row.getValue("doc_status") as StoreRequisitionStatus;
         return (
           <Badge variant={statusVariantMap[status]} size="sm">
-            {status}
+            {status.toUpperCase()}
           </Badge>
         );
       },
       meta: { skeleton: columnSkeletons.badge },
+      size: 120,
     },
   ];
 

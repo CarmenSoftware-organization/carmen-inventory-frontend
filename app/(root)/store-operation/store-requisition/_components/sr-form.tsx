@@ -11,9 +11,22 @@ import {
   FieldError,
 } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
-import { FormToolbar } from "@/components/ui/form-toolbar";
+import { ArrowLeft, Pencil, SendHorizonal, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { LookupLocation } from "@/components/lookup/lookup-location";
+import { SR_STATUS_CONFIG } from "@/constant/store-requisition";
 import { LookupWorkflow } from "@/components/lookup/lookup-workflow";
 import { WORKFLOW_TYPE } from "@/types/workflows";
 import { toast } from "sonner";
@@ -25,7 +38,7 @@ import {
 } from "@/hooks/use-store-requisition";
 import { useProfile } from "@/hooks/use-profile";
 import type { StoreRequisition } from "@/types/store-requisition";
-import type { FormMode } from "@/types/form";
+import { getModeLabels, type FormMode } from "@/types/form";
 import { DatePicker } from "@/components/ui/date-picker";
 import { srSchema, type SrFormValues } from "./sr-form-schema";
 import { SrItemFields } from "./sr-item-fields";
@@ -46,10 +59,12 @@ export function StoreRequisitionForm({
 
   const createSr = useCreateStoreRequisition();
   const updateSr = useUpdateStoreRequisition();
+  const submitSr = useUpdateStoreRequisition();
   const deleteSr = useDeleteStoreRequisition();
   const [showDelete, setShowDelete] = useState(false);
+  const [showSubmit, setShowSubmit] = useState(false);
 
-  const isPending = createSr.isPending || updateSr.isPending;
+  const isPending = createSr.isPending || updateSr.isPending || submitSr.isPending;
   const isDisabled = isView || isPending;
 
   const requestorName = profile
@@ -210,19 +225,126 @@ export function StoreRequisitionForm({
     }
   };
 
+  const handleSubmitSr = () => {
+    if (!storeRequisition) return;
+    const values = form.getValues();
+    submitSr.mutate(
+      {
+        id: storeRequisition.id,
+        state_role: "create",
+        details: {
+          sr_date: values.sr_date,
+          expected_date: values.expected_date,
+          description: values.description,
+          requestor_id: values.requestor_id,
+          workflow_id: values.workflow_id,
+          department_id: values.department_id,
+          from_location_id: values.from_location_id,
+          to_location_id: values.to_location_id,
+          doc_version: storeRequisition.doc_version ?? 0,
+          store_requisition_detail: {},
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success("Store requisition submitted");
+          setShowSubmit(false);
+        },
+        onError: (err) => toast.error(err.message),
+      },
+    );
+  };
+
+  const canSubmit = isView && storeRequisition?.doc_status === "draft";
+
   return (
     <div className="space-y-4">
-      <FormToolbar
-        entity="Store Requisition"
-        mode={mode}
-        formId="store-requisition-form"
-        isPending={isPending}
-        onBack={() => router.push("/store-operation/store-requisition")}
-        onEdit={() => setMode("edit")}
-        onCancel={handleCancel}
-        onDelete={storeRequisition ? () => setShowDelete(true) : undefined}
-        deleteIsPending={deleteSr.isPending}
-      />
+      <div className="sticky top-0 z-10 bg-background flex items-center justify-between py-2">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Go back"
+            onClick={() => router.push("/store-operation/store-requisition")}
+          >
+            <ArrowLeft />
+          </Button>
+          {isAdd ? (
+            <h1 className="font-semibold text-lg">New Store Requisition</h1>
+          ) : (
+            <div className="flex items-center gap-1.5">
+              <h1 className="font-semibold text-lg">
+                {storeRequisition?.sr_no}
+              </h1>
+              {storeRequisition?.doc_status && (
+                <Badge
+                  variant={
+                    SR_STATUS_CONFIG[storeRequisition.doc_status]?.variant
+                  }
+                >
+                  {SR_STATUS_CONFIG[storeRequisition.doc_status]?.label ??
+                    storeRequisition.doc_status}
+                </Badge>
+              )}
+            </div>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          {isView ? (
+            <>
+              <Button size="sm" onClick={() => setMode("edit")}>
+                <Pencil />
+                Edit
+              </Button>
+              {canSubmit && (
+                <Button
+                  size="sm"
+                  variant="info"
+                  onClick={() => setShowSubmit(true)}
+                  disabled={isPending}
+                >
+                  <SendHorizonal />
+                  Submit
+                </Button>
+              )}
+            </>
+          ) : (
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleCancel}
+                disabled={isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                size="sm"
+                form="store-requisition-form"
+                disabled={isPending}
+              >
+                {isPending
+                  ? getModeLabels(mode, "Store Requisition").pending
+                  : getModeLabels(mode, "Store Requisition").submit}
+              </Button>
+            </>
+          )}
+          {isEdit && storeRequisition && (
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={() => setShowDelete(true)}
+              disabled={isPending || deleteSr.isPending}
+            >
+              <Trash2 />
+              Delete
+            </Button>
+          )}
+        </div>
+      </div>
 
       <form
         id="store-requisition-form"
@@ -388,6 +510,29 @@ export function StoreRequisitionForm({
           }}
         />
       )}
+
+      <AlertDialog open={showSubmit} onOpenChange={setShowSubmit}>
+        <AlertDialogContent size="sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Submit Store Requisition</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will submit the SR for approval. Are you sure?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={submitSr.isPending}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              variant="info"
+              onClick={handleSubmitSr}
+              disabled={submitSr.isPending}
+            >
+              {submitSr.isPending ? "Submitting..." : "Submit"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
