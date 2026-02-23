@@ -186,7 +186,7 @@ export function PrItemExpand({
           />
         </div>
         <div>
-          <label className="text-xs text-muted-foreground">Pricelist</label>
+          <span className="text-xs text-muted-foreground">Pricelist</span>
           <div className="flex items-center gap-1">
             <span className="flex-1 h-7 leading-7 text-xs text-muted-foreground truncate">
               {pricelistNo || "—"}
