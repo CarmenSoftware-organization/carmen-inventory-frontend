@@ -19,6 +19,8 @@ export const API_ENDPOINTS = {
   CURRENCIES: (buCode: string) => `/api/proxy/api/config/${buCode}/currencies`,
   RECIPE_CATEGORIES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/recipe-category`,
+  RECIPE_EQUIPMENT: (buCode: string) =>
+    `/api/proxy/api/config/${buCode}/recipe-equipment`,
   RECIPES: (buCode: string) => `/api/proxy/api/config/${buCode}/recipe`,
   EXCHANGE_RATES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/exchange-rate`,

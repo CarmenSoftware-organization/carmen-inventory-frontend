@@ -41,7 +41,20 @@ export function useApiMutation<TVariables, TResponse = unknown>({
         }
         throw ApiError.fromResponse(res, serverMessage || errorMessage);
       }
-      return res.json();
+      const data = await res.json();
+      if (
+        data != null &&
+        typeof data === "object" &&
+        "success" in data &&
+        data.success === false
+      ) {
+        throw new ApiError(
+          "VALIDATION_ERROR",
+          data.message || errorMessage,
+          data.status,
+        );
+      }
+      return data;
     },
 
     onMutate: optimistic

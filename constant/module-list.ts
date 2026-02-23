@@ -41,6 +41,7 @@ import {
   UtensilsCrossed,
   Layers,
   BookOpen,
+  Wrench,
 } from "lucide-react";
 
 interface ModuleDto {
@@ -186,6 +187,11 @@ export const moduleList: ModuleDto[] = [
         path: "/operation-plan/recipe",
         icon: BookOpen,
       },
+      {
+        name: "Equipment",
+        path: "/operation-plan/equipment",
+        icon: Wrench,
+      },
     ],
   },
   {
@@ -213,32 +219,6 @@ export const moduleList: ModuleDto[] = [
         path: "/inventory-management/spot-check",
         icon: Eye,
       },
-
-      // {
-      //   name: "Stock Overview",
-      //   path: "/inventory-management/stock-overview",
-      //   icon: BarChart3,
-      // },
-      // {
-      //   name: "Inventory Balance",
-      //   path: "/inventory-management/inventory-balance",
-      //   icon: Calculator,
-      // },
-      // {
-      //   name: "Inventory Aging",
-      //   path: "/inventory-management/inventory-aging",
-      //   icon: Timer,
-      // },
-      // {
-      //   name: "Stock Card",
-      //   path: "/inventory-management/stock-card",
-      //   icon: FileText,
-      // },
-      // {
-      //   name: "Slow Moving",
-      //   path: "/inventory-management/slow-moving",
-      //   icon: AlertTriangle,
-      // },
     ],
   },
   {

@@ -11,6 +11,7 @@ export const QUERY_KEYS = {
   CUISINES: "cuisines",
   CURRENCIES: "currencies",
   RECIPE_CATEGORIES: "recipe-categories",
+  RECIPE_EQUIPMENT: "recipe-equipment",
   RECIPES: "recipes",
   DELIVERY_POINTS: "delivery-points",
   DEPARTMENTS: "departments",

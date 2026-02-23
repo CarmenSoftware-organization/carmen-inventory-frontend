@@ -1,0 +1,32 @@
+export interface Equipment {
+  id: string;
+  code: string;
+  name: string;
+  description: string | null;
+  category_id: string | null;
+  brand: string | null;
+  model: string | null;
+  serial_no: string | null;
+  capacity: string | null;
+  power_rating: string | null;
+  station: string | null;
+  operation_instructions: string | null;
+  safety_notes: string | null;
+  cleaning_instructions: string | null;
+  maintenance_schedule: string | null;
+  last_maintenance_date: string | null;
+  next_maintenance_date: string | null;
+  note: string | null;
+  is_active: boolean;
+  is_poolable: boolean;
+  available_qty: number;
+  total_qty: number;
+  usage_count: number;
+  average_usage_time: number;
+  attachments: unknown[] | null;
+  manuals_urls: string[] | null;
+  info: Record<string, unknown> | null;
+  dimension: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
+}
