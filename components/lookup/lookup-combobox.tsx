@@ -36,6 +36,7 @@ interface LookupComboboxProps<T> {
   readonly popoverAlign?: "start" | "center" | "end";
   readonly popoverClassName?: string;
   readonly modal?: boolean;
+  readonly size?: "xs" | "sm";
 }
 
 export function LookupCombobox<T>({
@@ -61,6 +62,7 @@ export function LookupCombobox<T>({
   popoverAlign,
   popoverClassName,
   modal,
+  size = "sm",
 }: LookupComboboxProps<T>) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -95,6 +97,8 @@ export function LookupCombobox<T>({
           aria-expanded={open}
           className={cn(
             "flex justify-between items-center pl-3 pr-1 text-sm",
+            size === "sm" && "h-8",
+            size === "xs" && "h-6 px-2 text-[11px] gap-1",
             className,
           )}
           disabled={disabled}
@@ -111,7 +115,12 @@ export function LookupCombobox<T>({
               {selectedLabel ?? placeholder}
             </span>
           )}
-          <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDown
+            className={cn(
+              "shrink-0 opacity-50",
+              size === "xs" ? "size-3" : "h-4 w-4",
+            )}
+          />
         </Button>
       </PopoverTrigger>
 

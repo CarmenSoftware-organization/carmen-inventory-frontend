@@ -74,7 +74,7 @@ export default function GeneralTab({
       {/* ── Product Identification ── */}
       <section className="space-y-3">
         <h2 className="text-sm font-semibold">Product Identification</h2>
-        <FieldGroup className="gap-3">
+        <FieldGroup className="grid grid-cols-3 gap-3">
           <Field data-invalid={!!form.formState.errors.code}>
             <FieldLabel htmlFor="product-code" className="text-xs" required>
               Code
@@ -114,26 +114,26 @@ export default function GeneralTab({
               placeholder="e.g. เมล็ดกาแฟ"
               className="h-8 text-sm"
               disabled={isDisabled}
+              maxLength={100}
               {...form.register("local_name")}
             />
             <FieldError>{form.formState.errors.local_name?.message}</FieldError>
           </Field>
-
-          <Field>
-            <FieldLabel htmlFor="product-description" className="text-xs">
-              Description
-            </FieldLabel>
-            <Textarea
-              id="product-description"
-              placeholder="Optional"
-              className="text-sm"
-              rows={2}
-              disabled={isDisabled}
-              maxLength={256}
-              {...form.register("description")}
-            />
-          </Field>
         </FieldGroup>
+        <Field>
+          <FieldLabel htmlFor="product-description" className="text-xs">
+            Description
+          </FieldLabel>
+          <Textarea
+            id="product-description"
+            placeholder="Optional"
+            className="text-sm"
+            rows={2}
+            disabled={isDisabled}
+            maxLength={256}
+            {...form.register("description")}
+          />
+        </Field>
       </section>
 
       {/* ── Classification ── */}

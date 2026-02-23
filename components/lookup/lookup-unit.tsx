@@ -14,6 +14,7 @@ interface LookupUnitProps {
   readonly placeholder?: string;
   readonly className?: string;
   readonly excludeIds?: string[];
+  readonly size?: "xs" | "sm";
 }
 
 export function LookupUnit({
@@ -23,6 +24,7 @@ export function LookupUnit({
   placeholder = "Select unit",
   className,
   excludeIds,
+  size = "sm",
 }: LookupUnitProps) {
   const { data, isLoading } = useUnit({ perpage: -1 });
   const units = useMemo(() => {
@@ -47,6 +49,7 @@ export function LookupUnit({
         disabled={disabled}
         isLoading={isLoading}
         className={className}
+        size={size}
         headerSlot={
           <Button
             size="xs"

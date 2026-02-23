@@ -14,6 +14,7 @@ interface LookupItemGroupProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
+  readonly size?: "xs" | "sm";
 }
 
 export function LookupItemGroup({
@@ -22,6 +23,7 @@ export function LookupItemGroup({
   disabled,
   placeholder = "Select item group",
   className,
+  size = "sm",
 }: LookupItemGroupProps) {
   const { data } = useItemGroup({ perpage: -1 });
   const itemGroups = useMemo(
@@ -37,6 +39,7 @@ export function LookupItemGroup({
       getId={(g) => g.id}
       getLabel={(g) => g.name}
       getSearchValue={(g) => `${g.code} ${g.name}`}
+      size={size}
       renderItem={(g) => (
         <>
           <Badge size="xs" variant="secondary">

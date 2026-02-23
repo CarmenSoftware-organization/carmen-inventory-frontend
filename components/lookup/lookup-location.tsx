@@ -13,6 +13,7 @@ interface LookupLocationProps {
   readonly placeholder?: string;
   readonly className?: string;
   readonly excludeIds?: string[];
+  readonly size?: "xs" | "sm";
 }
 
 export function LookupLocation({
@@ -22,6 +23,7 @@ export function LookupLocation({
   placeholder = "Select location",
   className,
   excludeIds,
+  size = "sm",
 }: LookupLocationProps) {
   const { data } = useLocation({ perpage: -1 });
   const locations = useMemo(() => {
@@ -38,6 +40,7 @@ export function LookupLocation({
       items={locations}
       getId={(l) => l.id}
       getLabel={(l) => l.name}
+      size={size}
       renderItem={(l) => (
         <>
           <Badge size="xs" variant="secondary" className="shrink-0">

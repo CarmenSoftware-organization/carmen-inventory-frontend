@@ -75,6 +75,7 @@ const FromUnitCell = ({
           onValueChange={(v) => onUnitChange(index, v)}
           disabled={disabled}
           excludeIds={usedIds.filter((id) => id !== field.value)}
+          size="xs"
         />
       )}
     />
@@ -117,6 +118,7 @@ const ToUnitCell = ({
           onValueChange={(v) => onUnitChange(index, v)}
           disabled={disabled}
           excludeIds={usedIds.filter((id) => id !== field.value)}
+          size="xs"
         />
       )}
     />
@@ -299,17 +301,18 @@ export default function UnitConversionTab({
         accessorKey: "from_unit_qty",
         header: "From Qty",
         cell: ({ row }) => (
-          <Input
-            type="number"
-            step="any"
-            min={1}
-            className="h-6 text-[11px] md:text-[11px] text-right"
-            disabled={isDisabled}
-            {...form.register(`${name}.${row.index}.from_unit_qty`)}
-          />
+          <>
+            <input
+              type="hidden"
+              {...form.register(`${name}.${row.index}.from_unit_qty`)}
+            />
+            <span className="px-2 text-[11px] text-right text-muted-foreground">
+              {row.original.from_unit_qty}
+            </span>
+          </>
         ),
         size: 90,
-        meta: { headerClassName: "text-right" },
+        meta: { headerClassName: "text-right", cellClassName: "text-right" },
       },
       {
         accessorKey: "to_unit_id",
@@ -452,7 +455,7 @@ export default function UnitConversionTab({
         {!isDisabled && (
           <Button
             type="button"
-            size="xs"
+            size="sm"
             disabled={addDisabled}
             onClick={handleAdd}
           >
