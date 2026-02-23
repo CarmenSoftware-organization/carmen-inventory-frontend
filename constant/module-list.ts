@@ -59,197 +59,6 @@ export function getModule(path: string): ModuleDto {
 
 export const moduleList: ModuleDto[] = [
   {
-    name: "Dashboard",
-    path: "/dashboard",
-    icon: LayoutDashboard,
-  },
-
-  {
-    name: "Procurement",
-    path: "/procurement",
-    icon: ShoppingCart,
-    subModules: [
-      {
-        name: "Approval",
-        path: "/procurement/approval",
-        icon: FileCheck,
-      },
-      {
-        name: "Credit Note",
-        path: "/procurement/credit-note",
-        icon: FileInput,
-      },
-      {
-        name: "Goods Receive Note",
-        path: "/procurement/goods-receive-note",
-        icon: PackageCheck,
-      },
-      {
-        name: "Purchase Request",
-        path: "/procurement/purchase-request",
-        icon: FileText,
-      },
-      {
-        name: "Purchase Order",
-        path: "/procurement/purchase-order",
-        icon: ClipboardList,
-      },
-      {
-        name: "Purchase Request Template",
-        path: "/procurement/purchase-request-template",
-        icon: FileSpreadsheet,
-      },
-    ],
-  },
-  {
-    name: "Product Management",
-    path: "/product-management",
-    icon: Package,
-    subModules: [
-      {
-        name: "Category",
-        path: "/product-management/category",
-        icon: Tag,
-      },
-      {
-        name: "Product",
-        path: "/product-management/product",
-        icon: Box,
-      },
-    ],
-  },
-  {
-    name: "Vendor Management",
-    path: "/vendor-management",
-    icon: Handshake,
-    subModules: [
-      {
-        name: "Price List",
-        path: "/vendor-management/price-list",
-        icon: BadgeDollarSign,
-      },
-      {
-        name: "Price List Template",
-        path: "/vendor-management/price-list-template",
-        icon: FileSpreadsheet,
-      },
-      {
-        name: "Request Price List",
-        path: "/vendor-management/request-price-list",
-        icon: FileSpreadsheet,
-      },
-      {
-        name: "Vendor",
-        path: "/vendor-management/vendor",
-        icon: Building2,
-      },
-    ],
-  },
-  {
-    name: "Store Operations",
-    path: "/store-operation",
-    icon: Store,
-    subModules: [
-      {
-        name: "Store Requisition",
-        path: "/store-operation/store-requisition",
-        icon: ListChecks,
-      },
-      {
-        name: "Stock Replenishment",
-        path: "/store-operation/stock-replenishment",
-        icon: PackagePlus,
-      },
-      {
-        name: "Wastage Reporting",
-        path: "/store-operation/wastage-reporting",
-        icon: AlertTriangle,
-      },
-    ],
-  },
-  {
-    name: "Operational Planning",
-    path: "/operation-plan",
-    icon: ChefHat,
-    subModules: [
-      {
-        name: "Cuisine",
-        path: "/operation-plan/cuisine",
-        icon: UtensilsCrossed,
-      },
-      {
-        name: "Category",
-        path: "/operation-plan/category",
-        icon: Layers,
-      },
-      {
-        name: "Recipe",
-        path: "/operation-plan/recipe",
-        icon: BookOpen,
-      },
-      {
-        name: "Equipment",
-        path: "/operation-plan/equipment",
-        icon: Wrench,
-      },
-    ],
-  },
-  {
-    name: "Inventory Management",
-    path: "/inventory-management",
-    icon: Warehouse,
-    subModules: [
-      {
-        name: "Inventory Adjustment",
-        path: "/inventory-management/inventory-adjustment",
-        icon: ArrowUpDown,
-      },
-      {
-        name: "Physical Count",
-        path: "/inventory-management/physical-count",
-        icon: ClipboardCheck,
-      },
-      {
-        name: "Period End",
-        path: "/inventory-management/period-end",
-        icon: Calendar,
-      },
-      {
-        name: "Spot Check",
-        path: "/inventory-management/spot-check",
-        icon: Eye,
-      },
-    ],
-  },
-  {
-    name: "System Administration",
-    path: "/system-admin",
-    icon: Shield,
-    subModules: [
-      {
-        name: "Document",
-        path: "/system-admin/document",
-        icon: FileCheck,
-      },
-
-      {
-        name: "Role",
-        path: "/system-admin/role",
-        icon: ShieldCheck,
-      },
-      {
-        name: "User",
-        path: "/system-admin/user",
-        icon: UserCheck,
-      },
-      {
-        name: "Workflow",
-        path: "/system-admin/workflow",
-        icon: Network,
-      },
-    ],
-  },
-  {
     name: "Config",
     path: "/config",
     icon: Settings2,
@@ -259,7 +68,6 @@ export const moduleList: ModuleDto[] = [
         path: "/config/adjustment-type",
         icon: SlidersHorizontal,
       },
-
       {
         name: "Business Type",
         path: "/config/business-type",
@@ -304,6 +112,195 @@ export const moduleList: ModuleDto[] = [
         name: "Unit",
         path: "/config/unit",
         icon: Scale,
+      },
+    ],
+  },
+  {
+    name: "Dashboard",
+    path: "/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    name: "Inventory Management",
+    path: "/inventory-management",
+    icon: Warehouse,
+    subModules: [
+      {
+        name: "Inventory Adjustment",
+        path: "/inventory-management/inventory-adjustment",
+        icon: ArrowUpDown,
+      },
+      {
+        name: "Period End",
+        path: "/inventory-management/period-end",
+        icon: Calendar,
+      },
+      {
+        name: "Physical Count",
+        path: "/inventory-management/physical-count",
+        icon: ClipboardCheck,
+      },
+      {
+        name: "Spot Check",
+        path: "/inventory-management/spot-check",
+        icon: Eye,
+      },
+    ],
+  },
+  {
+    name: "Operational Planning",
+    path: "/operation-plan",
+    icon: ChefHat,
+    subModules: [
+      {
+        name: "Category",
+        path: "/operation-plan/category",
+        icon: Layers,
+      },
+      {
+        name: "Cuisine",
+        path: "/operation-plan/cuisine",
+        icon: UtensilsCrossed,
+      },
+      {
+        name: "Equipment",
+        path: "/operation-plan/equipment",
+        icon: Wrench,
+      },
+      {
+        name: "Recipe",
+        path: "/operation-plan/recipe",
+        icon: BookOpen,
+      },
+    ],
+  },
+  {
+    name: "Procurement",
+    path: "/procurement",
+    icon: ShoppingCart,
+    subModules: [
+      {
+        name: "Approval",
+        path: "/procurement/approval",
+        icon: FileCheck,
+      },
+      {
+        name: "Credit Note",
+        path: "/procurement/credit-note",
+        icon: FileInput,
+      },
+      {
+        name: "Goods Receive Note",
+        path: "/procurement/goods-receive-note",
+        icon: PackageCheck,
+      },
+      {
+        name: "Purchase Order",
+        path: "/procurement/purchase-order",
+        icon: ClipboardList,
+      },
+      {
+        name: "Purchase Request",
+        path: "/procurement/purchase-request",
+        icon: FileText,
+      },
+      {
+        name: "Purchase Request Template",
+        path: "/procurement/purchase-request-template",
+        icon: FileSpreadsheet,
+      },
+    ],
+  },
+  {
+    name: "Product Management",
+    path: "/product-management",
+    icon: Package,
+    subModules: [
+      {
+        name: "Category",
+        path: "/product-management/category",
+        icon: Tag,
+      },
+      {
+        name: "Product",
+        path: "/product-management/product",
+        icon: Box,
+      },
+    ],
+  },
+  {
+    name: "Store Operations",
+    path: "/store-operation",
+    icon: Store,
+    subModules: [
+      {
+        name: "Stock Replenishment",
+        path: "/store-operation/stock-replenishment",
+        icon: PackagePlus,
+      },
+      {
+        name: "Store Requisition",
+        path: "/store-operation/store-requisition",
+        icon: ListChecks,
+      },
+      {
+        name: "Wastage Reporting",
+        path: "/store-operation/wastage-reporting",
+        icon: AlertTriangle,
+      },
+    ],
+  },
+  {
+    name: "System Administration",
+    path: "/system-admin",
+    icon: Shield,
+    subModules: [
+      {
+        name: "Document",
+        path: "/system-admin/document",
+        icon: FileCheck,
+      },
+      {
+        name: "Role",
+        path: "/system-admin/role",
+        icon: ShieldCheck,
+      },
+      {
+        name: "User",
+        path: "/system-admin/user",
+        icon: UserCheck,
+      },
+      {
+        name: "Workflow",
+        path: "/system-admin/workflow",
+        icon: Network,
+      },
+    ],
+  },
+  {
+    name: "Vendor Management",
+    path: "/vendor-management",
+    icon: Handshake,
+    subModules: [
+      {
+        name: "Price List",
+        path: "/vendor-management/price-list",
+        icon: BadgeDollarSign,
+      },
+      {
+        name: "Price List Template",
+        path: "/vendor-management/price-list-template",
+        icon: FileSpreadsheet,
+      },
+      {
+        name: "Request Price List",
+        path: "/vendor-management/request-price-list",
+        icon: FileSpreadsheet,
+      },
+      {
+        name: "Vendor",
+        path: "/vendor-management/vendor",
+        icon: Building2,
       },
     ],
   },
