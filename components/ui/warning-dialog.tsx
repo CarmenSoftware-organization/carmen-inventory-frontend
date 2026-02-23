@@ -1,0 +1,55 @@
+"use client";
+
+import { AlertTriangle } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
+interface WarningDialogProps {
+  readonly open: boolean;
+  readonly title?: string;
+  readonly description: string;
+  readonly confirmLabel?: string;
+  readonly onConfirm: () => void;
+}
+
+export function WarningDialog({
+  open,
+  title = "Warning",
+  description,
+  confirmLabel = "Go Back",
+  onConfirm,
+}: WarningDialogProps) {
+  return (
+    <AlertDialog open={open}>
+      <AlertDialogContent size="sm">
+        <AlertDialogHeader>
+          <div className="flex items-center gap-2 text-warning">
+            <AlertTriangle className="size-5" aria-hidden="true" />
+            <AlertDialogTitle className="text-warning">
+              {title}
+            </AlertDialogTitle>
+          </div>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter className="!flex !justify-center">
+          <AlertDialogAction
+            className="bg-warning text-warning-foreground hover:bg-warning/90 font-medium"
+            onClick={(e) => {
+              e.preventDefault();
+              onConfirm();
+            }}
+          >
+            {confirmLabel}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}

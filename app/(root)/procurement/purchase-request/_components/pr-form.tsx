@@ -24,6 +24,7 @@ import type {
 import { STAGE_ROLE } from "@/types/stage-role";
 import { type FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
+import { WarningDialog } from "@/components/ui/warning-dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -101,6 +102,7 @@ export function PurchaseRequestForm({
   const [showDelete, setShowDelete] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
+  const showNoDepartment = isAdd && !!profile && !!defaultBu && !hasDepartment;
   const [discardAction, setDiscardAction] = useState<(() => void) | null>(null);
   const [actionDialog, setActionDialog] = useState<ActionDialogState>({
     type: null,
@@ -155,11 +157,6 @@ export function PurchaseRequestForm({
     }
     if (!form.getValues("department_id")) {
       form.setValue("department_id", defaultDefaultId);
-    }
-    if (isAdd && !hasDepartment) {
-      toast.warning(
-        "Your profile does not have a department assigned. Please contact your administrator.",
-      );
     }
   }, [
     profile,
@@ -590,6 +587,12 @@ export function PurchaseRequestForm({
         prId={purchaseRequest?.id}
         open={showComment}
         onOpenChange={setShowComment}
+      />
+
+      <WarningDialog
+        open={showNoDepartment}
+        description="Your profile does not have a department assigned. Please contact your administrator."
+        onConfirm={() => router.back()}
       />
 
       <AlertDialog open={showDiscard} onOpenChange={setShowDiscard}>

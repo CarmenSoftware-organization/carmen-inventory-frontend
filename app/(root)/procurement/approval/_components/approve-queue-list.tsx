@@ -149,22 +149,19 @@ export default function ApprovalQueueList({
     pageCount: Math.ceil(totalRecords / pageSize),
   });
 
-  if (!isLoading && items.length === 0) {
-    return (
-      <EmptyComponent
-        icon={Clock}
-        title="No pending approvals"
-        description="You have no documents waiting for your approval at the moment."
-      />
-    );
-  }
-
   return (
     <DataGrid
       table={table}
       recordCount={totalRecords}
       isLoading={isLoading}
       tableClassNames={{ base: "text-xs" }}
+      emptyMessage={
+        <EmptyComponent
+          icon={Clock}
+          title="No pending approvals"
+          description="You have no documents waiting for your approval at the moment."
+        />
+      }
     >
       <DataGridContainer>
         <DataGridTable />

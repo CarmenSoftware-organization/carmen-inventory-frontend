@@ -6,6 +6,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { cn } from "@/lib/utils";
 import { Folder, type LucideIcon } from "lucide-react";
 
 interface EmptyComponentProps {
@@ -13,6 +14,7 @@ interface EmptyComponentProps {
   readonly title?: string;
   readonly description?: React.ReactNode;
   readonly content?: React.ReactNode;
+  readonly classNames?: string;
 }
 
 export default function EmptyComponent({
@@ -20,9 +22,10 @@ export default function EmptyComponent({
   title = "No data",
   description = "No data found",
   content,
+  classNames,
 }: EmptyComponentProps) {
   return (
-    <Empty>
+    <Empty className={classNames}>
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <Icon />

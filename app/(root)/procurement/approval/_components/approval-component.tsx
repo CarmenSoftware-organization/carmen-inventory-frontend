@@ -26,10 +26,20 @@ const SUMMARY_CARDS: {
   icon: LucideIcon;
   color: string;
 }[] = [
-  { key: "total", label: "Total Pending", icon: ClipboardList, color: "primary" },
+  {
+    key: "total",
+    label: "Total Pending",
+    icon: ClipboardList,
+    color: "primary",
+  },
   { key: "pr", label: "Purchase Request", icon: FileText, color: "info" },
   { key: "po", label: "Purchase Order", icon: ShoppingCart, color: "warning" },
-  { key: "sr", label: "Store Requisition", icon: PackageOpen, color: "secondary" },
+  {
+    key: "sr",
+    label: "Store Requisition",
+    icon: PackageOpen,
+    color: "secondary",
+  },
 ];
 
 export default function ApprovalComponent() {
@@ -51,7 +61,7 @@ export default function ApprovalComponent() {
 
   return (
     <DisplayTemplate
-      title="Approval"
+      title="My Approval"
       description="Review and approve pending procurement requests."
       toolbar={<SearchInput defaultValue={search} onSearch={setSearch} />}
     >

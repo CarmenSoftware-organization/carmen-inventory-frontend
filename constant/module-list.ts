@@ -180,7 +180,7 @@ export const moduleList: ModuleDto[] = [
     icon: ShoppingCart,
     subModules: [
       {
-        name: "Approval",
+        name: "My Approval",
         path: "/procurement/approval",
         icon: FileCheck,
       },
