@@ -49,6 +49,7 @@ export const QUERY_KEYS = {
   UNITS: "units",
   USERS: "users",
   VENDORS: "vendors",
+  WASTAGE_REPORTS: "wastage-reports",
   WORKFLOWS: "workflows",
   // External
   PRICE_LIST_EXTERNAL: "price-list-external",

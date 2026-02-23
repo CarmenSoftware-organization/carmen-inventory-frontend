@@ -94,6 +94,7 @@ export const API_ENDPOINTS = {
   TAX_PROFILES: (buCode: string) =>
     `/api/proxy/api/config/${buCode}/tax-profile`,
   VENDORS: (buCode: string) => `/api/proxy/api/config/${buCode}/vendors`,
+  WASTAGE_REPORT: (buCode: string) => `/api/${buCode}/wastage-report`,
   UNITS: (buCode: string) => `/api/proxy/api/config/${buCode}/units`,
   USERS: (buCode: string) => `/api/proxy/api/${buCode}/users`,
   USER_APPLICATION_ROLES: (buCode: string) =>
