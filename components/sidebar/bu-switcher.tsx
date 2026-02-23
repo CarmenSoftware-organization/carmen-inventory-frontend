@@ -70,7 +70,7 @@ export default function BuSwitcher() {
                   {currentDept.name}
                 </span>
                 <span className="truncate text-xs">
-                  {currentDept.config.hotel.name}
+                  {currentDept.config?.hotel?.name}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -107,7 +107,7 @@ export default function BuSwitcher() {
                 <div className="grid text-xs leading-tight">
                   <span className="truncate font-medium">{bu.name}</span>
                   <span className="truncate text-xs text-muted-foreground">
-                    {bu.config.hotel.name}
+                    {bu.config?.hotel?.name}
                   </span>
                 </div>
               </DropdownMenuItem>

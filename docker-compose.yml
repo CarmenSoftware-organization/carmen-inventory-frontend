@@ -20,6 +20,11 @@ services:
       - "127.0.0.1:3000:3000"
     environment:
       - NODE_ENV=production
+      - BACKEND_URL=${BACKEND_URL:-https://ec2-43-209-126-252.ap-southeast-7.compute.amazonaws.com}
+      - X_APP_ID=${X_APP_ID:-9c83fd4b-ce3f-4de2-a522-349ad1280b10}
+      - EXCHANGE_RATE_API_KEY=${EXCHANGE_RATE_API_KEY:-}
+      - SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN:-}
+      - GOOGLE_GENERATIVE_AI_API_KEY=${GOOGLE_GENERATIVE_AI_API_KEY:-}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]

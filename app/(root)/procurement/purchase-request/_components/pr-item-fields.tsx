@@ -91,7 +91,7 @@ export function PrItemFields({
 
     appendItem({
       ...PR_ITEM,
-      currency_id: defaultBu?.config.default_currency_id ?? null,
+      currency_id: defaultBu?.config?.default_currency_id ?? null,
       delivery_date: tomorrow.toISOString(),
     });
   };
@@ -358,7 +358,7 @@ export function PrItemFields({
         <GrandTotal
           control={form.control}
           itemCount={itemFields.length}
-          currencyCode={defaultBu?.config.default_currency.code ?? ""}
+          currencyCode={defaultBu?.config?.default_currency?.code ?? ""}
         />
       )}
 

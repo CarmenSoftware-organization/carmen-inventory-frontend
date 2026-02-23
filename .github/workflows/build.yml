@@ -50,6 +50,13 @@ jobs:
           tags: |
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.meta.outputs.short_sha }}
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
+          build-args: |
+            BACKEND_URL=${{ secrets.BACKEND_URL }}
+            X_APP_ID=${{ secrets.X_APP_ID }}
+            NEXT_PUBLIC_FRONTEND_URL=${{ vars.NEXT_PUBLIC_FRONTEND_URL }}
+            NEXT_PUBLIC_WS_URL=${{ vars.NEXT_PUBLIC_WS_URL }}
+            NEXT_PUBLIC_X_APP_ID=${{ vars.NEXT_PUBLIC_X_APP_ID }}
+            NEXT_PUBLIC_SENTRY_DSN=${{ vars.NEXT_PUBLIC_SENTRY_DSN }}
           cache-from: type=gha,scope=inventory-frontend
           cache-to: type=gha,mode=max,scope=inventory-frontend
 
@@ -105,7 +112,9 @@ jobs:
               "git remote set-url origin https://'"$GH_TOKEN_SECRET"'@github.com/${{ github.repository }}.git",
               "git fetch origin main",
               "git reset --hard origin/main",
-              "docker-compose down --remove-orphans",
+              "docker stop carmen-inventory-frontend 2>/dev/null || true",
+              "docker rm carmen-inventory-frontend 2>/dev/null || true",
+              "docker-compose down --remove-orphans 2>/dev/null || true",
               "docker-compose pull",
               "docker-compose up -d",
               "docker image prune -f",

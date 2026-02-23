@@ -49,7 +49,7 @@ export function PrtItemFields({
   const handleAddItem = () => {
     appendItem({
       ...PRT_ITEM,
-      currency_id: defaultBu?.config.default_currency_id ?? null,
+      currency_id: defaultBu?.config?.default_currency_id ?? null,
     });
   };
 
