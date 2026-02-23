@@ -31,7 +31,9 @@ export function PrGeneralFields({
       <FieldGroup className="gap-3">
         <div className="grid grid-cols-2 gap-3">
           <Field>
-            <FieldLabel className="text-xs">Workflow</FieldLabel>
+            <FieldLabel className="text-xs" required>
+              Workflow
+            </FieldLabel>
             <Controller
               control={form.control}
               name="workflow_id"
@@ -48,7 +50,9 @@ export function PrGeneralFields({
         </div>
 
         <Field>
-          <FieldLabel htmlFor="pr-description" className="text-xs">Description</FieldLabel>
+          <FieldLabel htmlFor="pr-description" className="text-xs">
+            Description
+          </FieldLabel>
           <Textarea
             id="pr-description"
             placeholder="Enter description..."
