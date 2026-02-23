@@ -68,7 +68,7 @@ export function PurchaseRequestForm({
   purchaseRequest,
   template,
 }: PurchaseRequestFormProps) {
-  const { data: profile, defaultBu, buCode, dateFormat } = useProfile();
+  const { data: profile, defaultBu, buCode, dateFormat, hasDepartment } = useProfile();
 
   const router = useRouter();
   const [mode, setMode] = useState<FormMode>(purchaseRequest ? "view" : "add");
@@ -127,13 +127,13 @@ export function PurchaseRequestForm({
 
   const defaultRequestorName = purchaseRequest?.requestor_name;
   const defaultRequestorId = profile?.id ?? "";
-  const defaultDefaultId = defaultBu?.department.id ?? "";
+  const defaultDefaultId = defaultBu?.department?.id ?? "";
   const defaultDepartmentName = purchaseRequest?.department_name;
   const defaultPrDate = purchaseRequest?.pr_date;
 
   const reqName = defaultRequestorName ?? requestorName;
 
-  const departmentName = defaultDepartmentName ?? defaultBu?.department.name;
+  const departmentName = defaultDepartmentName ?? defaultBu?.department?.name ?? "";
 
   const [todayIso] = useState(() => new Date().toISOString());
   const prDateDisplay = formatDate(defaultPrDate || todayIso, dateFormat);
@@ -149,7 +149,10 @@ export function PurchaseRequestForm({
     if (!form.getValues("department_id")) {
       form.setValue("department_id", defaultDefaultId);
     }
-  }, [profile, defaultBu, form, defaultRequestorId, defaultDefaultId]);
+    if (isAdd && !hasDepartment) {
+      toast.warning("Your profile does not have a department assigned. Please contact your administrator.");
+    }
+  }, [profile, defaultBu, form, defaultRequestorId, defaultDefaultId, isAdd, hasDepartment]);
 
   // --- CRUD Handlers ---
 

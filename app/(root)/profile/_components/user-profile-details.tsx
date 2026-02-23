@@ -136,7 +136,7 @@ const BUCard = ({ bu }: { bu: BusinessUnit }) => {
           <Field label="Alias" value={bu.alias_name} />
           <Field label="Department" value={bu.department?.name} />
           <Field label="System Level" value={bu.system_level} />
-          <Field label="HOD Departments" value={bu.hod_department.join(", ")} />
+          <Field label="HOD Departments" value={bu.hod_department?.join(", ")} />
           <Field label="Description" value={config.description} />
           <Field label="Tax No." value={config.tax_no} />
           <Field label="Branch No." value={config.branch_no} />

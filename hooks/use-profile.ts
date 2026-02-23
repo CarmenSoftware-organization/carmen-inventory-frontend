@@ -51,6 +51,7 @@ export function useProfile() {
     () => query.data?.business_unit.map((b) => b.code),
     [query.data],
   );
+  const hasDepartment = defaultBu?.department != null;
 
   return {
     ...query,
@@ -62,5 +63,6 @@ export function useProfile() {
     dateFormat,
     allBuCode,
     userId,
+    hasDepartment,
   };
 }

@@ -23,7 +23,7 @@ export interface BusinessUnit {
   department: {
     id: string;
     name: string;
-  };
+  } | null;
   hod_department: string[];
   config: BusinessUnitConfig;
 }

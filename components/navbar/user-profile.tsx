@@ -50,8 +50,8 @@ export function UserProfile() {
       <DropdownMenuTrigger className="flex items-center gap-1.5 rounded-md px-1.5 py-1 text-right hover:bg-muted/50 transition-colors outline-none">
         <div className="hidden sm:grid text-xs leading-tight">
           <span className="truncate font-semibold max-w-28">{name}</span>
-          <span className="truncate text-[10px] text-muted-foreground max-w-28">
-            {department}
+          <span className={`truncate text-[10px] max-w-28 ${department ? "text-muted-foreground" : "text-amber-500"}`}>
+            {department || "No department"}
           </span>
         </div>
         <Avatar className="size-6">

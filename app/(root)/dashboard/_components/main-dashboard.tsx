@@ -54,7 +54,7 @@ export default function MainDashboard() {
       <h1 className="text-2xl font-bold">{greeting ? `${greeting}, ` : ""}{name}</h1>
       {defaultBu && (
         <p className="text-muted-foreground">
-          {defaultBu.name} &middot; {defaultBu.department?.name}
+          {defaultBu.name} &middot; {defaultBu.department?.name ?? <span className="text-amber-500">Department not assigned</span>}
         </p>
       )}
     </div>

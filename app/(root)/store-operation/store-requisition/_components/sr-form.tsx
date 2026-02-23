@@ -51,7 +51,7 @@ export function StoreRequisitionForm({
   storeRequisition,
 }: StoreRequisitionFormProps) {
   const router = useRouter();
-  const { data: profile, defaultBu } = useProfile();
+  const { data: profile, defaultBu, hasDepartment } = useProfile();
   const [mode, setMode] = useState<FormMode>(storeRequisition ? "view" : "add");
   const isView = mode === "view";
   const isEdit = mode === "edit";
@@ -73,8 +73,8 @@ export function StoreRequisitionForm({
   const reqName = storeRequisition?.requestor_name ?? requestorName;
   const defaultRequestorId = profile?.id ?? "";
   const departmentName =
-    storeRequisition?.department_name ?? defaultBu?.department.name ?? "";
-  const defaultDepartmentId = defaultBu?.department.id ?? "";
+    storeRequisition?.department_name ?? defaultBu?.department?.name ?? "";
+  const defaultDepartmentId = defaultBu?.department?.id ?? "";
 
   const defaultValues: SrFormValues = storeRequisition
     ? {
@@ -126,7 +126,10 @@ export function StoreRequisitionForm({
     if (!form.getValues("department_id")) {
       form.setValue("department_id", defaultDepartmentId);
     }
-  }, [profile, defaultBu, form, defaultRequestorId, defaultDepartmentId]);
+    if (isAdd && !hasDepartment) {
+      toast.warning("Your profile does not have a department assigned. Please contact your administrator.");
+    }
+  }, [profile, defaultBu, form, defaultRequestorId, defaultDepartmentId, isAdd, hasDepartment]);
 
   const mapItemToPayload = (item: SrFormValues["items"][number]) => ({
     product_id: item.product_id,
