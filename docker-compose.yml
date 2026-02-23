@@ -20,6 +20,7 @@ services:
       - "127.0.0.1:3000:3000"
     environment:
       - NODE_ENV=production
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
       - BACKEND_URL=${BACKEND_URL:-https://ec2-43-209-126-252.ap-southeast-7.compute.amazonaws.com}
       - X_APP_ID=${X_APP_ID:-9c83fd4b-ce3f-4de2-a522-349ad1280b10}
       - EXCHANGE_RATE_API_KEY=${EXCHANGE_RATE_API_KEY:-}
