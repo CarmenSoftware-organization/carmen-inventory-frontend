@@ -39,7 +39,6 @@ export interface CreatePrtDto {
   name: string;
   description: string;
   workflow_id: string;
-  department_id: string;
   is_active: boolean;
   note: string;
   purchase_request_template_detail: {

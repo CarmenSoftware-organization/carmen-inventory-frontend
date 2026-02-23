@@ -11,7 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { LookupWorkflow } from "@/components/lookup/lookup-workflow";
-import { LookupDepartment } from "@/components/lookup/lookup-department";
 import { WORKFLOW_TYPE } from "@/types/workflows";
 import type { PrtFormValues } from "./prt-form-schema";
 
@@ -41,24 +40,6 @@ export function PrtGeneralFields({ form, disabled }: PrtGeneralFieldsProps) {
             <FieldError>{form.formState.errors.name?.message}</FieldError>
           </Field>
 
-          <label className="flex items-center gap-1.5 mt-5 cursor-pointer select-none">
-            <Controller
-              control={form.control}
-              name="is_active"
-              render={({ field }) => (
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  disabled={disabled}
-                />
-              )}
-            />
-            <span className="text-xs">Active</span>
-          </label>
-        </div>
-
-        {/* Workflow + Department */}
-        <div className="grid grid-cols-2 gap-3">
           <Field data-invalid={!!form.formState.errors.workflow_id}>
             <FieldLabel className="text-xs" required>
               Workflow
@@ -80,31 +61,28 @@ export function PrtGeneralFields({ form, disabled }: PrtGeneralFieldsProps) {
             </FieldError>
           </Field>
 
-          <Field data-invalid={!!form.formState.errors.department_id}>
-            <FieldLabel className="text-xs" required>
-              Department
-            </FieldLabel>
+          <div className="flex items-center gap-1.5 mt-5 cursor-pointer select-none">
             <Controller
               control={form.control}
-              name="department_id"
+              name="is_active"
               render={({ field }) => (
-                <LookupDepartment
-                  value={field.value}
-                  onValueChange={field.onChange}
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
                   disabled={disabled}
                 />
               )}
             />
-            <FieldError>
-              {form.formState.errors.department_id?.message}
-            </FieldError>
-          </Field>
+            <span className="text-xs">Active</span>
+          </div>
         </div>
 
         {/* Description + Note */}
         <div className="grid grid-cols-2 gap-3">
           <Field>
-            <FieldLabel htmlFor="prt-description" className="text-xs">Description</FieldLabel>
+            <FieldLabel htmlFor="prt-description" className="text-xs">
+              Description
+            </FieldLabel>
             <Textarea
               id="prt-description"
               placeholder="Optional"
@@ -117,7 +95,9 @@ export function PrtGeneralFields({ form, disabled }: PrtGeneralFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="prt-note" className="text-xs">Note</FieldLabel>
+            <FieldLabel htmlFor="prt-note" className="text-xs">
+              Note
+            </FieldLabel>
             <Textarea
               id="prt-note"
               placeholder="Optional"

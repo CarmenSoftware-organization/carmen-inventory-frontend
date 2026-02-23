@@ -90,7 +90,6 @@ export function PrtForm({ template }: PrtFormProps) {
       name: values.name,
       description: values.description,
       workflow_id: values.workflow_id,
-      department_id: values.department_id,
       is_active: values.is_active,
       note: values.note,
       purchase_request_template_detail,
