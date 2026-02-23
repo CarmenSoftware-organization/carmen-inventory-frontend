@@ -29,3 +29,22 @@ export const RECIPE_DIFFICULTY_OPTIONS: {
   { value: RECIPE_DIFFICULTY.MEDIUM, label: "Medium" },
   { value: RECIPE_DIFFICULTY.HARD, label: "Hard" },
 ];
+
+export const ALLERGEN_OPTIONS = [
+  { value: "gluten", label: "Gluten (Wheat, Barley, Rye)" },
+  { value: "dairy", label: "Dairy (Milk)" },
+  { value: "eggs", label: "Eggs" },
+  { value: "fish", label: "Fish" },
+  { value: "shellfish", label: "Shellfish (Crustaceans)" },
+  { value: "tree_nuts", label: "Tree Nuts" },
+  { value: "peanuts", label: "Peanuts" },
+  { value: "soy", label: "Soy" },
+  { value: "sesame", label: "Sesame" },
+  { value: "celery", label: "Celery" },
+  { value: "mustard", label: "Mustard" },
+  { value: "lupin", label: "Lupin" },
+  { value: "molluscs", label: "Molluscs" },
+  { value: "sulphites", label: "Sulphites" },
+] as const;
+
+export type AllergenValue = (typeof ALLERGEN_OPTIONS)[number]["value"];

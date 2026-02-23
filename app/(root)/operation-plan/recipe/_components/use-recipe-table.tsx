@@ -9,7 +9,8 @@ import type { Cuisine } from "@/types/cuisine";
 import type { RecipeCategory } from "@/types/recipe-category";
 import type { ParamsDto } from "@/types/params";
 import type { useDataGridState } from "@/hooks/use-data-grid-state";
-import { RECIPE_STATUS } from "@/constant/recipe";
+import { RECIPE_STATUS, RECIPE_DIFFICULTY } from "@/constant/recipe";
+import { formatCurrency } from "@/lib/currency-utils";
 import type { BadgeProps } from "@/components/ui/badge";
 
 const STATUS_VARIANT: Record<string, BadgeProps["variant"]> = {
@@ -88,6 +89,78 @@ export function useRecipeTable({
         return name ?? <span className="text-muted-foreground">—</span>;
       },
       size: 150,
+    },
+    {
+      accessorKey: "difficulty",
+      header: ({ column }) => (
+        <DataGridColumnHeader column={column} title="Difficulty" />
+      ),
+      cell: ({ row }) => {
+        const d = row.getValue<string>("difficulty");
+        let variant: BadgeProps["variant"] = "success-light";
+        if (d === RECIPE_DIFFICULTY.HARD) variant = "destructive-light";
+        else if (d === RECIPE_DIFFICULTY.MEDIUM) variant = "warning-light";
+        return (
+          <Badge size="sm" variant={variant}>
+            {d}
+          </Badge>
+        );
+      },
+      size: 100,
+    },
+    {
+      id: "total_time",
+      header: ({ column }) => (
+        <DataGridColumnHeader column={column} title="Total Time" />
+      ),
+      cell: ({ row }) => {
+        const total = row.original.prep_time + row.original.cook_time;
+        if (total === 0)
+          return <span className="text-muted-foreground">—</span>;
+        return `${total} min`;
+      },
+      enableSorting: false,
+      size: 100,
+    },
+    {
+      accessorKey: "cost_per_portion",
+      header: ({ column }) => (
+        <DataGridColumnHeader
+          column={column}
+          title="Cost/Portion"
+          className="justify-end"
+        />
+      ),
+      cell: ({ row }) => {
+        const val = row.getValue<number>("cost_per_portion");
+        return val > 0 ? (
+          <span className="text-right">{formatCurrency(val)}</span>
+        ) : (
+          <span className="text-muted-foreground">—</span>
+        );
+      },
+      meta: { cellClassName: "text-right" },
+      size: 110,
+    },
+    {
+      accessorKey: "selling_price",
+      header: ({ column }) => (
+        <DataGridColumnHeader
+          column={column}
+          title="Selling Price"
+          className="justify-end"
+        />
+      ),
+      cell: ({ row }) => {
+        const val = row.getValue<number | null>("selling_price");
+        return val != null && val > 0 ? (
+          <span className="text-right">{formatCurrency(val)}</span>
+        ) : (
+          <span className="text-muted-foreground">—</span>
+        );
+      },
+      meta: { cellClassName: "text-right" },
+      size: 110,
     },
     {
       accessorKey: "status",

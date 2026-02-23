@@ -1,5 +1,7 @@
-import type { UseFormReturn } from "react-hook-form";
+import { useWatch, type UseFormReturn } from "react-hook-form";
+import { AlertTriangle } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import {
   Field,
   FieldLabel,
@@ -8,11 +10,13 @@ import {
 } from "@/components/ui/field";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import type { RecipeFormValues } from "./recipe-form";
+import type { RecipeFormValues } from "./recipe-form-schema";
+import type { RecipeComputed } from "./recipe-form";
 
 interface RecipeCostFieldsProps {
   readonly form: UseFormReturn<RecipeFormValues>;
   readonly isDisabled: boolean;
+  readonly computed: RecipeComputed;
 }
 
 function CostInput({
@@ -22,6 +26,7 @@ function CostInput({
   suffix,
   description,
   isDisabled,
+  readOnly,
 }: {
   form: UseFormReturn<RecipeFormValues>;
   name: keyof RecipeFormValues;
@@ -29,6 +34,7 @@ function CostInput({
   suffix?: string;
   description?: string;
   isDisabled: boolean;
+  readOnly?: boolean;
 }) {
   return (
     <Field>
@@ -37,8 +43,14 @@ function CostInput({
         <Input
           type="number"
           step="0.01"
-          className={`h-8 text-right text-sm ${suffix ? "pr-8" : ""}`}
+          className={cn(
+            "h-8 text-right text-sm",
+            suffix && "pr-8",
+            readOnly && "bg-muted/50",
+          )}
           disabled={isDisabled}
+          readOnly={readOnly}
+          tabIndex={readOnly ? -1 : undefined}
           {...form.register(name)}
         />
         {suffix && (
@@ -57,7 +69,15 @@ function CostInput({
 export function RecipeCostFields({
   form,
   isDisabled,
+  computed,
 }: RecipeCostFieldsProps) {
+  const sellingPrice = useWatch({
+    control: form.control,
+    name: "selling_price",
+  });
+  const sell = Number(sellingPrice) || 0;
+  const isBelowCost = sell > 0 && computed.costPerPortion > 0 && sell < computed.costPerPortion;
+
   return (
     <div className="space-y-4">
       {/* ── Cost Breakdown ── */}
@@ -91,7 +111,8 @@ export function RecipeCostFields({
               name="cost_per_portion"
               label="Cost per Portion"
               isDisabled={isDisabled}
-              description="Total cost divided by base yield"
+              readOnly
+              description="Auto-calculated: total cost / base yield"
             />
           </div>
         </FieldGroup>
@@ -99,7 +120,15 @@ export function RecipeCostFields({
 
       {/* ── Pricing ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">Pricing</h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-sm font-semibold">Pricing</h2>
+          {isBelowCost && (
+            <Badge variant="destructive-light" size="sm">
+              <AlertTriangle className="size-3" aria-hidden="true" />
+              Below cost
+            </Badge>
+          )}
+        </div>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-2">
             <CostInput
@@ -114,7 +143,8 @@ export function RecipeCostFields({
               name="suggested_price"
               label="Suggested Price"
               isDisabled={isDisabled}
-              description="System-calculated price based on target margins"
+              readOnly
+              description="Auto-calculated based on target food cost %"
             />
           </div>
         </FieldGroup>
@@ -125,7 +155,7 @@ export function RecipeCostFields({
         <div className="flex items-center gap-2">
           <h2 className="text-sm font-semibold">Margin Analysis</h2>
           <Badge variant="outline" size="sm">
-            KPI
+            Auto-calculated
           </Badge>
         </div>
         <FieldGroup className="gap-3">
@@ -139,7 +169,8 @@ export function RecipeCostFields({
               name="gross_margin"
               label="Gross Margin"
               isDisabled={isDisabled}
-              description="Selling price minus total cost"
+              readOnly
+              description="Selling price minus cost per portion"
             />
             <CostInput
               form={form}
@@ -147,6 +178,7 @@ export function RecipeCostFields({
               label="Gross Margin"
               suffix="%"
               isDisabled={isDisabled}
+              readOnly
               description="Margin as percentage of selling price"
             />
           </div>
@@ -164,7 +196,7 @@ export function RecipeCostFields({
               label="Target Food Cost"
               suffix="%"
               isDisabled={isDisabled}
-              description="Desired ingredient cost ratio"
+              description="Desired ingredient cost ratio (editable)"
             />
             <CostInput
               form={form}
@@ -172,7 +204,8 @@ export function RecipeCostFields({
               label="Actual Food Cost"
               suffix="%"
               isDisabled={isDisabled}
-              description="Current actual ingredient cost ratio"
+              readOnly
+              description="Auto-calculated: ingredient cost / selling price"
             />
           </div>
 
@@ -189,7 +222,8 @@ export function RecipeCostFields({
               label="Labor Cost"
               suffix="%"
               isDisabled={isDisabled}
-              description="Labor as percentage of selling price"
+              readOnly
+              description="Auto-calculated: labor / selling price"
             />
             <CostInput
               form={form}
@@ -197,7 +231,8 @@ export function RecipeCostFields({
               label="Overhead"
               suffix="%"
               isDisabled={isDisabled}
-              description="Overhead as percentage of selling price"
+              readOnly
+              description="Auto-calculated: overhead / selling price"
             />
           </div>
         </FieldGroup>

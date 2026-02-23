@@ -9,17 +9,18 @@ import {
 } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import type { RecipeFormValues } from "./recipe-form";
+import { ALLERGEN_OPTIONS } from "@/constant/recipe";
+import type { RecipeFormValues } from "./recipe-form-schema";
 
-interface RecipeDetailFieldsProps {
+interface RecipeComplianceFieldsProps {
   readonly form: UseFormReturn<RecipeFormValues>;
   readonly isDisabled: boolean;
 }
 
-export function RecipeDetailFields({
+export function RecipeComplianceFields({
   form,
   isDisabled,
-}: RecipeDetailFieldsProps) {
+}: RecipeComplianceFieldsProps) {
   return (
     <div className="space-y-4">
       {/* ── Safety & Compliance ── */}
@@ -32,25 +33,59 @@ export function RecipeDetailFields({
         </div>
         <FieldGroup className="gap-3">
           <Field>
-            <FieldLabel htmlFor="recipe-allergens" className="text-xs">Allergens</FieldLabel>
-            <Textarea
-              id="recipe-allergens"
-              placeholder={"Gluten\nDairy\nNuts\nShellfish"}
-              className="font-mono text-sm"
-              rows={4}
+            <FieldLabel className="text-xs">Allergens</FieldLabel>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+              {ALLERGEN_OPTIONS.map((allergen) => (
+                <Controller
+                  key={allergen.value}
+                  control={form.control}
+                  name="allergens.standard"
+                  render={({ field }) => (
+                    <label className="flex items-center gap-2 text-xs cursor-pointer">
+                      <Checkbox
+                        checked={field.value?.includes(allergen.value) ?? false}
+                        onCheckedChange={(checked) => {
+                          const current = field.value ?? [];
+                          field.onChange(
+                            checked
+                              ? [...current, allergen.value]
+                              : current.filter(
+                                  (v: string) => v !== allergen.value,
+                                ),
+                          );
+                        }}
+                        disabled={isDisabled}
+                      />
+                      {allergen.label}
+                    </label>
+                  )}
+                />
+              ))}
+            </div>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="recipe-custom-allergens" className="text-xs">
+              Other Allergens
+            </FieldLabel>
+            <Input
+              id="recipe-custom-allergens"
+              placeholder="e.g. Kiwi, Latex (comma-separated)"
+              className="h-8 text-sm"
               disabled={isDisabled}
               maxLength={256}
-              {...form.register("allergens")}
+              {...form.register("allergens.custom")}
             />
             <FieldDescription className="text-xs">
-              List each allergen on a separate line. Used for menu labeling and
-              regulatory compliance.
+              Additional allergens not in the standard list, separated by commas
             </FieldDescription>
           </Field>
 
           <div className="grid grid-cols-2 gap-2">
             <Field>
-              <FieldLabel htmlFor="recipe-carbon-footprint" className="text-xs">Carbon Footprint</FieldLabel>
+              <FieldLabel htmlFor="recipe-carbon-footprint" className="text-xs">
+                Carbon Footprint
+              </FieldLabel>
               <div className="relative">
                 <Input
                   id="recipe-carbon-footprint"
@@ -78,7 +113,9 @@ export function RecipeDetailFields({
         <h2 className="text-sm font-semibold">Organization</h2>
         <FieldGroup className="gap-3">
           <Field>
-            <FieldLabel htmlFor="recipe-tags" className="text-xs">Tags</FieldLabel>
+            <FieldLabel htmlFor="recipe-tags" className="text-xs">
+              Tags
+            </FieldLabel>
             <Textarea
               id="recipe-tags"
               placeholder={"seasonal\nsignature\nhigh-margin\ngluten-free"}
@@ -101,7 +138,9 @@ export function RecipeDetailFields({
         <h2 className="text-sm font-semibold">Media</h2>
         <FieldGroup className="gap-3">
           <Field>
-            <FieldLabel htmlFor="recipe-images" className="text-xs">Image URLs</FieldLabel>
+            <FieldLabel htmlFor="recipe-images" className="text-xs">
+              Image URLs
+            </FieldLabel>
             <Textarea
               id="recipe-images"
               placeholder={
@@ -115,6 +154,47 @@ export function RecipeDetailFields({
             />
             <FieldDescription className="text-xs">
               One URL per line. First image is used as the primary thumbnail.
+            </FieldDescription>
+          </Field>
+        </FieldGroup>
+      </section>
+
+      {/* ── Custom Data ── */}
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold">Custom Data</h2>
+        <FieldGroup className="gap-3">
+          <Field>
+            <FieldLabel htmlFor="recipe-info" className="text-xs">
+              Info (JSON)
+            </FieldLabel>
+            <Textarea
+              id="recipe-info"
+              placeholder={'{\n  "key": "value"\n}'}
+              className="font-mono text-sm"
+              rows={3}
+              disabled={isDisabled}
+              maxLength={1024}
+              {...form.register("info")}
+            />
+            <FieldDescription className="text-xs">
+              Additional custom metadata as JSON
+            </FieldDescription>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="recipe-dimension" className="text-xs">
+              Dimension (JSON)
+            </FieldLabel>
+            <Textarea
+              id="recipe-dimension"
+              placeholder={'{\n  "weight": 250,\n  "unit": "g"\n}'}
+              className="font-mono text-sm"
+              rows={3}
+              disabled={isDisabled}
+              maxLength={1024}
+              {...form.register("dimension")}
+            />
+            <FieldDescription className="text-xs">
+              Physical dimensions or measurements as JSON
             </FieldDescription>
           </Field>
         </FieldGroup>
