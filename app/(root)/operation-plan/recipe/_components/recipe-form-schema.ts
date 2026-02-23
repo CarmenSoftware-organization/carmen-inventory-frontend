@@ -1,38 +1,12 @@
 import { z } from "zod";
 import type { Recipe } from "@/types/recipe";
 import { ALLERGEN_OPTIONS } from "@/constant/recipe";
+import {
+  arrayToText,
+  objectToText,
+} from "@/lib/form-helpers";
 
-// ── Helpers ──
-
-function arrayToText(value: string[] | null | undefined): string {
-  if (!value || value.length === 0) return "";
-  return value.join("\n");
-}
-
-export function textToArray(value: string): string[] {
-  return value
-    .split("\n")
-    .map((s) => s.trim())
-    .filter(Boolean);
-}
-
-function objectToText(
-  value: Record<string, unknown> | null | undefined,
-): string {
-  if (!value || Object.keys(value).length === 0) return "";
-  return JSON.stringify(value, null, 2);
-}
-
-export function textToObject(
-  value: string,
-): Record<string, unknown> | null {
-  if (!value.trim()) return null;
-  try {
-    return JSON.parse(value);
-  } catch {
-    return null;
-  }
-}
+export { textToArray, textToObject } from "@/lib/form-helpers";
 
 const STANDARD_ALLERGEN_VALUES = new Set(
   ALLERGEN_OPTIONS.map((a) => a.value as string),
