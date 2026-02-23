@@ -37,7 +37,6 @@ import {
   Network,
   ShieldCheck,
   UserCheck,
-  User,
   ChefHat,
   UtensilsCrossed,
   Layers,
@@ -327,10 +326,5 @@ export const moduleList: ModuleDto[] = [
         icon: Scale,
       },
     ],
-  },
-  {
-    name: "Profile",
-    path: "/profile",
-    icon: User,
   },
 ];

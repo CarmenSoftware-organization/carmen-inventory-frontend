@@ -43,6 +43,7 @@ export const QUERY_KEYS = {
   PURCHASE_REQUEST_WORKFLOW_STAGES: "purchase-request-workflow-stages",
   REQUEST_PRICE_LISTS: "request-price-lists",
   SPOT_CHECKS: "spot-checks",
+  STOCK_REPLENISHMENT: "stock-replenishment",
   STORE_REQUISITIONS: "store-requisitions",
   TAX_PROFILES: "tax-profiles",
   UNITS: "units",

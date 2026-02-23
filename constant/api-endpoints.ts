@@ -84,6 +84,8 @@ export const API_ENDPOINTS = {
     `/api/proxy/api/${buCode}/request-for-pricing`,
   STOCK_IN: (buCode: string) => `/api/proxy/api/${buCode}/stock-in`,
   STOCK_OUT: (buCode: string) => `/api/proxy/api/${buCode}/stock-out`,
+  STOCK_REPLENISHMENT: (buCode: string) =>
+    `/api/proxy/api/store-operation/${buCode}/stock-replenishments`,
   STORE_REQUISITIONS: "/api/proxy/api/store-requisition",
   STORE_REQUISITION: (buCode: string) =>
     `/api/proxy/api/${buCode}/store-requisition`,

@@ -2,6 +2,10 @@
 
 ERP inventory management system — compact, dense UI for users who need maximum data visibility.
 
+## ภาษาในการสื่อสาร
+
+สื่อสารกับ user เป็น **ภาษาไทย** เสมอ (ยกเว้น code, commit message, PR ใช้ภาษาอังกฤษ)
+
 ## Tech Stack
 
 - **Framework**: Next.js 16.1.6 (App Router, Turbopack)

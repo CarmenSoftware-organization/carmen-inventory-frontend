@@ -178,6 +178,7 @@ const crud = createConfigCrud<Category, CreateCategoryDto>({
   queryKey: QUERY_KEYS.CATEGORIES,
   endpoint: API_ENDPOINTS.CATEGORIES,
   label: "category",
+  updateMethod: "PATCH", // optional, default "PUT"
 });
 
 export const useCategory = crud.useList;
