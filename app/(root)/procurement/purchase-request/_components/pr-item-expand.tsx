@@ -55,6 +55,15 @@ export function PrItemExpand({
     watchDiscRate,
     watchIsDiscAdj,
     watchDiscAmt,
+    watchPricelistNo,
+    watchProductId,
+    watchProductName,
+    watchUnitId,
+    watchCurrencyId,
+    watchDeliveryDate,
+    watchRequestedUnitName,
+    watchApprovedQty,
+    watchApprovedUnitName,
   ] = useWatch({
     control: form.control,
     name: [
@@ -66,6 +75,15 @@ export function PrItemExpand({
       `items.${i}.discount_rate`,
       `items.${i}.is_discount_adjustment`,
       `items.${i}.discount_amount`,
+      `items.${i}.pricelist_no`,
+      `items.${i}.product_id`,
+      `items.${i}.product_name`,
+      `items.${i}.requested_unit_id`,
+      `items.${i}.currency_id`,
+      `items.${i}.delivery_date`,
+      `items.${i}.requested_unit_name`,
+      `items.${i}.approved_qty`,
+      `items.${i}.approved_unit_name`,
     ] as const,
   });
 
@@ -116,18 +134,15 @@ export function PrItemExpand({
 
   if (index === -1) return null;
 
-  const pricelistNo = form.getValues(`items.${index}.pricelist_no`);
-  const productId = form.getValues(`items.${index}.product_id`) ?? "";
-  const productName = form.getValues(`items.${index}.product_name`) ?? "";
-  const unitId = form.getValues(`items.${index}.requested_unit_id`) ?? "";
-  const currencyId = form.getValues(`items.${index}.currency_id`) ?? "";
-  const deliveryDate = form.getValues(`items.${index}.delivery_date`) ?? "";
-  const requestedQty = form.getValues(`items.${index}.requested_qty`) ?? 0;
-  const requestedUnitName =
-    form.getValues(`items.${index}.requested_unit_name`) ?? "";
-  const approvedQty = form.getValues(`items.${index}.approved_qty`) ?? 0;
-  const approvedUnitName =
-    form.getValues(`items.${index}.approved_unit_name`) ?? "";
+  const pricelistNo = watchPricelistNo ?? null;
+  const productId = watchProductId ?? "";
+  const productName = watchProductName ?? "";
+  const unitId = watchUnitId ?? "";
+  const currencyId = watchCurrencyId ?? "";
+  const deliveryDate = watchDeliveryDate ?? "";
+  const requestedUnitName = watchRequestedUnitName ?? "";
+  const approvedQty = watchApprovedQty ?? 0;
+  const approvedUnitName = watchApprovedUnitName ?? "";
 
   const handlePricelistSelect = (entry: PricelistEntry) => {
     form.setValue(`items.${index}.vendor_id`, entry.vendor_id);
@@ -139,7 +154,6 @@ export function PrItemExpand({
     );
     form.setValue(`items.${index}.pricelist_no`, entry.pricelist_no);
   };
-
 
   return (
     <div className="px-3 py-2 space-y-3 max-w-4xl">
@@ -213,7 +227,7 @@ export function PrItemExpand({
           <div>
             <label
               htmlFor={`items-${index}-tax-profile`}
-              className="text-xs text-muted-foreground"
+              className="text-xs text-muted-foreground mb-0.5"
             >
               Tax Profile
             </label>
@@ -228,7 +242,8 @@ export function PrItemExpand({
                     form.setValue(`items.${index}.tax_rate`, taxRate);
                   }}
                   disabled={disabled}
-                  className="w-full h-7 text-xs"
+                  className="w-full text-xs mt-0.5"
+                  size="xs"
                 />
               )}
             />
@@ -236,7 +251,7 @@ export function PrItemExpand({
           <div>
             <label
               htmlFor={`items-${index}-tax-rate`}
-              className="text-xs text-muted-foreground"
+              className="text-xs text-muted-foreground mb-0.5"
             >
               Tax %
             </label>
@@ -246,7 +261,7 @@ export function PrItemExpand({
               min={0}
               step="0.01"
               placeholder="0"
-              className="h-7 text-xs text-right"
+              className="h-6 mt-0.5 text-xs text-right"
               disabled
               {...form.register(`items.${index}.tax_rate`, {
                 valueAsNumber: true,
@@ -254,7 +269,7 @@ export function PrItemExpand({
             />
           </div>
           <div>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-0.5">
               <label
                 htmlFor={`items-${index}-tax-amount`}
                 className="text-xs text-muted-foreground"
@@ -285,7 +300,7 @@ export function PrItemExpand({
               min={0}
               step="0.01"
               placeholder="0.00"
-              className="h-7 text-xs text-right"
+              className="h-6 text-xs text-right"
               disabled={disabled || !isTaxAdj}
               {...form.register(`items.${index}.tax_amount`, {
                 valueAsNumber: true,
@@ -309,7 +324,7 @@ export function PrItemExpand({
                 min={0}
                 step="0.01"
                 placeholder="0"
-                className="h-7 text-xs text-right"
+                className="h-6 text-xs mt-0.5 text-right"
                 disabled={disabled}
                 {...form.register(`items.${index}.discount_rate`, {
                   valueAsNumber: true,
@@ -317,7 +332,7 @@ export function PrItemExpand({
               />
             </div>
             <div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-0.5">
                 <label
                   htmlFor={`items-${index}-discount-amount`}
                   className="text-xs text-muted-foreground"
@@ -348,7 +363,7 @@ export function PrItemExpand({
                 min={0}
                 step="0.01"
                 placeholder="0.00"
-                className="h-7 text-xs text-right"
+                className="h-6 text-xs text-right"
                 disabled={disabled || !isDiscAdj}
                 {...form.register(`items.${index}.discount_amount`, {
                   valueAsNumber: true,
@@ -364,7 +379,9 @@ export function PrItemExpand({
             </div>
             <div>
               <span className="text-muted-foreground">Total </span>
-              <span className="font-semibold">{formatCurrency(totalPrice)}</span>
+              <span className="font-semibold">
+                {formatCurrency(totalPrice)}
+              </span>
             </div>
           </div>
         </div>
@@ -384,7 +401,7 @@ export function PrItemExpand({
         unitId={unitId}
         currencyId={currencyId}
         atDate={deliveryDate}
-        requestedQty={requestedQty}
+        requestedQty={qty}
         requestedUnitName={requestedUnitName}
         approvedQty={approvedQty}
         approvedUnitName={approvedUnitName}

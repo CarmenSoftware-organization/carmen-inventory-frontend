@@ -16,7 +16,7 @@ interface LookupTaxProfileProps {
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
-  readonly size?: "xs" | "sm" | "default";
+  readonly size?: "xs" | "sm";
 }
 
 export function LookupTaxProfile({
