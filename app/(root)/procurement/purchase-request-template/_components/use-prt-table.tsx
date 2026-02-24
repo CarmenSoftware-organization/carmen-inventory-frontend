@@ -37,12 +37,6 @@ export function usePrtTable({
       ),
     },
     {
-      accessorKey: "department_name",
-      header: ({ column }) => (
-        <DataGridColumnHeader column={column} title="Department" />
-      ),
-    },
-    {
       accessorKey: "workflow_name",
       header: ({ column }) => (
         <DataGridColumnHeader column={column} title="Workflow" />
