@@ -32,33 +32,12 @@ import {
 import type { Cuisine } from "@/types/cuisine";
 import type { FormMode } from "@/types/form";
 import { CUISINE_REGION_OPTIONS } from "@/constant/cuisine";
-
-function arrayToText(value: string[] | null | undefined): string {
-  if (!value || value.length === 0) return "";
-  return value.join("\n");
-}
-
-function textToArray(value: string): string[] | null {
-  const items = value
-    .split("\n")
-    .map((s) => s.trim())
-    .filter(Boolean);
-  return items.length > 0 ? items : null;
-}
-
-function objectToText(value: Record<string, unknown> | null | undefined): string {
-  if (!value || Object.keys(value).length === 0) return "";
-  return JSON.stringify(value, null, 2);
-}
-
-function textToObject(value: string): Record<string, unknown> | null {
-  if (!value.trim()) return null;
-  try {
-    return JSON.parse(value);
-  } catch {
-    return null;
-  }
-}
+import {
+  arrayToText,
+  objectToText,
+  textToArray,
+  textToObject,
+} from "@/lib/form-helpers";
 
 const cuisineSchema = z.object({
   name: z.string().min(1, "Name is required"),

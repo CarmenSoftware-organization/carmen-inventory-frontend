@@ -19,7 +19,7 @@ interface RecipeCostFieldsProps {
   readonly computed: RecipeComputed;
 }
 
-function CostInput({
+const CostInput = ({
   form,
   name,
   label,
@@ -35,7 +35,7 @@ function CostInput({
   description?: string;
   isDisabled: boolean;
   readOnly?: boolean;
-}) {
+}) => {
   return (
     <Field>
       <FieldLabel className="text-xs">{label}</FieldLabel>
@@ -64,7 +64,7 @@ function CostInput({
       )}
     </Field>
   );
-}
+};
 
 export function RecipeCostFields({
   form,
@@ -76,7 +76,8 @@ export function RecipeCostFields({
     name: "selling_price",
   });
   const sell = Number(sellingPrice) || 0;
-  const isBelowCost = sell > 0 && computed.costPerPortion > 0 && sell < computed.costPerPortion;
+  const isBelowCost =
+    sell > 0 && computed.costPerPortion > 0 && sell < computed.costPerPortion;
 
   return (
     <div className="space-y-4">

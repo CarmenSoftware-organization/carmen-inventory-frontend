@@ -234,9 +234,7 @@ export function PriceListTemplateForm({
                   maxLength={100}
                   {...form.register("name")}
                 />
-                <FieldError>
-                  {form.formState.errors.name?.message}
-                </FieldError>
+                <FieldError>{form.formState.errors.name?.message}</FieldError>
               </Field>
 
               <Field>
@@ -320,9 +318,7 @@ export function PriceListTemplateForm({
               </Field>
 
               <Field>
-                <FieldLabel className="text-xs">
-                  Vendor Instruction
-                </FieldLabel>
+                <FieldLabel className="text-xs">Vendor Instruction</FieldLabel>
                 <Textarea
                   placeholder="Optional"
                   className="text-sm"
@@ -415,14 +411,14 @@ interface ProductRowProps {
   onRemove: () => void;
 }
 
-function ProductRow({
+const ProductRow = ({
   form,
   index,
   isDisabled,
   productList,
   units,
   onRemove,
-}: ProductRowProps) {
+}: ProductRowProps) => {
   const {
     fields: moqFields,
     append: appendMoq,
@@ -452,9 +448,7 @@ function ProductRow({
       </div>
 
       <Field
-        data-invalid={
-          !!form.formState.errors.products?.[index]?.product_id
-        }
+        data-invalid={!!form.formState.errors.products?.[index]?.product_id}
       >
         <FieldLabel className="text-xs">Product</FieldLabel>
         <Controller
@@ -487,9 +481,7 @@ function ProductRow({
       {/* MOQ sub-array */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-muted-foreground">
-            MOQ
-          </span>
+          <span className="text-xs font-medium text-muted-foreground">MOQ</span>
           {!isDisabled && (
             <Button
               type="button"
@@ -506,9 +498,7 @@ function ProductRow({
         </div>
 
         {moqFields.length === 0 ? (
-          <p className="text-xs text-muted-foreground pl-2">
-            No MOQ entries
-          </p>
+          <p className="text-xs text-muted-foreground pl-2">No MOQ entries</p>
         ) : (
           <div className="space-y-2">
             {moqFields.map((moqField, moqIndex) => (
@@ -536,9 +526,8 @@ function ProductRow({
                 <div className="grid grid-cols-2 gap-2">
                   <Field
                     data-invalid={
-                      !!form.formState.errors.products?.[index]?.moq?.[
-                        moqIndex
-                      ]?.unit_id
+                      !!form.formState.errors.products?.[index]?.moq?.[moqIndex]
+                        ?.unit_id
                     }
                   >
                     <FieldLabel className="text-xs">Unit</FieldLabel>
@@ -606,4 +595,4 @@ function ProductRow({
       </div>
     </div>
   );
-}
+};

@@ -15,15 +15,15 @@ import type { AdjFormValues } from "./inv-adj-form-schema";
 import { ADJ_ITEM } from "./inv-adj-form-schema";
 import { useAdjItemTable } from "./inv-adj-item-table";
 
-function getDeleteDescription(
+const getDeleteDescription = (
   index: number | null,
   form: UseFormReturn<AdjFormValues>,
-) {
+) => {
   if (index === null) return "";
   const name = form.getValues(`items.${index}.product_name`);
   const label = name || `Item #${index + 1}`;
   return `Are you sure you want to remove "${label}"?`;
-}
+};
 
 interface AdjItemFieldsProps {
   form: UseFormReturn<AdjFormValues>;

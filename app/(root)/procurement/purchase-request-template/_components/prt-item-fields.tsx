@@ -17,15 +17,15 @@ import { usePrtItemTable } from "./prt-item-table";
 import { PRT_ITEM } from "./prt-form-schema";
 import EmptyComponent from "@/components/empty-component";
 
-function getDeleteDescription(
+const getDeleteDescription = (
   index: number | null,
   form: UseFormReturn<PrtFormValues>,
-) {
+) => {
   if (index === null) return "";
   const name = form.getValues(`items.${index}.product_name`);
   const label = name || `Item #${index + 1}`;
   return `Are you sure you want to remove "${label}"?`;
-}
+};
 
 interface PrtItemFieldsProps {
   form: UseFormReturn<PrtFormValues>;

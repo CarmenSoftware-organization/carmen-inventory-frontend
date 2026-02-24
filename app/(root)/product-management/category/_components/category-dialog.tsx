@@ -30,11 +30,11 @@ const TYPE_LABELS: Record<CategoryType, string> = {
   itemgroup: "Item Group",
 };
 
-function getCategoryType(
+const getCategoryType = (
   mode: FormMode,
   selectedNode?: CategoryNode,
   parentNode?: CategoryNode,
-): CategoryType {
+): CategoryType => {
   if (mode === "edit" && selectedNode) {
     if (selectedNode.type === NODE_TYPE.CATEGORY) return "category";
     if (selectedNode.type === NODE_TYPE.SUBCATEGORY) return "subcategory";
@@ -43,7 +43,7 @@ function getCategoryType(
   if (!parentNode) return "category";
   if (parentNode.type === NODE_TYPE.CATEGORY) return "subcategory";
   return "itemgroup";
-}
+};
 
 export function CategoryDialog({
   open,

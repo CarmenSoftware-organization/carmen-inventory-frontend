@@ -2,17 +2,18 @@
  * Shared form helpers for converting between API data types and form text fields.
  */
 
-export function arrayToText(value: string[] | null | undefined): string {
+export const arrayToText = (value: string[] | null | undefined): string => {
   if (!value || value.length === 0) return "";
   return value.join("\n");
-}
+};
 
-export function textToArray(value: string): string[] {
-  return value
+export const textToArray = (value: string): string[] | null => {
+  const items = value
     .split("\n")
     .map((s) => s.trim())
     .filter(Boolean);
-}
+  return items.length > 0 ? items : null;
+};
 
 export function objectToText(
   value: Record<string, unknown> | null | undefined,
@@ -21,9 +22,7 @@ export function objectToText(
   return JSON.stringify(value, null, 2);
 }
 
-export function textToObject(
-  value: string,
-): Record<string, unknown> | null {
+export function textToObject(value: string): Record<string, unknown> | null {
   if (!value.trim()) return null;
   try {
     return JSON.parse(value);
@@ -46,10 +45,7 @@ function kvId(): string {
   return `kv_${++_kvId}`;
 }
 
-export function createKeyValueRow(
-  key = "",
-  value = "",
-): KeyValueRow {
+export function createKeyValueRow(key = "", value = ""): KeyValueRow {
   return { _id: kvId(), key, value };
 }
 

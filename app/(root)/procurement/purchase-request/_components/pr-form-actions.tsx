@@ -167,7 +167,7 @@ type ConfirmConfig = {
   onConfirm: () => void;
 };
 
-function WorkflowActions({
+const WorkflowActions = ({
   role,
   prStatus,
   isPending,
@@ -177,11 +177,10 @@ function WorkflowActions({
   onSendBack,
   onReview,
   onPurchaseApprove,
-}: WorkflowActionsProps) {
+}: WorkflowActionsProps) => {
   const [confirm, setConfirm] = useState<ConfirmConfig | null>(null);
 
-  const canSubmit =
-    role === STAGE_ROLE.CREATE && prStatus !== "in_progress";
+  const canSubmit = role === STAGE_ROLE.CREATE && prStatus !== "in_progress";
 
   const canApprove = role === STAGE_ROLE.APPROVE;
   const canPurchaseApprove = role === STAGE_ROLE.PURCHASE;
@@ -241,8 +240,7 @@ function WorkflowActions({
           onClick={() =>
             openConfirm({
               title: "Purchase Approve",
-              description:
-                "This will approve for purchasing. Are you sure?",
+              description: "This will approve for purchasing. Are you sure?",
               confirmLabel: "Purchase Approve",
               variant: "success",
               onConfirm: () => onPurchaseApprove?.(),
@@ -310,4 +308,4 @@ function WorkflowActions({
       </AlertDialog>
     </>
   );
-}
+};

@@ -55,7 +55,7 @@ const equipmentSchema = z.object({
 
 type EquipmentFormValues = z.infer<typeof equipmentSchema>;
 
-function getDefaultValues(equipment?: Equipment): EquipmentFormValues {
+const getDefaultValues = (equipment?: Equipment): EquipmentFormValues => {
   if (equipment) {
     return {
       code: equipment.code,
@@ -108,7 +108,7 @@ function getDefaultValues(equipment?: Equipment): EquipmentFormValues {
     usage_count: 0,
     average_usage_time: 0,
   };
-}
+};
 
 interface EquipmentFormProps {
   readonly equipment?: Equipment;

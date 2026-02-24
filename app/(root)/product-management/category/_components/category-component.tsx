@@ -89,14 +89,14 @@ export default function CategoryComponent() {
     });
 
   // Search
-  function nodeMatches(node: CategoryNode, q: string): boolean {
+  const nodeMatches = (node: CategoryNode, q: string): boolean => {
     const self =
       node.code.toLowerCase().includes(q) ||
       node.name.toLowerCase().includes(q) ||
       (node.description?.toLowerCase().includes(q) ?? false);
     if (self) return true;
     return node.children?.some((c) => nodeMatches(c, q)) ?? false;
-  }
+  };
 
   const filteredData = useMemo(() => {
     if (!search) return categoryData;

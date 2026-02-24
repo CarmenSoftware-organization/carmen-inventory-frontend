@@ -3,12 +3,12 @@ import { type NextRequest, NextResponse } from "next/server";
 const EXACT_PUBLIC = new Set(["/login", "/register"]);
 const PREFIX_PUBLIC = ["/api/auth/"];
 
-function isPublic(pathname: string) {
+const isPublic = (pathname: string) => {
   if (EXACT_PUBLIC.has(pathname)) return true;
   return PREFIX_PUBLIC.some((p) => pathname.startsWith(p));
-}
+};
 
-function buildCsp(nonce: string): string {
+const buildCsp = (nonce: string): string => {
   return [
     "default-src 'self'",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
@@ -20,7 +20,7 @@ function buildCsp(nonce: string): string {
     "base-uri 'self'",
     "form-action 'self'",
   ].join("; ");
-}
+};
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -36,9 +36,7 @@ export function proxy(request: NextRequest) {
 
   // Redirect / to dashboard
   if (pathname === "/" && accessToken) {
-    const response = NextResponse.redirect(
-      new URL("/dashboard", request.url),
-    );
+    const response = NextResponse.redirect(new URL("/dashboard", request.url));
     response.headers.set("Content-Security-Policy", csp);
     return response;
   }
@@ -54,9 +52,7 @@ export function proxy(request: NextRequest) {
 
   // Unauthenticated users → redirect to login
   if (!accessToken) {
-    const response = NextResponse.redirect(
-      new URL("/login", request.url),
-    );
+    const response = NextResponse.redirect(new URL("/login", request.url));
     response.headers.set("Content-Security-Policy", csp);
     return response;
   }

@@ -43,7 +43,7 @@ export interface PricelistEntry {
   is_preferred?: boolean;
 }
 
-function buildColumns(dateFormat: string): ColumnDef<PricelistEntry>[] {
+const buildColumns = (dateFormat: string): ColumnDef<PricelistEntry>[] => {
   return [
     {
       accessorKey: "vendor_name",
@@ -70,8 +70,7 @@ function buildColumns(dateFormat: string): ColumnDef<PricelistEntry>[] {
         cellClassName: "text-right",
       },
       size: 80,
-      cell: ({ getValue }) =>
-        formatCurrency(getValue<number>()),
+      cell: ({ getValue }) => formatCurrency(getValue<number>()),
     },
     {
       accessorKey: "currency",
@@ -104,7 +103,7 @@ function buildColumns(dateFormat: string): ColumnDef<PricelistEntry>[] {
       ),
     },
   ];
-}
+};
 
 interface PrPricelistDialogProps {
   readonly open: boolean;

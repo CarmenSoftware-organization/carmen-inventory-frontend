@@ -41,15 +41,15 @@ import EmptyComponent from "@/components/empty-component";
 import { PR_ITEM } from "./pr-form-schema";
 import GrandTotal from "./pr-grand-total";
 
-function getDeleteDescription(
+const getDeleteDescription = (
   index: number | null,
   form: UseFormReturn<PrFormValues>,
-) {
+) => {
   if (index === null) return "";
   const name = form.getValues(`items.${index}.product_name`);
   const label = name || `Item #${index + 1}`;
   return `Are you sure you want to remove "${label}"?`;
-}
+};
 
 interface PrItemFieldsProps {
   form: UseFormReturn<PrFormValues>;

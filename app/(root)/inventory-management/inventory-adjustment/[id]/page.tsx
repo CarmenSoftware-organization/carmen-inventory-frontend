@@ -8,28 +8,26 @@ import { ErrorState } from "@/components/ui/error-state";
 import type { InventoryAdjustmentType } from "@/types/inventory-adjustment";
 import { FormSkeleton } from "@/components/loader/form-skeleton";
 
-function EditInventoryAdjustmentContent({
-  id,
-}: {
-  id: string;
-}) {
+const EditInventoryAdjustmentContent = ({ id }: { id: string }) => {
   const searchParams = useSearchParams();
   const type = searchParams.get("type") as InventoryAdjustmentType | null;
 
   if (!type || (type !== "stock-in" && type !== "stock-out")) {
-    return <ErrorState message="Invalid adjustment type. Use ?type=stock-in or ?type=stock-out" />;
+    return (
+      <ErrorState message="Invalid adjustment type. Use ?type=stock-in or ?type=stock-out" />
+    );
   }
 
   return <EditContent id={id} type={type} />;
-}
+};
 
-function EditContent({
+const EditContent = ({
   id,
   type,
 }: {
   id: string;
   type: InventoryAdjustmentType;
-}) {
+}) => {
   const {
     data: inventoryAdjustment,
     isLoading,
@@ -37,8 +35,7 @@ function EditContent({
     refetch,
   } = useInventoryAdjustmentById(id, type);
 
-  if (!type)
-    return <ErrorState message="Invalid adjustment type" />;
+  if (!type) return <ErrorState message="Invalid adjustment type" />;
   if (isLoading) return <FormSkeleton />;
   if (error)
     return <ErrorState message={error.message} onRetry={() => refetch()} />;
@@ -51,7 +48,7 @@ function EditContent({
       inventoryAdjustment={inventoryAdjustment}
     />
   );
-}
+};
 
 export default function EditInventoryAdjustmentPage({
   params,

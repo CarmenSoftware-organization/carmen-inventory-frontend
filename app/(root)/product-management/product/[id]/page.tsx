@@ -6,7 +6,7 @@ import { ProductForm } from "../_components/pd-form";
 import { ErrorState } from "@/components/ui/error-state";
 import { FormSkeleton } from "@/components/loader/form-skeleton";
 
-function EditProductContent({ id }: { id: string }) {
+const EditProductContent = ({ id }: { id: string }) => {
   const { data: product, isLoading, error, refetch } = useProductById(id);
 
   if (isLoading) return <FormSkeleton />;
@@ -15,7 +15,7 @@ function EditProductContent({ id }: { id: string }) {
   if (!product) return <ErrorState message="Product not found" />;
 
   return <ProductForm product={product} />;
-}
+};
 
 export default function EditProductPage({
   params,

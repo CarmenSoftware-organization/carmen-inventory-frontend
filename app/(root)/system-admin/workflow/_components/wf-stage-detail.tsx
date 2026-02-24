@@ -711,14 +711,14 @@ interface NotificationSectionProps {
   readonly showNextStep?: boolean;
 }
 
-function NotificationSection({
+const NotificationSection = ({
   form,
   index,
   action,
   label,
   isDisabled,
   showNextStep,
-}: NotificationSectionProps) {
+}: NotificationSectionProps) => {
   return (
     <div className="space-y-1.5 rounded border p-2">
       <span className="text-[11px] font-medium">{label}</span>
@@ -774,4 +774,4 @@ function NotificationSection({
       </div>
     </div>
   );
-}
+};

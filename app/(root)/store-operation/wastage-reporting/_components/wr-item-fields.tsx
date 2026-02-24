@@ -15,15 +15,15 @@ import type { WrFormValues } from "./wr-form-schema";
 import { WR_ITEM } from "./wr-form-schema";
 import { useWrItemTable } from "./wr-item-table";
 
-function getDeleteDescription(
+const getDeleteDescription = (
   index: number | null,
   form: UseFormReturn<WrFormValues>,
-) {
+) => {
   if (index === null) return "";
   const name = form.getValues(`items.${index}.product_name`);
   const label = name || `Item #${index + 1}`;
   return `Are you sure you want to remove "${label}"?`;
-}
+};
 
 interface WrItemFieldsProps {
   form: UseFormReturn<WrFormValues>;

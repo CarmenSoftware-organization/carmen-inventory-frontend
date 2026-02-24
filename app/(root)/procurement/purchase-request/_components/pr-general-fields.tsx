@@ -68,17 +68,17 @@ export function PrGeneralFields({
   );
 }
 
-function InfoCell({
+const InfoCell = ({
   label,
   value,
 }: {
   readonly label: string;
   readonly value: string;
-}) {
+}) => {
   return (
     <div className="text-xs">
       <span className="text-muted-foreground">{label}</span>
       <p className="font-medium truncate">{value || "—"}</p>
     </div>
   );
-}
+};

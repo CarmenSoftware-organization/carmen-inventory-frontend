@@ -17,13 +17,14 @@ type GrnItemField = FieldArrayWithId<GrnFormValues, "items", "id">;
 
 const INPUT_CLS = "h-6 text-[11px] md:text-[11px] text-right";
 const LABEL_CLS = "text-[10px] text-muted-foreground";
-const SECTION_CLS = "text-[10px] font-medium text-muted-foreground uppercase tracking-wider";
+const SECTION_CLS =
+  "text-[10px] font-medium text-muted-foreground uppercase tracking-wider";
 
 const round2 = (n: number): number =>
   Number(Math.round(Number.parseFloat(n + "e2")) + "e-2");
 
 /** Unit lookup that watches product_id */
-function ExpandProductUnit({
+const ExpandProductUnit = ({
   control,
   index,
   unitField,
@@ -31,12 +32,9 @@ function ExpandProductUnit({
 }: {
   control: Control<GrnFormValues>;
   index: number;
-  unitField:
-    | "order_unit_id"
-    | "foc_unit_id"
-    | "return_unit_id";
+  unitField: "order_unit_id" | "foc_unit_id" | "return_unit_id";
   disabled: boolean;
-}) {
+}) => {
   const productId =
     useWatch({ control, name: `items.${index}.product_id` }) ?? "";
   return (
@@ -54,7 +52,7 @@ function ExpandProductUnit({
       )}
     />
   );
-}
+};
 
 interface GrnItemExpandProps {
   item: GrnItemField;
@@ -139,7 +137,10 @@ export function GrnItemExpand({
             />
           </div>
           <div className="col-span-2">
-            <label htmlFor={`items-${index}-price-without-vat`} className={LABEL_CLS}>
+            <label
+              htmlFor={`items-${index}-price-without-vat`}
+              className={LABEL_CLS}
+            >
               Price w/o VAT
             </label>
             <Input
@@ -155,7 +156,10 @@ export function GrnItemExpand({
             />
           </div>
           <div className="col-span-2">
-            <label htmlFor={`items-${index}-price-with-vat`} className={LABEL_CLS}>
+            <label
+              htmlFor={`items-${index}-price-with-vat`}
+              className={LABEL_CLS}
+            >
               Price w/ VAT
             </label>
             <Input
@@ -193,7 +197,10 @@ export function GrnItemExpand({
             </div>
           </div>
           <div className="col-span-2">
-            <label htmlFor={`items-${index}-base-total-price`} className={LABEL_CLS}>
+            <label
+              htmlFor={`items-${index}-base-total-price`}
+              className={LABEL_CLS}
+            >
               Base Total Price
             </label>
             <Input
@@ -281,7 +288,10 @@ export function GrnItemExpand({
             />
           </div>
           <div className="col-span-2">
-            <label htmlFor={`items-${index}-base-tax-amount`} className={LABEL_CLS}>
+            <label
+              htmlFor={`items-${index}-base-tax-amount`}
+              className={LABEL_CLS}
+            >
               Base Tax Amt
             </label>
             <Input

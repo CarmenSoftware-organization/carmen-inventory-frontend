@@ -55,8 +55,9 @@ export function WastageReportForm({ wastageReport }: WastageReportFormProps) {
   const isPending = createWr.isPending || updateWr.isPending;
   const isDisabled = isView || isPending;
 
-  const reportorName = wastageReport?.reportor_name
-    ?? (profile
+  const reportorName =
+    wastageReport?.reportor_name ??
+    (profile
       ? `${profile.user_info.firstname} ${profile.user_info.lastname}`
       : "");
 
@@ -180,9 +181,7 @@ export function WastageReportForm({ wastageReport }: WastageReportFormProps) {
             <h1 className="font-semibold text-lg">New Wastage Report</h1>
           ) : (
             <div className="flex items-center gap-1.5">
-              <h1 className="font-semibold text-lg">
-                {wastageReport?.wr_no}
-              </h1>
+              <h1 className="font-semibold text-lg">{wastageReport?.wr_no}</h1>
               {wastageReport?.status && (
                 <Badge
                   variant={WR_STATUS_CONFIG[wastageReport.status]?.variant}
@@ -264,9 +263,7 @@ export function WastageReportForm({ wastageReport }: WastageReportFormProps) {
                       />
                     )}
                   />
-                  <FieldError>
-                    {form.formState.errors.date?.message}
-                  </FieldError>
+                  <FieldError>{form.formState.errors.date?.message}</FieldError>
                 </Field>
 
                 <Field data-invalid={!!form.formState.errors.location_id}>
@@ -301,9 +298,7 @@ export function WastageReportForm({ wastageReport }: WastageReportFormProps) {
                   maxLength={256}
                   {...form.register("reason")}
                 />
-                <FieldError>
-                  {form.formState.errors.reason?.message}
-                </FieldError>
+                <FieldError>{form.formState.errors.reason?.message}</FieldError>
               </Field>
             </FieldGroup>
           </section>
@@ -336,17 +331,17 @@ export function WastageReportForm({ wastageReport }: WastageReportFormProps) {
   );
 }
 
-function InfoCell({
+const InfoCell = ({
   label,
   value,
 }: {
   readonly label: string;
   readonly value: string;
-}) {
+}) => {
   return (
     <div className="text-xs">
       <span className="text-muted-foreground">{label}</span>
       <p className="font-medium truncate">{value || "—"}</p>
     </div>
   );
-}
+};

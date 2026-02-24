@@ -16,7 +16,7 @@ interface TreeNode {
   product?: Product;
 }
 
-function buildTree(products: Product[]): TreeNode[] {
+const buildTree = (products: Product[]): TreeNode[] => {
   const categoryMap = new Map<string, TreeNode>();
 
   for (const p of products) {
@@ -69,9 +69,9 @@ function buildTree(products: Product[]): TreeNode[] {
   }
 
   return Array.from(categoryMap.values());
-}
+};
 
-function filterTree(nodes: TreeNode[], query: string): TreeNode[] {
+const filterTree = (nodes: TreeNode[], query: string): TreeNode[] => {
   if (!query) return nodes;
   const q = query.toLowerCase();
 
@@ -88,7 +88,7 @@ function filterTree(nodes: TreeNode[], query: string): TreeNode[] {
       return { ...node, children: filteredChildren };
     })
     .filter(Boolean) as TreeNode[];
-}
+};
 
 interface WfProductsProps {
   readonly form: UseFormReturn<WorkflowCreateModel>;
@@ -115,7 +115,7 @@ export function WfProducts({ form, allProducts, isDisabled }: WfProductsProps) {
 
   const leafIdsMap = useMemo(() => {
     const map = new Map<string, string[]>();
-    function compute(node: TreeNode): string[] {
+    const compute = (node: TreeNode): string[] => {
       if (node.type === "product") {
         map.set(node.id, [node.id]);
         return [node.id];
@@ -123,7 +123,7 @@ export function WfProducts({ form, allProducts, isDisabled }: WfProductsProps) {
       const ids = node.children.flatMap(compute);
       map.set(node.id, ids);
       return ids;
-    }
+    };
     for (const cat of tree) compute(cat);
     return map;
   }, [tree]);
@@ -259,7 +259,7 @@ interface TreeNodeRowProps {
   readonly leafIdsMap: Map<string, string[]>;
 }
 
-function TreeNodeRow({
+const TreeNodeRow = ({
   node,
   depth,
   expandedIds,
@@ -271,7 +271,7 @@ function TreeNodeRow({
   selectedIds,
   isDisabled,
   leafIdsMap,
-}: TreeNodeRowProps) {
+}: TreeNodeRowProps) => {
   const isExpanded = forceExpand || expandedIds.has(node.id);
   const isProduct = node.type === "product";
   const paddingLeft = depth * 16 + 4;
@@ -348,4 +348,4 @@ function TreeNodeRow({
         ))}
     </>
   );
-}
+};

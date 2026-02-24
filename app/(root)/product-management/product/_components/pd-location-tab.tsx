@@ -40,11 +40,15 @@ interface LocationCellProps {
   locationMap: Map<string, Location>;
 }
 
-function useLocationWatch({ control, index, locationMap }: LocationCellProps) {
+const useLocationWatch = ({
+  control,
+  index,
+  locationMap,
+}: LocationCellProps) => {
   const locationId =
     useWatch({ control, name: `locations.${index}.location_id` }) ?? "";
   return locationMap.get(locationId) ?? null;
-}
+};
 
 /* ------------------------------------------------------------------ */
 /* Cell components — uses useWatch for live form value                  */

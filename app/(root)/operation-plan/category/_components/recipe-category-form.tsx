@@ -53,9 +53,9 @@ const recipeCategorySchema = z.object({
 
 type RecipeCategoryFormValues = z.infer<typeof recipeCategorySchema>;
 
-function getDefaultValues(
+const getDefaultValues = (
   category?: RecipeCategory,
-): RecipeCategoryFormValues {
+): RecipeCategoryFormValues => {
   if (!category) {
     return {
       code: "",
@@ -93,7 +93,7 @@ function getDefaultValues(
     margin_minimum: margins?.minimum_profit_margin ?? 0,
     margin_target: margins?.target_profit_margin ?? 0,
   };
-}
+};
 
 interface RecipeCategoryFormProps {
   readonly category?: RecipeCategory;
@@ -115,9 +115,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
 
   // ── Discard dialog ──
   const [showDiscard, setShowDiscard] = useState(false);
-  const [discardAction, setDiscardAction] = useState<(() => void) | null>(
-    null,
-  );
+  const [discardAction, setDiscardAction] = useState<(() => void) | null>(null);
 
   const form = useForm<RecipeCategoryFormValues>({
     resolver: zodResolver(

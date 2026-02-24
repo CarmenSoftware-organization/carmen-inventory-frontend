@@ -1,10 +1,7 @@
 import { z } from "zod";
 import type { Recipe } from "@/types/recipe";
 import { ALLERGEN_OPTIONS } from "@/constant/recipe";
-import {
-  arrayToText,
-  objectToText,
-} from "@/lib/form-helpers";
+import { arrayToText, objectToText } from "@/lib/form-helpers";
 
 export { textToArray, textToObject } from "@/lib/form-helpers";
 
@@ -12,11 +9,10 @@ const STANDARD_ALLERGEN_VALUES = new Set(
   ALLERGEN_OPTIONS.map((a) => a.value as string),
 );
 
-export function splitAllergens(
+export const splitAllergens = (
   allergens: string[] | null | undefined,
-): { standard: string[]; custom: string } {
-  if (!allergens || allergens.length === 0)
-    return { standard: [], custom: "" };
+): { standard: string[]; custom: string } => {
+  if (!allergens || allergens.length === 0) return { standard: [], custom: "" };
 
   const standard: string[] = [];
   const custom: string[] = [];
@@ -31,18 +27,18 @@ export function splitAllergens(
   }
 
   return { standard, custom: custom.join(", ") };
-}
+};
 
-export function mergeAllergens(allergens: {
+export const mergeAllergens = (allergens: {
   standard: string[];
   custom: string;
-}): string[] {
+}): string[] => {
   const custom = allergens.custom
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
   return [...allergens.standard, ...custom];
-}
+};
 
 // ── Schema ──
 

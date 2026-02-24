@@ -36,7 +36,7 @@ interface WfStageListProps {
   readonly isDisabled: boolean;
 }
 
-function buildNewStage(existingNames: string[]): Stage {
+const buildNewStage = (existingNames: string[]): Stage => {
   let n = 1;
   let name = `New Stage ${n}`;
   while (existingNames.includes(name)) {
@@ -88,7 +88,7 @@ function buildNewStage(existingNames: string[]): Stage {
     assigned_users: [],
     is_hod: false,
   };
-}
+};
 
 export function WfStageList({
   form,

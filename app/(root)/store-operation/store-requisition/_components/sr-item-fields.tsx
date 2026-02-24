@@ -15,15 +15,15 @@ import type { SrFormValues } from "./sr-form-schema";
 import { SR_ITEM } from "./sr-form-schema";
 import { useSrItemTable } from "./sr-item-table";
 
-function getDeleteDescription(
+const getDeleteDescription = (
   index: number | null,
   form: UseFormReturn<SrFormValues>,
-) {
+) => {
   if (index === null) return "";
   const name = form.getValues(`items.${index}.product_name`);
   const label = name || `Item #${index + 1}`;
   return `Are you sure you want to remove "${label}"?`;
-}
+};
 
 interface SrItemFieldsProps {
   form: UseFormReturn<SrFormValues>;

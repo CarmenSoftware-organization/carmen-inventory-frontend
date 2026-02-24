@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, useFieldArray, useWatch, Controller, type Resolver } from "react-hook-form";
+import {
+  useForm,
+  useFieldArray,
+  useWatch,
+  Controller,
+  type Resolver,
+} from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -157,7 +163,10 @@ export function VendorForm({ vendor }: VendorFormProps) {
     remove: removeContact,
   } = useFieldArray({ control: form.control, name: "vendor_contact" });
 
-  const watchedBtIds = useWatch({ control: form.control, name: "business_type_ids" });
+  const watchedBtIds = useWatch({
+    control: form.control,
+    name: "business_type_ids",
+  });
   const availableBusinessTypes = allBusinessTypes.filter(
     (bt) => !watchedBtIds.includes(bt.id),
   );
@@ -275,9 +284,7 @@ export function VendorForm({ vendor }: VendorFormProps) {
                   maxLength={10}
                   {...form.register("code")}
                 />
-                <FieldError>
-                  {form.formState.errors.code?.message}
-                </FieldError>
+                <FieldError>{form.formState.errors.code?.message}</FieldError>
               </Field>
 
               <Field data-invalid={!!form.formState.errors.name}>
@@ -292,9 +299,7 @@ export function VendorForm({ vendor }: VendorFormProps) {
                   maxLength={100}
                   {...form.register("name")}
                 />
-                <FieldError>
-                  {form.formState.errors.name?.message}
-                </FieldError>
+                <FieldError>{form.formState.errors.name?.message}</FieldError>
               </Field>
 
               <Field>
@@ -319,10 +324,7 @@ export function VendorForm({ vendor }: VendorFormProps) {
                     onValueChange={(btId) => {
                       const current = form.getValues("business_type_ids");
                       if (!current.includes(btId)) {
-                        form.setValue("business_type_ids", [
-                          ...current,
-                          btId,
-                        ]);
+                        form.setValue("business_type_ids", [...current, btId]);
                       }
                     }}
                   >
@@ -599,7 +601,7 @@ interface AddressRowProps {
   onRemove: () => void;
 }
 
-function AddressRow({ form, index, isDisabled, onRemove }: AddressRowProps) {
+const AddressRow = ({ form, index, isDisabled, onRemove }: AddressRowProps) => {
   return (
     <div className="rounded-md border p-3 space-y-2">
       <div className="flex items-center justify-between">
@@ -720,7 +722,7 @@ function AddressRow({ form, index, isDisabled, onRemove }: AddressRowProps) {
       </div>
     </div>
   );
-}
+};
 
 /* ------------------------------------------------------------------ */
 /* Contact Row                                                         */
@@ -733,14 +735,12 @@ interface ContactRowProps {
   onRemove: () => void;
 }
 
-function ContactRow({ form, index, isDisabled, onRemove }: ContactRowProps) {
+const ContactRow = ({ form, index, isDisabled, onRemove }: ContactRowProps) => {
   return (
     <div className="rounded-md border p-3 space-y-2">
       <div className="grid grid-cols-2 gap-2">
         <Field
-          data-invalid={
-            !!form.formState.errors.vendor_contact?.[index]?.name
-          }
+          data-invalid={!!form.formState.errors.vendor_contact?.[index]?.name}
         >
           <FieldLabel className="text-xs">Name</FieldLabel>
           <Input
@@ -807,4 +807,4 @@ function ContactRow({ form, index, isDisabled, onRemove }: ContactRowProps) {
       </div>
     </div>
   );
-}
+};

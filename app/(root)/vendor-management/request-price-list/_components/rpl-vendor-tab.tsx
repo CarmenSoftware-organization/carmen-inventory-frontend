@@ -328,7 +328,7 @@ export default function RplVendorsTab({
   );
 }
 
-function VendorActions({
+const VendorActions = ({
   vendor,
   isDisabled,
   onRemove,
@@ -338,7 +338,7 @@ function VendorActions({
   isDisabled: boolean;
   onRemove: () => void;
   router: ReturnType<typeof useRouter>;
-}) {
+}) => {
   const [copied, setCopied] = useState(false);
   const isExisting = "url_token" in vendor;
   const existingVendor = isExisting ? (vendor as RequestPriceListVendor) : null;
@@ -416,4 +416,4 @@ function VendorActions({
       )}
     </div>
   );
-}
+};

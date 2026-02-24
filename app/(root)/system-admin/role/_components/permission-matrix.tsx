@@ -147,12 +147,12 @@ interface PermissionGroupRowsProps {
   onToggle: (permissionId: string, checked: boolean) => void;
 }
 
-function PermissionGroupRows({
+const PermissionGroupRows = ({
   group,
   selectedSet,
   disabled,
   onToggle,
-}: PermissionGroupRowsProps) {
+}: PermissionGroupRowsProps) => {
   return (
     <>
       <tr className="bg-muted/50">
@@ -192,4 +192,4 @@ function PermissionGroupRows({
       ))}
     </>
   );
-}
+};

@@ -6,7 +6,7 @@ import { PurchaseRequestForm } from "../_components/pr-form";
 import { usePurchaseRequestTemplates } from "@/hooks/use-purchase-request";
 import { FormSkeleton } from "@/components/loader/form-skeleton";
 
-function NewPurchaseRequestContent() {
+const NewPurchaseRequestContent = () => {
   const searchParams = useSearchParams();
   const templateId = searchParams.get("template_id");
 
@@ -21,7 +21,7 @@ function NewPurchaseRequestContent() {
     : undefined;
 
   return <PurchaseRequestForm template={template} />;
-}
+};
 
 export default function NewPurchaseRequestPage() {
   return (

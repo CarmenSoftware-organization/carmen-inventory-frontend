@@ -27,13 +27,13 @@ import { mockReports, REPORT_FILTERS } from "./report-mock";
 import type { ReportType } from "@/types/report";
 
 // TODO: ลบ ReportTypeFilter เมื่อ API พร้อม — เปลี่ยนไปใช้ StatusFilter แทน
-function ReportTypeFilter({
+const ReportTypeFilter = ({
   value,
   onChange,
 }: {
   readonly value: ReportType[];
   readonly onChange: (value: ReportType[]) => void;
-}) {
+}) => {
   const anchor = useComboboxAnchor();
 
   return (
@@ -44,7 +44,10 @@ function ReportTypeFilter({
       value={value}
       onValueChange={onChange}
     >
-      <ComboboxChips ref={anchor} className="min-h-8 min-w-[10rem] max-w-xs text-xs">
+      <ComboboxChips
+        ref={anchor}
+        className="min-h-8 min-w-[10rem] max-w-xs text-xs"
+      >
         <ComboboxValue>
           {(values: string[]) => (
             <React.Fragment>
@@ -53,7 +56,9 @@ function ReportTypeFilter({
                   {v.charAt(0).toUpperCase() + v.slice(1)}
                 </ComboboxChip>
               ))}
-              <ComboboxChipsInput placeholder={values.length === 0 ? "All Types" : ""} />
+              <ComboboxChipsInput
+                placeholder={values.length === 0 ? "All Types" : ""}
+              />
             </React.Fragment>
           )}
         </ComboboxValue>
@@ -70,7 +75,7 @@ function ReportTypeFilter({
       </ComboboxContent>
     </Combobox>
   );
-}
+};
 
 export default function ReportComponent() {
   const [search, setSearch] = useState("");

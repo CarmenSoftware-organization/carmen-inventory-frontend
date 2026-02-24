@@ -19,7 +19,7 @@ import { useStockReplenishment } from "@/hooks/use-stock-replenishment";
 import type { Location, ProductLocation } from "@/types/stock-replenishment";
 import { StockReplLocation } from "./stock-repl-location";
 
-function filterLocations(locations: Location[], search: string): Location[] {
+const filterLocations = (locations: Location[], search: string): Location[] => {
   if (!search) return locations;
   const term = search.toLowerCase();
   return locations
@@ -34,7 +34,7 @@ function filterLocations(locations: Location[], search: string): Location[] {
       ),
     }))
     .filter((loc) => loc.products_location.length > 0);
-}
+};
 
 export default function StockReplComponent() {
   const {

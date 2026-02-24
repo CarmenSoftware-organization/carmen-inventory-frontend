@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, useFieldArray, Controller, type Resolver } from "react-hook-form";
+import {
+  useForm,
+  useFieldArray,
+  Controller,
+  type Resolver,
+} from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -67,7 +72,7 @@ const priceListSchema = z.object({
 
 type PriceListFormValues = z.infer<typeof priceListSchema>;
 
-function parseEffectivePeriod(period: string): { from: string; to: string } {
+const parseEffectivePeriod = (period: string): { from: string; to: string } => {
   const parts = period.split(" - ");
   if (parts.length !== 2) return { from: "", to: "" };
   const fromDate = new Date(parts[0].trim());
@@ -77,7 +82,7 @@ function parseEffectivePeriod(period: string): { from: string; to: string } {
     return d.toISOString().split("T")[0];
   };
   return { from: fmt(fromDate), to: fmt(toDate) };
-}
+};
 
 interface PriceListFormProps {
   readonly priceList?: PriceList;
@@ -257,9 +262,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
                   maxLength={100}
                   {...form.register("name")}
                 />
-                <FieldError>
-                  {form.formState.errors.name?.message}
-                </FieldError>
+                <FieldError>{form.formState.errors.name?.message}</FieldError>
               </Field>
 
               <Field>
@@ -358,7 +361,9 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
               </Field>
 
               <div className="grid grid-cols-2 gap-3">
-                <Field data-invalid={!!form.formState.errors.effective_from_date}>
+                <Field
+                  data-invalid={!!form.formState.errors.effective_from_date}
+                >
                   <FieldLabel className="text-xs">Effective From</FieldLabel>
                   <Input
                     type="date"
@@ -486,14 +491,14 @@ interface DetailRowProps {
   onRemove: () => void;
 }
 
-function DetailRow({
+const DetailRow = ({
   form,
   index,
   isDisabled,
   products,
   taxProfiles,
   onRemove,
-}: DetailRowProps) {
+}: DetailRowProps) => {
   return (
     <div className="rounded-md border p-3 space-y-2">
       <div className="flex items-center justify-between">
@@ -544,7 +549,10 @@ function DetailRow({
             )}
           />
           <FieldError>
-            {form.formState.errors.pricelist_detail?.[index]?.product_id?.message}
+            {
+              form.formState.errors.pricelist_detail?.[index]?.product_id
+                ?.message
+            }
           </FieldError>
         </Field>
 
@@ -667,4 +675,4 @@ function DetailRow({
       </div>
     </div>
   );
-}
+};

@@ -6,12 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { MessageSquare } from "lucide-react";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormToolbar } from "@/components/ui/form-toolbar";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -20,7 +15,10 @@ import {
   useUpdateGoodsReceiveNote,
   useDeleteGoodsReceiveNote,
 } from "@/hooks/use-goods-receive-note";
-import type { GoodsReceiveNote, CreateGrnDto } from "@/types/goods-receive-note";
+import type {
+  GoodsReceiveNote,
+  CreateGrnDto,
+} from "@/types/goods-receive-note";
 import type { FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { GrnGeneralFields } from "./grn-general-fields";
@@ -34,19 +32,11 @@ import {
   mapDetailToPayload,
   mapExtraCostToPayload,
 } from "./grn-form-schema";
+import { textToObject } from "@/lib/form-helpers";
 
 const GrnCommentSheet = dynamic(() =>
   import("./grn-comment-sheet").then((mod) => mod.GrnCommentSheet),
 );
-
-function textToObject(value: string): Record<string, unknown> | null {
-  if (!value.trim()) return null;
-  try {
-    return JSON.parse(value);
-  } catch {
-    return null;
-  }
-}
 
 interface GrnFormProps {
   readonly goodsReceiveNote?: GoodsReceiveNote;
@@ -54,9 +44,7 @@ interface GrnFormProps {
 
 export function GrnForm({ goodsReceiveNote }: GrnFormProps) {
   const router = useRouter();
-  const [mode, setMode] = useState<FormMode>(
-    goodsReceiveNote ? "view" : "add",
-  );
+  const [mode, setMode] = useState<FormMode>(goodsReceiveNote ? "view" : "add");
   const isView = mode === "view";
   const isEdit = mode === "edit";
   const isAdd = mode === "add";
@@ -96,8 +84,7 @@ export function GrnForm({ goodsReceiveNote }: GrnFormProps) {
     });
 
     const detail: CreateGrnDto["good_received_note_detail"] = {};
-    if (newItems.length > 0)
-      detail.add = newItems.map(mapDetailToPayload);
+    if (newItems.length > 0) detail.add = newItems.map(mapDetailToPayload);
     if (updatedItems.length > 0)
       detail.update = updatedItems.map((item) => ({
         id: item.id,
@@ -158,8 +145,7 @@ export function GrnForm({ goodsReceiveNote }: GrnFormProps) {
       vendor_id: values.vendor_id!,
       vendor_name: values.vendor_name || undefined,
       approved_unit_conversion_factor: values.approved_unit_conversion_factor,
-      requested_unit_conversion_factor:
-        values.requested_unit_conversion_factor,
+      requested_unit_conversion_factor: values.requested_unit_conversion_factor,
       currency_id: values.currency_id,
       currency_name: values.currency_name || undefined,
       exchange_rate: values.exchange_rate,
@@ -220,9 +206,7 @@ export function GrnForm({ goodsReceiveNote }: GrnFormProps) {
         onBack={() => router.push("/procurement/goods-receive-note")}
         onEdit={() => setMode("edit")}
         onCancel={handleCancel}
-        onDelete={
-          goodsReceiveNote ? () => setShowDelete(true) : undefined
-        }
+        onDelete={goodsReceiveNote ? () => setShowDelete(true) : undefined}
         deleteIsPending={deleteGrn.isPending}
       >
         {goodsReceiveNote && (
@@ -233,10 +217,7 @@ export function GrnForm({ goodsReceiveNote }: GrnFormProps) {
         )}
       </FormToolbar>
 
-      <form
-        id="grn-form"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
+      <form id="grn-form" onSubmit={form.handleSubmit(onSubmit)}>
         <Tabs defaultValue="general">
           <TabsList variant="line">
             <TabsTrigger value="general" className="text-xs">

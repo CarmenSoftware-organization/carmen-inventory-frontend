@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Download, Plus, Printer } from "lucide-react";
+import { Download, Plus, Printer, Settings } from "lucide-react";
 import { toast } from "sonner";
 import {
   DataGrid,
@@ -23,14 +23,11 @@ import { ErrorState } from "@/components/ui/error-state";
 import { StatusFilter } from "@/components/ui/status-filter";
 import DisplayTemplate from "@/components/display-template";
 import EmptyComponent from "@/components/empty-component";
-import { Settings } from "lucide-react";
 import { useAdjustmentTypeTable } from "./use-adjustment-type-table";
 
 export default function AdjustmentTypeComponent() {
   const router = useRouter();
-  const [deleteTarget, setDeleteTarget] = useState<AdjustmentType | null>(
-    null,
-  );
+  const [deleteTarget, setDeleteTarget] = useState<AdjustmentType | null>(null);
   const deleteAdjustmentType = useDeleteAdjustmentType();
   const { params, search, setSearch, filter, setFilter, tableConfig } =
     useDataGridState();

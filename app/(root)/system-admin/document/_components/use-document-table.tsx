@@ -31,13 +31,13 @@ interface UseDocumentTableOptions {
   onDelete: (doc: DocumentFile) => void;
 }
 
-function formatFileSize(bytes: number): string {
+const formatFileSize = (bytes: number): string => {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
+};
 
-function getFileTypeInfo(contentType: string) {
+const getFileTypeInfo = (contentType: string) => {
   if (
     contentType.includes("spreadsheet") ||
     contentType.includes("excel") ||
@@ -77,7 +77,7 @@ function getFileTypeInfo(contentType: string) {
   )
     return { icon: FileCode, label: "Code", className: "text-purple-500" };
   return { icon: File, label: "File", className: "text-muted-foreground" };
-}
+};
 
 export function useDocumentTable({
   documents,

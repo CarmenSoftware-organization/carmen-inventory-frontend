@@ -4,6 +4,7 @@ import type {
   GrnDetailPayload,
   ExtraCostDetailPayload,
 } from "@/types/goods-receive-note";
+import { textToObject } from "@/lib/form-helpers";
 
 // --- Detail item schema ---
 
@@ -254,21 +255,12 @@ export const EMPTY_EXTRA_COST: GrnFormValues["extra_cost_details"][number] = {
 
 // --- Helpers ---
 
-function objectToText(
+const objectToText = (
   value: Record<string, unknown> | null | undefined,
-): string {
+): string => {
   if (!value || Object.keys(value).length === 0) return "";
   return JSON.stringify(value, null, 2);
-}
-
-function textToObject(value: string): Record<string, unknown> | null {
-  if (!value.trim()) return null;
-  try {
-    return JSON.parse(value);
-  } catch {
-    return null;
-  }
-}
+};
 
 export function getDefaultValues(grn?: GoodsReceiveNote): GrnFormValues {
   if (!grn) {
@@ -350,7 +342,8 @@ export function getDefaultValues(grn?: GoodsReceiveNote): GrnFormValues {
     dimension: objectToText(grn.dimension),
     extra_cost_name: grn.extra_cost?.name ?? "",
     extra_cost_note: grn.extra_cost?.note ?? "",
-    allocate_extracost_type: grn.extra_cost?.allocate_extracost_type ?? "by_qty",
+    allocate_extracost_type:
+      grn.extra_cost?.allocate_extracost_type ?? "by_qty",
     items:
       grn.good_received_note_detail?.map((d) => ({
         id: d.id,
@@ -406,7 +399,8 @@ export function getDefaultValues(grn?: GoodsReceiveNote): GrnFormValues {
         received_unit_id: d.received_unit_id,
         received_unit_name: d.received_unit_name ?? "",
         received_unit_conversion_rate: d.received_unit_conversion_rate,
-        received_base_unit_conversion_rate: d.received_base_unit_conversion_rate,
+        received_base_unit_conversion_rate:
+          d.received_base_unit_conversion_rate,
         received_base_qty: d.received_base_qty,
         received_base_unit_id: d.received_base_unit_id,
         received_base_unit_name: d.received_base_unit_name ?? "",
