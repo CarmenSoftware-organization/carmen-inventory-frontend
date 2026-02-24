@@ -84,6 +84,7 @@ export const API_ENDPOINTS = {
     `/api/proxy/api/config/${buCode}/permissions`,
   PHYSICAL_COUNT: (buCode: string) => `/api/proxy/api/${buCode}/physical-count`,
   PERIOD_END: (buCode: string) => `/api/proxy/api/${buCode}/period-end`,
+  REPORTS: (buCode: string) => `/api/proxy/api/${buCode}/report`,
   REQUEST_PRICE_LISTS: (buCode: string) =>
     `/api/proxy/api/${buCode}/request-for-pricing`,
   STOCK_IN: (buCode: string) => `/api/proxy/api/${buCode}/stock-in`,

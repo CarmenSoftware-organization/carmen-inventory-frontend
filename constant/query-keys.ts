@@ -42,6 +42,7 @@ export const QUERY_KEYS = {
   PURCHASE_REQUEST_COMMENTS: "purchase-request-comments",
   PURCHASE_REQUEST_TEMPLATES: "purchase-request-templates",
   PURCHASE_REQUEST_WORKFLOW_STAGES: "purchase-request-workflow-stages",
+  REPORTS: "reports",
   REQUEST_PRICE_LISTS: "request-price-lists",
   SPOT_CHECKS: "spot-checks",
   STOCK_REPLENISHMENT: "stock-replenishment",

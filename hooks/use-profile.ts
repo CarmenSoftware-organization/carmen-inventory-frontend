@@ -46,6 +46,7 @@ export function useProfile() {
   );
 
   const userId = query.data?.id;
+  const aliasName = query.data?.alias_name;
   const buCode = defaultBu?.code;
   const defaultCurrencyId = defaultBu?.config?.default_currency_id;
   const defaultCurrencyCode = defaultBu?.config?.default_currency?.code;
@@ -69,6 +70,7 @@ export function useProfile() {
     allBuCode,
     userId,
     hasDepartment,
+    aliasName,
   };
 }
 

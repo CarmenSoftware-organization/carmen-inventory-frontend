@@ -42,6 +42,7 @@ import {
   Layers,
   BookOpen,
   Wrench,
+  Files,
 } from "lucide-react";
 
 interface ModuleDto {
@@ -303,5 +304,10 @@ export const moduleList: ModuleDto[] = [
         icon: Building2,
       },
     ],
+  },
+  {
+    name: "Report",
+    path: "/report",
+    icon: Files,
   },
 ];
