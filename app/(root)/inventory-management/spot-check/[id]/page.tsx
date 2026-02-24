@@ -4,6 +4,7 @@ import { use } from "react";
 import { useSpotCheckById } from "@/hooks/use-spot-check";
 import { ScForm } from "../_components/sc-form";
 import { ErrorState } from "@/components/ui/error-state";
+import { FormSkeleton } from "@/components/loader/form-skeleton";
 
 export default function EditSpotCheckPage({
   params,
@@ -13,10 +14,7 @@ export default function EditSpotCheckPage({
   const { id } = use(params);
   const { data: spotCheck, isLoading, error, refetch } = useSpotCheckById(id);
 
-  if (isLoading)
-    return (
-      <div className="p-6 text-sm text-muted-foreground">Loading...</div>
-    );
+  if (isLoading) return <FormSkeleton />;
   if (error)
     return <ErrorState message={error.message} onRetry={() => refetch()} />;
   if (!spotCheck) return <ErrorState message="Spot check not found" />;

@@ -4,6 +4,7 @@ import { use } from "react";
 import { usePriceListTemplateById } from "@/hooks/use-price-list-template";
 import { PriceListTemplateForm } from "../_components/price-list-template-form";
 import { ErrorState } from "@/components/ui/error-state";
+import { FormSkeleton } from "@/components/loader/form-skeleton";
 
 export default function EditPriceListTemplatePage({
   params,
@@ -18,10 +19,7 @@ export default function EditPriceListTemplatePage({
     refetch,
   } = usePriceListTemplateById(id);
 
-  if (isLoading)
-    return (
-      <div className="p-6 text-sm text-muted-foreground">Loading...</div>
-    );
+  if (isLoading) return <FormSkeleton />;
   if (error)
     return <ErrorState message={error.message} onRetry={() => refetch()} />;
   if (!priceListTemplate)

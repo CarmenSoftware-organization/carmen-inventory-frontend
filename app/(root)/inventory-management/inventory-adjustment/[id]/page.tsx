@@ -6,6 +6,7 @@ import { useInventoryAdjustmentById } from "@/hooks/use-inventory-adjustment";
 import { InventoryAdjustmentForm } from "../_components/inv-adj-form";
 import { ErrorState } from "@/components/ui/error-state";
 import type { InventoryAdjustmentType } from "@/types/inventory-adjustment";
+import { FormSkeleton } from "@/components/loader/form-skeleton";
 
 function EditInventoryAdjustmentContent({
   id,
@@ -38,8 +39,7 @@ function EditContent({
 
   if (!type)
     return <ErrorState message="Invalid adjustment type" />;
-  if (isLoading)
-    return <div className="p-6 text-sm text-muted-foreground">Loading...</div>;
+  if (isLoading) return <FormSkeleton />;
   if (error)
     return <ErrorState message={error.message} onRetry={() => refetch()} />;
   if (!inventoryAdjustment)

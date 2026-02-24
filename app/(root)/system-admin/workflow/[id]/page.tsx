@@ -5,6 +5,7 @@ import { useWorkflowById } from "@/hooks/use-workflow";
 import { useUser } from "@/hooks/use-user";
 import { useProduct } from "@/hooks/use-product";
 import { ErrorState } from "@/components/ui/error-state";
+import { FormSkeleton } from "@/components/loader/form-skeleton";
 import { WfDetail } from "../_components/wf-detail";
 
 export default function EditWorkflowPage({
@@ -54,10 +55,7 @@ export default function EditWorkflowPage({
     [productData],
   );
 
-  if (isLoading)
-    return (
-      <div className="p-6 text-sm text-muted-foreground">Loading...</div>
-    );
+  if (isLoading) return <FormSkeleton />;
   if (wfError)
     return (
       <ErrorState message={wfError.message} onRetry={() => wfRefetch()} />

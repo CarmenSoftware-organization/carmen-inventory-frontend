@@ -4,6 +4,7 @@ import { use } from "react";
 import { useEquipmentById } from "@/hooks/use-equipment";
 import { EquipmentForm } from "../_components/equipment-form";
 import { ErrorState } from "@/components/ui/error-state";
+import { FormSkeleton } from "@/components/loader/form-skeleton";
 
 export default function EditEquipmentPage({
   params,
@@ -13,10 +14,7 @@ export default function EditEquipmentPage({
   const { id } = use(params);
   const { data: equipment, isLoading, error, refetch } = useEquipmentById(id);
 
-  if (isLoading)
-    return (
-      <div className="p-6 text-sm text-muted-foreground">Loading...</div>
-    );
+  if (isLoading) return <FormSkeleton />;
   if (error)
     return <ErrorState message={error.message} onRetry={() => refetch()} />;
   if (!equipment) return <ErrorState message="Equipment not found" />;

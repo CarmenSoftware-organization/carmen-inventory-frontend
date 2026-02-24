@@ -2,9 +2,9 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Loader2 } from "lucide-react";
 import { PurchaseRequestForm } from "../_components/pr-form";
 import { usePurchaseRequestTemplates } from "@/hooks/use-purchase-request";
+import { FormSkeleton } from "@/components/loader/form-skeleton";
 
 function NewPurchaseRequestContent() {
   const searchParams = useSearchParams();
@@ -13,11 +13,7 @@ function NewPurchaseRequestContent() {
   const { data: templates, isLoading } = usePurchaseRequestTemplates();
 
   if (templateId && isLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="size-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <FormSkeleton />;
   }
 
   const template = templateId
@@ -29,13 +25,7 @@ function NewPurchaseRequestContent() {
 
 export default function NewPurchaseRequestPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="size-6 animate-spin text-muted-foreground" />
-        </div>
-      }
-    >
+    <Suspense fallback={<FormSkeleton />}>
       <NewPurchaseRequestContent />
     </Suspense>
   );

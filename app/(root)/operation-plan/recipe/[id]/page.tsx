@@ -4,6 +4,7 @@ import { use } from "react";
 import { useRecipeById } from "@/hooks/use-recipe";
 import { RecipeForm } from "../_components/recipe-form";
 import { ErrorState } from "@/components/ui/error-state";
+import { FormSkeleton } from "@/components/loader/form-skeleton";
 
 export default function EditRecipePage({
   params,
@@ -13,10 +14,7 @@ export default function EditRecipePage({
   const { id } = use(params);
   const { data: recipe, isLoading, error, refetch } = useRecipeById(id);
 
-  if (isLoading)
-    return (
-      <div className="p-6 text-sm text-muted-foreground">Loading...</div>
-    );
+  if (isLoading) return <FormSkeleton />;
   if (error)
     return <ErrorState message={error.message} onRetry={() => refetch()} />;
   if (!recipe) return <ErrorState message="Recipe not found" />;

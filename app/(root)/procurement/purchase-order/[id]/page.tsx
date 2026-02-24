@@ -4,6 +4,7 @@ import { use } from "react";
 import { usePurchaseOrderById } from "@/hooks/use-purchase-order";
 import { PoForm } from "../_components/po-form";
 import { ErrorState } from "@/components/ui/error-state";
+import { FormSkeleton } from "@/components/loader/form-skeleton";
 
 export default function EditPurchaseOrderPage({
   params,
@@ -14,10 +15,7 @@ export default function EditPurchaseOrderPage({
   const { data: purchaseOrder, isLoading, error, refetch } =
     usePurchaseOrderById(id);
 
-  if (isLoading)
-    return (
-      <div className="p-6 text-sm text-muted-foreground">Loading...</div>
-    );
+  if (isLoading) return <FormSkeleton />;
   if (error)
     return <ErrorState message={error.message} onRetry={() => refetch()} />;
   if (!purchaseOrder)
