@@ -22,10 +22,11 @@ export function LookupRecipeCategory({
   excludeIds,
 }: LookupRecipeCategoryProps) {
   const { data } = useRecipeCategory({ perpage: -1 });
+
   const categories = useMemo(
     () =>
       (data?.data ?? []).filter(
-        (v) => v.is_active && (!excludeIds || !excludeIds.has(v.id)),
+        (v) => v.is_active && !excludeIds?.has(v.id),
       ),
     [data?.data, excludeIds],
   );

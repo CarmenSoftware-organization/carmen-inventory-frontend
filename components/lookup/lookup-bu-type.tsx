@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, ChevronsUpDown, Loader2, X } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2, RadioTower, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +20,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useBusinessType } from "@/hooks/use-business-type";
 import type { BusinessType } from "@/types/business-type";
+import EmptyComponent from "../empty-component";
 
 interface LookupBuTypeProps {
   readonly value?: { id: string; name: string }[];
@@ -75,17 +76,10 @@ export function LookupBuType({
               value.map((item) => (
                 <Badge key={item.id} variant="secondary" size="sm">
                   {item.name}
-                  <div
-                    role="button"
-                    tabIndex={0}
+                  <button
+                    type="button"
                     aria-label={`Remove ${item.name}`}
                     className="ml-1 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        handleRemove(e as unknown as React.MouseEvent, item.id);
-                      }
-                    }}
                     onMouseDown={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -93,7 +87,7 @@ export function LookupBuType({
                     onClick={(e) => handleRemove(e, item.id)}
                   >
                     <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                  </div>
+                  </button>
                 </Badge>
               ))
             ) : (
@@ -123,7 +117,12 @@ export function LookupBuType({
               </div>
             ) : (
               <>
-                <CommandEmpty>No business types found.</CommandEmpty>
+                <CommandEmpty>
+                  <EmptyComponent
+                    title="No business types found"
+                    icon={RadioTower}
+                  />
+                </CommandEmpty>
                 <CommandGroup>
                   {businessTypes.map((bt) => {
                     const isSelected = value.some((item) => item.id === bt.id);

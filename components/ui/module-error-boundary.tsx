@@ -7,8 +7,8 @@ export default function ModuleError({
   error,
   reset,
 }: {
-  error: Error & { digest?: string };
-  reset: () => void;
+  readonly error: Error & { digest?: string };
+  readonly reset: () => void;
 }) {
   const isApiError = error instanceof ApiError;
   const message = isApiError
@@ -18,7 +18,7 @@ export default function ModuleError({
   return <ErrorState message={message} onRetry={reset} />;
 }
 
-function getHumanMessage(code: string): string {
+const getHumanMessage = (code: string): string => {
   switch (code) {
     case ERROR_CODES.UNAUTHORIZED:
       return "Session expired — please log in again";
@@ -33,4 +33,4 @@ function getHumanMessage(code: string): string {
     default:
       return "Something went wrong — please try again";
   }
-}
+};
