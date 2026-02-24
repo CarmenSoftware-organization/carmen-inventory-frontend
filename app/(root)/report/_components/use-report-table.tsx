@@ -17,6 +17,14 @@ export function useReportTable({ reports }: UseReportTableOptions) {
   const columns: ColumnDef<Report>[] = useMemo(
     () => [
       {
+        id: "index",
+        header: "#",
+        size: 50,
+        cell: ({ row }) => (
+          <span className="text-muted-foreground">{row.index + 1}</span>
+        ),
+      },
+      {
         accessorKey: "name",
         header: ({ column }) => (
           <DataGridColumnHeader column={column} title="Name" />

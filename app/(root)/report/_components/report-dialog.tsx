@@ -60,9 +60,8 @@ export function ReportDialog({
         report
           ? {
               name: report.name,
-              is_active: report.is_active,
             }
-          : { name: "", is_active: true },
+          : { name: "" },
       );
     }
   }, [open, report, form]);
@@ -99,9 +98,7 @@ export function ReportDialog({
     <Dialog open={open} onOpenChange={isPending ? undefined : onOpenChange}>
       <DialogContent className="sm:max-w-sm gap-3 p-4">
         <DialogHeader className="gap-0 pb-1">
-          <DialogTitle className="text-sm">
-            {labels.title}
-          </DialogTitle>
+          <DialogTitle className="text-sm">{labels.title}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
@@ -118,9 +115,7 @@ export function ReportDialog({
                 maxLength={100}
                 {...form.register("name")}
               />
-              <FieldError>
-                {form.formState.errors.name?.message}
-              </FieldError>
+              <FieldError>{form.formState.errors.name?.message}</FieldError>
             </Field>
 
             <Field orientation="horizontal">
