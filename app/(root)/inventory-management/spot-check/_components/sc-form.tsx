@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, type Resolver } from "react-hook-form";
+import { useForm, useWatch, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -15,6 +15,7 @@ import type { SpotCheck, CreateSpotCheckDto } from "@/types/spot-check";
 import type { FormMode } from "@/types/form";
 import { DeleteDialog } from "@/components/ui/delete-dialog";
 import { ScGeneralFields } from "./sc-general-fields";
+import { ScItemTable } from "./sc-item-table";
 import {
   spotCheckSchema,
   type SpotCheckFormValues,
@@ -46,10 +47,29 @@ export function ScForm({ spotCheck }: ScFormProps) {
     defaultValues,
   });
 
+  const method = useWatch({ control: form.control, name: "method" });
+
   const onSubmit = (values: SpotCheckFormValues) => {
-    const payload: CreateSpotCheckDto = {
-      department_id: values.department_id,
-    };
+    let payload: CreateSpotCheckDto;
+
+    if (values.method === "random") {
+      payload = {
+        location_id: values.location_id,
+        method: "random",
+        product_count: values.product_count,
+        description: values.description || undefined,
+        note: values.note || undefined,
+      };
+    } else {
+      payload = {
+        location_id: values.location_id,
+        method: "manual",
+        products: values.products.map((p) => ({
+          product_id: p.product_id,
+        })),
+        description: values.description || undefined,
+      };
+    }
 
     if (isEdit && spotCheck) {
       updateSc.mutate(
@@ -102,6 +122,12 @@ export function ScForm({ spotCheck }: ScFormProps) {
         className="space-y-4"
       >
         <ScGeneralFields form={form} disabled={isDisabled} />
+
+        {method === "manual" && (
+          <div className="max-w-2xl">
+            <ScItemTable form={form} disabled={isDisabled} />
+          </div>
+        )}
       </form>
 
       {spotCheck && (
@@ -111,7 +137,7 @@ export function ScForm({ spotCheck }: ScFormProps) {
             !open && !deleteSc.isPending && setShowDelete(false)
           }
           title="Delete Spot Check"
-          description={`Are you sure you want to delete this spot check? This action cannot be undone.`}
+          description="Are you sure you want to delete this spot check? This action cannot be undone."
           isPending={deleteSc.isPending}
           onConfirm={() => {
             deleteSc.mutate(spotCheck.id, {

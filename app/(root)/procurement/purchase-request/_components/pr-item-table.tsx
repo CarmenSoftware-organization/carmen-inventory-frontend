@@ -380,7 +380,7 @@ export function usePrItemTable({
         cell: ({ row }) => (
           <AmountCell control={form.control} index={row.index} />
         ),
-        size: 120,
+        size: 80,
         meta: {
           headerClassName: "text-right",
           cellClassName: "text-right",
@@ -475,12 +475,12 @@ export function usePrItemTable({
 
     return [
       expandColumn,
-      ...(!isDraft ? [prSelectColumn] : []),
+      ...(isDraft ? [] : [prSelectColumn]),
       indexColumn,
       ...(isDraft
         ? dataColumns.filter((col) => !hiddenInDraft.has(col.id ?? ""))
         : dataColumns),
-      ...(!isDisabled ? [actionColumn] : []),
+      ...(isDisabled ? [] : [actionColumn]),
     ];
   }, [
     form,
