@@ -15,16 +15,7 @@ import type { PoFormValues } from "./po-form-schema";
 import { usePoItemTable } from "./po-item-table";
 import { PO_ITEM } from "./po-form-schema";
 import EmptyComponent from "@/components/empty-component";
-
-function getDeleteDescription(
-  index: number | null,
-  form: UseFormReturn<PoFormValues>,
-) {
-  if (index === null) return "";
-  const name = form.getValues(`items.${index}.product_name`);
-  const label = name || `Item #${index + 1}`;
-  return `Are you sure you want to remove "${label}"?`;
-}
+import { getDeleteDescription } from "@/lib/form-utils";
 
 interface PoItemFieldsProps {
   form: UseFormReturn<PoFormValues>;

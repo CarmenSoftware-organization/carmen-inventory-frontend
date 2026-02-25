@@ -14,16 +14,7 @@ import EmptyComponent from "@/components/empty-component";
 import type { WrFormValues } from "./wr-form-schema";
 import { WR_ITEM } from "./wr-form-schema";
 import { useWrItemTable } from "./wr-item-table";
-
-const getDeleteDescription = (
-  index: number | null,
-  form: UseFormReturn<WrFormValues>,
-) => {
-  if (index === null) return "";
-  const name = form.getValues(`items.${index}.product_name`);
-  const label = name || `Item #${index + 1}`;
-  return `Are you sure you want to remove "${label}"?`;
-};
+import { getDeleteDescription } from "@/lib/form-utils";
 
 interface WrItemFieldsProps {
   form: UseFormReturn<WrFormValues>;

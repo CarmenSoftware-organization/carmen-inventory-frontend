@@ -15,16 +15,7 @@ import type { CnFormValues } from "./cn-form-schema";
 import { useCnItemTable } from "./cn-item-table";
 import { CN_ITEM } from "./cn-form-schema";
 import EmptyComponent from "@/components/empty-component";
-
-function getDeleteDescription(
-  index: number | null,
-  form: UseFormReturn<CnFormValues>,
-) {
-  if (index === null) return "";
-  const name = form.getValues(`items.${index}.item_name`);
-  const label = name || `Item #${index + 1}`;
-  return `Are you sure you want to remove "${label}"?`;
-}
+import { getDeleteDescription } from "@/lib/form-utils";
 
 interface CnItemFieldsProps {
   form: UseFormReturn<CnFormValues>;
@@ -101,7 +92,7 @@ export function CnItemFields({ form, disabled }: CnItemFieldsProps) {
           if (!o) setDeleteIndex(null);
         }}
         title="Remove Item"
-        description={getDeleteDescription(deleteIndex, form)}
+        description={getDeleteDescription(deleteIndex, form, "item_name")}
         onConfirm={() => {
           if (deleteIndex === null) return;
           removeItem(deleteIndex);

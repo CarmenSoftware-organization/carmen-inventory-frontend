@@ -15,16 +15,7 @@ import type { GrnFormValues } from "./grn-form-schema";
 import { useGrnItemTable } from "./grn-item-table";
 import { EMPTY_DETAIL } from "./grn-form-schema";
 import EmptyComponent from "@/components/empty-component";
-
-const getDeleteDescription = (
-  index: number | null,
-  form: UseFormReturn<GrnFormValues>,
-) => {
-  if (index === null) return "";
-  const name = form.getValues(`items.${index}.product_name`);
-  const label = name || `Item #${index + 1}`;
-  return `Are you sure you want to remove "${label}"?`;
-};
+import { getDeleteDescription } from "@/lib/form-utils";
 
 interface GrnItemFieldsProps {
   readonly form: UseFormReturn<GrnFormValues>;
