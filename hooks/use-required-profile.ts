@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { toast } from "sonner";
 import { useProfile } from "@/hooks/use-profile";
 import type { BusinessUnit } from "@/types/profile";
 
@@ -15,24 +17,18 @@ export interface RequiredProfile {
 
 export function useRequiredProfile(): RequiredProfile | null {
   const profile = useProfile();
+  const loaded = profile.isSuccess;
+  const ready = profile.isProfileReady;
 
-  if (!profile.isProfileReady) {
-    if (process.env.NODE_ENV === "development") {
-      const missing = [
-        !profile.buCode && "buCode",
-        !profile.defaultBu && "defaultBu",
-        !profile.userId && "userId",
-      ].filter(Boolean);
-
-      if (missing.length > 0) {
-        console.warn(
-          "[useRequiredProfile] Profile not ready. Missing:",
-          missing.join(", "),
-        );
-      }
+  useEffect(() => {
+    if (loaded && !ready) {
+      toast.warning("ข้อมูลโปรไฟล์ไม่ครบ กรุณาติดต่อ Admin", {
+        id: "profile-incomplete",
+      });
     }
-    return null;
-  }
+  }, [loaded, ready]);
+
+  if (!ready) return null;
 
   return {
     buCode: profile.buCode!,
