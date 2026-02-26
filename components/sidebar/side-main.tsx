@@ -48,7 +48,7 @@ export function SideMain() {
                     isActive={pathname === sub.path}
                     className="data-[active=true]:bg-primary data-[active=true]:text-primary-foreground"
                   >
-                    <Link href={sub.path}>
+                    <Link href={sub.path} prefetch={false}>
                       <sub.icon />
                       <span className="text-xs font-medium">{sub.name}</span>
                     </Link>
