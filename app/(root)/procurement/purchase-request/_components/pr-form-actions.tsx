@@ -138,7 +138,7 @@ export function PrFormActions({
       )}
 
       {hasRecord && (
-        <Button size="sm" onClick={onComment}>
+        <Button size="sm" variant="outline" onClick={onComment}>
           <MessageSquare />
           Comment
         </Button>

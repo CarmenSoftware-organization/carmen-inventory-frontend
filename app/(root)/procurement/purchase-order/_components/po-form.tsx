@@ -219,7 +219,11 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
           </>
         )}
         {purchaseOrder && (
-          <Button size="sm" onClick={() => setShowComment(true)}>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setShowComment(true)}
+          >
             <MessageSquare aria-hidden="true" />
             Comment
           </Button>

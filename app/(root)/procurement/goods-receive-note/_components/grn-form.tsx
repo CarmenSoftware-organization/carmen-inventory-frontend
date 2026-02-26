@@ -221,7 +221,8 @@ export function GrnForm({ goodsReceiveNote }: GrnFormProps) {
               size="sm"
               onClick={() =>
                 confirmGrn.mutate(goodsReceiveNote.id, {
-                  onSuccess: () => toast.success("Goods receive note confirmed"),
+                  onSuccess: () =>
+                    toast.success("Goods receive note confirmed"),
                   onError: (err) => toast.error(err.message),
                 })
               }
@@ -247,7 +248,11 @@ export function GrnForm({ goodsReceiveNote }: GrnFormProps) {
           </>
         )}
         {goodsReceiveNote && (
-          <Button size="sm" onClick={() => setShowComment(true)}>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setShowComment(true)}
+          >
             <MessageSquare aria-hidden="true" />
             Comment
           </Button>
