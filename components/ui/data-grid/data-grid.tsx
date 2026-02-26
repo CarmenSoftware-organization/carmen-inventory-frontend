@@ -65,6 +65,7 @@ export interface DataGridProps<TData extends object> {
   tableLayout?: {
     dense?: boolean
     cellBorder?: boolean
+    headerSeparator?: boolean
     rowBorder?: boolean
     rowRounded?: boolean
     stripped?: boolean

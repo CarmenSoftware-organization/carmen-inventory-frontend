@@ -309,7 +309,7 @@ export default function RplVendorsTab({
       <DataGrid
         table={table}
         recordCount={tableData.length}
-        tableLayout={{ dense: true }}
+        tableLayout={{ dense: true, headerSeparator: true }}
         tableClassNames={{ base: "text-xs" }}
         emptyMessage={
           <EmptyComponent

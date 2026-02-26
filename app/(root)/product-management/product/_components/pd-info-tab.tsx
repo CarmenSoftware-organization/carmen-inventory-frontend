@@ -369,7 +369,7 @@ export default function ProductInfoTab({
           <DataGrid
             table={table}
             recordCount={infoFields.length}
-            tableLayout={{ dense: true }}
+            tableLayout={{ dense: true, headerSeparator: true }}
             tableClassNames={{ base: "text-[11px]" }}
             emptyMessage={
               <EmptyComponent

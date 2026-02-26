@@ -60,7 +60,7 @@ export function AdjItemFields({ form, disabled }: AdjItemFieldsProps) {
       <DataGrid
         table={table}
         recordCount={itemFields.length}
-        tableLayout={{ dense: true }}
+        tableLayout={{ dense: true, headerSeparator: true }}
         tableClassNames={{ base: "text-xs" }}
         emptyMessage={
           <EmptyComponent

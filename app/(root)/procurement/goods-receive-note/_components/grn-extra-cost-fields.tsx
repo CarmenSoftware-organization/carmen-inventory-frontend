@@ -317,7 +317,7 @@ export function GrnExtraCostFields({
         <DataGrid
           table={table}
           recordCount={costFields.length}
-          tableLayout={{ dense: true }}
+          tableLayout={{ dense: true, headerSeparator: true }}
           tableClassNames={{ base: "text-[11px]" }}
           emptyMessage={
             <EmptyComponent

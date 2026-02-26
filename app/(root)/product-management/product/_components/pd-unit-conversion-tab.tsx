@@ -475,7 +475,7 @@ export default function UnitConversionTab({
       <DataGrid
         table={table}
         recordCount={fields.length}
-        tableLayout={{ dense: true }}
+        tableLayout={{ dense: true, headerSeparator: true }}
         tableClassNames={{ base: "text-[11px]" }}
         emptyMessage={
           <EmptyComponent

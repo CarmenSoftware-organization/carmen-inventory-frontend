@@ -135,7 +135,7 @@ export function ScItemTable({ form, disabled }: ScItemTableProps) {
       <DataGrid
         table={table}
         recordCount={fields.length}
-        tableLayout={{ dense: true }}
+        tableLayout={{ dense: true, headerSeparator: true }}
         tableClassNames={{ base: "text-xs" }}
       >
         <DataGridContainer>

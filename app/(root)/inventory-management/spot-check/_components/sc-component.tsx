@@ -84,7 +84,7 @@ export default function ScComponent() {
         table={table}
         recordCount={totalRecords}
         isLoading={isLoading}
-        tableLayout={{ dense: true }}
+        tableLayout={{ dense: true, headerSeparator: true }}
         tableClassNames={{ base: "text-xs" }}
       >
         <DataGridContainer>

@@ -228,7 +228,7 @@ export function StockReplLocation({
           <DataGrid
             table={table}
             recordCount={products.length}
-            tableLayout={{ dense: true }}
+            tableLayout={{ dense: true, headerSeparator: true }}
             tableClassNames={{ base: "text-xs" }}
           >
             <DataGridContainer>

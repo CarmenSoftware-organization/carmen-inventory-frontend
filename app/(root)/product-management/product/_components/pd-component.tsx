@@ -94,7 +94,7 @@ export default function ProductComponent() {
       <DataGrid
         table={table}
         recordCount={totalRecords}
-        tableLayout={{ dense: true }}
+        tableLayout={{ dense: true, headerSeparator: true }}
         tableClassNames={{ base: "text-[11px]" }}
         isLoading={isLoading}
         emptyMessage={

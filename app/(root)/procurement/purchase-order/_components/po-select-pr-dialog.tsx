@@ -94,7 +94,7 @@ export function SelectPRDialog({
           <DataGrid
             table={table}
             recordCount={purchaseRequests.length}
-            tableLayout={{ dense: true }}
+            tableLayout={{ dense: true, headerSeparator: true }}
             tableClassNames={{ base: "text-xs" }}
             emptyMessage={
               <EmptyComponent

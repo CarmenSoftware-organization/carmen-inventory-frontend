@@ -36,8 +36,8 @@ import { PURCHASE_REQUEST_STATUS_OPTIONS } from "@/constant/purchase-request";
 import { usePurchaseRequestTable } from "./pr-table";
 import dynamic from "next/dynamic";
 
-const CreatePRDialog = dynamic(
-  () => import("./pr-create-dialog").then((mod) => mod.CreatePRDialog),
+const CreatePRDialog = dynamic(() =>
+  import("./pr-create-dialog").then((mod) => mod.CreatePRDialog),
 );
 
 export default function PurchaseRequestComponent() {
@@ -145,7 +145,7 @@ export default function PurchaseRequestComponent() {
         table={table}
         recordCount={totalRecords}
         isLoading={isLoading}
-        tableLayout={{ dense: true }}
+        tableLayout={{ dense: true, headerSeparator: true }}
         tableClassNames={{ base: "text-xs" }}
       >
         <ScrollArea>

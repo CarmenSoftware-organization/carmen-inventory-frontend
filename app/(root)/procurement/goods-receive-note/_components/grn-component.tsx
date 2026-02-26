@@ -95,7 +95,7 @@ export default function GrnComponent() {
         table={table}
         recordCount={totalRecords}
         isLoading={isLoading}
-        tableLayout={{ dense: true }}
+        tableLayout={{ dense: true, headerSeparator: true }}
         tableClassNames={{ base: "text-xs" }}
         emptyMessage={
           <EmptyComponent

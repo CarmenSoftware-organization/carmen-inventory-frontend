@@ -85,7 +85,7 @@ export function usePurchaseRequestTable({
         headerClassName: "text-center",
         skeleton: columnSkeletons.badge,
       },
-      size: 80,
+      size: 100,
     },
     {
       accessorKey: "workflow_current_stage",

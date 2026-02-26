@@ -165,6 +165,9 @@ function DataGridTableHeadRowCell<TData>({
         "text-secondary-foreground/80 h-9 relative text-left align-middle font-normal rtl:text-right [&:has([role=checkbox])]:px-0",
         headerCellSpacing,
         props.tableLayout?.cellBorder && "border-e",
+        props.tableLayout?.headerSeparator &&
+          column.getIndex() > 0 &&
+          "border-l border-border",
         props.tableLayout?.columnsResizable &&
           column.getCanResize() &&
           "truncate",
@@ -325,7 +328,8 @@ function DataGridTableBodyRow<TData>({
       }
       className={cn(
         "hover:bg-muted/40 data-[state=selected]:bg-muted/50",
-        props.onRowClick && "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset",
+        props.onRowClick &&
+          "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset",
         !props.tableLayout?.stripped &&
           props.tableLayout?.rowBorder &&
           "border-border border-b [&:not(:last-child)>td]:border-b",

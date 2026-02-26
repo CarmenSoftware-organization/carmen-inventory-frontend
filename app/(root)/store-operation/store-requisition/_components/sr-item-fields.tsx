@@ -60,7 +60,7 @@ export function SrItemFields({ form, disabled }: SrItemFieldsProps) {
       <DataGrid
         table={table}
         recordCount={itemFields.length}
-        tableLayout={{ dense: true }}
+        tableLayout={{ dense: true, headerSeparator: true }}
         tableClassNames={{ base: "text-xs" }}
         emptyMessage={
           <EmptyComponent

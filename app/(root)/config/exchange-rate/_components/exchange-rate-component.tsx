@@ -140,7 +140,7 @@ export default function ExchangeRateComponent() {
         table={table}
         recordCount={totalRecords}
         isLoading={isLoadingHistory}
-        tableLayout={{ dense: true }}
+        tableLayout={{ dense: true, headerSeparator: true }}
         tableClassNames={{ base: "text-xs" }}
       >
         <DataGridContainer>

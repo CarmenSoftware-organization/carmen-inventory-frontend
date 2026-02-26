@@ -56,7 +56,7 @@ export function GrnItemFields({ form, disabled }: GrnItemFieldsProps) {
       <DataGrid
         table={table}
         recordCount={itemFields.length}
-        tableLayout={{ dense: true }}
+        tableLayout={{ dense: true, headerSeparator: true }}
         tableClassNames={{ base: "text-[11px]" }}
         emptyMessage={
           <EmptyComponent
