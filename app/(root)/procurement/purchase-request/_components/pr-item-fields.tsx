@@ -75,7 +75,7 @@ export function PrItemFields({
 
   const {
     fields: itemFields,
-    append: appendItem,
+    prepend: prependItem,
     remove: removeItem,
   } = useFieldArray({ control: form.control, name: "items" });
 
@@ -83,11 +83,31 @@ export function PrItemFields({
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    appendItem({
-      ...PR_ITEM,
-      currency_id: defaultBu?.config?.default_currency_id ?? null,
-      delivery_date: tomorrow.toISOString(),
-    });
+    prependItem(
+      {
+        ...PR_ITEM,
+        currency_id: defaultBu?.config?.default_currency_id ?? null,
+        delivery_date: tomorrow.toISOString(),
+      },
+      { shouldFocus: false },
+    );
+
+    // Focus the Location lookup trigger in the new (first) row after React commits
+    setTimeout(() => {
+      const firstRow = document.querySelector("tbody tr");
+      const trigger = firstRow?.querySelector<HTMLButtonElement>(
+        "button[aria-expanded]",
+      );
+      if (trigger) {
+        trigger.focus();
+        trigger.classList.add("ring-2", "ring-ring/50");
+        trigger.addEventListener(
+          "blur",
+          () => trigger.classList.remove("ring-2", "ring-ring/50"),
+          { once: true },
+        );
+      }
+    }, 0);
   };
 
   const {
