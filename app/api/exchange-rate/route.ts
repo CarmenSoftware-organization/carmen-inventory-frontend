@@ -35,8 +35,8 @@ export async function GET(request: NextRequest) {
 
   if (!res.ok) {
     return NextResponse.json(
-      { error: `Exchange rate API returned ${res.status}` },
-      { status: res.status },
+      { error: "External exchange rate service unavailable" },
+      { status: 502 },
     );
   }
 

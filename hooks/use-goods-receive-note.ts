@@ -128,9 +128,9 @@ export async function uploadGrnCommentAttachment(
   const formData = new FormData();
   formData.append("file", file);
 
-  const res = await fetch(
+  const res = await httpClient.post(
     API_ENDPOINTS.GOODS_RECEIVE_NOTE_COMMENT_ATTACHMENT(buCode, grnId),
-    { method: "POST", body: formData },
+    formData,
   );
 
   if (!res.ok) throw ApiError.fromResponse(res, "Failed to upload attachment");

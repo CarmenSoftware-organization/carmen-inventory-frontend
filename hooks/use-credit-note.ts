@@ -128,9 +128,9 @@ export async function uploadCnCommentAttachment(
   const formData = new FormData();
   formData.append("file", file);
 
-  const res = await fetch(
+  const res = await httpClient.post(
     API_ENDPOINTS.CREDIT_NOTE_COMMENT_ATTACHMENT(buCode, cnId),
-    { method: "POST", body: formData },
+    formData,
   );
 
   if (!res.ok) throw ApiError.fromResponse(res, "Failed to upload attachment");

@@ -36,14 +36,11 @@ export function useUploadDocument() {
       if (!buCode) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode");
       const formData = new FormData();
       formData.append("file", file);
-      const res = await fetch(`${API_ENDPOINTS.DOCUMENTS(buCode)}/upload`, {
-        method: "POST",
-        body: formData,
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new ApiError(ERROR_CODES.INTERNAL_ERROR, err.message || "Failed to upload document");
-      }
+      const res = await httpClient.post(
+        `${API_ENDPOINTS.DOCUMENTS(buCode)}/upload`,
+        formData,
+      );
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to upload document");
       return res.json();
     },
     onSuccess: () => {

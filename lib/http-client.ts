@@ -56,7 +56,11 @@ async function request(
     ...rest,
   };
 
-  if (body !== undefined) {
+  if (body instanceof FormData) {
+    // Let the browser set Content-Type with multipart boundary
+    init.headers = headers;
+    init.body = body;
+  } else if (body !== undefined) {
     init.headers = {
       "Content-Type": "application/json",
       ...headers,

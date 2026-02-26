@@ -183,9 +183,9 @@ function DataGridTableDnd<TData>({
           <DataGridTableHead>
             {table
               .getHeaderGroups()
-              .map((headerGroup: HeaderGroup<TData>, index) => {
+              .map((headerGroup: HeaderGroup<TData>) => {
                 return (
-                  <DataGridTableHeadRow headerGroup={headerGroup} key={index}>
+                  <DataGridTableHeadRow headerGroup={headerGroup} key={headerGroup.id}>
                     <SortableContext
                       items={table.getState().columnOrder}
                       strategy={horizontalListSortingStrategy}

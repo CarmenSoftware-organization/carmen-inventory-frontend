@@ -128,9 +128,9 @@ export async function uploadPoCommentAttachment(
   const formData = new FormData();
   formData.append("file", file);
 
-  const res = await fetch(
+  const res = await httpClient.post(
     API_ENDPOINTS.PURCHASE_ORDER_COMMENT_ATTACHMENT(buCode, poId),
-    { method: "POST", body: formData },
+    formData,
   );
 
   if (!res.ok) throw ApiError.fromResponse(res, "Failed to upload attachment");

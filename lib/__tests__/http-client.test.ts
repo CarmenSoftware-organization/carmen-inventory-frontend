@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { httpClient } from "../http-client";
+import { ApiError } from "../api-error";
 
 describe("httpClient", () => {
   beforeEach(() => {
@@ -43,6 +44,23 @@ describe("httpClient", () => {
         signal: expect.any(AbortSignal),
       }),
     );
+  });
+
+  it("sends POST with FormData without Content-Type", async () => {
+    const mockResponse = new Response(JSON.stringify({ data: {} }), {
+      status: 200,
+    });
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(mockResponse);
+
+    const formData = new FormData();
+    formData.append("file", new Blob(["test"]), "test.txt");
+    await httpClient.post("/api/upload", formData);
+
+    const [, init] = (fetch as ReturnType<typeof vi.fn>).mock.calls[0];
+    expect(init.method).toBe("POST");
+    expect(init.body).toBe(formData);
+    // Content-Type should NOT be set — browser sets multipart boundary
+    expect(init.headers).toBeUndefined();
   });
 
   it("sends PUT request with JSON body", async () => {
@@ -101,7 +119,6 @@ describe("httpClient", () => {
     const mockResponse = new Response(null, { status: 401 });
     vi.spyOn(globalThis, "fetch").mockResolvedValue(mockResponse);
 
-    // Mock window.location
     const originalLocation = globalThis.window.location;
     Object.defineProperty(globalThis.window, "location", {
       value: { href: "" },
@@ -113,12 +130,54 @@ describe("httpClient", () => {
 
     expect(globalThis.window.location.href).toBe("/login");
 
-    // Restore
     Object.defineProperty(globalThis.window, "location", {
       value: originalLocation,
       writable: true,
       configurable: true,
     });
+  });
+
+  it("throws ApiError with FORBIDDEN code on 403", async () => {
+    const mockResponse = new Response(JSON.stringify({}), { status: 403 });
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(mockResponse);
+
+    try {
+      await httpClient.get("/api/admin");
+      expect.unreachable("should have thrown");
+    } catch (err) {
+      expect(err).toBeInstanceOf(ApiError);
+      expect((err as ApiError).code).toBe("FORBIDDEN");
+      expect((err as ApiError).statusCode).toBe(403);
+    }
+  });
+
+  it("throws ApiError with RATE_LIMITED code on 429", async () => {
+    const mockResponse = new Response(JSON.stringify({}), { status: 429 });
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(mockResponse);
+
+    try {
+      await httpClient.get("/api/data");
+      expect.unreachable("should have thrown");
+    } catch (err) {
+      expect(err).toBeInstanceOf(ApiError);
+      expect((err as ApiError).code).toBe("RATE_LIMITED");
+      expect((err as ApiError).statusCode).toBe(429);
+      expect((err as ApiError).retryable).toBe(true);
+    }
+  });
+
+  it("does NOT throw on 403 when window is undefined (server-side)", async () => {
+    const originalWindow = globalThis.window;
+    // @ts-expect-error - simulating server environment
+    delete globalThis.window;
+
+    const mockResponse = new Response(JSON.stringify({}), { status: 403 });
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(mockResponse);
+
+    const res = await httpClient.get("/api/admin");
+    expect(res.status).toBe(403);
+
+    globalThis.window = originalWindow;
   });
 
   it("throws TIMEOUT error when fetch times out", async () => {

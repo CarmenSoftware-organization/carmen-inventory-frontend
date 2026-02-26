@@ -73,8 +73,8 @@ export function useNotification(userId: string | undefined) {
         }
       };
 
-      ws.onerror = () => {
-        // Connection will be retried via the onclose handler.
+      ws.onerror = (event) => {
+        console.warn("[WebSocket] connection error", event);
       };
     }
 

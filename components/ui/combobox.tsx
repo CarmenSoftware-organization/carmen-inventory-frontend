@@ -43,11 +43,11 @@ function ComboboxClear({ className, ...props }: ComboboxPrimitive.Clear.Props) {
   return (
     <ComboboxPrimitive.Clear
       data-slot="combobox-clear"
-      render={<InputGroupButton variant="ghost" size="icon-xs" />}
+      render={<InputGroupButton variant="ghost" size="icon-xs" aria-label="Clear selection" />}
       className={cn(className)}
       {...props}
     >
-      <XIcon className="pointer-events-none" />
+      <XIcon className="pointer-events-none" aria-hidden="true" />
     </ComboboxPrimitive.Clear>
   )
 }
@@ -78,6 +78,7 @@ function ComboboxInput({
             data-slot="input-group-button"
             className="group-has-data-[slot=combobox-clear]/input-group:hidden data-pressed:bg-transparent"
             disabled={disabled}
+            aria-label="Toggle dropdown"
           >
             <ComboboxTrigger />
           </InputGroupButton>
@@ -261,11 +262,11 @@ function ComboboxChip({
       {children}
       {showRemove && (
         <ComboboxPrimitive.ChipRemove
-          render={<Button variant="ghost" size="icon-xs" />}
+          render={<Button variant="ghost" size="icon-xs" aria-label="Remove" />}
           className="-ml-1 opacity-50 hover:opacity-100"
           data-slot="combobox-chip-remove"
         >
-          <XIcon className="pointer-events-none" />
+          <XIcon className="pointer-events-none" aria-hidden="true" />
         </ComboboxPrimitive.ChipRemove>
       )}
     </ComboboxPrimitive.Chip>
