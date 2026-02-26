@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { Hotel, ArrowUpRight, Activity } from "lucide-react";
@@ -14,6 +14,12 @@ import { Input } from "@/components/ui/input";
 export default function LoginForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
+
+  const [host, setHost] = useState("");
+
+  useEffect(() => {
+    setHost(window.location.host);
+  }, []);
 
   useEffect(() => {
     queryClient.removeQueries({ queryKey: profileQueryKey });
@@ -61,6 +67,11 @@ export default function LoginForm() {
             <p className="mt-2 text-[15px] text-muted-foreground animate-in fade-in slide-in-from-bottom-3 duration-700 fill-mode-both delay-200">
               Sign in to manage your hotel inventory
             </p>
+            {host && (
+              <p className="mt-1 text-xs text-muted-foreground/50 animate-in fade-in slide-in-from-bottom-3 duration-700 fill-mode-both delay-200">
+                {host}
+              </p>
+            )}
 
             <form
               className="mt-10 animate-in fade-in slide-in-from-bottom-3 duration-700 fill-mode-both delay-300"
