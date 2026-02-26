@@ -8,6 +8,7 @@ import type { PurchaseOrder, CreatePoDto } from "@/types/purchase-order";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
 import type { CommentAttachment, CommentItem } from "@/components/ui/comment-sheet";
 import { CACHE_DYNAMIC } from "@/lib/cache-config";
+import { ApiError, ERROR_CODES } from "@/lib/api-error";
 import * as api from "@/lib/api/purchase-orders";
 
 export function usePurchaseOrder(params?: ParamsDto) {
@@ -64,11 +65,11 @@ export function usePurchaseOrderComments(poId: string | undefined) {
   return useQuery<CommentItem[]>({
     queryKey: [QUERY_KEYS.PURCHASE_ORDER_COMMENTS, buCode, poId],
     queryFn: async () => {
-      if (!buCode || !poId) throw new Error("Missing buCode or poId");
+      if (!buCode || !poId) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode or poId");
       const res = await httpClient.get(
         `${API_ENDPOINTS.PURCHASE_ORDER(buCode)}/${poId}/comment`,
       );
-      if (!res.ok) throw new Error("Failed to fetch comments");
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch comments");
       const json = await res.json();
       return json.data ?? [];
     },
@@ -132,7 +133,7 @@ export async function uploadPoCommentAttachment(
     { method: "POST", body: formData },
   );
 
-  if (!res.ok) throw new Error("Failed to upload attachment");
+  if (!res.ok) throw ApiError.fromResponse(res, "Failed to upload attachment");
   const json = await res.json();
   return json.data;
 }

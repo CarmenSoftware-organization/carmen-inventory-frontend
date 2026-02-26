@@ -5,6 +5,7 @@ import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
+import { ApiError, ERROR_CODES } from "@/lib/api-error";
 import type { DocumentFile } from "@/types/document";
 import type { PaginatedResponse, ParamsDto } from "@/types/params";
 import { CACHE_DYNAMIC } from "@/lib/cache-config";
@@ -15,10 +16,10 @@ export function useDocument(params?: ParamsDto) {
   return useQuery<PaginatedResponse<DocumentFile>>({
     queryKey: [QUERY_KEYS.DOCUMENTS, buCode, params],
     queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
+      if (!buCode) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode");
       const url = buildUrl(API_ENDPOINTS.DOCUMENTS(buCode), params);
       const res = await httpClient.get(url);
-      if (!res.ok) throw new Error("Failed to fetch documents");
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch documents");
       return res.json();
     },
     enabled: !!buCode,
@@ -32,7 +33,7 @@ export function useUploadDocument() {
 
   return useMutation<unknown, Error, File>({
     mutationFn: async (file) => {
-      if (!buCode) throw new Error("Missing buCode");
+      if (!buCode) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode");
       const formData = new FormData();
       formData.append("file", file);
       const res = await fetch(`${API_ENDPOINTS.DOCUMENTS(buCode)}/upload`, {
@@ -41,7 +42,7 @@ export function useUploadDocument() {
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || "Failed to upload document");
+        throw new ApiError(ERROR_CODES.INTERNAL_ERROR, err.message || "Failed to upload document");
       }
       return res.json();
     },

@@ -4,6 +4,7 @@ import { buildUrl } from "@/utils/build-query-string";
 import { httpClient } from "@/lib/http-client";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
+import { ApiError, ERROR_CODES } from "@/lib/api-error";
 import type {
   ApprovalItem,
   ApprovalPendingSummary,
@@ -99,13 +100,13 @@ export function useApprovalPending(params?: ParamsDto) {
   return useQuery<PaginatedResponse<ApprovalItem>>({
     queryKey: [QUERY_KEYS.APPROVAL_PENDING, buCode, params],
     queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
+      if (!buCode) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode");
       const url = buildUrl(API_ENDPOINTS.APPROVAL_PENDING, {
         bu_code: buCode,
         ...params,
       });
       const res = await httpClient.get(url);
-      if (!res.ok) throw new Error("Failed to fetch pending approvals");
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch pending approvals");
       const json = await res.json();
       const root = json.data;
 
@@ -136,7 +137,7 @@ export function useApprovalPendingSummary() {
     queryKey: [QUERY_KEYS.APPROVAL_PENDING_SUMMARY],
     queryFn: async () => {
       const res = await httpClient.get(API_ENDPOINTS.APPROVAL_PENDING_SUMMARY);
-      if (!res.ok) throw new Error("Failed to fetch approval summary");
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch approval summary");
       const json = await res.json();
       return json.data;
     },

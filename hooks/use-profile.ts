@@ -8,7 +8,7 @@ import type {
 } from "@/types/profile";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { QUERY_KEYS } from "@/constant/query-keys";
-import { ApiError } from "@/lib/api-error";
+import { ApiError, ERROR_CODES } from "@/lib/api-error";
 import { httpClient } from "@/lib/http-client";
 
 export const profileQueryKey = [QUERY_KEYS.PROFILE] as const;
@@ -21,8 +21,8 @@ export function useProfile() {
     queryFn: async () => {
       const res = await httpClient.get(API_ENDPOINTS.PROFILE);
 
-      if (res.status === 401) throw new Error("Unauthorized");
-      if (!res.ok) throw new Error("Failed to fetch profile");
+      if (res.status === 401) throw new ApiError(ERROR_CODES.UNAUTHORIZED, "Unauthorized", 401);
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch profile");
 
       const json = await res.json();
       return json.data;

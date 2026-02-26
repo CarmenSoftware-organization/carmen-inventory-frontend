@@ -12,6 +12,7 @@ import type {
 import { purchaseRequestSchema } from "@/types/purchase-request";
 import { paginatedResponse } from "@/lib/api-schemas";
 import { CACHE_DYNAMIC } from "@/lib/cache-config";
+import { ApiError, ERROR_CODES } from "@/lib/api-error";
 import type { ActionPr } from "@/types/stage-role";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
 
@@ -65,13 +66,13 @@ export function usePurchaseRequest(params?: ParamsDto) {
   return useQuery<PaginatedResponse<PurchaseRequest>>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUESTS, buCode, params],
     queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
+      if (!buCode) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode");
       const url = buildUrl(API_ENDPOINTS.PURCHASE_REQUESTS, {
         bu_code: buCode,
         ...params,
       });
       const res = await httpClient.get(url);
-      if (!res.ok) throw new Error("Failed to fetch purchase requests");
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch purchase requests");
       const json = await res.json();
       const entry = json.data?.[0];
 
@@ -101,14 +102,14 @@ export function useMyPendingPurchaseRequest(params?: ParamsDto) {
   return useQuery<PaginatedResponse<PurchaseRequest>>({
     queryKey: [QUERY_KEYS.MY_PENDING_PURCHASE_REQUESTS, buCode, params],
     queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
+      if (!buCode) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode");
       const url = buildUrl(API_ENDPOINTS.MY_PENDING_PURCHASE_REQUESTS, {
         bu_code: buCode,
         ...params,
       });
       const res = await httpClient.get(url);
       if (!res.ok)
-        throw new Error("Failed to fetch my pending purchase requests");
+        throw ApiError.fromResponse(res, "Failed to fetch my pending purchase requests");
       const json = await res.json();
       const entry = json.data?.[0];
 
@@ -138,12 +139,12 @@ export function usePurchaseRequestWorkflowStages() {
   return useQuery<string[]>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUEST_WORKFLOW_STAGES, buCode],
     queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
+      if (!buCode) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode");
       const url = buildUrl(
         API_ENDPOINTS.PURCHASE_REQUEST_WORKFLOW_STAGES(buCode),
       );
       const res = await httpClient.get(url);
-      if (!res.ok) throw new Error("Failed to fetch workflow stages");
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch workflow stages");
       const json = await res.json();
       return json.data ?? [];
     },
@@ -157,12 +158,12 @@ export function usePurchaseRequestTemplates() {
   return useQuery<PurchaseRequestTemplate[]>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUEST_TEMPLATES, buCode],
     queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
+      if (!buCode) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode");
       const res = await httpClient.get(
         API_ENDPOINTS.PURCHASE_REQUEST_TEMPLATES(buCode),
       );
       if (!res.ok)
-        throw new Error("Failed to fetch purchase request templates");
+        throw ApiError.fromResponse(res, "Failed to fetch purchase request templates");
       const json = await res.json();
       return json.data ?? [];
     },
@@ -176,11 +177,11 @@ export function usePurchaseRequestById(id: string | undefined) {
   return useQuery<PurchaseRequest>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUESTS, buCode, id],
     queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
+      if (!buCode) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode");
       const res = await httpClient.get(
         `${API_ENDPOINTS.PURCHASE_REQUEST(buCode)}/${id}`,
       );
-      if (!res.ok) throw new Error("Failed to fetch purchase request");
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch purchase request");
       const json = await res.json();
       return json.data;
     },
@@ -230,11 +231,11 @@ export function usePurchaseRequestComments(prId: string | undefined) {
   return useQuery<PurchaseRequestComment[]>({
     queryKey: [QUERY_KEYS.PURCHASE_REQUEST_COMMENTS, buCode, prId],
     queryFn: async () => {
-      if (!buCode || !prId) throw new Error("Missing buCode or prId");
+      if (!buCode || !prId) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode or prId");
       const res = await httpClient.get(
         `${API_ENDPOINTS.PURCHASE_REQUEST(buCode)}/${prId}/comment`,
       );
-      if (!res.ok) throw new Error("Failed to fetch comments");
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch comments");
       const json = await res.json();
       return json.data ?? [];
     },
@@ -298,7 +299,7 @@ export async function uploadCommentAttachment(
     { method: "POST", body: formData },
   );
 
-  if (!res.ok) throw new Error("Failed to upload attachment");
+  if (!res.ok) throw ApiError.fromResponse(res, "Failed to upload attachment");
   const json = await res.json();
   return json.data;
 }

@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constant/query-keys";
+import { ApiError, ERROR_CODES } from "@/lib/api-error";
 import type { WastageReport } from "@/types/wastage-reporting";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
 import { wrMockData } from "@/app/(root)/store-operation/wastage-reporting/_components/wr-mock-data";
@@ -81,7 +82,7 @@ export function useWastageReportById(id: string | undefined) {
     queryFn: async () => {
       await new Promise((r) => setTimeout(r, 200));
       const found = wrMockData.find((item) => item.id === id);
-      if (!found) throw new Error("Wastage report not found");
+      if (!found) throw new ApiError(ERROR_CODES.NOT_FOUND, "Wastage report not found");
       return found;
     },
     enabled: !!id,

@@ -5,6 +5,7 @@ import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { httpClient } from "@/lib/http-client";
 import { buildUrl } from "@/utils/build-query-string";
 import { CACHE_STATIC } from "@/lib/cache-config";
+import { ApiError } from "@/lib/api-error";
 import type { Location } from "@/types/location";
 import type { PaginatedResponse } from "@/types/params";
 
@@ -18,7 +19,7 @@ export function useUserLocation() {
         perpage: -1,
       });
       const res = await httpClient.get(url);
-      if (!res.ok) throw new Error("Failed to fetch user locations");
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch user locations");
       const json: PaginatedResponse<Location> = await res.json();
       return json.data;
     },

@@ -8,6 +8,7 @@ import { QUERY_KEYS } from "@/constant/query-keys";
 import type { StoreRequisition } from "@/types/store-requisition";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
 import { CACHE_DYNAMIC } from "@/lib/cache-config";
+import { ApiError, ERROR_CODES } from "@/lib/api-error";
 
 export interface SrDetailPayload {
   product_id: string;
@@ -44,13 +45,13 @@ export function useStoreRequisition(params?: ParamsDto) {
   return useQuery<PaginatedResponse<StoreRequisition>>({
     queryKey: [QUERY_KEYS.STORE_REQUISITIONS, buCode, params],
     queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
+      if (!buCode) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode");
       const url = buildUrl(API_ENDPOINTS.STORE_REQUISITIONS, {
         bu_code: buCode,
         ...params,
       });
       const res = await httpClient.get(url);
-      if (!res.ok) throw new Error("Failed to fetch store requisitions");
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch store requisitions");
       const json = await res.json();
       const entry = json.data?.[0];
       return {
@@ -74,11 +75,11 @@ export function useStoreRequisitionById(id: string | undefined) {
   return useQuery<StoreRequisition>({
     queryKey: [QUERY_KEYS.STORE_REQUISITIONS, buCode, id],
     queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
+      if (!buCode) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode");
       const res = await httpClient.get(
         `${API_ENDPOINTS.STORE_REQUISITION(buCode)}/${id}`,
       );
-      if (!res.ok) throw new Error("Failed to fetch store requisition");
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch store requisition");
       const json = await res.json();
       return json.data;
     },

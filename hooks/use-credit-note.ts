@@ -8,6 +8,7 @@ import type { CreditNote, CreateCnDto } from "@/types/credit-note";
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
 import type { CommentAttachment, CommentItem } from "@/components/ui/comment-sheet";
 import { CACHE_DYNAMIC } from "@/lib/cache-config";
+import { ApiError, ERROR_CODES } from "@/lib/api-error";
 import * as api from "@/lib/api/credit-notes";
 
 export function useCreditNote(params?: ParamsDto) {
@@ -64,11 +65,11 @@ export function useCreditNoteComments(cnId: string | undefined) {
   return useQuery<CommentItem[]>({
     queryKey: [QUERY_KEYS.CREDIT_NOTE_COMMENTS, buCode, cnId],
     queryFn: async () => {
-      if (!buCode || !cnId) throw new Error("Missing buCode or cnId");
+      if (!buCode || !cnId) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode or cnId");
       const res = await httpClient.get(
         `${API_ENDPOINTS.CREDIT_NOTE(buCode)}/${cnId}/comment`,
       );
-      if (!res.ok) throw new Error("Failed to fetch comments");
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch comments");
       const json = await res.json();
       return json.data ?? [];
     },
@@ -132,7 +133,7 @@ export async function uploadCnCommentAttachment(
     { method: "POST", body: formData },
   );
 
-  if (!res.ok) throw new Error("Failed to upload attachment");
+  if (!res.ok) throw ApiError.fromResponse(res, "Failed to upload attachment");
   const json = await res.json();
   return json.data;
 }

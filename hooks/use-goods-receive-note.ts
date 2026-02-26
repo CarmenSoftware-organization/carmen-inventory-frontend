@@ -8,6 +8,7 @@ import type { GoodsReceiveNote, CreateGrnDto } from "@/types/goods-receive-note"
 import type { ParamsDto, PaginatedResponse } from "@/types/params";
 import type { CommentAttachment, CommentItem } from "@/components/ui/comment-sheet";
 import { CACHE_DYNAMIC } from "@/lib/cache-config";
+import { ApiError, ERROR_CODES } from "@/lib/api-error";
 import * as api from "@/lib/api/goods-receive-notes";
 
 export function useGoodsReceiveNote(params?: ParamsDto) {
@@ -64,11 +65,11 @@ export function useGoodsReceiveNoteComments(grnId: string | undefined) {
   return useQuery<CommentItem[]>({
     queryKey: [QUERY_KEYS.GOODS_RECEIVE_NOTE_COMMENTS, buCode, grnId],
     queryFn: async () => {
-      if (!buCode || !grnId) throw new Error("Missing buCode or grnId");
+      if (!buCode || !grnId) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode or grnId");
       const res = await httpClient.get(
         `${API_ENDPOINTS.GOODS_RECEIVE_NOTE(buCode)}/${grnId}/comment`,
       );
-      if (!res.ok) throw new Error("Failed to fetch comments");
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch comments");
       const json = await res.json();
       return json.data ?? [];
     },
@@ -132,7 +133,7 @@ export async function uploadGrnCommentAttachment(
     { method: "POST", body: formData },
   );
 
-  if (!res.ok) throw new Error("Failed to upload attachment");
+  if (!res.ok) throw ApiError.fromResponse(res, "Failed to upload attachment");
   const json = await res.json();
   return json.data;
 }

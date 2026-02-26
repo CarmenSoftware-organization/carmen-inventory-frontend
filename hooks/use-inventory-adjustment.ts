@@ -11,6 +11,7 @@ import type {
 } from "@/types/inventory-adjustment";
 import type { PaginatedResponse, ParamsDto } from "@/types/params";
 import { CACHE_DYNAMIC } from "@/lib/cache-config";
+import { ApiError, ERROR_CODES } from "@/lib/api-error";
 
 interface CreateInventoryAdjustmentDto {
   description: string;
@@ -44,10 +45,10 @@ export function useInventoryAdjustment(params?: ParamsDto) {
   return useQuery<PaginatedResponse<InventoryAdjustment>>({
     queryKey: [QUERY_KEYS.INVENTORY_ADJUSTMENTS, buCode, params],
     queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
+      if (!buCode) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode");
       const url = buildUrl(API_ENDPOINTS.INVENTORY_ADJUSTMENTS(buCode), params);
       const res = await httpClient.get(url);
-      if (!res.ok) throw new Error("Failed to fetch inventory adjustments");
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch inventory adjustments");
       return res.json();
     },
     enabled: !!buCode,
@@ -64,12 +65,12 @@ export function useInventoryAdjustmentById(
   return useQuery<InventoryAdjustment>({
     queryKey: [QUERY_KEYS.INVENTORY_ADJUSTMENTS, buCode, id, type],
     queryFn: async () => {
-      if (!buCode) throw new Error("Missing buCode");
-      if (!type) throw new Error("Missing adjustment type");
+      if (!buCode) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode");
+      if (!type) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing adjustment type");
 
       const endpoint = getEndpoint(type);
       const res = await httpClient.get(`${endpoint(buCode)}/${id}`);
-      if (!res.ok) throw new Error("Failed to fetch inventory adjustment");
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch inventory adjustment");
 
       const json = await res.json();
       return { ...json.data, type };
