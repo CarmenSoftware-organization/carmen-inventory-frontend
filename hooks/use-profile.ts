@@ -50,9 +50,10 @@ export function useProfile() {
   const buCode = defaultBu?.code;
 
   const defaultCurrencyId = defaultBu?.config?.default_currency_id;
-  const defaultCurrencyCode = defaultBu?.config?.default_currency?.code;
+  const defaultCurrencyCode =
+    defaultBu?.config?.default_currency?.code ?? "THB";
   const defaultCurrencyDecimalPlaces =
-    defaultBu?.config?.default_currency?.decimal_places;
+    defaultBu?.config?.default_currency?.decimal_places ?? 2;
   const dateFormat = defaultBu?.config?.date_format ?? "DD/MM/YYYY";
 
   const allBuCode = useMemo(
@@ -60,6 +61,19 @@ export function useProfile() {
     [query.data],
   );
   const hasDepartment = defaultBu?.department != null;
+  const isProfileReady = query.isSuccess && !!buCode && !!defaultBu;
+
+  if (process.env.NODE_ENV === "development" && query.isSuccess && query.data) {
+    if (query.data.business_unit.length === 0) {
+      console.warn("[useProfile] business_unit array is empty");
+    }
+    if (defaultBu && !defaultBu.config) {
+      console.warn(
+        "[useProfile] Default BU config is missing:",
+        defaultBu.code,
+      );
+    }
+  }
 
   return {
     ...query,
@@ -73,6 +87,7 @@ export function useProfile() {
     userId,
     hasDepartment,
     aliasName,
+    isProfileReady,
   };
 }
 
