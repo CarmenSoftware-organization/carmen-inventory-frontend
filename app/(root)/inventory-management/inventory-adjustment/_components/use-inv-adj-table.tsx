@@ -89,23 +89,29 @@ export function useInventoryAdjustmentTable({
           </Badge>
         );
       },
-      meta: { skeleton: columnSkeletons.badge },
+      meta: {
+        skeleton: columnSkeletons.badge,
+        cellClassName: "text-center",
+        headerClassName: "text-center",
+      },
     },
     {
       accessorKey: "doc_status",
       header: "Status",
       enableSorting: false,
       cell: ({ row }) => {
-        const status = row.getValue(
-          "doc_status",
-        ) as InventoryAdjustmentStatus;
+        const status = row.getValue("doc_status") as InventoryAdjustmentStatus;
         return (
           <Badge variant={statusVariantMap[status]} size="sm">
             {statusLabelMap[status]}
           </Badge>
         );
       },
-      meta: { skeleton: columnSkeletons.badge },
+      meta: {
+        skeleton: columnSkeletons.badge,
+        cellClassName: "text-center",
+        headerClassName: "text-center",
+      },
     },
     {
       accessorKey: "created_at",
