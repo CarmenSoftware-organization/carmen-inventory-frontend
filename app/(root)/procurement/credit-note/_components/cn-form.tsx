@@ -155,7 +155,7 @@ export function CnForm({ creditNote }: CnFormProps) {
         {creditNote && (
           <Button
             size="sm"
-            variant="outline"
+            variant="info"
             onClick={() => setShowComment(true)}
           >
             <MessageSquare aria-hidden="true" />

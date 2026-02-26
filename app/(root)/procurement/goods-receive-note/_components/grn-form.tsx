@@ -250,7 +250,7 @@ export function GrnForm({ goodsReceiveNote }: GrnFormProps) {
         {goodsReceiveNote && (
           <Button
             size="sm"
-            variant="outline"
+            variant="info"
             onClick={() => setShowComment(true)}
           >
             <MessageSquare aria-hidden="true" />

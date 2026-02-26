@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -67,12 +67,6 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
     resolver: zodResolver(poSchema) as Resolver<PoFormValues>,
     defaultValues,
   });
-
-  useEffect(() => {
-    if (!purchaseOrder && defaultCurrencyId && !form.getValues("currency_id")) {
-      form.setValue("currency_id", defaultCurrencyId);
-    }
-  }, [defaultCurrencyId, purchaseOrder, form]);
 
   const onSubmit = (values: PoFormValues) => {
     const newItems = values.items.filter((item) => !item.id);
@@ -159,6 +153,9 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
     }
   };
 
+  console.log("formmmm", form.watch());
+  console.log("error", form.formState.errors);
+
   return (
     <div className="space-y-4">
       <FormToolbar
@@ -219,11 +216,7 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
           </>
         )}
         {purchaseOrder && (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setShowComment(true)}
-          >
+          <Button size="sm" variant="info" onClick={() => setShowComment(true)}>
             <MessageSquare aria-hidden="true" />
             Comment
           </Button>

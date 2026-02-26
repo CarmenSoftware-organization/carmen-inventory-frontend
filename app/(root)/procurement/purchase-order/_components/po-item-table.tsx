@@ -29,27 +29,21 @@ const setProductToItem = (
   value: string,
   product?: Product,
 ) => {
+  console.log("product", product);
+
   const current = form.getValues(`items.${index}`);
   form.setValue(`items.${index}`, {
     ...current,
     product_id: value,
-    ...(product
-      ? {
-          product_name: product.name,
-          product_local_name: product.local_name ?? "",
-          order_unit_id: product.inventory_unit?.id ?? null,
-          order_unit_name: product.inventory_unit?.name ?? "",
-          base_unit_id: product.inventory_unit?.id ?? null,
-          base_unit_name: product.inventory_unit?.name ?? "",
-        }
-      : {
-          product_name: "",
-          product_local_name: "",
-          order_unit_id: null,
-          order_unit_name: "",
-          base_unit_id: null,
-          base_unit_name: "",
-        }),
+    product_name: product?.name ?? "",
+    product_local_name: product?.local_name ?? "",
+    // base unit = inventory unit (always the product's base unit)
+    base_unit_id: product?.inventory_unit_id ?? null,
+    base_unit_name: product?.inventory_unit_name ?? "",
+    // order unit = reset so LookupProductUnit auto-selects
+    order_unit_id: product?.inventory_unit_id ?? "",
+    order_unit_name: product?.inventory_unit_name ?? "",
+    order_unit_conversion_factor: 1,
   });
 };
 
@@ -73,9 +67,9 @@ const ProductCell = memo(function ProductCell({
       render={({ field }) => (
         <LookupProduct
           value={field.value ?? ""}
-          onValueChange={(value, product) =>
-            setProductToItem(form, index, value, product)
-          }
+          onValueChange={(value, product) => {
+            setProductToItem(form, index, value, product);
+          }}
           disabled={disabled}
           className={`w-full text-[11px]${hasError ? " ring-1 ring-destructive rounded-md" : ""}`}
         />
@@ -86,10 +80,12 @@ const ProductCell = memo(function ProductCell({
 
 const WatchedProductUnit = memo(function WatchedProductUnit({
   control,
+  form,
   index,
   disabled,
 }: {
   control: Control<PoFormValues>;
+  form: UseFormReturn<PoFormValues>;
   index: number;
   disabled: boolean;
 }) {
@@ -104,6 +100,13 @@ const WatchedProductUnit = memo(function WatchedProductUnit({
           productId={productId}
           value={field.value ?? ""}
           onValueChange={field.onChange}
+          onItemChange={(unit) => {
+            form.setValue(`items.${index}.order_unit_name`, unit.name);
+            form.setValue(
+              `items.${index}.order_unit_conversion_factor`,
+              unit.conversion,
+            );
+          }}
           disabled={disabled}
           className="w-full text-[11px]"
         />
@@ -155,7 +158,9 @@ const AdjustableAmountCell = memo(function AdjustableAmountCell({
             />
           )}
         />
-        <span className="text-sm text-muted-foreground select-none">Manual</span>
+        <span className="text-sm text-muted-foreground select-none">
+          Manual
+        </span>
       </label>
     </div>
   );
@@ -215,23 +220,24 @@ export function usePoItemTable({
           const hasError =
             !!form.formState.errors.items?.[row.index]?.order_qty;
           return (
-          <div className="flex flex-col gap-0.5">
-            <Input
-              type="number"
-              min={1}
-              placeholder="Qty"
-              className={`h-6 text-[11px] md:text-[11px] text-right${hasError ? " ring-1 ring-destructive" : ""}`}
-              disabled={disabled}
-              {...form.register(`items.${row.index}.order_qty`, {
-                valueAsNumber: true,
-              })}
-            />
-            <WatchedProductUnit
-              control={form.control}
-              index={row.index}
-              disabled={disabled}
-            />
-          </div>
+            <div className="flex flex-col gap-0.5">
+              <Input
+                type="number"
+                min={1}
+                placeholder="Qty"
+                className={`h-6 text-[11px] md:text-[11px] text-right${hasError ? " ring-1 ring-destructive" : ""}`}
+                disabled={disabled}
+                {...form.register(`items.${row.index}.order_qty`, {
+                  valueAsNumber: true,
+                })}
+              />
+              <WatchedProductUnit
+                control={form.control}
+                form={form}
+                index={row.index}
+                disabled={disabled}
+              />
+            </div>
           );
         },
         size: 110,

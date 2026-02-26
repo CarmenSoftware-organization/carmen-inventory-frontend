@@ -154,9 +154,7 @@ export function CommentSheet({
       setPendingFiles([]);
       toast.success("Comment added");
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to add comment",
-      );
+      toast.error(err instanceof Error ? err.message : "Failed to add comment");
     }
   };
 
@@ -222,6 +220,7 @@ export function CommentSheet({
               icon={MessageCircle}
               title="No Comment Yet"
               description="You haven't created any comment yet."
+              classNames="mt-10"
             />
           )}
           {!isLoading && comments.length > 0 && (
@@ -326,7 +325,7 @@ export function CommentSheet({
           )}
         </ScrollArea>
 
-        <div className="px-3 py-2 border-t bg-muted/30 space-y-1.5">
+        <div className="border-t bg-muted/30 p-3 space-y-2">
           {pendingFiles.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {pendingFiles.map((file, i) => (
@@ -335,7 +334,7 @@ export function CommentSheet({
                   className="inline-flex items-center gap-1 rounded border bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground"
                 >
                   <Paperclip className="size-2.5 shrink-0" />
-                  <span className="truncate">{file.fileName}</span>
+                  <span className="truncate max-w-32">{file.fileName}</span>
                   <button
                     type="button"
                     onClick={() => removePendingFile(i)}
@@ -348,15 +347,15 @@ export function CommentSheet({
               ))}
             </div>
           )}
-          <div className="flex items-end gap-1.5">
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.md"
-              className="hidden"
-              onChange={handleFileSelect}
-            />
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.md"
+            className="hidden"
+            onChange={handleFileSelect}
+          />
+          <div className="flex items-center gap-1.5 rounded-lg border bg-background px-2 py-1.5 focus-within:ring-1 focus-within:ring-ring/50">
             {onUploadFile && (
               <Button
                 type="button"
@@ -368,19 +367,20 @@ export function CommentSheet({
                 className="shrink-0"
               >
                 {isUploading ? (
-                  <Loader2 className="size-3 animate-spin" />
+                  <Loader2 className="size-3.5 animate-spin" />
                 ) : (
-                  <Paperclip className="size-3" />
+                  <Paperclip className="size-3.5" />
                 )}
               </Button>
             )}
             <Textarea
               placeholder="Add comment..."
-              className="min-w-0 flex-1 text-xs resize-none"
+              className="min-w-0 flex-1 text-sm resize-none border-0 shadow-none p-0 focus-visible:ring-0 min-h-0 field-sizing-content"
               rows={1}
-              maxLength={256}
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => {
+                if (e.target.value.length <= 256) setMessage(e.target.value);
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
@@ -398,9 +398,9 @@ export function CommentSheet({
               className="shrink-0"
             >
               {isSubmitting ? (
-                <Loader2 className="size-3 animate-spin" />
+                <Loader2 className="size-3.5 animate-spin" />
               ) : (
-                <Send className="size-3" />
+                <Send className="size-3.5" />
               )}
             </Button>
           </div>

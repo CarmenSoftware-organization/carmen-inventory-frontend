@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useMemo } from "react";
 import { Controller, useWatch, type UseFormReturn } from "react-hook-form";
 import {
   Field,
@@ -10,7 +11,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { LookupVendor } from "@/components/lookup/lookup-vendor";
+import { LookupCreditTerm } from "@/components/lookup/lookup-credit-term";
 import { LookupCurrency } from "@/components/lookup/lookup-currency";
+import { useCurrency } from "@/hooks/use-currency";
 import { DatePicker } from "@/components/ui/date-picker";
 import { useProfile } from "@/hooks/use-profile";
 import { formatExchangeRate } from "@/lib/currency-utils";
@@ -22,14 +25,41 @@ interface PoGeneralFieldsProps {
 }
 
 export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
-  const { defaultCurrencyCode, defaultCurrencyDecimalPlaces } = useProfile();
-  const exchangeRate = useWatch({ control: form.control, name: "exchange_rate" });
+  const {
+    defaultCurrencyId,
+    defaultCurrencyCode,
+    defaultCurrencyDecimalPlaces,
+  } = useProfile();
+  const exchangeRate = useWatch({
+    control: form.control,
+    name: "exchange_rate",
+  });
+  const currencyId = useWatch({ control: form.control, name: "currency_id" });
+
+  const { data: currencyData } = useCurrency({ perpage: -1 });
+  const currencies = useMemo(
+    () => currencyData?.data?.filter((c) => c.is_active) ?? [],
+    [currencyData?.data],
+  );
+
+  useEffect(() => {
+    if (!currencyId && defaultCurrencyId && currencies.length > 0) {
+      const currency = currencies.find((c) => c.id === defaultCurrencyId);
+      if (currency) {
+        form.setValue("currency_id", defaultCurrencyId);
+        form.setValue("currency_name", currency.code);
+        form.setValue("exchange_rate", currency.exchange_rate);
+      }
+    }
+  }, [currencyId, defaultCurrencyId, currencies, form]);
 
   return (
     <div className="space-y-3">
       {/* ── Order Information ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold border-b pb-2">Order Information</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">
+          Order Information
+        </h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-3 gap-3">
             <Field data-invalid={!!form.formState.errors.vendor_id}>
@@ -41,11 +71,16 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
                   <LookupVendor
                     value={field.value}
                     onValueChange={field.onChange}
+                    onItemChange={(vendor) => {
+                      form.setValue("vendor_name", vendor.name);
+                    }}
                     disabled={disabled}
                   />
                 )}
               />
-              <FieldError>{form.formState.errors.vendor_id?.message}</FieldError>
+              <FieldError>
+                {form.formState.errors.vendor_id?.message}
+              </FieldError>
             </Field>
 
             <Field data-invalid={!!form.formState.errors.order_date}>
@@ -63,7 +98,9 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
                   />
                 )}
               />
-              <FieldError>{form.formState.errors.order_date?.message}</FieldError>
+              <FieldError>
+                {form.formState.errors.order_date?.message}
+              </FieldError>
             </Field>
 
             <Field data-invalid={!!form.formState.errors.delivery_date}>
@@ -91,7 +128,9 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
 
       {/* ── Currency & Payment ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold border-b pb-2">Currency & Payment</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">
+          Currency & Payment
+        </h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-3 gap-3">
             <Field data-invalid={!!form.formState.errors.currency_id}>
@@ -111,7 +150,9 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
                   />
                 )}
               />
-              <FieldError>{form.formState.errors.currency_id?.message}</FieldError>
+              <FieldError>
+                {form.formState.errors.currency_id?.message}
+              </FieldError>
             </Field>
 
             <Field>
@@ -126,13 +167,24 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="po-credit-term">Credit Term</FieldLabel>
-              <Input
-                id="po-credit-term"
-                placeholder="e.g. 30 days"
-                className="h-8 text-xs"
-                disabled={disabled}
-                {...form.register("credit_term_name")}
+              <FieldLabel>Credit Term</FieldLabel>
+              <Controller
+                control={form.control}
+                name="credit_term_id"
+                render={({ field }) => (
+                  <LookupCreditTerm
+                    value={field.value}
+                    onValueChange={(val, creditTerm) => {
+                      console.log("creditTerm", creditTerm);
+                      field.onChange(val);
+                      if (creditTerm) {
+                        form.setValue("credit_term_name", creditTerm.name);
+                        form.setValue("credit_term_value", creditTerm.value);
+                      }
+                    }}
+                    disabled={disabled}
+                  />
+                )}
               />
             </Field>
           </div>
@@ -141,7 +193,9 @@ export function PoGeneralFields({ form, disabled }: PoGeneralFieldsProps) {
 
       {/* ── Contact & Remarks ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold border-b pb-2">Contact & Remarks</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">
+          Contact & Remarks
+        </h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-3 gap-3">
             <Field>

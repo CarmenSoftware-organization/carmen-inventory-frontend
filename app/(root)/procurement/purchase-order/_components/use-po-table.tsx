@@ -1,7 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { DataGridColumnHeader } from "@/components/ui/data-grid/data-grid-column-header";
 import { CellAction } from "@/components/ui/cell-action";
-import { Badge } from "@/components/ui/badge";
 import { useConfigTable } from "@/components/ui/data-grid/use-config-table";
 import type { PurchaseOrder } from "@/types/purchase-order";
 import type { ParamsDto } from "@/types/params";
@@ -40,18 +39,23 @@ export function usePoTable({
           {row.getValue("po_no")}
         </CellAction>
       ),
-      size: 150,
+      size: 120,
     },
     {
       accessorKey: "vendor_name",
       header: ({ column }) => (
         <DataGridColumnHeader column={column} title="Vendor" />
       ),
+      size: 240,
     },
     {
       accessorKey: "order_date",
       header: ({ column }) => (
-        <DataGridColumnHeader column={column} title="Order Date" className="justify-center" />
+        <DataGridColumnHeader
+          column={column}
+          title="Order Date"
+          className="justify-center"
+        />
       ),
       cell: ({ row }) => formatDate(row.getValue("order_date"), dateFormat),
       meta: {
@@ -61,7 +65,11 @@ export function usePoTable({
     {
       accessorKey: "delivery_date",
       header: ({ column }) => (
-        <DataGridColumnHeader column={column} title="Delivery Date" className="justify-center" />
+        <DataGridColumnHeader
+          column={column}
+          title="Delivery Date"
+          className="justify-center"
+        />
       ),
       cell: ({ row }) => formatDate(row.getValue("delivery_date"), dateFormat),
       meta: {
@@ -71,34 +79,19 @@ export function usePoTable({
     {
       accessorKey: "total_amount",
       header: ({ column }) => (
-        <DataGridColumnHeader column={column} title="Total Amount" className="justify-end" />
+        <DataGridColumnHeader
+          column={column}
+          title="Total Amount"
+          className="justify-end"
+        />
       ),
       cell: ({ row }) => {
         const amount = row.getValue<number>("total_amount");
-        return (
-          <span>
-            {amount != null ? formatCurrency(amount) : ""}
-          </span>
-        );
+        return <span>{amount === null ? "" : formatCurrency(amount)}</span>;
       },
       meta: {
         cellClassName: "text-right",
       },
-    },
-    {
-      accessorKey: "is_active",
-      header: ({ column }) => (
-        <DataGridColumnHeader column={column} title="Status" />
-      ),
-      cell: ({ row }) => {
-        const active = row.getValue("is_active");
-        return (
-          <Badge variant={active ? "success-light" : "warning-light"} size="sm">
-            {active ? "Active" : "Inactive"}
-          </Badge>
-        );
-      },
-      size: 80,
     },
   ];
 
