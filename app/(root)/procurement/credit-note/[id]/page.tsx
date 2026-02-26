@@ -1,23 +1,11 @@
 "use client";
 
-import { use } from "react";
+import { createEditPage } from "@/components/create-edit-page";
 import { useCreditNoteById } from "@/hooks/use-credit-note";
 import { CnForm } from "../_components/cn-form";
-import { ErrorState } from "@/components/ui/error-state";
-import { FormSkeleton } from "@/components/loader/form-skeleton";
 
-export default function EditCreditNotePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-  const { data: creditNote, isLoading, error, refetch } = useCreditNoteById(id);
-
-  if (isLoading) return <FormSkeleton />;
-  if (error)
-    return <ErrorState message={error.message} onRetry={() => refetch()} />;
-  if (!creditNote) return <ErrorState message="Credit note not found" />;
-
-  return <CnForm creditNote={creditNote} />;
-}
+export default createEditPage({
+  useById: useCreditNoteById,
+  notFoundMessage: "Credit note not found",
+  render: (creditNote) => <CnForm creditNote={creditNote} />,
+});

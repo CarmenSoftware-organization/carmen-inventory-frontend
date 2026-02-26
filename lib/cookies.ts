@@ -1,4 +1,12 @@
-import { type ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
+interface ResponseCookie {
+  name: string;
+  value: string;
+  httpOnly?: boolean;
+  secure?: boolean;
+  sameSite?: "strict" | "lax" | "none";
+  path?: string;
+  maxAge?: number;
+}
 
 export const ACCESS_TOKEN_COOKIE: ResponseCookie = {
   name: "access_token",

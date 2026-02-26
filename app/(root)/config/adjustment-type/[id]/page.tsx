@@ -1,29 +1,11 @@
 "use client";
 
-import { use } from "react";
+import { createEditPage } from "@/components/create-edit-page";
 import { useAdjustmentTypeById } from "@/hooks/use-adjustment-type";
 import { AdjustmentTypeForm } from "../_components/adjustment-type-form";
-import { ErrorState } from "@/components/ui/error-state";
-import { FormSkeleton } from "@/components/loader/form-skeleton";
 
-export default function EditAdjustmentTypePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-  const {
-    data: adjustmentType,
-    isLoading,
-    error,
-    refetch,
-  } = useAdjustmentTypeById(id);
-
-  if (isLoading) return <FormSkeleton />;
-  if (error)
-    return <ErrorState message={error.message} onRetry={() => refetch()} />;
-  if (!adjustmentType)
-    return <ErrorState message="Adjustment type not found" />;
-
-  return <AdjustmentTypeForm adjustmentType={adjustmentType} />;
-}
+export default createEditPage({
+  useById: useAdjustmentTypeById,
+  notFoundMessage: "Adjustment type not found",
+  render: (adjustmentType) => <AdjustmentTypeForm adjustmentType={adjustmentType} />,
+});

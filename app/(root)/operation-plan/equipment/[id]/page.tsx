@@ -1,23 +1,11 @@
 "use client";
 
-import { use } from "react";
+import { createEditPage } from "@/components/create-edit-page";
 import { useEquipmentById } from "@/hooks/use-equipment";
 import { EquipmentForm } from "../_components/equipment-form";
-import { ErrorState } from "@/components/ui/error-state";
-import { FormSkeleton } from "@/components/loader/form-skeleton";
 
-export default function EditEquipmentPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-  const { data: equipment, isLoading, error, refetch } = useEquipmentById(id);
-
-  if (isLoading) return <FormSkeleton />;
-  if (error)
-    return <ErrorState message={error.message} onRetry={() => refetch()} />;
-  if (!equipment) return <ErrorState message="Equipment not found" />;
-
-  return <EquipmentForm equipment={equipment} />;
-}
+export default createEditPage({
+  useById: useEquipmentById,
+  notFoundMessage: "Equipment not found",
+  render: (equipment) => <EquipmentForm equipment={equipment} />,
+});

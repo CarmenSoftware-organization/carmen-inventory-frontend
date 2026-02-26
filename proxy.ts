@@ -22,7 +22,7 @@ const buildCsp = (nonce: string): string => {
   ].join("; ");
 };
 
-export function proxy(request: NextRequest) {
+function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get("access_token")?.value;
 
@@ -63,6 +63,9 @@ export function proxy(request: NextRequest) {
   response.headers.set("Content-Security-Policy", csp);
   return response;
 }
+
+export { proxy };
+export default proxy;
 
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)"],

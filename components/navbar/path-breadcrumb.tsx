@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import {
   Breadcrumb,
@@ -23,7 +23,15 @@ function isIdSegment(segment: string) {
 
 export default function PathBreadcrumb() {
   const pathname = usePathname();
-  const segments = pathname.split("/").filter((s) => Boolean(s) && !isIdSegment(s));
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const segments = mounted
+    ? pathname.split("/").filter((s) => Boolean(s) && !isIdSegment(s))
+    : [];
 
   return (
     <Breadcrumb>

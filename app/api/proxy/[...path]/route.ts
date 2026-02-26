@@ -85,7 +85,7 @@ async function proxyRequest(request: NextRequest, params: { path: string[] }) {
   }
 
   const url = new URL(`${BACKEND_URL}/${backendPath}`);
-  request.nextUrl.searchParams.forEach((value, key) => {
+  new URL(request.url).searchParams.forEach((value, key) => {
     url.searchParams.set(key, value);
   });
 

@@ -1,6 +1,7 @@
 "use client";
 
-import { use, useMemo } from "react";
+import { useMemo } from "react";
+import { useParams } from "next/navigation";
 import { useWorkflowById } from "@/hooks/use-workflow";
 import { useUser } from "@/hooks/use-user";
 import { useProduct } from "@/hooks/use-product";
@@ -8,12 +9,8 @@ import { ErrorState } from "@/components/ui/error-state";
 import { FormSkeleton } from "@/components/loader/form-skeleton";
 import { WfDetail } from "../_components/wf-detail";
 
-export default function EditWorkflowPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
+export default function EditWorkflowPage() {
+  const { id } = useParams<{ id: string }>();
   const {
     data: workflow,
     isLoading: wfLoading,

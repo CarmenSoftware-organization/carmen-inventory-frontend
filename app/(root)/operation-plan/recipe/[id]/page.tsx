@@ -1,23 +1,11 @@
 "use client";
 
-import { use } from "react";
+import { createEditPage } from "@/components/create-edit-page";
 import { useRecipeById } from "@/hooks/use-recipe";
 import { RecipeForm } from "../_components/recipe-form";
-import { ErrorState } from "@/components/ui/error-state";
-import { FormSkeleton } from "@/components/loader/form-skeleton";
 
-export default function EditRecipePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-  const { data: recipe, isLoading, error, refetch } = useRecipeById(id);
-
-  if (isLoading) return <FormSkeleton />;
-  if (error)
-    return <ErrorState message={error.message} onRetry={() => refetch()} />;
-  if (!recipe) return <ErrorState message="Recipe not found" />;
-
-  return <RecipeForm recipe={recipe} />;
-}
+export default createEditPage({
+  useById: useRecipeById,
+  notFoundMessage: "Recipe not found",
+  render: (recipe) => <RecipeForm recipe={recipe} />,
+});

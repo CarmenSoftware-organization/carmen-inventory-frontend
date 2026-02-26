@@ -840,8 +840,45 @@ Server-only vars validated at startup via `requireEnv()` in `lib/env.ts`.
 
 ---
 
-## 14. Next.js 16 Specifics
+## 14. Dynamic Route Pages (`[id]`)
 
-- `params` in page components is `Promise` — unwrap with `const { id } = use(params)`
-- Output: standalone (optimized for containers)
+### Standard Edit Pages — use `createEditPage`
+
+For pages that receive `params` (e.g. `[id]/page.tsx`), **always** use the `createEditPage` factory from `@/components/create-edit-page`. This avoids RSC serialization issues with `params: Promise` and eliminates boilerplate:
+
+```tsx
+"use client";
+
+import { createEditPage } from "@/components/create-edit-page";
+import { useEntityById } from "@/hooks/use-entity";
+import { EntityForm } from "../_components/entity-form";
+
+export default createEditPage({
+  useById: useEntityById,
+  notFoundMessage: "Entity not found",
+  render: (entity) => <EntityForm entity={entity} />,
+});
+```
+
+**Do NOT** use `use(params)` or receive `params` as a prop — `createEditPage` uses `useParams()` internally.
+
+### Special Edit Pages
+
+For pages that need extra data sources, query params, or custom logic beyond a single `useById` hook, write the component manually but still use `useParams()` instead of `use(params)`:
+
+```tsx
+"use client";
+
+import { useParams } from "next/navigation";
+
+export default function EditSpecialPage() {
+  const { id } = useParams<{ id: string }>();
+  // custom logic here...
+}
+```
+
+---
+
+## 15. Next.js 16 Specifics
+
 - Package import optimization: radix-ui, @dnd-kit/*, @tanstack/react-table, react-day-picker, cmdk

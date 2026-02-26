@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -14,10 +15,15 @@ import { moduleList } from "@/constant/module-list";
 
 export function SideMain() {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const activeModule = moduleList.find((mod) => pathname.startsWith(mod.path));
 
-  if (!activeModule) {
+  if (!mounted || !activeModule) {
     return null;
   }
 

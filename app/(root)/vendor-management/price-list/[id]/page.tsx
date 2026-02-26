@@ -1,23 +1,11 @@
 "use client";
 
-import { use } from "react";
+import { createEditPage } from "@/components/create-edit-page";
 import { usePriceListById } from "@/hooks/use-price-list";
 import { PriceListForm } from "../_components/price-list-form";
-import { ErrorState } from "@/components/ui/error-state";
-import { FormSkeleton } from "@/components/loader/form-skeleton";
 
-export default function EditPriceListPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-  const { data: priceList, isLoading, error, refetch } = usePriceListById(id);
-
-  if (isLoading) return <FormSkeleton />;
-  if (error)
-    return <ErrorState message={error.message} onRetry={() => refetch()} />;
-  if (!priceList) return <ErrorState message="Price list not found" />;
-
-  return <PriceListForm priceList={priceList} />;
-}
+export default createEditPage({
+  useById: usePriceListById,
+  notFoundMessage: "Price list not found",
+  render: (priceList) => <PriceListForm priceList={priceList} />,
+});
