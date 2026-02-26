@@ -55,3 +55,21 @@ export async function deleteGoodsReceiveNote(
     `${API_ENDPOINTS.GOODS_RECEIVE_NOTE(buCode)}/${id}`,
   );
 }
+
+export async function confirmGoodsReceiveNote(
+  buCode: string,
+  id: string,
+): Promise<Response> {
+  return httpClient.patch(
+    `${API_ENDPOINTS.GOODS_RECEIVE_NOTE(buCode)}/${id}/confirm`,
+  );
+}
+
+export async function rejectGoodsReceiveNote(
+  buCode: string,
+  id: string,
+): Promise<Response> {
+  return httpClient.post(
+    `${API_ENDPOINTS.GOODS_RECEIVE_NOTE(buCode)}/${id}/reject`,
+  );
+}

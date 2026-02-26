@@ -56,6 +56,22 @@ export function useDeleteGoodsReceiveNote() {
   });
 }
 
+export function useConfirmGoodsReceiveNote() {
+  return useApiMutation<string>({
+    mutationFn: (id, buCode) => api.confirmGoodsReceiveNote(buCode, id),
+    invalidateKeys: [QUERY_KEYS.GOODS_RECEIVE_NOTES],
+    errorMessage: "Failed to confirm goods receive note",
+  });
+}
+
+export function useRejectGoodsReceiveNote() {
+  return useApiMutation<string>({
+    mutationFn: (id, buCode) => api.rejectGoodsReceiveNote(buCode, id),
+    invalidateKeys: [QUERY_KEYS.GOODS_RECEIVE_NOTES],
+    errorMessage: "Failed to reject goods receive note",
+  });
+}
+
 // --- Comments ---
 
 export function useGoodsReceiveNoteComments(grnId: string | undefined) {

@@ -56,6 +56,30 @@ export function useDeletePurchaseOrder() {
   });
 }
 
+export function useApprovePurchaseOrder() {
+  return useApiMutation<string>({
+    mutationFn: (id, buCode) => api.approvePurchaseOrder(buCode, id),
+    invalidateKeys: [QUERY_KEYS.PURCHASE_ORDERS],
+    errorMessage: "Failed to approve purchase order",
+  });
+}
+
+export function useCancelPurchaseOrder() {
+  return useApiMutation<string>({
+    mutationFn: (id, buCode) => api.cancelPurchaseOrder(buCode, id),
+    invalidateKeys: [QUERY_KEYS.PURCHASE_ORDERS],
+    errorMessage: "Failed to cancel purchase order",
+  });
+}
+
+export function useClosePurchaseOrder() {
+  return useApiMutation<string>({
+    mutationFn: (id, buCode) => api.closePurchaseOrder(buCode, id),
+    invalidateKeys: [QUERY_KEYS.PURCHASE_ORDERS],
+    errorMessage: "Failed to close purchase order",
+  });
+}
+
 // --- Comments ---
 
 export function usePurchaseOrderComments(poId: string | undefined) {

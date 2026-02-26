@@ -5,7 +5,7 @@ import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { MessageSquare } from "lucide-react";
+import { Check, MessageSquare, X, Lock } from "lucide-react";
 import { FormToolbar } from "@/components/ui/form-toolbar";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -13,6 +13,9 @@ import {
   useCreatePurchaseOrder,
   useUpdatePurchaseOrder,
   useDeletePurchaseOrder,
+  useApprovePurchaseOrder,
+  useCancelPurchaseOrder,
+  useClosePurchaseOrder,
 } from "@/hooks/use-purchase-order";
 import type { PurchaseOrder, CreatePoDto } from "@/types/purchase-order";
 import type { FormMode } from "@/types/form";
@@ -46,9 +49,14 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
   const createPo = useCreatePurchaseOrder();
   const updatePo = useUpdatePurchaseOrder();
   const deletePo = useDeletePurchaseOrder();
+  const approvePo = useApprovePurchaseOrder();
+  const cancelPo = useCancelPurchaseOrder();
+  const closePo = useClosePurchaseOrder();
   const [showDelete, setShowDelete] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const isPending = createPo.isPending || updatePo.isPending;
+  const isActionPending =
+    approvePo.isPending || cancelPo.isPending || closePo.isPending;
   const isDisabled = isView || isPending;
 
   const defaultValues = getDefaultValues(purchaseOrder, { defaultCurrencyId });
@@ -164,6 +172,52 @@ export function PoForm({ purchaseOrder }: PoFormProps) {
         onDelete={purchaseOrder ? () => setShowDelete(true) : undefined}
         deleteIsPending={deletePo.isPending}
       >
+        {purchaseOrder && isView && (
+          <>
+            <Button
+              variant="success"
+              size="sm"
+              onClick={() =>
+                approvePo.mutate(purchaseOrder.id, {
+                  onSuccess: () => toast.success("Purchase order approved"),
+                  onError: (err) => toast.error(err.message),
+                })
+              }
+              disabled={isActionPending}
+            >
+              <Check aria-hidden="true" />
+              Approve
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() =>
+                cancelPo.mutate(purchaseOrder.id, {
+                  onSuccess: () => toast.success("Purchase order cancelled"),
+                  onError: (err) => toast.error(err.message),
+                })
+              }
+              disabled={isActionPending}
+            >
+              <X aria-hidden="true" />
+              Cancel
+            </Button>
+            <Button
+              variant="warning"
+              size="sm"
+              onClick={() =>
+                closePo.mutate(purchaseOrder.id, {
+                  onSuccess: () => toast.success("Purchase order closed"),
+                  onError: (err) => toast.error(err.message),
+                })
+              }
+              disabled={isActionPending}
+            >
+              <Lock aria-hidden="true" />
+              Close
+            </Button>
+          </>
+        )}
         {purchaseOrder && (
           <Button size="sm" onClick={() => setShowComment(true)}>
             <MessageSquare aria-hidden="true" />

@@ -5,7 +5,7 @@ import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { MessageSquare } from "lucide-react";
+import { Check, MessageSquare, X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormToolbar } from "@/components/ui/form-toolbar";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,8 @@ import {
   useCreateGoodsReceiveNote,
   useUpdateGoodsReceiveNote,
   useDeleteGoodsReceiveNote,
+  useConfirmGoodsReceiveNote,
+  useRejectGoodsReceiveNote,
 } from "@/hooks/use-goods-receive-note";
 import type {
   GoodsReceiveNote,
@@ -52,9 +54,12 @@ export function GrnForm({ goodsReceiveNote }: GrnFormProps) {
   const createGrn = useCreateGoodsReceiveNote();
   const updateGrn = useUpdateGoodsReceiveNote();
   const deleteGrn = useDeleteGoodsReceiveNote();
+  const confirmGrn = useConfirmGoodsReceiveNote();
+  const rejectGrn = useRejectGoodsReceiveNote();
   const [showDelete, setShowDelete] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const isPending = createGrn.isPending || updateGrn.isPending;
+  const isActionPending = confirmGrn.isPending || rejectGrn.isPending;
   const isDisabled = isView || isPending;
 
   const defaultValues = getDefaultValues(goodsReceiveNote);
@@ -209,6 +214,38 @@ export function GrnForm({ goodsReceiveNote }: GrnFormProps) {
         onDelete={goodsReceiveNote ? () => setShowDelete(true) : undefined}
         deleteIsPending={deleteGrn.isPending}
       >
+        {goodsReceiveNote && isView && (
+          <>
+            <Button
+              variant="success"
+              size="sm"
+              onClick={() =>
+                confirmGrn.mutate(goodsReceiveNote.id, {
+                  onSuccess: () => toast.success("Goods receive note confirmed"),
+                  onError: (err) => toast.error(err.message),
+                })
+              }
+              disabled={isActionPending}
+            >
+              <Check aria-hidden="true" />
+              Confirm
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() =>
+                rejectGrn.mutate(goodsReceiveNote.id, {
+                  onSuccess: () => toast.success("Goods receive note rejected"),
+                  onError: (err) => toast.error(err.message),
+                })
+              }
+              disabled={isActionPending}
+            >
+              <X aria-hidden="true" />
+              Reject
+            </Button>
+          </>
+        )}
         {goodsReceiveNote && (
           <Button size="sm" onClick={() => setShowComment(true)}>
             <MessageSquare aria-hidden="true" />

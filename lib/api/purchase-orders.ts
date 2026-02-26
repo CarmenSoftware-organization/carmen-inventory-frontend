@@ -50,3 +50,30 @@ export async function deletePurchaseOrder(
 ): Promise<Response> {
   return httpClient.delete(`${API_ENDPOINTS.PURCHASE_ORDER(buCode)}/${id}`);
 }
+
+export async function approvePurchaseOrder(
+  buCode: string,
+  id: string,
+): Promise<Response> {
+  return httpClient.post(
+    `${API_ENDPOINTS.PURCHASE_ORDER(buCode)}/${id}/approve`,
+  );
+}
+
+export async function cancelPurchaseOrder(
+  buCode: string,
+  id: string,
+): Promise<Response> {
+  return httpClient.post(
+    `${API_ENDPOINTS.PURCHASE_ORDER(buCode)}/${id}/cancel`,
+  );
+}
+
+export async function closePurchaseOrder(
+  buCode: string,
+  id: string,
+): Promise<Response> {
+  return httpClient.post(
+    `${API_ENDPOINTS.PURCHASE_ORDER(buCode)}/${id}/close`,
+  );
+}
