@@ -49,8 +49,9 @@ async function proxyRequest(
 
   // --- BODY SIZE LIMIT ---
   if (!["GET", "HEAD"].includes(request.method)) {
-    const contentLength = parseInt(
+    const contentLength = Number.parseInt(
       request.headers.get("content-length") || "0",
+      10,
     );
     if (contentLength > MAX_BODY_SIZE) {
       return NextResponse.json({ error: "Payload too large" }, { status: 413 });
@@ -105,6 +106,13 @@ export async function POST(
 }
 
 export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ path: string[] }> },
+) {
+  return proxyRequest(request, await params);
+}
+
+export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> },
 ) {

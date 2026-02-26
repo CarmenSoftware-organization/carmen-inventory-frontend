@@ -24,8 +24,8 @@ export function createConfigCrud<T, TCreate>({
 }: ConfigCrudOptions): {
   useList: (params?: ParamsDto) => UseQueryResult<PaginatedResponse<T>>;
   useById: (id: string | undefined) => UseQueryResult<T>;
-  useCreate: () => UseMutationResult<unknown, Error, TCreate>;
-  useUpdate: () => UseMutationResult<unknown, Error, TCreate & { id: string }>;
+  useCreate: () => UseMutationResult<T, Error, TCreate>;
+  useUpdate: () => UseMutationResult<T, Error, TCreate & { id: string }>;
   useDelete: () => UseMutationResult<unknown, Error, string>;
 } {
   const api = createConfigApi<T, TCreate>({ endpoint, label, updateMethod });
@@ -53,7 +53,7 @@ export function createConfigCrud<T, TCreate>({
   }
 
   function useCreate() {
-    return useApiMutation<TCreate>({
+    return useApiMutation<TCreate, T>({
       mutationFn: (data, buCode) => api.create(buCode, data),
       invalidateKeys: [queryKey],
       errorMessage: `Failed to create ${label}`,
@@ -61,7 +61,7 @@ export function createConfigCrud<T, TCreate>({
   }
 
   function useUpdate() {
-    return useApiMutation<TCreate & { id: string }>({
+    return useApiMutation<TCreate & { id: string }, T>({
       mutationFn: ({ id, ...data }, buCode) =>
         api.update(buCode, id, data as TCreate),
       invalidateKeys: [queryKey],

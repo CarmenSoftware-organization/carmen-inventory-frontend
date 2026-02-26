@@ -87,8 +87,7 @@ export function UnitDialog({ open, onOpenChange, unit, onSuccess }: UnitDialogPr
       );
     } else {
       createUnit.mutate(payload, {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onSuccess: (res: any) => {
+        onSuccess: (res) => {
           toast.success("Unit created successfully");
           onOpenChange(false);
           if (res?.id) onSuccess?.(res.id);

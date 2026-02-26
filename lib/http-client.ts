@@ -36,6 +36,8 @@ function checkRateLimit(): void {
   requestTimestamps.push(now);
 }
 
+const FETCH_TIMEOUT_MS = 15_000; // 15s
+
 async function request(
   url: string,
   method: HttpMethod,
@@ -45,8 +47,12 @@ async function request(
 
   const { body, headers, ...rest } = options ?? {};
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
   const init: RequestInit = {
     method,
+    signal: controller.signal,
     ...rest,
   };
 
@@ -60,7 +66,17 @@ async function request(
     init.headers = headers;
   }
 
-  const response = await fetch(url, init);
+  let response: Response;
+  try {
+    response = await fetch(url, init);
+  } catch (error) {
+    clearTimeout(timeout);
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new ApiError(ERROR_CODES.TIMEOUT, "Request timed out", 408, true);
+    }
+    throw new ApiError(ERROR_CODES.NETWORK_ERROR, "Network error", undefined, true);
+  }
+  clearTimeout(timeout);
 
   if (typeof globalThis.window !== "undefined") {
     if (response.status === 401) {
