@@ -245,7 +245,7 @@ export function LocationForm({ location }: LocationFormProps) {
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!form.formState.errors.code}>
-              <FieldLabel htmlFor="location-code" className="text-xs" required>
+              <FieldLabel htmlFor="location-code" required>
                 Code
               </FieldLabel>
               <Input
@@ -260,7 +260,7 @@ export function LocationForm({ location }: LocationFormProps) {
             </Field>
 
             <Field data-invalid={!!form.formState.errors.name}>
-              <FieldLabel htmlFor="location-name" className="text-xs" required>
+              <FieldLabel htmlFor="location-name" required>
                 Name
               </FieldLabel>
               <Input
@@ -277,7 +277,7 @@ export function LocationForm({ location }: LocationFormProps) {
 
           <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!form.formState.errors.location_type}>
-              <FieldLabel className="text-xs" required>Location Type</FieldLabel>
+              <FieldLabel required>Location Type</FieldLabel>
               <Controller
                 control={form.control}
                 name="location_type"
@@ -306,7 +306,7 @@ export function LocationForm({ location }: LocationFormProps) {
             </Field>
 
             <Field data-invalid={!!form.formState.errors.physical_count_type}>
-              <FieldLabel className="text-xs" required>Physical Count</FieldLabel>
+              <FieldLabel required>Physical Count</FieldLabel>
               <Controller
                 control={form.control}
                 name="physical_count_type"
@@ -336,7 +336,7 @@ export function LocationForm({ location }: LocationFormProps) {
           </div>
 
           <Field>
-            <FieldLabel htmlFor="location-description" className="text-xs">
+            <FieldLabel htmlFor="location-description">
               Description
             </FieldLabel>
             <Textarea
@@ -362,7 +362,7 @@ export function LocationForm({ location }: LocationFormProps) {
                 />
               )}
             />
-            <FieldLabel htmlFor="location-is-active" className="text-xs">
+            <FieldLabel htmlFor="location-is-active">
               Active
             </FieldLabel>
           </Field>
@@ -374,7 +374,7 @@ export function LocationForm({ location }: LocationFormProps) {
           <h3 className="text-xs font-medium text-muted-foreground">
             Delivery Point
           </h3>
-          <p className="text-xs">{location.delivery_point.name}</p>
+          <p>{location.delivery_point.name}</p>
         </div>
       )}
 
@@ -383,10 +383,10 @@ export function LocationForm({ location }: LocationFormProps) {
           <div className="max-w-2xl space-y-4 pt-6">
             <Tabs defaultValue="users">
               <TabsList variant="line">
-                <TabsTrigger value="users" className="text-xs">
+                <TabsTrigger value="users">
                   Location Users ({location.user_location.length})
                 </TabsTrigger>
-                <TabsTrigger value="products" className="text-xs">
+                <TabsTrigger value="products">
                   Products ({location.product_location.length})
                 </TabsTrigger>
               </TabsList>

@@ -115,7 +115,7 @@ export function UnitDialog({ open, onOpenChange, unit, onSuccess }: UnitDialogPr
         >
           <FieldGroup className="gap-3">
             <Field data-invalid={!!form.formState.errors.name}>
-              <FieldLabel htmlFor="unit-name" className="text-xs">
+              <FieldLabel htmlFor="unit-name">
                 Name
               </FieldLabel>
               <Input
@@ -130,7 +130,7 @@ export function UnitDialog({ open, onOpenChange, unit, onSuccess }: UnitDialogPr
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="unit-description" className="text-xs">
+              <FieldLabel htmlFor="unit-description">
                 Description
               </FieldLabel>
               <Textarea
@@ -156,7 +156,7 @@ export function UnitDialog({ open, onOpenChange, unit, onSuccess }: UnitDialogPr
                   />
                 )}
               />
-              <FieldLabel htmlFor="unit-is-active" className="text-xs">
+              <FieldLabel htmlFor="unit-is-active">
                 Active
               </FieldLabel>
             </Field>

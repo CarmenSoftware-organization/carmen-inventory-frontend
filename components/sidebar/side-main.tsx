@@ -40,7 +40,7 @@ export function SideMain() {
                     asChild
                     tooltip={sub.name}
                     isActive={pathname === sub.path}
-                    className="data-[active=true]:bg-primary data-[active=true]:text-primary-foreground"
+                    className="data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-semibold"
                   >
                     <Link href={sub.path}>
                       <sub.icon />

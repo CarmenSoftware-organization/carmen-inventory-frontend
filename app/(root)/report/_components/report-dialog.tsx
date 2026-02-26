@@ -104,7 +104,7 @@ export function ReportDialog({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
           <FieldGroup className="gap-3">
             <Field data-invalid={!!form.formState.errors.name}>
-              <FieldLabel htmlFor="report-name" className="text-xs">
+              <FieldLabel htmlFor="report-name">
                 Name
               </FieldLabel>
               <Input
@@ -131,7 +131,7 @@ export function ReportDialog({
                   />
                 )}
               />
-              <FieldLabel htmlFor="report-is-active" className="text-xs">
+              <FieldLabel htmlFor="report-is-active">
                 Active
               </FieldLabel>
             </Field>

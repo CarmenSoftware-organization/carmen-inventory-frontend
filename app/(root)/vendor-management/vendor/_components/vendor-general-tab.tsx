@@ -37,7 +37,7 @@ export function VendorGeneralTab({
   return (
     <FieldGroup className="max-w-2xl gap-3 pt-4">
       <Field data-invalid={!!form.formState.errors.code}>
-        <FieldLabel htmlFor="vendor-code" className="text-xs">
+        <FieldLabel htmlFor="vendor-code">
           Code
         </FieldLabel>
         <Input
@@ -52,7 +52,7 @@ export function VendorGeneralTab({
       </Field>
 
       <Field data-invalid={!!form.formState.errors.name}>
-        <FieldLabel htmlFor="vendor-name" className="text-xs">
+        <FieldLabel htmlFor="vendor-name">
           Name
         </FieldLabel>
         <Input
@@ -67,7 +67,7 @@ export function VendorGeneralTab({
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="vendor-description" className="text-xs">
+        <FieldLabel htmlFor="vendor-description">
           Description
         </FieldLabel>
         <Textarea
@@ -153,7 +153,7 @@ export function VendorGeneralTab({
             />
           )}
         />
-        <FieldLabel htmlFor="vendor-is-active" className="text-xs">
+        <FieldLabel htmlFor="vendor-is-active">
           Active
         </FieldLabel>
       </Field>

@@ -38,10 +38,10 @@ export function GrnGeneralFields({ form, disabled }: GrnGeneralFieldsProps) {
     <div className="space-y-6 pt-4">
       {/* Document Info */}
       <div className="space-y-3">
-        <h2 className="text-sm font-semibold">Document Information</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Document Information</h2>
         <div className="grid grid-cols-3 gap-3">
           <Field data-invalid={!!form.formState.errors.doc_type}>
-            <FieldLabel className="text-xs" required>
+            <FieldLabel required>
               Document Type
             </FieldLabel>
             <Controller
@@ -70,7 +70,7 @@ export function GrnGeneralFields({ form, disabled }: GrnGeneralFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="grn-invoice-no" className="text-xs">Invoice No.</FieldLabel>
+            <FieldLabel htmlFor="grn-invoice-no">Invoice No.</FieldLabel>
             <Input
               id="grn-invoice-no"
               placeholder="e.g. INV-001"
@@ -81,7 +81,7 @@ export function GrnGeneralFields({ form, disabled }: GrnGeneralFieldsProps) {
           </Field>
 
           <Field data-invalid={!!form.formState.errors.vendor_id}>
-            <FieldLabel className="text-xs" required>
+            <FieldLabel required>
               Vendor
             </FieldLabel>
             <Controller
@@ -99,7 +99,7 @@ export function GrnGeneralFields({ form, disabled }: GrnGeneralFieldsProps) {
             <FieldError>{form.formState.errors.vendor_id?.message}</FieldError>
           </Field>
           <Field data-invalid={!!form.formState.errors.grn_date}>
-            <FieldLabel className="text-xs" required>
+            <FieldLabel required>
               GRN Date
             </FieldLabel>
             <Controller
@@ -119,7 +119,7 @@ export function GrnGeneralFields({ form, disabled }: GrnGeneralFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">Invoice Date</FieldLabel>
+            <FieldLabel>Invoice Date</FieldLabel>
             <Controller
               control={form.control}
               name="invoice_date"
@@ -136,7 +136,7 @@ export function GrnGeneralFields({ form, disabled }: GrnGeneralFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">Expired Date</FieldLabel>
+            <FieldLabel>Expired Date</FieldLabel>
             <Controller
               control={form.control}
               name="expired_date"
@@ -152,7 +152,7 @@ export function GrnGeneralFields({ form, disabled }: GrnGeneralFieldsProps) {
             />
           </Field>
           <Field data-invalid={!!form.formState.errors.doc_status}>
-            <FieldLabel className="text-xs" required>
+            <FieldLabel required>
               Status
             </FieldLabel>
             <Controller
@@ -193,7 +193,7 @@ export function GrnGeneralFields({ form, disabled }: GrnGeneralFieldsProps) {
               />
             )}
           />
-          <FieldLabel htmlFor="grn-consignment" className="text-xs">Consignment</FieldLabel>
+          <FieldLabel htmlFor="grn-consignment">Consignment</FieldLabel>
         </Field>
 
         <Field orientation="horizontal" className="self-end pb-1.5">
@@ -209,7 +209,7 @@ export function GrnGeneralFields({ form, disabled }: GrnGeneralFieldsProps) {
               />
             )}
           />
-          <FieldLabel htmlFor="grn-cash" className="text-xs">Cash</FieldLabel>
+          <FieldLabel htmlFor="grn-cash">Cash</FieldLabel>
         </Field>
       </div>
 

@@ -379,7 +379,7 @@ export function StoreRequisitionForm({
             <FieldGroup className="gap-3">
               <div className="grid grid-cols-2 gap-3">
                 <Field>
-                  <FieldLabel className="text-xs">Workflow</FieldLabel>
+                  <FieldLabel>Workflow</FieldLabel>
                   <Controller
                     control={form.control}
                     name="workflow_id"
@@ -397,7 +397,7 @@ export function StoreRequisitionForm({
 
               <div className="grid grid-cols-2 gap-3">
                 <Field data-invalid={!!form.formState.errors.from_location_id}>
-                  <FieldLabel className="text-xs">From Location</FieldLabel>
+                  <FieldLabel>From Location</FieldLabel>
                   <Controller
                     control={form.control}
                     name="from_location_id"
@@ -421,7 +421,7 @@ export function StoreRequisitionForm({
                 </Field>
 
                 <Field data-invalid={!!form.formState.errors.to_location_id}>
-                  <FieldLabel className="text-xs">To Location</FieldLabel>
+                  <FieldLabel>To Location</FieldLabel>
                   <Controller
                     control={form.control}
                     name="to_location_id"
@@ -445,7 +445,7 @@ export function StoreRequisitionForm({
 
               <div className="grid grid-cols-2 gap-3">
                 <Field data-invalid={!!form.formState.errors.sr_date}>
-                  <FieldLabel className="text-xs">SR Date</FieldLabel>
+                  <FieldLabel>SR Date</FieldLabel>
                   <Controller
                     control={form.control}
                     name="sr_date"
@@ -475,7 +475,7 @@ export function StoreRequisitionForm({
                 </Field>
 
                 <Field data-invalid={!!form.formState.errors.expected_date}>
-                  <FieldLabel className="text-xs">Expected Date</FieldLabel>
+                  <FieldLabel>Expected Date</FieldLabel>
                   <Controller
                     control={form.control}
                     name="expected_date"
@@ -497,7 +497,7 @@ export function StoreRequisitionForm({
               </div>
 
               <Field>
-                <FieldLabel htmlFor="sr-description" className="text-xs">
+                <FieldLabel htmlFor="sr-description">
                   Description
                 </FieldLabel>
                 <Textarea
@@ -570,7 +570,7 @@ const InfoCell = ({
   readonly value: string;
 }) => {
   return (
-    <div className="text-xs">
+    <div>
       <span className="text-muted-foreground">{label}</span>
       <p className="font-medium truncate">{value || "—"}</p>
     </div>

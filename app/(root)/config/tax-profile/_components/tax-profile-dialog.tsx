@@ -109,7 +109,7 @@ export function TaxProfileDialog({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
           <FieldGroup className="gap-3">
             <Field data-invalid={!!form.formState.errors.name}>
-              <FieldLabel htmlFor="tax-profile-name" className="text-xs">
+              <FieldLabel htmlFor="tax-profile-name">
                 Name
               </FieldLabel>
               <Input
@@ -124,7 +124,7 @@ export function TaxProfileDialog({
             </Field>
 
             <Field data-invalid={!!form.formState.errors.tax_rate}>
-              <FieldLabel htmlFor="tax-profile-rate" className="text-xs">
+              <FieldLabel htmlFor="tax-profile-rate">
                 Tax Rate (%)
               </FieldLabel>
               <Input
@@ -152,7 +152,7 @@ export function TaxProfileDialog({
                   />
                 )}
               />
-              <FieldLabel htmlFor="tax-profile-is-active" className="text-xs">
+              <FieldLabel htmlFor="tax-profile-is-active">
                 Active
               </FieldLabel>
             </Field>

@@ -231,7 +231,7 @@ export function PrItemFields({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold">Items</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Items</h2>
 
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-end gap-1.5">
@@ -326,7 +326,7 @@ export function PrItemFields({
         table={table}
         recordCount={itemFields.length}
         tableLayout={{ dense: true, headerSeparator: true }}
-        tableClassNames={{ base: "text-xs" }}
+        tableClassNames={{ base: "text-sm" }}
         emptyMessage={
           <EmptyComponent
             icon={BoxIcon}

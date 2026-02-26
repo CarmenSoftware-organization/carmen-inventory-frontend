@@ -211,7 +211,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!form.formState.errors.code}>
-              <FieldLabel htmlFor="department-code" className="text-xs" required>
+              <FieldLabel htmlFor="department-code" required>
                 Code
               </FieldLabel>
               <Input
@@ -226,7 +226,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
             </Field>
 
             <Field data-invalid={!!form.formState.errors.name}>
-              <FieldLabel htmlFor="department-name" className="text-xs" required>
+              <FieldLabel htmlFor="department-name" required>
                 Name
               </FieldLabel>
               <Input
@@ -242,7 +242,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
           </div>
 
           <Field>
-            <FieldLabel htmlFor="department-description" className="text-xs">
+            <FieldLabel htmlFor="department-description">
               Description
             </FieldLabel>
             <Textarea
@@ -268,7 +268,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
                 />
               )}
             />
-            <FieldLabel htmlFor="department-is-active" className="text-xs">
+            <FieldLabel htmlFor="department-is-active">
               Active
             </FieldLabel>
           </Field>
@@ -278,7 +278,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
       <div className="space-y-6 pt-6">
         <section>
           <div className="mb-2 flex items-center gap-2">
-            <h3 className="text-sm font-semibold">Department Members</h3>
+            <h3 className="text-sm font-semibold border-b pb-2">Department Members</h3>
             {isView && (
               <span className="inline-flex h-4.5 min-w-5 items-center justify-center rounded bg-muted px-1 text-[10px] font-medium tabular-nums text-muted-foreground">
                 {department?.department_users.length ?? 0}
@@ -304,7 +304,7 @@ export function DepartmentForm({ department }: DepartmentFormProps) {
 
         <section>
           <div className="mb-2 flex items-center gap-2">
-            <h3 className="text-sm font-semibold">Head of Department</h3>
+            <h3 className="text-sm font-semibold border-b pb-2">Head of Department</h3>
             {isView && (
               <span className="inline-flex h-4.5 min-w-5 items-center justify-center rounded bg-muted px-1 text-[10px] font-medium tabular-nums text-muted-foreground">
                 {department?.hod_users.length ?? 0}

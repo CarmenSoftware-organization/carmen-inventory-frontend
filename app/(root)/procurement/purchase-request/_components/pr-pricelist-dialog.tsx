@@ -214,7 +214,7 @@ export function PrPricelistDialog({
           emptyMessage={emptyMessage}
           onRowClick={handleSelect}
           tableLayout={{ dense: true, headerBackground: true }}
-          tableClassNames={{ base: "text-xs" }}
+          tableClassNames={{ base: "text-sm" }}
         >
           <DataGridContainer>
             <DataGridTable />

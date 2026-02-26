@@ -118,7 +118,7 @@ export function ScItemTable({ form, disabled }: ScItemTableProps) {
   return (
     <div className="space-y-2 pt-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold">Products</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Products</h2>
         {!disabled && (
           <Button
             type="button"
@@ -136,7 +136,7 @@ export function ScItemTable({ form, disabled }: ScItemTableProps) {
         table={table}
         recordCount={fields.length}
         tableLayout={{ dense: true, headerSeparator: true }}
-        tableClassNames={{ base: "text-xs" }}
+        tableClassNames={{ base: "text-sm" }}
       >
         <DataGridContainer>
           <DataGridTable />

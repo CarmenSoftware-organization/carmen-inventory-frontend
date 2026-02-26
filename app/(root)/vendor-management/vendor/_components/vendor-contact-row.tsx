@@ -86,7 +86,7 @@ function ContactRow({
         <Field
           data-invalid={!!form.formState.errors.vendor_contact?.[index]?.name}
         >
-          <FieldLabel className="text-xs">Name</FieldLabel>
+          <FieldLabel>Name</FieldLabel>
           <Input
             placeholder="Contact name"
             className="h-8 text-sm"
@@ -99,7 +99,7 @@ function ContactRow({
         </Field>
 
         <Field>
-          <FieldLabel className="text-xs">Email</FieldLabel>
+          <FieldLabel>Email</FieldLabel>
           <Input
             type="email"
             placeholder="email@example.com"
@@ -110,7 +110,7 @@ function ContactRow({
         </Field>
 
         <Field>
-          <FieldLabel className="text-xs">Phone</FieldLabel>
+          <FieldLabel>Phone</FieldLabel>
           <Input
             placeholder="Phone number"
             className="h-8 text-sm"
@@ -133,7 +133,7 @@ function ContactRow({
               />
             )}
           />
-          <FieldLabel className="text-xs">Primary Contact</FieldLabel>
+          <FieldLabel>Primary Contact</FieldLabel>
         </Field>
 
         {!isDisabled && (

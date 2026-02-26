@@ -22,10 +22,10 @@ export function GrnDetailFields({ form, disabled }: GrnDetailFieldsProps) {
     <div className="max-w-3xl space-y-6 pt-4">
       {/* Received By */}
       <div className="space-y-3">
-        <h2 className="text-sm font-semibold">Received By</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Received By</h2>
         <div className="grid grid-cols-3 gap-3">
           <Field>
-            <FieldLabel className="text-xs">Received By</FieldLabel>
+            <FieldLabel>Received By</FieldLabel>
             <Input
               placeholder="Name"
               className="h-9 text-sm"
@@ -35,7 +35,7 @@ export function GrnDetailFields({ form, disabled }: GrnDetailFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">Received At</FieldLabel>
+            <FieldLabel>Received At</FieldLabel>
             <Controller
               control={form.control}
               name="received_at"
@@ -52,7 +52,7 @@ export function GrnDetailFields({ form, disabled }: GrnDetailFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">Signature Image URL</FieldLabel>
+            <FieldLabel>Signature Image URL</FieldLabel>
             <Input
               placeholder="Optional"
               className="h-9 text-sm"
@@ -65,10 +65,10 @@ export function GrnDetailFields({ form, disabled }: GrnDetailFieldsProps) {
 
       {/* Conversion */}
       <div className="space-y-3">
-        <h2 className="text-sm font-semibold">Conversion</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Conversion</h2>
         <div className="grid grid-cols-3 gap-3">
           <Field>
-            <FieldLabel className="text-xs">
+            <FieldLabel>
               Requested Unit Conversion Factor
             </FieldLabel>
             <Input
@@ -81,7 +81,7 @@ export function GrnDetailFields({ form, disabled }: GrnDetailFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">
+            <FieldLabel>
               Approved Unit Conversion Factor
             </FieldLabel>
             <Input
@@ -97,11 +97,11 @@ export function GrnDetailFields({ form, disabled }: GrnDetailFieldsProps) {
 
       {/* Additional */}
       <div className="space-y-3">
-        <h2 className="text-sm font-semibold">Additional</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Additional</h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-3">
             <Field>
-              <FieldLabel className="text-xs">Description</FieldLabel>
+              <FieldLabel>Description</FieldLabel>
               <Textarea
                 placeholder="Optional"
                 className="text-sm"
@@ -113,7 +113,7 @@ export function GrnDetailFields({ form, disabled }: GrnDetailFieldsProps) {
             </Field>
 
             <Field>
-              <FieldLabel className="text-xs">Note</FieldLabel>
+              <FieldLabel>Note</FieldLabel>
               <Textarea
                 placeholder="Optional"
                 className="text-sm"
@@ -127,7 +127,7 @@ export function GrnDetailFields({ form, disabled }: GrnDetailFieldsProps) {
 
           <div className="grid grid-cols-2 gap-3">
             <Field>
-              <FieldLabel className="text-xs">Info (JSON)</FieldLabel>
+              <FieldLabel>Info (JSON)</FieldLabel>
               <Textarea
                 placeholder="{}"
                 className="font-mono text-xs"
@@ -139,7 +139,7 @@ export function GrnDetailFields({ form, disabled }: GrnDetailFieldsProps) {
             </Field>
 
             <Field>
-              <FieldLabel className="text-xs">Dimension (JSON)</FieldLabel>
+              <FieldLabel>Dimension (JSON)</FieldLabel>
               <Textarea
                 placeholder="{}"
                 className="font-mono text-xs"
@@ -163,7 +163,7 @@ export function GrnDetailFields({ form, disabled }: GrnDetailFieldsProps) {
                 />
               )}
             />
-            <FieldLabel className="text-xs">Active</FieldLabel>
+            <FieldLabel>Active</FieldLabel>
           </Field>
         </FieldGroup>
       </div>

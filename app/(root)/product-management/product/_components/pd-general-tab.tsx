@@ -73,10 +73,10 @@ export default function GeneralTab({
     <div className="space-y-6">
       {/* ── Product Identification ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">Product Identification</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Product Identification</h2>
         <FieldGroup className="grid grid-cols-3 gap-3">
           <Field data-invalid={!!form.formState.errors.code}>
-            <FieldLabel htmlFor="product-code" className="text-xs" required>
+            <FieldLabel htmlFor="product-code" required>
               Code
             </FieldLabel>
             <Input
@@ -91,7 +91,7 @@ export default function GeneralTab({
           </Field>
 
           <Field data-invalid={!!form.formState.errors.name}>
-            <FieldLabel htmlFor="product-name" className="text-xs" required>
+            <FieldLabel htmlFor="product-name" required>
               Name
             </FieldLabel>
             <Input
@@ -106,7 +106,7 @@ export default function GeneralTab({
           </Field>
 
           <Field data-invalid={!!form.formState.errors.local_name}>
-            <FieldLabel htmlFor="product-local-name" className="text-xs">
+            <FieldLabel htmlFor="product-local-name">
               Local Name
             </FieldLabel>
             <Input
@@ -121,7 +121,7 @@ export default function GeneralTab({
           </Field>
         </FieldGroup>
         <Field>
-          <FieldLabel htmlFor="product-description" className="text-xs">
+          <FieldLabel htmlFor="product-description">
             Description
           </FieldLabel>
           <Textarea
@@ -138,11 +138,11 @@ export default function GeneralTab({
 
       {/* ── Classification ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">Classification</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Classification</h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-3 gap-3">
             <Field data-invalid={!!form.formState.errors.product_item_group_id}>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel required>
                 Item Group
               </FieldLabel>
               <Controller
@@ -162,7 +162,7 @@ export default function GeneralTab({
             </Field>
 
             <Field>
-              <FieldLabel className="text-xs">Sub Category</FieldLabel>
+              <FieldLabel>Sub Category</FieldLabel>
               <Input
                 className="h-8 text-sm bg-muted"
                 disabled
@@ -172,7 +172,7 @@ export default function GeneralTab({
             </Field>
 
             <Field>
-              <FieldLabel className="text-xs">Category</FieldLabel>
+              <FieldLabel>Category</FieldLabel>
               <Input
                 className="h-8 text-sm bg-muted"
                 disabled
@@ -186,11 +186,11 @@ export default function GeneralTab({
 
       {/* ── Unit & Tax ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">Unit & Tax</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Unit & Tax</h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-3 gap-3">
             <Field data-invalid={!!form.formState.errors.inventory_unit_id}>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel required>
                 Inventory Unit
               </FieldLabel>
               <Controller
@@ -210,7 +210,7 @@ export default function GeneralTab({
             </Field>
 
             <Field>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel required>
                 Tax Profile
               </FieldLabel>
               <Controller
@@ -227,7 +227,7 @@ export default function GeneralTab({
             </Field>
 
             <Field>
-              <FieldLabel className="text-xs">Default Order Unit</FieldLabel>
+              <FieldLabel>Default Order Unit</FieldLabel>
               <Input
                 className="h-8 text-sm bg-muted"
                 disabled

@@ -56,7 +56,7 @@ const UserProfileDetails = () => {
     <div className="space-y-4">
       <section>
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-semibold">User Information</h3>
+          <h3 className="text-sm font-semibold border-b pb-2">User Information</h3>
           <Link
             href="/profile/setting"
             className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
@@ -97,7 +97,7 @@ const BUSection = ({ bu }: { bu: BusinessUnit }) => {
   return (
     <section>
       <div className="flex items-center gap-2">
-        <h3 className="text-xs font-semibold">
+        <h3 className="text-sm font-semibold border-b pb-2">
           {bu.name}
           <span className="ml-1.5 text-xs font-normal text-muted-foreground">
             ({bu.code})

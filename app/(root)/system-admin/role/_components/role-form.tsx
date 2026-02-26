@@ -137,7 +137,7 @@ export function RoleForm({ role }: RoleFormProps) {
       >
         <FieldGroup className="max-w-2xl gap-3">
           <Field data-invalid={!!form.formState.errors.application_role_name}>
-            <FieldLabel className="text-xs">Name</FieldLabel>
+            <FieldLabel>Name</FieldLabel>
             <Input
               placeholder="e.g. Admin"
               className="h-8 text-sm"

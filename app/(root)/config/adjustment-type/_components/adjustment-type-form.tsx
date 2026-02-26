@@ -176,7 +176,7 @@ export function AdjustmentTypeForm({
           <Field data-invalid={!!form.formState.errors.code}>
             <FieldLabel
               htmlFor="adjustment-type-code"
-              className="text-xs"
+             
               required
             >
               Code
@@ -195,7 +195,7 @@ export function AdjustmentTypeForm({
           <Field data-invalid={!!form.formState.errors.name}>
             <FieldLabel
               htmlFor="adjustment-type-name"
-              className="text-xs"
+             
               required
             >
               Name
@@ -212,7 +212,7 @@ export function AdjustmentTypeForm({
           </Field>
 
           <Field data-invalid={!!form.formState.errors.type}>
-            <FieldLabel className="text-xs" required>
+            <FieldLabel required>
               Type
             </FieldLabel>
             <Controller
@@ -243,7 +243,7 @@ export function AdjustmentTypeForm({
           <Field>
             <FieldLabel
               htmlFor="adjustment-type-description"
-              className="text-xs"
+             
             >
               Description
             </FieldLabel>
@@ -261,7 +261,7 @@ export function AdjustmentTypeForm({
           <Field>
             <FieldLabel
               htmlFor="adjustment-type-note"
-              className="text-xs"
+             
             >
               Note
             </FieldLabel>
@@ -289,7 +289,7 @@ export function AdjustmentTypeForm({
                 />
               )}
             />
-            <FieldLabel htmlFor="adjustment-type-is-active" className="text-xs">
+            <FieldLabel htmlFor="adjustment-type-is-active">
               Active
             </FieldLabel>
           </Field>

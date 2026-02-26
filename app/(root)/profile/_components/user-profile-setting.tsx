@@ -90,7 +90,7 @@ export default function UserProfileSetting() {
 
       {/* ── Account Information (read-only) ── */}
       <section className="space-y-3">
-        <h2 className="text-xs font-semibold">Account Information</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Account Information</h2>
         <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
           <div className="min-w-0">
             <dt className="text-[11px] text-muted-foreground">Email</dt>
@@ -111,10 +111,10 @@ export default function UserProfileSetting() {
       {/* ── Tabs ── */}
       <Tabs defaultValue="personal">
         <TabsList variant="line">
-          <TabsTrigger value="personal" className="text-xs">
+          <TabsTrigger value="personal">
             Personal Information
           </TabsTrigger>
-          <TabsTrigger value="password" className="text-xs">
+          <TabsTrigger value="password">
             Change Password
           </TabsTrigger>
         </TabsList>
@@ -124,7 +124,7 @@ export default function UserProfileSetting() {
           <form id="profile-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
             <FieldGroup className="gap-3 max-w-md">
               <Field data-invalid={!!form.formState.errors.firstname}>
-                <FieldLabel htmlFor="firstname" className="text-xs" required>
+                <FieldLabel htmlFor="firstname" required>
                   First Name
                 </FieldLabel>
                 <Input
@@ -140,7 +140,7 @@ export default function UserProfileSetting() {
               </Field>
 
               <Field data-invalid={!!form.formState.errors.middlename}>
-                <FieldLabel htmlFor="middlename" className="text-xs">
+                <FieldLabel htmlFor="middlename">
                   Middle Name
                 </FieldLabel>
                 <Input
@@ -156,7 +156,7 @@ export default function UserProfileSetting() {
               </Field>
 
               <Field data-invalid={!!form.formState.errors.lastname}>
-                <FieldLabel htmlFor="lastname" className="text-xs" required>
+                <FieldLabel htmlFor="lastname" required>
                   Last Name
                 </FieldLabel>
                 <Input
@@ -172,7 +172,7 @@ export default function UserProfileSetting() {
               </Field>
 
               <Field data-invalid={!!form.formState.errors.alias_name}>
-                <FieldLabel htmlFor="alias_name" className="text-xs" required>
+                <FieldLabel htmlFor="alias_name" required>
                   Alias
                 </FieldLabel>
                 <Input
@@ -188,7 +188,7 @@ export default function UserProfileSetting() {
               </Field>
 
               <Field data-invalid={!!form.formState.errors.telephone}>
-                <FieldLabel htmlFor="telephone" className="text-xs">
+                <FieldLabel htmlFor="telephone">
                   Telephone
                 </FieldLabel>
                 <Input

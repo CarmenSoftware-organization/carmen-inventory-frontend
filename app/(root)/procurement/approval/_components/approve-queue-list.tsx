@@ -154,7 +154,7 @@ export default function ApprovalQueueList({
       table={table}
       recordCount={totalRecords}
       isLoading={isLoading}
-      tableClassNames={{ base: "text-xs" }}
+      tableClassNames={{ base: "text-sm" }}
       emptyMessage={
         <EmptyComponent
           icon={Clock}

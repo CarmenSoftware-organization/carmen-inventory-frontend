@@ -156,7 +156,7 @@ export function InventoryAdjustmentForm({
           <FieldGroup className="gap-3">
             <div className="grid grid-cols-2 gap-3">
               <Field data-invalid={!!form.formState.errors.doc_status}>
-                <FieldLabel className="text-xs">Status</FieldLabel>
+                <FieldLabel>Status</FieldLabel>
                 <Controller
                   control={form.control}
                   name="doc_status"
@@ -185,7 +185,7 @@ export function InventoryAdjustmentForm({
             </div>
 
             <Field>
-              <FieldLabel htmlFor="inv-adj-description" className="text-xs">Description</FieldLabel>
+              <FieldLabel htmlFor="inv-adj-description">Description</FieldLabel>
               <Textarea
                 id="inv-adj-description"
                 placeholder="Optional description"
@@ -197,7 +197,7 @@ export function InventoryAdjustmentForm({
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="inv-adj-note" className="text-xs">Note</FieldLabel>
+              <FieldLabel htmlFor="inv-adj-note">Note</FieldLabel>
               <Textarea
                 id="inv-adj-note"
                 placeholder="Optional note"

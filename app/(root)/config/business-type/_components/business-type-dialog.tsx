@@ -108,7 +108,7 @@ export function BusinessTypeDialog({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
           <FieldGroup className="gap-3">
             <Field data-invalid={!!form.formState.errors.name}>
-              <FieldLabel htmlFor="business-type-name" className="text-xs">
+              <FieldLabel htmlFor="business-type-name">
                 Name
               </FieldLabel>
               <Input
@@ -135,7 +135,7 @@ export function BusinessTypeDialog({
                   />
                 )}
               />
-              <FieldLabel htmlFor="business-type-is-active" className="text-xs">
+              <FieldLabel htmlFor="business-type-is-active">
                 Active
               </FieldLabel>
             </Field>

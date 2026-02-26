@@ -255,7 +255,7 @@ export function GrnExtraCostFields({
       {/* Extra Cost Header */}
       <div className="grid max-w-2xl grid-cols-3 gap-3">
         <Field>
-          <FieldLabel className="text-xs">Name</FieldLabel>
+          <FieldLabel>Name</FieldLabel>
           <Input
             className="h-9 text-sm"
             disabled={disabled}
@@ -264,7 +264,7 @@ export function GrnExtraCostFields({
         </Field>
 
         <Field>
-          <FieldLabel className="text-xs">Allocation Type</FieldLabel>
+          <FieldLabel>Allocation Type</FieldLabel>
           <Controller
             control={form.control}
             name="allocate_extracost_type"
@@ -290,7 +290,7 @@ export function GrnExtraCostFields({
         </Field>
 
         <Field>
-          <FieldLabel className="text-xs">Note</FieldLabel>
+          <FieldLabel>Note</FieldLabel>
           <Input
             className="h-9 text-sm"
             disabled={disabled}
@@ -302,7 +302,7 @@ export function GrnExtraCostFields({
       {/* Extra Cost Details Table */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold">Extra Cost Details</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">Extra Cost Details</h2>
           {!disabled && (
             <Button
               type="button"

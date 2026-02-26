@@ -230,10 +230,10 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
       >
         {/* General Information */}
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold">General Information</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">General Information</h2>
           <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!form.formState.errors.code}>
-              <FieldLabel htmlFor="equipment-code" className="text-xs" required>
+              <FieldLabel htmlFor="equipment-code" required>
                 Code
               </FieldLabel>
               <Input
@@ -248,7 +248,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
             </Field>
 
             <Field data-invalid={!!form.formState.errors.name}>
-              <FieldLabel htmlFor="equipment-name" className="text-xs" required>
+              <FieldLabel htmlFor="equipment-name" required>
                 Name
               </FieldLabel>
               <Input
@@ -263,7 +263,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
             </Field>
 
             <Field>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel required>
                 Category
               </FieldLabel>
               <Controller
@@ -280,7 +280,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="equipment-station" className="text-xs">
+              <FieldLabel htmlFor="equipment-station">
                 Station
               </FieldLabel>
               <Input
@@ -294,7 +294,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
             </Field>
 
             <Field className="col-span-2">
-              <FieldLabel htmlFor="equipment-description" className="text-xs">
+              <FieldLabel htmlFor="equipment-description">
                 Description
               </FieldLabel>
               <Textarea
@@ -312,10 +312,10 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
 
         {/* Equipment Details */}
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold">Equipment Details</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">Equipment Details</h2>
           <div className="grid grid-cols-2 gap-3">
             <Field>
-              <FieldLabel htmlFor="equipment-brand" className="text-xs">
+              <FieldLabel htmlFor="equipment-brand">
                 Brand
               </FieldLabel>
               <Input
@@ -329,7 +329,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="equipment-model" className="text-xs">
+              <FieldLabel htmlFor="equipment-model">
                 Model
               </FieldLabel>
               <Input
@@ -343,7 +343,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="equipment-serial-no" className="text-xs">
+              <FieldLabel htmlFor="equipment-serial-no">
                 Serial No.
               </FieldLabel>
               <Input
@@ -357,7 +357,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="equipment-capacity" className="text-xs">
+              <FieldLabel htmlFor="equipment-capacity">
                 Capacity
               </FieldLabel>
               <Input
@@ -371,7 +371,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="equipment-power-rating" className="text-xs">
+              <FieldLabel htmlFor="equipment-power-rating">
                 Power Rating
               </FieldLabel>
               <Input
@@ -388,10 +388,10 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
 
         {/* Quantity & Settings */}
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold">Quantity & Settings</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">Quantity & Settings</h2>
           <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!form.formState.errors.available_qty}>
-              <FieldLabel htmlFor="equipment-available-qty" className="text-xs">
+              <FieldLabel htmlFor="equipment-available-qty">
                 Available Qty
               </FieldLabel>
               <Input
@@ -408,7 +408,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
             </Field>
 
             <Field data-invalid={!!form.formState.errors.total_qty}>
-              <FieldLabel htmlFor="equipment-total-qty" className="text-xs">
+              <FieldLabel htmlFor="equipment-total-qty">
                 Total Qty
               </FieldLabel>
               <Input
@@ -425,7 +425,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
             </Field>
 
             <Field data-invalid={!!form.formState.errors.usage_count}>
-              <FieldLabel htmlFor="equipment-usage-count" className="text-xs">
+              <FieldLabel htmlFor="equipment-usage-count">
                 Usage Count
               </FieldLabel>
               <Input
@@ -444,7 +444,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
             <Field data-invalid={!!form.formState.errors.average_usage_time}>
               <FieldLabel
                 htmlFor="equipment-average-usage-time"
-                className="text-xs"
+               
               >
                 Avg. Usage Time (min)
               </FieldLabel>
@@ -465,12 +465,12 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
 
         {/* Instructions */}
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold">Instructions</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">Instructions</h2>
           <div className="grid grid-cols-2 gap-3">
             <Field>
               <FieldLabel
                 htmlFor="equipment-operation-instructions"
-                className="text-xs"
+               
               >
                 Operation Instructions
               </FieldLabel>
@@ -486,7 +486,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="equipment-safety-notes" className="text-xs">
+              <FieldLabel htmlFor="equipment-safety-notes">
                 Safety Notes
               </FieldLabel>
               <Textarea
@@ -503,7 +503,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
             <Field>
               <FieldLabel
                 htmlFor="equipment-cleaning-instructions"
-                className="text-xs"
+               
               >
                 Cleaning Instructions
               </FieldLabel>
@@ -522,12 +522,12 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
 
         {/* Maintenance */}
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold">Maintenance</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">Maintenance</h2>
           <div className="grid grid-cols-2 gap-3">
             <Field className="col-span-2">
               <FieldLabel
                 htmlFor="equipment-maintenance-schedule"
-                className="text-xs"
+               
               >
                 Maintenance Schedule
               </FieldLabel>
@@ -543,7 +543,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
             </Field>
 
             <Field>
-              <FieldLabel className="text-xs">Last Maintenance Date</FieldLabel>
+              <FieldLabel>Last Maintenance Date</FieldLabel>
               <Controller
                 control={form.control}
                 name="last_maintenance_date"
@@ -560,7 +560,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
             </Field>
 
             <Field>
-              <FieldLabel className="text-xs">Next Maintenance Date</FieldLabel>
+              <FieldLabel>Next Maintenance Date</FieldLabel>
               <Controller
                 control={form.control}
                 name="next_maintenance_date"
@@ -580,10 +580,10 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
 
         {/* Additional */}
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold">Additional</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">Additional</h2>
           <FieldGroup className="gap-3">
             <Field>
-              <FieldLabel htmlFor="equipment-note" className="text-xs">
+              <FieldLabel htmlFor="equipment-note">
                 Note
               </FieldLabel>
               <Textarea
@@ -611,7 +611,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
                     />
                   )}
                 />
-                <FieldLabel htmlFor="equipment-is-active" className="text-xs">
+                <FieldLabel htmlFor="equipment-is-active">
                   Active
                 </FieldLabel>
               </Field>
@@ -629,7 +629,7 @@ export function EquipmentForm({ equipment }: EquipmentFormProps) {
                     />
                   )}
                 />
-                <FieldLabel htmlFor="equipment-is-poolable" className="text-xs">
+                <FieldLabel htmlFor="equipment-is-poolable">
                   Poolable
                 </FieldLabel>
               </Field>

@@ -24,7 +24,7 @@ export function ScGeneralFields({ form, disabled }: ScGeneralFieldsProps) {
   return (
     <div className="max-w-2xl space-y-4">
       <Field data-invalid={!!form.formState.errors.method}>
-        <FieldLabel className="text-xs" required>
+        <FieldLabel required>
           Method
         </FieldLabel>
         <Controller
@@ -39,13 +39,13 @@ export function ScGeneralFields({ form, disabled }: ScGeneralFieldsProps) {
             >
               <div className="flex items-center gap-1.5">
                 <RadioGroupItem value="random" id="sc-method-random" />
-                <label htmlFor="sc-method-random" className="text-xs">
+                <label htmlFor="sc-method-random">
                   Random
                 </label>
               </div>
               <div className="flex items-center gap-1.5">
                 <RadioGroupItem value="manual" id="sc-method-manual" />
-                <label htmlFor="sc-method-manual" className="text-xs">
+                <label htmlFor="sc-method-manual">
                   Manual
                 </label>
               </div>
@@ -56,7 +56,7 @@ export function ScGeneralFields({ form, disabled }: ScGeneralFieldsProps) {
       </Field>
       <FieldGroup className="gap-3 grid grid-cols-2">
         <Field data-invalid={!!form.formState.errors.location_id}>
-          <FieldLabel htmlFor="sc-location" className="text-xs" required>
+          <FieldLabel htmlFor="sc-location" required>
             Location
           </FieldLabel>
           <Controller
@@ -78,7 +78,7 @@ export function ScGeneralFields({ form, disabled }: ScGeneralFieldsProps) {
             <Field data-invalid={!!form.formState.errors.product_count}>
               <FieldLabel
                 htmlFor="sc-product-count"
-                className="text-xs"
+               
                 required
               >
                 Product Count
@@ -99,7 +99,7 @@ export function ScGeneralFields({ form, disabled }: ScGeneralFieldsProps) {
         )}
       </FieldGroup>
       <Field data-invalid={!!form.formState.errors.description}>
-        <FieldLabel htmlFor="sc-description" className="text-xs">
+        <FieldLabel htmlFor="sc-description">
           Description
         </FieldLabel>
         <Textarea

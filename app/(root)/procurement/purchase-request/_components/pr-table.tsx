@@ -48,7 +48,7 @@ export function usePurchaseRequestTable({
           {row.getValue("pr_no")}
         </CellAction>
       ),
-      size: 160,
+      size: 200,
       meta: { skeleton: columnSkeletons.text },
     },
     {

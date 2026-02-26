@@ -46,7 +46,7 @@ export function RecipeGeneralFields({
       {/* ── Recipe Identity ── */}
       <section className="space-y-3">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold">Recipe Identity</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">Recipe Identity</h2>
           {statusValue && (
             <Badge
               variant={
@@ -70,7 +70,7 @@ export function RecipeGeneralFields({
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-3 gap-2">
             <Field data-invalid={!!form.formState.errors.code}>
-              <FieldLabel htmlFor="recipe-code" className="text-xs" required>
+              <FieldLabel htmlFor="recipe-code" required>
                 Code
               </FieldLabel>
               <Input
@@ -90,7 +90,7 @@ export function RecipeGeneralFields({
               data-invalid={!!form.formState.errors.name}
               className="col-span-2"
             >
-              <FieldLabel htmlFor="recipe-name" className="text-xs" required>
+              <FieldLabel htmlFor="recipe-name" required>
                 Name
               </FieldLabel>
               <Input
@@ -107,7 +107,7 @@ export function RecipeGeneralFields({
             </Field>
 
             <Field data-invalid={!!form.formState.errors.status}>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel required>
                 Status
               </FieldLabel>
               <Controller
@@ -138,7 +138,7 @@ export function RecipeGeneralFields({
             </Field>
 
             <Field data-invalid={!!form.formState.errors.difficulty}>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel required>
                 Difficulty
               </FieldLabel>
               <Controller
@@ -180,7 +180,7 @@ export function RecipeGeneralFields({
                   />
                 )}
               />
-              <FieldLabel className="text-xs">Active</FieldLabel>
+              <FieldLabel>Active</FieldLabel>
             </Field>
           </div>
         </FieldGroup>
@@ -188,11 +188,11 @@ export function RecipeGeneralFields({
 
       {/* ── Classification ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">Classification</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Classification</h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-2">
             <Field data-invalid={!!form.formState.errors.cuisine_id}>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel required>
                 Cuisine
               </FieldLabel>
               <Controller
@@ -207,7 +207,7 @@ export function RecipeGeneralFields({
                   />
                 )}
               />
-              <FieldDescription className="text-xs">
+              <FieldDescription>
                 The culinary tradition this recipe belongs to
               </FieldDescription>
               <FieldError>
@@ -216,7 +216,7 @@ export function RecipeGeneralFields({
             </Field>
 
             <Field data-invalid={!!form.formState.errors.category_id}>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel required>
                 Category
               </FieldLabel>
               <Controller
@@ -231,7 +231,7 @@ export function RecipeGeneralFields({
                   />
                 )}
               />
-              <FieldDescription className="text-xs">
+              <FieldDescription>
                 Menu section or recipe grouping
               </FieldDescription>
               <FieldError>
@@ -245,7 +245,7 @@ export function RecipeGeneralFields({
       {/* ── Time & Yield ── */}
       <section className="space-y-3">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold">Time & Yield</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">Time & Yield</h2>
           {totalTime > 0 && (
             <Badge variant="info-light" size="sm">
               Total: {totalTime} min
@@ -257,7 +257,7 @@ export function RecipeGeneralFields({
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-2">
             <Field>
-              <FieldLabel htmlFor="recipe-prep-time" className="text-xs">
+              <FieldLabel htmlFor="recipe-prep-time">
                 Prep Time
               </FieldLabel>
               <div className="relative">
@@ -273,13 +273,13 @@ export function RecipeGeneralFields({
                   min
                 </span>
               </div>
-              <FieldDescription className="text-xs">
+              <FieldDescription>
                 Time before cooking (washing, cutting, marinating)
               </FieldDescription>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="recipe-cook-time" className="text-xs">
+              <FieldLabel htmlFor="recipe-cook-time">
                 Cook Time
               </FieldLabel>
               <div className="relative">
@@ -295,13 +295,13 @@ export function RecipeGeneralFields({
                   min
                 </span>
               </div>
-              <FieldDescription className="text-xs">
+              <FieldDescription>
                 Active cooking or baking time
               </FieldDescription>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="recipe-base-yield" className="text-xs">
+              <FieldLabel htmlFor="recipe-base-yield">
                 Base Yield
               </FieldLabel>
               <Input
@@ -313,13 +313,13 @@ export function RecipeGeneralFields({
                 disabled={isDisabled}
                 {...form.register("base_yield")}
               />
-              <FieldDescription className="text-xs">
+              <FieldDescription>
                 Number of portions or units this recipe produces
               </FieldDescription>
             </Field>
 
             <Field data-invalid={!!form.formState.errors.base_yield_unit}>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel required>
                 Yield Unit
               </FieldLabel>
               <Controller
@@ -338,7 +338,7 @@ export function RecipeGeneralFields({
               <FieldError>
                 {form.formState.errors.base_yield_unit?.message}
               </FieldError>
-              <FieldDescription className="text-xs">
+              <FieldDescription>
                 Unit of measure for the yield quantity
               </FieldDescription>
             </Field>
@@ -348,10 +348,10 @@ export function RecipeGeneralFields({
 
       {/* ── Additional Information ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">Additional Information</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Additional Information</h2>
         <FieldGroup className="gap-3">
           <Field>
-            <FieldLabel htmlFor="recipe-description" className="text-xs">
+            <FieldLabel htmlFor="recipe-description">
               Description
             </FieldLabel>
             <Textarea
@@ -363,13 +363,13 @@ export function RecipeGeneralFields({
               maxLength={256}
               {...form.register("description")}
             />
-            <FieldDescription className="text-xs">
+            <FieldDescription>
               Public-facing summary shown in menus and catalogs
             </FieldDescription>
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="recipe-note" className="text-xs">
+            <FieldLabel htmlFor="recipe-note">
               Internal Note
             </FieldLabel>
             <Textarea
@@ -381,7 +381,7 @@ export function RecipeGeneralFields({
               maxLength={256}
               {...form.register("note")}
             />
-            <FieldDescription className="text-xs">
+            <FieldDescription>
               Only visible to staff, not shown in public views
             </FieldDescription>
           </Field>

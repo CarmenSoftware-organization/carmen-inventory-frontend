@@ -182,11 +182,11 @@ export default function ProductInfoTab({
     <div className="max-w-2xl space-y-6">
       {/* ── Pricing & Identification ── */}
       <section className="space-y-2">
-        <h2 className="text-sm font-semibold">Pricing & Identification</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Pricing & Identification</h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-3 gap-3">
             <Field>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel required>
                 Price
               </FieldLabel>
               <Input
@@ -203,7 +203,7 @@ export default function ProductInfoTab({
             <Field>
               <FieldLabel
                 htmlFor="product-barcode"
-                className="text-xs"
+               
                 required
               >
                 Barcode
@@ -218,7 +218,7 @@ export default function ProductInfoTab({
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="product-sku" className="text-xs" required>
+              <FieldLabel htmlFor="product-sku" required>
                 SKU
               </FieldLabel>
               <Input
@@ -235,11 +235,11 @@ export default function ProductInfoTab({
 
       {/* ── Quality Control ── */}
       <section className="space-y-2">
-        <h2 className="text-sm font-semibold">Quality Control</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Quality Control</h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-3">
             <Field>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel required>
                 Price Deviation Limit (%)
               </FieldLabel>
               <div className="relative">
@@ -260,7 +260,7 @@ export default function ProductInfoTab({
             </Field>
 
             <Field>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel required>
                 Qty Deviation Limit (%)
               </FieldLabel>
               <div className="relative">
@@ -285,7 +285,7 @@ export default function ProductInfoTab({
 
       {/* ── Product Flags ── */}
       <section className="space-y-2">
-        <h2 className="text-sm font-semibold">Product Flags</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Product Flags</h2>
         <div className="flex items-center gap-6">
           <Field orientation="horizontal">
             <Controller
@@ -300,7 +300,7 @@ export default function ProductInfoTab({
                 />
               )}
             />
-            <FieldLabel htmlFor="product-is-used-in-recipe" className="text-xs">
+            <FieldLabel htmlFor="product-is-used-in-recipe">
               Used in Recipe
             </FieldLabel>
           </Field>
@@ -318,7 +318,7 @@ export default function ProductInfoTab({
                 />
               )}
             />
-            <FieldLabel htmlFor="product-is-sold-directly" className="text-xs">
+            <FieldLabel htmlFor="product-is-sold-directly">
               Sold Directly
             </FieldLabel>
           </Field>
@@ -328,7 +328,7 @@ export default function ProductInfoTab({
       {/* ── Additional Info ── */}
       <section className="space-y-2">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold">
+          <h2 className="text-sm font-semibold border-b pb-2">
             Additional Info{" "}
             <span className="text-xs font-normal text-muted-foreground">
               ({infoFields.length})

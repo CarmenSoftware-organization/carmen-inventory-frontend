@@ -113,7 +113,7 @@ export default function ReportComponent() {
         recordCount={filteredReports.length}
         isLoading={false}
         tableLayout={{ dense: true, headerSeparator: true }}
-        tableClassNames={{ base: "text-xs" }}
+        tableClassNames={{ base: "text-sm" }}
       >
         <DataGridContainer>
           <DataGridTable />

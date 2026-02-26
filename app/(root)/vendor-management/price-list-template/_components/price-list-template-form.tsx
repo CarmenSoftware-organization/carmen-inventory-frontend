@@ -226,7 +226,7 @@ export function PriceListTemplateForm({
           <TabsContent value="general">
             <FieldGroup className="max-w-2xl gap-3 pt-4">
               <Field data-invalid={!!form.formState.errors.name}>
-                <FieldLabel className="text-xs">Name</FieldLabel>
+                <FieldLabel>Name</FieldLabel>
                 <Input
                   placeholder="e.g. Fresh Produce Template"
                   className="h-8 text-sm"
@@ -238,7 +238,7 @@ export function PriceListTemplateForm({
               </Field>
 
               <Field>
-                <FieldLabel className="text-xs">Description</FieldLabel>
+                <FieldLabel>Description</FieldLabel>
                 <Textarea
                   placeholder="Optional"
                   className="text-sm"
@@ -249,7 +249,7 @@ export function PriceListTemplateForm({
               </Field>
 
               <Field data-invalid={!!form.formState.errors.status}>
-                <FieldLabel className="text-xs">Status</FieldLabel>
+                <FieldLabel>Status</FieldLabel>
                 <Controller
                   control={form.control}
                   name="status"
@@ -275,7 +275,7 @@ export function PriceListTemplateForm({
               </Field>
 
               <Field data-invalid={!!form.formState.errors.currency_id}>
-                <FieldLabel className="text-xs">Currency</FieldLabel>
+                <FieldLabel>Currency</FieldLabel>
                 <Controller
                   control={form.control}
                   name="currency_id"
@@ -304,7 +304,7 @@ export function PriceListTemplateForm({
               </Field>
 
               <Field>
-                <FieldLabel className="text-xs">
+                <FieldLabel>
                   Validity Period (days)
                 </FieldLabel>
                 <Input
@@ -318,7 +318,7 @@ export function PriceListTemplateForm({
               </Field>
 
               <Field>
-                <FieldLabel className="text-xs">Vendor Instruction</FieldLabel>
+                <FieldLabel>Vendor Instruction</FieldLabel>
                 <Textarea
                   placeholder="Optional"
                   className="text-sm"
@@ -450,7 +450,7 @@ const ProductRow = ({
       <Field
         data-invalid={!!form.formState.errors.products?.[index]?.product_id}
       >
-        <FieldLabel className="text-xs">Product</FieldLabel>
+        <FieldLabel>Product</FieldLabel>
         <Controller
           control={form.control}
           name={`products.${index}.product_id`}
@@ -530,7 +530,7 @@ const ProductRow = ({
                         ?.unit_id
                     }
                   >
-                    <FieldLabel className="text-xs">Unit</FieldLabel>
+                    <FieldLabel>Unit</FieldLabel>
                     <Controller
                       control={form.control}
                       name={`products.${index}.moq.${moqIndex}.unit_id`}
@@ -564,7 +564,7 @@ const ProductRow = ({
                   </Field>
 
                   <Field>
-                    <FieldLabel className="text-xs">Qty</FieldLabel>
+                    <FieldLabel>Qty</FieldLabel>
                     <Input
                       type="number"
                       min={0}
@@ -577,7 +577,7 @@ const ProductRow = ({
                   </Field>
 
                   <Field className="col-span-2">
-                    <FieldLabel className="text-xs">Note</FieldLabel>
+                    <FieldLabel>Note</FieldLabel>
                     <Input
                       placeholder="Optional"
                       className="h-8 text-sm"

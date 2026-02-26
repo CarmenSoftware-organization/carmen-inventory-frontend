@@ -100,7 +100,7 @@ const AddressRow = ({
           }
           className="flex-1"
         >
-          <FieldLabel className="text-xs">Address Type</FieldLabel>
+          <FieldLabel>Address Type</FieldLabel>
           <Controller
             control={form.control}
             name={`vendor_address.${index}.address_type`}
@@ -140,7 +140,7 @@ const AddressRow = ({
 
       <div className="grid grid-cols-2 gap-2">
         <Field className="col-span-2">
-          <FieldLabel className="text-xs">Address Line 1</FieldLabel>
+          <FieldLabel>Address Line 1</FieldLabel>
           <Input
             placeholder="Address line 1"
             className="h-8 text-sm"
@@ -150,7 +150,7 @@ const AddressRow = ({
         </Field>
 
         <Field className="col-span-2">
-          <FieldLabel className="text-xs">Address Line 2</FieldLabel>
+          <FieldLabel>Address Line 2</FieldLabel>
           <Input
             placeholder="Address line 2"
             className="h-8 text-sm"
@@ -160,7 +160,7 @@ const AddressRow = ({
         </Field>
 
         <Field>
-          <FieldLabel className="text-xs">District</FieldLabel>
+          <FieldLabel>District</FieldLabel>
           <Input
             placeholder="District"
             className="h-8 text-sm"
@@ -170,7 +170,7 @@ const AddressRow = ({
         </Field>
 
         <Field>
-          <FieldLabel className="text-xs">City</FieldLabel>
+          <FieldLabel>City</FieldLabel>
           <Input
             placeholder="City"
             className="h-8 text-sm"
@@ -180,7 +180,7 @@ const AddressRow = ({
         </Field>
 
         <Field>
-          <FieldLabel className="text-xs">Province</FieldLabel>
+          <FieldLabel>Province</FieldLabel>
           <Input
             placeholder="Province"
             className="h-8 text-sm"
@@ -190,7 +190,7 @@ const AddressRow = ({
         </Field>
 
         <Field>
-          <FieldLabel className="text-xs">Postal Code</FieldLabel>
+          <FieldLabel>Postal Code</FieldLabel>
           <Input
             placeholder="Postal code"
             className="h-8 text-sm"
@@ -200,7 +200,7 @@ const AddressRow = ({
         </Field>
 
         <Field className="col-span-2">
-          <FieldLabel className="text-xs">Country</FieldLabel>
+          <FieldLabel>Country</FieldLabel>
           <Input
             placeholder="Country"
             className="h-8 text-sm"

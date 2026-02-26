@@ -31,11 +31,11 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
     <div className="max-w-3xl space-y-3">
       {/* ── Credit Note Details ── */}
       <section className="space-y-3">
-        <h2 className="text-xs font-semibold">Credit Note Details</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Credit Note Details</h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!form.formState.errors.credit_note_type}>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel required>
                 Credit Note Type
               </FieldLabel>
               <Controller
@@ -47,14 +47,14 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
                     onValueChange={field.onChange}
                     disabled={disabled}
                   >
-                    <SelectTrigger className="text-xs">
+                    <SelectTrigger>
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="quantity_return" className="text-xs">
+                      <SelectItem value="quantity_return">
                         Quantity Return
                       </SelectItem>
-                      <SelectItem value="amount_discount" className="text-xs">
+                      <SelectItem value="amount_discount">
                         Amount Discount
                       </SelectItem>
                     </SelectContent>
@@ -67,7 +67,7 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
             </Field>
 
             <Field data-invalid={!!form.formState.errors.grn_id}>
-              <FieldLabel htmlFor="cn-grn-id" className="text-xs" required>GRN</FieldLabel>
+              <FieldLabel htmlFor="cn-grn-id" required>GRN</FieldLabel>
               <Input
                 id="cn-grn-id"
                 placeholder="Goods Receive Note ID"
@@ -81,7 +81,7 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
 
           <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!form.formState.errors.credit_note_number}>
-              <FieldLabel htmlFor="cn-number" className="text-xs" required>
+              <FieldLabel htmlFor="cn-number" required>
                 Credit Note Number
               </FieldLabel>
               <Input
@@ -97,7 +97,7 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
             </Field>
 
             <Field data-invalid={!!form.formState.errors.credit_note_date}>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel required>
                 Credit Note Date
               </FieldLabel>
               <Controller
@@ -123,11 +123,11 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
 
       {/* ── Vendor & Currency ── */}
       <section className="space-y-3">
-        <h2 className="text-xs font-semibold">Vendor & Currency</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Vendor & Currency</h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!form.formState.errors.vendor_id}>
-              <FieldLabel className="text-xs" required>Vendor</FieldLabel>
+              <FieldLabel required>Vendor</FieldLabel>
               <Controller
                 control={form.control}
                 name="vendor_id"
@@ -145,7 +145,7 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="cn-reference-number" className="text-xs">Reference Number</FieldLabel>
+              <FieldLabel htmlFor="cn-reference-number">Reference Number</FieldLabel>
               <Input
                 id="cn-reference-number"
                 placeholder="e.g. REF-001"
@@ -158,7 +158,7 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
 
           <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!form.formState.errors.currency_code}>
-              <FieldLabel className="text-xs" required>Currency</FieldLabel>
+              <FieldLabel required>Currency</FieldLabel>
               <Controller
                 control={form.control}
                 name="currency_code"
@@ -176,7 +176,7 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="cn-exchange-rate" className="text-xs">Exchange Rate</FieldLabel>
+              <FieldLabel htmlFor="cn-exchange-rate">Exchange Rate</FieldLabel>
               <Input
                 id="cn-exchange-rate"
                 type="number"
@@ -194,11 +194,11 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
 
       {/* ── Amounts & Remarks ── */}
       <section className="space-y-3">
-        <h2 className="text-xs font-semibold">Amounts & Remarks</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Amounts & Remarks</h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-3">
             <Field>
-              <FieldLabel htmlFor="cn-tax-amount" className="text-xs">Tax Amount</FieldLabel>
+              <FieldLabel htmlFor="cn-tax-amount">Tax Amount</FieldLabel>
               <Input
                 id="cn-tax-amount"
                 type="number"
@@ -212,7 +212,7 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="cn-discount-amount" className="text-xs">Discount Amount</FieldLabel>
+              <FieldLabel htmlFor="cn-discount-amount">Discount Amount</FieldLabel>
               <Input
                 id="cn-discount-amount"
                 type="number"
@@ -228,7 +228,7 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
 
           <div className="grid grid-cols-2 gap-3">
             <Field>
-              <FieldLabel htmlFor="cn-description" className="text-xs">Description</FieldLabel>
+              <FieldLabel htmlFor="cn-description">Description</FieldLabel>
               <Textarea
                 id="cn-description"
                 placeholder="Optional"
@@ -241,7 +241,7 @@ export function CnGeneralFields({ form, disabled }: CnGeneralFieldsProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="cn-notes" className="text-xs">Notes</FieldLabel>
+              <FieldLabel htmlFor="cn-notes">Notes</FieldLabel>
               <Textarea
                 id="cn-notes"
                 placeholder="Optional"

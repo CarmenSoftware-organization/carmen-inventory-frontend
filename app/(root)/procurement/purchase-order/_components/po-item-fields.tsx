@@ -45,7 +45,7 @@ export function PoItemFields({ form, disabled }: PoItemFieldsProps) {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold">
+        <h2 className="text-sm font-semibold border-b pb-2">
           Items{" "}
           <span className="text-muted-foreground font-normal">
             ({itemFields.length})
@@ -62,7 +62,7 @@ export function PoItemFields({ form, disabled }: PoItemFieldsProps) {
         table={table}
         recordCount={itemFields.length}
         tableLayout={{ dense: true, headerSeparator: true }}
-        tableClassNames={{ base: "text-xs" }}
+        tableClassNames={{ base: "text-sm" }}
         emptyMessage={
           <EmptyComponent
             icon={BoxIcon}

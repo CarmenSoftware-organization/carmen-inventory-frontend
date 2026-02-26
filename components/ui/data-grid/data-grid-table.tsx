@@ -162,7 +162,7 @@ function DataGridTableHeadRowCell<TData>({
         isLastLeftPinned ? "left" : isFirstRightPinned ? "right" : undefined
       }
       className={cn(
-        "text-secondary-foreground/80 h-9 relative text-left align-middle font-normal rtl:text-right [&:has([role=checkbox])]:px-0",
+        "text-secondary-foreground h-9 relative text-left align-middle font-normal rtl:text-right [&:has([role=checkbox])]:px-0",
         headerCellSpacing,
         props.tableLayout?.cellBorder && "border-e",
         props.tableLayout?.headerSeparator &&
@@ -233,7 +233,7 @@ function DataGridTableBodyRowSkeleton({ children }: { children: ReactNode }) {
   return (
     <tr
       className={cn(
-        "hover:bg-muted/40 data-[state=selected]:bg-muted/50",
+        "hover:bg-muted/60 data-[state=selected]:bg-muted/50",
         props.onRowClick && "cursor-pointer",
         !props.tableLayout?.stripped &&
           props.tableLayout?.rowBorder &&
@@ -327,7 +327,7 @@ function DataGridTableBodyRow<TData>({
           : undefined
       }
       className={cn(
-        "hover:bg-muted/40 data-[state=selected]:bg-muted/50",
+        "hover:bg-muted/60 data-[state=selected]:bg-muted/50",
         props.onRowClick &&
           "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset",
         !props.tableLayout?.stripped &&

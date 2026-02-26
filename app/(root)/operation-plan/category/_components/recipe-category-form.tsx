@@ -229,11 +229,11 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
       >
         {/* ── General Information ── */}
         <section className="space-y-3">
-          <h2 className="text-sm font-semibold">General Information</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">General Information</h2>
           <FieldGroup className="gap-3">
             <div className="grid grid-cols-2 gap-2">
               <Field data-invalid={!!form.formState.errors.code}>
-                <FieldLabel htmlFor="rc-code" className="text-xs" required>
+                <FieldLabel htmlFor="rc-code" required>
                   Code
                 </FieldLabel>
                 <Input
@@ -248,7 +248,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
               </Field>
 
               <Field data-invalid={!!form.formState.errors.name}>
-                <FieldLabel htmlFor="rc-name" className="text-xs" required>
+                <FieldLabel htmlFor="rc-name" required>
                   Name
                 </FieldLabel>
                 <Input
@@ -263,7 +263,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
               </Field>
 
               <Field>
-                <FieldLabel className="text-xs">Parent Category</FieldLabel>
+                <FieldLabel>Parent Category</FieldLabel>
                 <Controller
                   control={form.control}
                   name="parent_id"
@@ -276,13 +276,13 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                     />
                   )}
                 />
-                <FieldDescription className="text-xs">
+                <FieldDescription>
                   Select a parent to create a sub-category
                 </FieldDescription>
               </Field>
 
               <Field data-invalid={!!form.formState.errors.level}>
-                <FieldLabel htmlFor="rc-level" className="text-xs" required>
+                <FieldLabel htmlFor="rc-level" required>
                   Level
                 </FieldLabel>
                 <Input
@@ -295,13 +295,13 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                   {...form.register("level")}
                 />
                 <FieldError>{form.formState.errors.level?.message}</FieldError>
-                <FieldDescription className="text-xs">
+                <FieldDescription>
                   Hierarchy depth (1 = top-level)
                 </FieldDescription>
               </Field>
 
               <Field className="col-span-2">
-                <FieldLabel htmlFor="rc-description" className="text-xs">
+                <FieldLabel htmlFor="rc-description">
                   Description
                 </FieldLabel>
                 <Textarea
@@ -320,11 +320,11 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
 
         {/* ── Default Cost Settings ── */}
         <section className="space-y-3">
-          <h2 className="text-sm font-semibold">Default Cost Settings</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">Default Cost Settings</h2>
           <FieldGroup className="gap-3">
             <div className="grid grid-cols-3 gap-2">
               <Field>
-                <FieldLabel htmlFor="rc-cost-labor" className="text-xs">
+                <FieldLabel htmlFor="rc-cost-labor">
                   Labor Cost Percentage
                 </FieldLabel>
                 <div className="relative">
@@ -345,7 +345,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
               </Field>
 
               <Field>
-                <FieldLabel htmlFor="rc-cost-overhead" className="text-xs">
+                <FieldLabel htmlFor="rc-cost-overhead">
                   Overhead Percentage
                 </FieldLabel>
                 <div className="relative">
@@ -366,7 +366,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
               </Field>
 
               <Field>
-                <FieldLabel htmlFor="rc-cost-food" className="text-xs">
+                <FieldLabel htmlFor="rc-cost-food">
                   Target Food Cost Percentage
                 </FieldLabel>
                 <div className="relative">
@@ -391,11 +391,11 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
 
         {/* ── Default Profit Margins ── */}
         <section className="space-y-3">
-          <h2 className="text-sm font-semibold">Default Profit Margins</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">Default Profit Margins</h2>
           <FieldGroup className="gap-3">
             <div className="grid grid-cols-2 gap-2">
               <Field>
-                <FieldLabel htmlFor="rc-margin-min" className="text-xs">
+                <FieldLabel htmlFor="rc-margin-min">
                   Minimum Profit Margin
                 </FieldLabel>
                 <div className="relative">
@@ -413,13 +413,13 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                     %
                   </span>
                 </div>
-                <FieldDescription className="text-xs">
+                <FieldDescription>
                   Minimum acceptable profit margin
                 </FieldDescription>
               </Field>
 
               <Field>
-                <FieldLabel htmlFor="rc-margin-target" className="text-xs">
+                <FieldLabel htmlFor="rc-margin-target">
                   Target Profit Margin
                 </FieldLabel>
                 <div className="relative">
@@ -437,7 +437,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                     %
                   </span>
                 </div>
-                <FieldDescription className="text-xs">
+                <FieldDescription>
                   Ideal profit margin to target
                 </FieldDescription>
               </Field>

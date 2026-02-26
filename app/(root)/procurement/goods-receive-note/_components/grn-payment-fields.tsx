@@ -19,10 +19,10 @@ export function GrnPaymentFields({ form, disabled }: GrnPaymentFieldsProps) {
     <div className="max-w-3xl space-y-6 pt-4">
       {/* Currency & Payment */}
       <div className="space-y-3">
-        <h2 className="text-sm font-semibold">Currency & Payment</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Currency & Payment</h2>
         <div className="grid grid-cols-3 gap-3">
           <Field>
-            <FieldLabel className="text-xs">Currency</FieldLabel>
+            <FieldLabel>Currency</FieldLabel>
             <Controller
               control={form.control}
               name="currency_id"
@@ -37,7 +37,7 @@ export function GrnPaymentFields({ form, disabled }: GrnPaymentFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">Exchange Rate</FieldLabel>
+            <FieldLabel>Exchange Rate</FieldLabel>
             <Input
               type="number"
               step="0.0001"
@@ -48,7 +48,7 @@ export function GrnPaymentFields({ form, disabled }: GrnPaymentFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">Exchange Rate Date</FieldLabel>
+            <FieldLabel>Exchange Rate Date</FieldLabel>
             <Controller
               control={form.control}
               name="exchange_rate_date"
@@ -65,7 +65,7 @@ export function GrnPaymentFields({ form, disabled }: GrnPaymentFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">Credit Term</FieldLabel>
+            <FieldLabel>Credit Term</FieldLabel>
             <Controller
               control={form.control}
               name="credit_term_id"
@@ -80,7 +80,7 @@ export function GrnPaymentFields({ form, disabled }: GrnPaymentFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">Credit Term Days</FieldLabel>
+            <FieldLabel>Credit Term Days</FieldLabel>
             <Input
               type="number"
               min={0}
@@ -91,7 +91,7 @@ export function GrnPaymentFields({ form, disabled }: GrnPaymentFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">Payment Due Date</FieldLabel>
+            <FieldLabel>Payment Due Date</FieldLabel>
             <Controller
               control={form.control}
               name="payment_due_date"
@@ -111,10 +111,10 @@ export function GrnPaymentFields({ form, disabled }: GrnPaymentFieldsProps) {
 
       {/* Discount */}
       <div className="space-y-3">
-        <h2 className="text-sm font-semibold">Discount</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Discount</h2>
         <div className="grid grid-cols-4 gap-3">
           <Field>
-            <FieldLabel className="text-xs">Discount Rate</FieldLabel>
+            <FieldLabel>Discount Rate</FieldLabel>
             <div className="relative">
               <Input
                 type="number"
@@ -130,7 +130,7 @@ export function GrnPaymentFields({ form, disabled }: GrnPaymentFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">Discount Amount</FieldLabel>
+            <FieldLabel>Discount Amount</FieldLabel>
             <Input
               type="number"
               step="0.01"
@@ -141,7 +141,7 @@ export function GrnPaymentFields({ form, disabled }: GrnPaymentFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel className="text-xs">Base Discount Amount</FieldLabel>
+            <FieldLabel>Base Discount Amount</FieldLabel>
             <Input
               type="number"
               step="0.01"
@@ -163,7 +163,7 @@ export function GrnPaymentFields({ form, disabled }: GrnPaymentFieldsProps) {
                 />
               )}
             />
-            <FieldLabel className="text-xs">Discount Adjustment</FieldLabel>
+            <FieldLabel>Discount Adjustment</FieldLabel>
           </Field>
         </div>
       </div>

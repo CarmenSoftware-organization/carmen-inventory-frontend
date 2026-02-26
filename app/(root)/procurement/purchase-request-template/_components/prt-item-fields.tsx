@@ -54,7 +54,7 @@ export function PrtItemFields({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold">
+        <h2 className="text-sm font-semibold border-b pb-2">
           Items
           {itemFields.length > 0 && (
             <span className="ml-1.5 text-xs font-normal text-muted-foreground">

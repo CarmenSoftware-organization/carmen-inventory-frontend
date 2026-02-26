@@ -31,7 +31,7 @@ export function PrGeneralFields({
       <FieldGroup className="gap-3">
         <div className="grid grid-cols-2 gap-3">
           <Field>
-            <FieldLabel className="text-xs" required>
+            <FieldLabel required>
               Workflow
             </FieldLabel>
             <Controller
@@ -50,7 +50,7 @@ export function PrGeneralFields({
         </div>
 
         <Field>
-          <FieldLabel htmlFor="pr-description" className="text-xs">
+          <FieldLabel htmlFor="pr-description">
             Description
           </FieldLabel>
           <Textarea
@@ -76,7 +76,7 @@ const InfoCell = ({
   readonly value: string;
 }) => {
   return (
-    <div className="text-xs">
+    <div>
       <span className="text-muted-foreground">{label}</span>
       <p className="font-medium truncate">{value || "—"}</p>
     </div>

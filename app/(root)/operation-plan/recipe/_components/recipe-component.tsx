@@ -86,7 +86,7 @@ export default function RecipeComponent() {
         recordCount={totalRecords}
         isLoading={isLoading}
         tableLayout={{ dense: true, headerSeparator: true }}
-        tableClassNames={{ base: "text-xs" }}
+        tableClassNames={{ base: "text-sm" }}
         emptyMessage={
           <EmptyComponent
             icon={BookOpen}

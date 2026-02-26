@@ -14,7 +14,7 @@ export default function DisplayTemplate({
   children,
 }: DisplayTemplateProps) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <div>
         <h1 className="text-lg font-semibold">{title}</h1>
         {description && (

@@ -48,7 +48,7 @@ export function RequestPriceListGeneralFields({ form, disabled }: Props) {
   return (
     <FieldGroup className="max-w-2xl gap-3 pt-4">
       <Field data-invalid={!!form.formState.errors.name} className="col-span-2">
-        <FieldLabel htmlFor="rpl-name" className="text-xs">Name</FieldLabel>
+        <FieldLabel htmlFor="rpl-name">Name</FieldLabel>
         <Controller
           control={form.control}
           name="name"
@@ -67,7 +67,7 @@ export function RequestPriceListGeneralFields({ form, disabled }: Props) {
 
       <div className="grid grid-cols-2 gap-3">
         <Field data-invalid={!!form.formState.errors.status}>
-          <FieldLabel className="text-xs">Status</FieldLabel>
+          <FieldLabel>Status</FieldLabel>
           <Controller
             control={form.control}
             name="status"
@@ -93,7 +93,7 @@ export function RequestPriceListGeneralFields({ form, disabled }: Props) {
         </Field>
 
         <Field data-invalid={!!form.formState.errors.pricelist_template_id}>
-          <FieldLabel className="text-xs">Price List Template</FieldLabel>
+          <FieldLabel>Price List Template</FieldLabel>
           <Controller
             control={form.control}
             name="pricelist_template_id"
@@ -129,7 +129,7 @@ export function RequestPriceListGeneralFields({ form, disabled }: Props) {
         }
         className="col-span-2"
       >
-        <FieldLabel className="text-xs">Validity Period</FieldLabel>
+        <FieldLabel>Validity Period</FieldLabel>
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -213,7 +213,7 @@ export function RequestPriceListGeneralFields({ form, disabled }: Props) {
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="rpl-custom-message" className="text-xs">Custom Message</FieldLabel>
+        <FieldLabel htmlFor="rpl-custom-message">Custom Message</FieldLabel>
         <Textarea
           id="rpl-custom-message"
           placeholder="Optional message for vendors"

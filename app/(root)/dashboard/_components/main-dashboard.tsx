@@ -113,7 +113,7 @@ export default function MainDashboard() {
 
       {/* ── Summary ── */}
       <section className="space-y-2">
-        <h2 className="text-xs font-semibold">Procurement Overview</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Procurement Overview</h2>
         <div className="grid grid-cols-4 gap-3">
           {SUMMARY.map((item) => (
             <Link
@@ -150,7 +150,7 @@ export default function MainDashboard() {
         {/* Monthly Trend */}
         <section className="space-y-2">
           <div className="flex items-center gap-2">
-            <h2 className="text-xs font-semibold">Monthly Trend</h2>
+            <h2 className="text-sm font-semibold border-b pb-2">Monthly Trend</h2>
             <TrendingUp className="size-3 text-muted-foreground" />
           </div>
           <div className="rounded-md border p-3">
@@ -187,7 +187,7 @@ export default function MainDashboard() {
         {/* Recent Activity */}
         <section className="space-y-2">
           <div className="flex items-center gap-2">
-            <h2 className="text-xs font-semibold">Recent Activity</h2>
+            <h2 className="text-sm font-semibold border-b pb-2">Recent Activity</h2>
             <Clock className="size-3 text-muted-foreground" />
           </div>
           <div className="rounded-md border">
@@ -249,7 +249,7 @@ export default function MainDashboard() {
         {/* Pending Approvals */}
         <section className="space-y-2">
           <div className="flex items-center gap-2">
-            <h2 className="text-xs font-semibold">Pending My Approval</h2>
+            <h2 className="text-sm font-semibold border-b pb-2">Pending My Approval</h2>
             <AlertCircle className="size-3 text-muted-foreground" />
             <Badge variant="warning-light" size="xs">
               {PENDING_APPROVALS.length}
@@ -309,7 +309,7 @@ export default function MainDashboard() {
 
         {/* PO Status Donut */}
         <section className="space-y-2">
-          <h2 className="text-xs font-semibold">PO by Status</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">PO by Status</h2>
           <div className="rounded-md border p-3">
             <ChartContainer
               config={PO_STATUS_CONFIG}
@@ -357,7 +357,7 @@ export default function MainDashboard() {
         {/* Top Vendors */}
         <section className="space-y-2">
           <div className="flex items-center gap-2">
-            <h2 className="text-xs font-semibold">Top Vendors</h2>
+            <h2 className="text-sm font-semibold border-b pb-2">Top Vendors</h2>
             <Building2 className="size-3 text-muted-foreground" />
           </div>
           <div className="rounded-md border p-3 space-y-2.5">
@@ -384,7 +384,7 @@ export default function MainDashboard() {
         {/* Upcoming Deliveries */}
         <section className="space-y-2">
           <div className="flex items-center gap-2">
-            <h2 className="text-xs font-semibold">Upcoming Deliveries</h2>
+            <h2 className="text-sm font-semibold border-b pb-2">Upcoming Deliveries</h2>
             <Truck className="size-3 text-muted-foreground" />
           </div>
           <div className="rounded-md border">

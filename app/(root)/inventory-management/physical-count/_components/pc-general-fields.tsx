@@ -23,7 +23,7 @@ export function PcGeneralFields({
     <div className="max-w-2xl space-y-4">
       <FieldGroup className="gap-3">
         <Field data-invalid={!!form.formState.errors.department_id}>
-          <FieldLabel className="text-xs">Department</FieldLabel>
+          <FieldLabel>Department</FieldLabel>
           <Controller
             control={form.control}
             name="department_id"

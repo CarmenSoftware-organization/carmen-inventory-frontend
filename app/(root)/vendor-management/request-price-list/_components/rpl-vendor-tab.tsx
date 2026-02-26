@@ -310,7 +310,7 @@ export default function RplVendorsTab({
         table={table}
         recordCount={tableData.length}
         tableLayout={{ dense: true, headerSeparator: true }}
-        tableClassNames={{ base: "text-xs" }}
+        tableClassNames={{ base: "text-sm" }}
         emptyMessage={
           <EmptyComponent
             icon={Warehouse}

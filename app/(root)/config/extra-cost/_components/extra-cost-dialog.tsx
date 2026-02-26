@@ -107,7 +107,7 @@ export function ExtraCostDialog({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
           <FieldGroup className="gap-3">
             <Field data-invalid={!!form.formState.errors.name}>
-              <FieldLabel htmlFor="extra-cost-name" className="text-xs">
+              <FieldLabel htmlFor="extra-cost-name">
                 Name
               </FieldLabel>
               <Input
@@ -134,7 +134,7 @@ export function ExtraCostDialog({
                   />
                 )}
               />
-              <FieldLabel htmlFor="extra-cost-is-active" className="text-xs">
+              <FieldLabel htmlFor="extra-cost-is-active">
                 Active
               </FieldLabel>
             </Field>

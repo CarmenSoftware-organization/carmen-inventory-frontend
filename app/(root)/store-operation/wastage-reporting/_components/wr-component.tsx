@@ -80,7 +80,7 @@ export default function WrComponent() {
         recordCount={totalRecords}
         isLoading={isLoading}
         tableLayout={{ dense: true, headerSeparator: true }}
-        tableClassNames={{ base: "text-xs" }}
+        tableClassNames={{ base: "text-sm" }}
       >
         <DataGridContainer>
           <DataGridTable />

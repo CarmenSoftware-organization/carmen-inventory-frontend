@@ -26,7 +26,7 @@ export function PrtGeneralFields({ form, disabled }: PrtGeneralFieldsProps) {
         {/* Name + Active */}
         <div className="grid grid-cols-2 gap-3">
           <Field data-invalid={!!form.formState.errors.name}>
-            <FieldLabel htmlFor="prt-name" className="text-xs" required>
+            <FieldLabel htmlFor="prt-name" required>
               Name
             </FieldLabel>
             <Input
@@ -41,7 +41,7 @@ export function PrtGeneralFields({ form, disabled }: PrtGeneralFieldsProps) {
           </Field>
 
           <Field data-invalid={!!form.formState.errors.workflow_id}>
-            <FieldLabel className="text-xs" required>
+            <FieldLabel required>
               Workflow
             </FieldLabel>
             <Controller
@@ -73,14 +73,14 @@ export function PrtGeneralFields({ form, disabled }: PrtGeneralFieldsProps) {
                 />
               )}
             />
-            <span className="text-xs">Active</span>
+            <span>Active</span>
           </div>
         </div>
 
         {/* Description + Note */}
         <div className="grid grid-cols-2 gap-3">
           <Field>
-            <FieldLabel htmlFor="prt-description" className="text-xs">
+            <FieldLabel htmlFor="prt-description">
               Description
             </FieldLabel>
             <Textarea
@@ -95,7 +95,7 @@ export function PrtGeneralFields({ form, disabled }: PrtGeneralFieldsProps) {
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="prt-note" className="text-xs">
+            <FieldLabel htmlFor="prt-note">
               Note
             </FieldLabel>
             <Textarea

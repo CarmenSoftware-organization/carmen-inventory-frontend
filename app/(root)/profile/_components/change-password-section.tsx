@@ -52,7 +52,7 @@ export default function ChangePasswordSection() {
     >
       <FieldGroup className="gap-3 max-w-md">
         <Field data-invalid={!!form.formState.errors.current_password}>
-          <FieldLabel htmlFor="current_password" className="text-xs" required>
+          <FieldLabel htmlFor="current_password" required>
             Current Password
           </FieldLabel>
           <Input
@@ -69,7 +69,7 @@ export default function ChangePasswordSection() {
         </Field>
 
         <Field data-invalid={!!form.formState.errors.new_password}>
-          <FieldLabel htmlFor="new_password" className="text-xs" required>
+          <FieldLabel htmlFor="new_password" required>
             New Password
           </FieldLabel>
           <Input
@@ -84,7 +84,7 @@ export default function ChangePasswordSection() {
         </Field>
 
         <Field data-invalid={!!form.formState.errors.confirm_password}>
-          <FieldLabel htmlFor="confirm_password" className="text-xs" required>
+          <FieldLabel htmlFor="confirm_password" required>
             Confirm Password
           </FieldLabel>
           <Input

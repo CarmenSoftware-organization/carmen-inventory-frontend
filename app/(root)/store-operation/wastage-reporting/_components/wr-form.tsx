@@ -249,7 +249,7 @@ export function WastageReportForm({ wastageReport }: WastageReportFormProps) {
             <FieldGroup className="gap-3">
               <div className="grid grid-cols-2 gap-3">
                 <Field data-invalid={!!form.formState.errors.date}>
-                  <FieldLabel className="text-xs">Date</FieldLabel>
+                  <FieldLabel>Date</FieldLabel>
                   <Controller
                     control={form.control}
                     name="date"
@@ -267,7 +267,7 @@ export function WastageReportForm({ wastageReport }: WastageReportFormProps) {
                 </Field>
 
                 <Field data-invalid={!!form.formState.errors.location_id}>
-                  <FieldLabel className="text-xs">Location</FieldLabel>
+                  <FieldLabel>Location</FieldLabel>
                   <Controller
                     control={form.control}
                     name="location_id"
@@ -287,7 +287,7 @@ export function WastageReportForm({ wastageReport }: WastageReportFormProps) {
               </div>
 
               <Field data-invalid={!!form.formState.errors.reason}>
-                <FieldLabel htmlFor="wr-reason" className="text-xs">
+                <FieldLabel htmlFor="wr-reason">
                   Reason
                 </FieldLabel>
                 <Textarea
@@ -339,7 +339,7 @@ const InfoCell = ({
   readonly value: string;
 }) => {
   return (
-    <div className="text-xs">
+    <div>
       <span className="text-muted-foreground">{label}</span>
       <p className="font-medium truncate">{value || "—"}</p>
     </div>

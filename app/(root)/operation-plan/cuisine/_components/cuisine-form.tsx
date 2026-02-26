@@ -187,10 +187,10 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
       >
         {/* General Information */}
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold">General Information</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">General Information</h2>
           <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!form.formState.errors.name}>
-              <FieldLabel htmlFor="cuisine-name" className="text-xs" required>
+              <FieldLabel htmlFor="cuisine-name" required>
                 Name
               </FieldLabel>
               <Input
@@ -205,7 +205,7 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
             </Field>
 
             <Field data-invalid={!!form.formState.errors.region}>
-              <FieldLabel className="text-xs" required>
+              <FieldLabel required>
                 Region
               </FieldLabel>
               <Controller
@@ -234,7 +234,7 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
             </Field>
 
             <Field className="col-span-2">
-              <FieldLabel htmlFor="cuisine-description" className="text-xs">
+              <FieldLabel htmlFor="cuisine-description">
                 Description
               </FieldLabel>
               <Textarea
@@ -252,10 +252,10 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
 
         {/* Cuisine Details */}
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold">Cuisine Details</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">Cuisine Details</h2>
           <div className="grid grid-cols-2 gap-3">
             <Field>
-              <FieldLabel htmlFor="cuisine-popular-dishes" className="text-xs">
+              <FieldLabel htmlFor="cuisine-popular-dishes">
                 Popular Dishes
               </FieldLabel>
               <Textarea
@@ -270,7 +270,7 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="cuisine-key-ingredients" className="text-xs">
+              <FieldLabel htmlFor="cuisine-key-ingredients">
                 Key Ingredients
               </FieldLabel>
               <Textarea
@@ -285,7 +285,7 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="cuisine-info" className="text-xs">
+              <FieldLabel htmlFor="cuisine-info">
                 Info
               </FieldLabel>
               <Textarea
@@ -300,7 +300,7 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="cuisine-dimension" className="text-xs">
+              <FieldLabel htmlFor="cuisine-dimension">
                 Dimension
               </FieldLabel>
               <Textarea
@@ -318,10 +318,10 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
 
         {/* Additional */}
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold">Additional</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">Additional</h2>
           <FieldGroup className="gap-3">
             <Field>
-              <FieldLabel htmlFor="cuisine-note" className="text-xs">
+              <FieldLabel htmlFor="cuisine-note">
                 Note
               </FieldLabel>
               <Textarea
@@ -348,7 +348,7 @@ export function CuisineForm({ cuisine }: CuisineFormProps) {
                   />
                 )}
               />
-              <FieldLabel htmlFor="cuisine-is-active" className="text-xs">
+              <FieldLabel htmlFor="cuisine-is-active">
                 Active
               </FieldLabel>
             </Field>

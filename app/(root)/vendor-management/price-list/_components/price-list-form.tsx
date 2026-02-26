@@ -254,7 +254,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
           <TabsContent value="general">
             <FieldGroup className="max-w-2xl gap-3 pt-4">
               <Field data-invalid={!!form.formState.errors.name}>
-                <FieldLabel className="text-xs">Name</FieldLabel>
+                <FieldLabel>Name</FieldLabel>
                 <Input
                   placeholder="e.g. Quotation - Fresh Produce"
                   className="h-8 text-sm"
@@ -266,7 +266,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
               </Field>
 
               <Field>
-                <FieldLabel className="text-xs">Description</FieldLabel>
+                <FieldLabel>Description</FieldLabel>
                 <Textarea
                   placeholder="Optional"
                   className="text-sm"
@@ -277,7 +277,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
               </Field>
 
               <Field data-invalid={!!form.formState.errors.status}>
-                <FieldLabel className="text-xs">Status</FieldLabel>
+                <FieldLabel>Status</FieldLabel>
                 <Controller
                   control={form.control}
                   name="status"
@@ -303,7 +303,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
               </Field>
 
               <Field data-invalid={!!form.formState.errors.vendor_id}>
-                <FieldLabel className="text-xs">Vendor</FieldLabel>
+                <FieldLabel>Vendor</FieldLabel>
                 <Controller
                   control={form.control}
                   name="vendor_id"
@@ -332,7 +332,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
               </Field>
 
               <Field data-invalid={!!form.formState.errors.currency_id}>
-                <FieldLabel className="text-xs">Currency</FieldLabel>
+                <FieldLabel>Currency</FieldLabel>
                 <Controller
                   control={form.control}
                   name="currency_id"
@@ -364,7 +364,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
                 <Field
                   data-invalid={!!form.formState.errors.effective_from_date}
                 >
-                  <FieldLabel className="text-xs">Effective From</FieldLabel>
+                  <FieldLabel>Effective From</FieldLabel>
                   <Input
                     type="date"
                     className="h-8 text-sm"
@@ -377,7 +377,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
                 </Field>
 
                 <Field data-invalid={!!form.formState.errors.effective_to_date}>
-                  <FieldLabel className="text-xs">Effective To</FieldLabel>
+                  <FieldLabel>Effective To</FieldLabel>
                   <Input
                     type="date"
                     className="h-8 text-sm"
@@ -391,7 +391,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
               </div>
 
               <Field>
-                <FieldLabel className="text-xs">Note</FieldLabel>
+                <FieldLabel>Note</FieldLabel>
                 <Textarea
                   placeholder="Optional"
                   className="text-sm"
@@ -525,7 +525,7 @@ const DetailRow = ({
           }
           className="col-span-2"
         >
-          <FieldLabel className="text-xs">Product</FieldLabel>
+          <FieldLabel>Product</FieldLabel>
           <Controller
             control={form.control}
             name={`pricelist_detail.${index}.product_id`}
@@ -561,7 +561,7 @@ const DetailRow = ({
             !!form.formState.errors.pricelist_detail?.[index]?.unit_id
           }
         >
-          <FieldLabel className="text-xs">Unit</FieldLabel>
+          <FieldLabel>Unit</FieldLabel>
           <Controller
             control={form.control}
             name={`pricelist_detail.${index}.unit_id`}
@@ -577,7 +577,7 @@ const DetailRow = ({
         </Field>
 
         <Field>
-          <FieldLabel className="text-xs">MOQ Qty</FieldLabel>
+          <FieldLabel>MOQ Qty</FieldLabel>
           <Input
             type="number"
             min={0}
@@ -588,7 +588,7 @@ const DetailRow = ({
         </Field>
 
         <Field>
-          <FieldLabel className="text-xs">Price</FieldLabel>
+          <FieldLabel>Price</FieldLabel>
           <Input
             type="number"
             min={0}
@@ -600,7 +600,7 @@ const DetailRow = ({
         </Field>
 
         <Field>
-          <FieldLabel className="text-xs">Price Without Tax</FieldLabel>
+          <FieldLabel>Price Without Tax</FieldLabel>
           <Input
             type="number"
             min={0}
@@ -612,7 +612,7 @@ const DetailRow = ({
         </Field>
 
         <Field>
-          <FieldLabel className="text-xs">Tax Profile</FieldLabel>
+          <FieldLabel>Tax Profile</FieldLabel>
           <Controller
             control={form.control}
             name={`pricelist_detail.${index}.tax_profile_id`}
@@ -639,7 +639,7 @@ const DetailRow = ({
         </Field>
 
         <Field>
-          <FieldLabel className="text-xs">Tax Rate</FieldLabel>
+          <FieldLabel>Tax Rate</FieldLabel>
           <Input
             type="number"
             min={0}
@@ -651,7 +651,7 @@ const DetailRow = ({
         </Field>
 
         <Field>
-          <FieldLabel className="text-xs">Tax Amount</FieldLabel>
+          <FieldLabel>Tax Amount</FieldLabel>
           <Input
             type="number"
             min={0}
@@ -663,7 +663,7 @@ const DetailRow = ({
         </Field>
 
         <Field>
-          <FieldLabel className="text-xs">Lead Time (days)</FieldLabel>
+          <FieldLabel>Lead Time (days)</FieldLabel>
           <Input
             type="number"
             min={0}

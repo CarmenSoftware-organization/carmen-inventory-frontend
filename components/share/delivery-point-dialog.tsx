@@ -108,7 +108,7 @@ export function DeliveryPointDialog({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
           <FieldGroup className="gap-3">
             <Field data-invalid={!!form.formState.errors.name}>
-              <FieldLabel htmlFor="delivery-point-name" className="text-xs">
+              <FieldLabel htmlFor="delivery-point-name">
                 Name
               </FieldLabel>
               <Input
@@ -137,7 +137,7 @@ export function DeliveryPointDialog({
               />
               <FieldLabel
                 htmlFor="delivery-point-is-active"
-                className="text-xs"
+               
               >
                 Active
               </FieldLabel>

@@ -79,7 +79,7 @@ export default function LocationComponent() {
         recordCount={totalRecords}
         isLoading={isLoading}
         tableLayout={{ dense: true, headerSeparator: true }}
-        tableClassNames={{ base: "text-xs" }}
+        tableClassNames={{ base: "text-sm" }}
       >
         <DataGridContainer>
           <DataGridTable />

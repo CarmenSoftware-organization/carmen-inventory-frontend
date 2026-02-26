@@ -73,7 +73,7 @@ export function ExchangeRateDialog({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
           <FieldGroup className="gap-3">
             <Field>
-              <FieldLabel className="text-xs">Currency Code</FieldLabel>
+              <FieldLabel>Currency Code</FieldLabel>
               <Input
                 className="h-8 text-sm"
                 value={item?.currency_code ?? ""}
@@ -82,7 +82,7 @@ export function ExchangeRateDialog({
             </Field>
 
             <Field data-invalid={!!form.formState.errors.exchange_rate}>
-              <FieldLabel className="text-xs">Exchange Rate</FieldLabel>
+              <FieldLabel>Exchange Rate</FieldLabel>
               <Input
                 type="number"
                 min={0}

@@ -38,7 +38,7 @@ const CostInput = ({
 }) => {
   return (
     <Field>
-      <FieldLabel className="text-xs">{label}</FieldLabel>
+      <FieldLabel>{label}</FieldLabel>
       <div className="relative">
         <Input
           type="number"
@@ -83,7 +83,7 @@ export function RecipeCostFields({
     <div className="space-y-4">
       {/* ── Cost Breakdown ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">Cost Breakdown</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Cost Breakdown</h2>
         <FieldGroup className="gap-3">
           <div className="grid grid-cols-2 gap-2">
             <CostInput
@@ -122,7 +122,7 @@ export function RecipeCostFields({
       {/* ── Pricing ── */}
       <section className="space-y-3">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold">Pricing</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">Pricing</h2>
           {isBelowCost && (
             <Badge variant="destructive-light" size="sm">
               <AlertTriangle className="size-3" aria-hidden="true" />
@@ -154,7 +154,7 @@ export function RecipeCostFields({
       {/* ── Margin Analysis ── */}
       <section className="space-y-3">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold">Margin Analysis</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">Margin Analysis</h2>
           <Badge variant="outline" size="sm">
             Auto-calculated
           </Badge>

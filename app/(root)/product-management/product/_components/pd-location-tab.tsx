@@ -280,7 +280,7 @@ export default function LocationsTab({ form, isDisabled }: LocationsTabProps) {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold">
+        <h2 className="text-sm font-semibold border-b pb-2">
           Locations{" "}
           <span className="text-xs font-normal text-muted-foreground">
             ({fields.length})

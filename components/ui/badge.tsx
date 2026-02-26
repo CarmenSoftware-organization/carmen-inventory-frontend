@@ -19,7 +19,7 @@ const badgeVariants = cva(
           "bg-success text-white [a&]:hover:bg-success/90 focus-visible:ring-success/20 dark:focus-visible:ring-success/40",
         info: "bg-info text-white [a&]:hover:bg-info/90 focus-visible:ring-info/20 dark:focus-visible:ring-info/40",
         warning:
-          "bg-warning text-white [a&]:hover:bg-warning/90 focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40",
+          "bg-warning text-warning-foreground [a&]:hover:bg-warning/90 focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40",
         outline:
           "border-border bg-transparent text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground dark:bg-input/32",
         ghost:
@@ -57,11 +57,11 @@ const badgeVariants = cva(
           "bg-background border-border text-focus-foreground dark:bg-input/30",
       },
       size: {
-        xs: "px-1 py-0.25 text-[0.6rem] leading-none h-4 min-w-4 gap-1",
-        sm: "px-1 py-0.25 text-[0.625rem] leading-none h-4.5 min-w-4.5 gap-1",
-        default: "px-1.25 py-0.5 text-xs h-5 min-w-5 gap-1",
-        lg: "px-1.5 py-0.5 text-xs h-5.5 min-w-5.5 gap-1",
-        xl: "px-2 py-0.75 text-sm h-6 min-w-6 gap-1.5",
+        xs: "px-1 py-0.25 text-[0.625rem] leading-none h-4.5 min-w-4.5 gap-1",
+        sm: "px-1 py-0.25 text-xs leading-none h-5 min-w-5 gap-1",
+        default: "px-1.25 py-0.5 text-xs h-5.5 min-w-5.5 gap-1",
+        lg: "px-1.5 py-0.5 text-sm h-6 min-w-6 gap-1",
+        xl: "px-2 py-0.75 text-sm h-6.5 min-w-6.5 gap-1.5",
       },
     },
     defaultVariants: {

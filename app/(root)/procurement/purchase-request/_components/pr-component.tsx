@@ -146,7 +146,7 @@ export default function PurchaseRequestComponent() {
         recordCount={totalRecords}
         isLoading={isLoading}
         tableLayout={{ dense: true, headerSeparator: true }}
-        tableClassNames={{ base: "text-xs" }}
+        tableClassNames={{ base: "text-sm" }}
       >
         <ScrollArea>
           <DataGridContainer>

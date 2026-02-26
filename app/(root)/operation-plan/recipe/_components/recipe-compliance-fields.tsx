@@ -26,14 +26,14 @@ export function RecipeComplianceFields({
       {/* ── Safety & Compliance ── */}
       <section className="space-y-3">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold">Safety & Compliance</h2>
+          <h2 className="text-sm font-semibold border-b pb-2">Safety & Compliance</h2>
           <Badge variant="warning-light" size="sm">
             Required for labeling
           </Badge>
         </div>
         <FieldGroup className="gap-3">
           <Field>
-            <FieldLabel className="text-xs">Allergens</FieldLabel>
+            <FieldLabel>Allergens</FieldLabel>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
               {ALLERGEN_OPTIONS.map((allergen) => (
                 <Controller
@@ -65,7 +65,7 @@ export function RecipeComplianceFields({
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="recipe-custom-allergens" className="text-xs">
+            <FieldLabel htmlFor="recipe-custom-allergens">
               Other Allergens
             </FieldLabel>
             <Input
@@ -76,14 +76,14 @@ export function RecipeComplianceFields({
               maxLength={256}
               {...form.register("allergens.custom")}
             />
-            <FieldDescription className="text-xs">
+            <FieldDescription>
               Additional allergens not in the standard list, separated by commas
             </FieldDescription>
           </Field>
 
           <div className="grid grid-cols-2 gap-2">
             <Field>
-              <FieldLabel htmlFor="recipe-carbon-footprint" className="text-xs">
+              <FieldLabel htmlFor="recipe-carbon-footprint">
                 Carbon Footprint
               </FieldLabel>
               <div className="relative">
@@ -100,7 +100,7 @@ export function RecipeComplianceFields({
                   kg CO2e
                 </span>
               </div>
-              <FieldDescription className="text-xs">
+              <FieldDescription>
                 Estimated carbon emissions per batch
               </FieldDescription>
             </Field>
@@ -110,10 +110,10 @@ export function RecipeComplianceFields({
 
       {/* ── Organization ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">Organization</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Organization</h2>
         <FieldGroup className="gap-3">
           <Field>
-            <FieldLabel htmlFor="recipe-tags" className="text-xs">
+            <FieldLabel htmlFor="recipe-tags">
               Tags
             </FieldLabel>
             <Textarea
@@ -125,7 +125,7 @@ export function RecipeComplianceFields({
               maxLength={256}
               {...form.register("tags")}
             />
-            <FieldDescription className="text-xs">
+            <FieldDescription>
               One tag per line. Used for filtering and reporting across the
               recipe catalog.
             </FieldDescription>
@@ -135,10 +135,10 @@ export function RecipeComplianceFields({
 
       {/* ── Media ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">Media</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Media</h2>
         <FieldGroup className="gap-3">
           <Field>
-            <FieldLabel htmlFor="recipe-images" className="text-xs">
+            <FieldLabel htmlFor="recipe-images">
               Image URLs
             </FieldLabel>
             <Textarea
@@ -152,7 +152,7 @@ export function RecipeComplianceFields({
               maxLength={256}
               {...form.register("images")}
             />
-            <FieldDescription className="text-xs">
+            <FieldDescription>
               One URL per line. First image is used as the primary thumbnail.
             </FieldDescription>
           </Field>
@@ -161,10 +161,10 @@ export function RecipeComplianceFields({
 
       {/* ── Custom Data ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">Custom Data</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Custom Data</h2>
         <FieldGroup className="gap-3">
           <Field>
-            <FieldLabel htmlFor="recipe-info" className="text-xs">
+            <FieldLabel htmlFor="recipe-info">
               Info (JSON)
             </FieldLabel>
             <Textarea
@@ -176,12 +176,12 @@ export function RecipeComplianceFields({
               maxLength={1024}
               {...form.register("info")}
             />
-            <FieldDescription className="text-xs">
+            <FieldDescription>
               Additional custom metadata as JSON
             </FieldDescription>
           </Field>
           <Field>
-            <FieldLabel htmlFor="recipe-dimension" className="text-xs">
+            <FieldLabel htmlFor="recipe-dimension">
               Dimension (JSON)
             </FieldLabel>
             <Textarea
@@ -193,7 +193,7 @@ export function RecipeComplianceFields({
               maxLength={1024}
               {...form.register("dimension")}
             />
-            <FieldDescription className="text-xs">
+            <FieldDescription>
               Physical dimensions or measurements as JSON
             </FieldDescription>
           </Field>
@@ -202,7 +202,7 @@ export function RecipeComplianceFields({
 
       {/* ── Inventory Settings ── */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">Inventory Settings</h2>
+        <h2 className="text-sm font-semibold border-b pb-2">Inventory Settings</h2>
         <FieldGroup className="gap-3">
           <Field orientation="horizontal">
             <Controller
@@ -217,8 +217,8 @@ export function RecipeComplianceFields({
               )}
             />
             <div>
-              <FieldLabel className="text-xs">Deduct from Stock</FieldLabel>
-              <FieldDescription className="text-xs">
+              <FieldLabel>Deduct from Stock</FieldLabel>
+              <FieldDescription>
                 When enabled, producing this recipe will automatically reduce
                 ingredient inventory quantities
               </FieldDescription>

@@ -8,7 +8,7 @@ export function CellAction({ className, children, ...props }: CellActionProps) {
   return (
     <button
       type="button"
-      className={cn("font-medium hover:underline text-left text-xs", className)}
+      className={cn("font-medium hover:underline text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:rounded-sm", className)}
       {...props}
     >
       {children}

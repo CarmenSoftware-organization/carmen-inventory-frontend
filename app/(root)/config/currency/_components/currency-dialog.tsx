@@ -161,7 +161,7 @@ export function CurrencyDialog({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
           <FieldGroup className="gap-3">
             <Field data-invalid={!!form.formState.errors.code}>
-              <FieldLabel className="text-xs">Code</FieldLabel>
+              <FieldLabel>Code</FieldLabel>
               <Controller
                 control={form.control}
                 name="code"
@@ -178,7 +178,7 @@ export function CurrencyDialog({
             </Field>
 
             <Field data-invalid={!!form.formState.errors.name}>
-              <FieldLabel htmlFor="currency-name" className="text-xs">
+              <FieldLabel htmlFor="currency-name">
                 Name
               </FieldLabel>
               <Input
@@ -193,7 +193,7 @@ export function CurrencyDialog({
             </Field>
 
             <Field data-invalid={!!form.formState.errors.symbol}>
-              <FieldLabel htmlFor="currency-symbol" className="text-xs">
+              <FieldLabel htmlFor="currency-symbol">
                 Symbol
               </FieldLabel>
               <Input
@@ -207,7 +207,7 @@ export function CurrencyDialog({
             </Field>
 
             <Field data-invalid={!!form.formState.errors.exchange_rate}>
-              <FieldLabel htmlFor="currency-exchange-rate" className="text-xs">
+              <FieldLabel htmlFor="currency-exchange-rate">
                 Exchange Rate
               </FieldLabel>
               <Input
@@ -225,7 +225,7 @@ export function CurrencyDialog({
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="currency-description" className="text-xs">
+              <FieldLabel htmlFor="currency-description">
                 Description
               </FieldLabel>
               <Textarea
@@ -251,7 +251,7 @@ export function CurrencyDialog({
                   />
                 )}
               />
-              <FieldLabel htmlFor="currency-is-active" className="text-xs">
+              <FieldLabel htmlFor="currency-is-active">
                 Active
               </FieldLabel>
             </Field>
