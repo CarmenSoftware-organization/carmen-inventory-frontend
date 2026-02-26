@@ -1,6 +1,6 @@
 "use no memo";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import { type UseFormReturn } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import {
@@ -340,6 +340,7 @@ const VendorActions = ({
   router: ReturnType<typeof useRouter>;
 }) => {
   const [copied, setCopied] = useState(false);
+  const copiedTimer = useRef<ReturnType<typeof setTimeout>>(null);
   const isExisting = "url_token" in vendor;
   const existingVendor = isExisting ? (vendor as RequestPriceListVendor) : null;
 
@@ -352,7 +353,8 @@ const VendorActions = ({
     const url = `${window.location.origin}${vendorPath}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (copiedTimer.current) clearTimeout(copiedTimer.current);
+    copiedTimer.current = setTimeout(() => setCopied(false), 2000);
   };
 
   const handleOpenUrl = () => {

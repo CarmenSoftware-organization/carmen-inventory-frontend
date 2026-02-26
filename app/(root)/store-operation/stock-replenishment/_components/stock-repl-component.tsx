@@ -126,12 +126,12 @@ export default function StockReplComponent() {
 
   const handleCreatePR = () => {
     const selected = getSelectedProducts();
-    console.log("Create PR", selected);
+    // TODO: implement create PR from selected products
   };
 
   const handleCreateSR = () => {
     const selected = getSelectedProducts();
-    console.log("Create SR", selected);
+    // TODO: implement create SR from selected products
   };
 
   if (error)
