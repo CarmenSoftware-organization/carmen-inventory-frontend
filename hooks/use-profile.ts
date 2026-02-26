@@ -48,11 +48,13 @@ export function useProfile() {
   const userId = query.data?.id;
   const aliasName = query.data?.alias_name;
   const buCode = defaultBu?.code;
+
   const defaultCurrencyId = defaultBu?.config?.default_currency_id;
   const defaultCurrencyCode = defaultBu?.config?.default_currency?.code;
   const defaultCurrencyDecimalPlaces =
     defaultBu?.config?.default_currency?.decimal_places;
   const dateFormat = defaultBu?.config?.date_format ?? "DD/MM/YYYY";
+
   const allBuCode = useMemo(
     () => query.data?.business_unit.map((b) => b.code),
     [query.data],

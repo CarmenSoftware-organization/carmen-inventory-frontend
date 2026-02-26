@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 import { useProfile } from "@/hooks/use-profile";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import type { BusinessUnit } from "@/types/profile";
+import LoaderProfile from "@/components/loader/loader-profile";
 
-const Field = ({
+const FieldSectionCell = ({
   label,
   value,
   mono,
@@ -36,38 +36,7 @@ const FieldGrid = ({ children }: { children: React.ReactNode }) => (
 const UserProfileDetails = () => {
   const { data: profile, isLoading, isError } = useProfile();
 
-  if (isLoading)
-    return (
-      <div className="space-y-4">
-        <section>
-          <Skeleton className="h-3 w-32" />
-          <Separator className="my-2" />
-          <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={`user-${i}`} className="space-y-1">
-                <Skeleton className="h-2.5 w-16" />
-                <Skeleton className="h-3 w-24" />
-              </div>
-            ))}
-          </div>
-        </section>
-        <section>
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-3 w-40" />
-            <Skeleton className="h-4 w-14 rounded-full" />
-          </div>
-          <Separator className="my-2" />
-          <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
-            {Array.from({ length: 7 }).map((_, i) => (
-              <div key={`bu-${i}`} className="space-y-1">
-                <Skeleton className="h-2.5 w-16" />
-                <Skeleton className="h-3 w-24" />
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
-    );
+  if (isLoading) return <LoaderProfile />;
 
   if (isError || !profile)
     return (
@@ -98,11 +67,14 @@ const UserProfileDetails = () => {
         </div>
         <Separator className="my-2" />
         <FieldGrid>
-          <Field label="Full Name" value={fullName} />
-          <Field label="Email" value={profile.email} />
-          <Field label="Alias" value={profile.alias_name} />
-          <Field label="Telephone" value={user_info.telephone} />
-          <Field label="Platform Role" value={profile.platform_role} />
+          <FieldSectionCell label="Full Name" value={fullName} />
+          <FieldSectionCell label="Email" value={profile.email} />
+          <FieldSectionCell label="Alias" value={profile.alias_name} />
+          <FieldSectionCell label="Telephone" value={user_info.telephone} />
+          <FieldSectionCell
+            label="Platform Role"
+            value={profile.platform_role}
+          />
         </FieldGrid>
       </section>
 
@@ -150,16 +122,16 @@ const BUSection = ({ bu }: { bu: BusinessUnit }) => {
       <Separator className="my-2" />
       <div className="space-y-2">
         <FieldGrid>
-          <Field label="Alias" value={bu.alias_name} />
-          <Field label="Department" value={bu.department?.name} />
-          <Field label="System Level" value={bu.system_level} />
-          <Field
+          <FieldSectionCell label="Alias" value={bu.alias_name} />
+          <FieldSectionCell label="Department" value={bu.department?.name} />
+          <FieldSectionCell label="System Level" value={bu.system_level} />
+          <FieldSectionCell
             label="HOD Departments"
             value={bu.hod_department?.join(", ")}
           />
-          <Field label="Description" value={config.description} />
-          <Field label="Tax No." value={config.tax_no} />
-          <Field label="Branch No." value={config.branch_no} />
+          <FieldSectionCell label="Description" value={config.description} />
+          <FieldSectionCell label="Tax No." value={config.tax_no} />
+          <FieldSectionCell label="Branch No." value={config.branch_no} />
         </FieldGrid>
         {config.hotel && (
           <div className="space-y-1.5">
@@ -168,10 +140,10 @@ const BUSection = ({ bu }: { bu: BusinessUnit }) => {
               Hotel
             </h4>
             <FieldGrid>
-              <Field label="Name" value={config.hotel.name} />
-              <Field label="Telephone" value={config.hotel.tel} />
-              <Field label="Email" value={config.hotel.email} />
-              <Field label="Address" value={config.hotel.address} />
+              <FieldSectionCell label="Name" value={config.hotel.name} />
+              <FieldSectionCell label="Telephone" value={config.hotel.tel} />
+              <FieldSectionCell label="Email" value={config.hotel.email} />
+              <FieldSectionCell label="Address" value={config.hotel.address} />
             </FieldGrid>
           </div>
         )}
@@ -182,10 +154,13 @@ const BUSection = ({ bu }: { bu: BusinessUnit }) => {
               Company
             </h4>
             <FieldGrid>
-              <Field label="Name" value={config.company.name} />
-              <Field label="Telephone" value={config.company.tel} />
-              <Field label="Email" value={config.company.email} />
-              <Field label="Address" value={config.company.address} />
+              <FieldSectionCell label="Name" value={config.company.name} />
+              <FieldSectionCell label="Telephone" value={config.company.tel} />
+              <FieldSectionCell label="Email" value={config.company.email} />
+              <FieldSectionCell
+                label="Address"
+                value={config.company.address}
+              />
             </FieldGrid>
           </div>
         )}
