@@ -16,7 +16,7 @@ export function ProductTable({ products, className }: ProductTableProps) {
 
   if (validProducts.length === 0) {
     return (
-      <p className="text-xs text-muted-foreground">No products assigned</p>
+      <p className="text-sm text-muted-foreground">No products assigned</p>
     );
   }
 

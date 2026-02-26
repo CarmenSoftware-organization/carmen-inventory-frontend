@@ -49,7 +49,7 @@ export function VendorContactTab({
       )}
 
       {contactFields.length === 0 ? (
-        <p className="text-xs text-muted-foreground">No contacts added</p>
+        <p className="text-sm text-muted-foreground">No contacts added</p>
       ) : (
         <div className="space-y-3">
           {contactFields.map((field, index) => (

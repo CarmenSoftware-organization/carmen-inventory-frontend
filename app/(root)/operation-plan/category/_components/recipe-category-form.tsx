@@ -338,7 +338,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                     disabled={isDisabled}
                     {...form.register("cost_labor_percentage")}
                   />
-                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                     %
                   </span>
                 </div>
@@ -359,7 +359,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                     disabled={isDisabled}
                     {...form.register("cost_overhead_percentage")}
                   />
-                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                     %
                   </span>
                 </div>
@@ -380,7 +380,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                     disabled={isDisabled}
                     {...form.register("cost_target_food_cost_percentage")}
                   />
-                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                     %
                   </span>
                 </div>
@@ -409,7 +409,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                     disabled={isDisabled}
                     {...form.register("margin_minimum")}
                   />
-                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                     %
                   </span>
                 </div>
@@ -433,7 +433,7 @@ export function RecipeCategoryForm({ category }: RecipeCategoryFormProps) {
                     disabled={isDisabled}
                     {...form.register("margin_target")}
                   />
-                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                     %
                   </span>
                 </div>

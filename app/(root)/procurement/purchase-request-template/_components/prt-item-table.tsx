@@ -169,7 +169,7 @@ const AdjustableAmountCell = ({
             />
           )}
         />
-        <span className="text-xs text-muted-foreground select-none">Manual</span>
+        <span className="text-sm text-muted-foreground select-none">Manual</span>
       </label>
     </div>
   );

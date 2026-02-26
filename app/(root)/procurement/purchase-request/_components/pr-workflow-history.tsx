@@ -12,7 +12,7 @@ interface PrWorkflowHistoryProps {
 export function PrWorkflowHistory({ history }: PrWorkflowHistoryProps) {
   if (!history || history.length === 0) {
     return (
-      <p className="text-xs text-muted-foreground">No workflow history.</p>
+      <p className="text-sm text-muted-foreground">No workflow history.</p>
     );
   }
 

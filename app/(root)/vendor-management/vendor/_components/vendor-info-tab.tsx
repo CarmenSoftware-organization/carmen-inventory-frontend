@@ -55,7 +55,7 @@ export function VendorInfoTab({
         )}
       </div>
       {infoFields.length === 0 ? (
-        <p className="text-xs text-muted-foreground">No additional info</p>
+        <p className="text-sm text-muted-foreground">No additional info</p>
       ) : (
         <div className="space-y-2">
           {infoFields.map((field, index) => (

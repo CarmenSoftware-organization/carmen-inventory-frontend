@@ -137,7 +137,7 @@ export function WfRouting({
         </div>
 
         {fields.length === 0 ? (
-          <p className="text-xs text-muted-foreground py-3 text-center">
+          <p className="text-sm text-muted-foreground py-3 text-center">
             No routing rules. Add a rule to customize routing.
           </p>
         ) : (
@@ -472,7 +472,7 @@ const DepartmentCheckboxList = ({
       <FieldLabel className="text-[11px]">Departments</FieldLabel>
       <div className="max-h-32 space-y-1 overflow-y-auto rounded border p-1.5">
         {departments.length === 0 ? (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             No departments available
           </p>
         ) : (
@@ -543,7 +543,7 @@ const CategoryCheckboxList = ({
       <FieldLabel className="text-[11px]">Categories</FieldLabel>
       <div className="max-h-32 space-y-1 overflow-y-auto rounded border p-1.5">
         {categories.length === 0 ? (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             No categories available. Add products first.
           </p>
         ) : (

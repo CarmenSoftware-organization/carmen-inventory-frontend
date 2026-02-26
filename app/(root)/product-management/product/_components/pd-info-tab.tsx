@@ -253,7 +253,7 @@ export default function ProductInfoTab({
                   disabled={isDisabled}
                   {...form.register("price_deviation_limit")}
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                   %
                 </span>
               </div>
@@ -274,7 +274,7 @@ export default function ProductInfoTab({
                   disabled={isDisabled}
                   {...form.register("qty_deviation_limit")}
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                   %
                 </span>
               </div>
@@ -358,7 +358,7 @@ export default function ProductInfoTab({
                   <span className="text-xs font-medium capitalize">
                     {label.replaceAll("_", " ")}:
                   </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     {value || "—"}
                   </span>
                 </div>

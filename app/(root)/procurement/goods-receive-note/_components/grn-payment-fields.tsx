@@ -123,7 +123,7 @@ export function GrnPaymentFields({ form, disabled }: GrnPaymentFieldsProps) {
                 disabled={disabled}
                 {...form.register("discount_rate")}
               />
-              <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+              <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                 %
               </span>
             </div>

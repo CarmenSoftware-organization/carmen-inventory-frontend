@@ -81,7 +81,7 @@ const UserProfileDetails = () => {
       {profile.business_unit.length > 0 &&
         profile.business_unit.map((bu) => <BUSection key={bu.id} bu={bu} />)}
       {profile.business_unit.length === 0 && (
-        <p className="py-4 text-xs text-muted-foreground text-center">
+        <p className="py-4 text-sm text-muted-foreground text-center">
           No business units assigned
         </p>
       )}

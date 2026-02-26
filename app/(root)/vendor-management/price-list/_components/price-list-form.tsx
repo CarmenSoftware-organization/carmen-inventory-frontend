@@ -431,7 +431,7 @@ export function PriceListForm({ priceList }: PriceListFormProps) {
               )}
 
               {detailFields.length === 0 ? (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   No detail items added
                 </p>
               ) : (

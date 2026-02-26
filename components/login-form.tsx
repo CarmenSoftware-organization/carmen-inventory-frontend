@@ -124,7 +124,7 @@ export default function LoginForm() {
           </div>
         </div>
 
-        <p className="relative z-10 text-center text-xs text-muted-foreground/50 animate-in fade-in duration-700 fill-mode-both delay-500">
+        <p className="relative z-10 text-center text-sm text-muted-foreground/50 animate-in fade-in duration-700 fill-mode-both delay-500">
           Carmen Inventory &middot; Hotel ERP Platform
         </p>
       </div>

@@ -40,7 +40,7 @@ export function KeyValueInput({
   };
 
   if (disabled && value.length === 0) {
-    return <span className="text-xs text-muted-foreground">—</span>;
+    return <span className="text-sm text-muted-foreground">—</span>;
   }
 
   return (

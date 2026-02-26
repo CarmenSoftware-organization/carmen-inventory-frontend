@@ -351,7 +351,7 @@ export function PriceListTemplateForm({
               )}
 
               {productFields.length === 0 ? (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   No products added
                 </p>
               ) : (
@@ -498,7 +498,7 @@ const ProductRow = ({
         </div>
 
         {moqFields.length === 0 ? (
-          <p className="text-xs text-muted-foreground pl-2">No MOQ entries</p>
+          <p className="text-sm text-muted-foreground pl-2">No MOQ entries</p>
         ) : (
           <div className="space-y-2">
             {moqFields.map((moqField, moqIndex) => (
@@ -507,7 +507,7 @@ const ProductRow = ({
                 className="rounded border bg-muted/30 p-2 space-y-2"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     MOQ #{moqIndex + 1}
                   </span>
                   {!isDisabled && (

@@ -59,7 +59,7 @@ export function PrActionDialog({
           )}
         </AlertDialogHeader>
         <div className="space-y-1">
-          <Label className="text-xs text-muted-foreground">Reason</Label>
+          <Label className="text-sm text-muted-foreground">Reason</Label>
           <Textarea
             className="text-xs placeholder:text-xs"
             placeholder="Enter reason (optional)..."

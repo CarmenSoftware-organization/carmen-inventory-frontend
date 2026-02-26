@@ -106,7 +106,7 @@ export default function BuSwitcher() {
                 </div>
                 <div className="grid text-xs leading-tight">
                   <span className="truncate font-medium">{bu.name}</span>
-                  <span className="truncate text-xs text-muted-foreground">
+                  <span className="truncate text-sm text-muted-foreground">
                     {bu.config?.hotel?.name}
                   </span>
                 </div>

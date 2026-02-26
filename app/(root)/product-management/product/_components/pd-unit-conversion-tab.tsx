@@ -466,7 +466,7 @@ export default function UnitConversionTab({
       </div>
 
       {!isOrder && !isUsedInRecipe && (
-        <p className="text-xs text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Enable &quot;Used in Recipe&quot; in Product Info to add ingredient
           units.
         </p>

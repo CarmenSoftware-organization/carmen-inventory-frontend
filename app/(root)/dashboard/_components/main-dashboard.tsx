@@ -104,7 +104,7 @@ export default function MainDashboard() {
           {greeting}, {name}
         </h1>
         {defaultBu && (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {defaultBu.name}
             {defaultBu.department?.name && ` · ${defaultBu.department.name}`}
           </p>
@@ -125,7 +125,7 @@ export default function MainDashboard() {
                 <item.icon className="size-4 text-muted-foreground" />
               </div>
               <div className="min-w-0 flex-1 space-y-1">
-                <p className="truncate text-xs text-muted-foreground">
+                <p className="truncate text-sm text-muted-foreground">
                   {item.label}
                 </p>
                 <div className="flex items-baseline gap-2">

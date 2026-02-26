@@ -105,7 +105,7 @@ export function VendorGeneralTab({
           </Select>
         )}
         {watchedBtIds.length === 0 ? (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             No business types assigned
           </p>
         ) : (

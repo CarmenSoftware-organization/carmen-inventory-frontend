@@ -162,7 +162,7 @@ export function PrItemExpand({
         <div>
           <label
             htmlFor={`items-${index}-vendor`}
-            className="text-xs text-muted-foreground"
+            className="text-sm text-muted-foreground"
           >
             Vendor
           </label>
@@ -182,7 +182,7 @@ export function PrItemExpand({
         <div>
           <label
             htmlFor={`items-${index}-pricelist-price`}
-            className="text-xs text-muted-foreground"
+            className="text-sm text-muted-foreground"
           >
             Unit Price
           </label>
@@ -200,9 +200,9 @@ export function PrItemExpand({
           />
         </div>
         <div>
-          <span className="text-xs text-muted-foreground">Pricelist</span>
+          <span className="text-sm text-muted-foreground">Pricelist</span>
           <div className="flex items-center gap-1">
-            <span className="flex-1 h-7 leading-7 text-xs text-muted-foreground truncate">
+            <span className="flex-1 h-7 leading-7 text-sm text-muted-foreground truncate">
               {pricelistNo || "—"}
             </span>
             {!disabled && productId && unitId && currencyId && (
@@ -227,7 +227,7 @@ export function PrItemExpand({
           <div>
             <label
               htmlFor={`items-${index}-tax-profile`}
-              className="text-xs text-muted-foreground mb-0.5"
+              className="text-sm text-muted-foreground mb-0.5"
             >
               Tax Profile
             </label>
@@ -251,7 +251,7 @@ export function PrItemExpand({
           <div>
             <label
               htmlFor={`items-${index}-tax-rate`}
-              className="text-xs text-muted-foreground mb-0.5"
+              className="text-sm text-muted-foreground mb-0.5"
             >
               Tax %
             </label>
@@ -272,7 +272,7 @@ export function PrItemExpand({
             <div className="flex items-center justify-between mb-0.5">
               <label
                 htmlFor={`items-${index}-tax-amount`}
-                className="text-xs text-muted-foreground"
+                className="text-sm text-muted-foreground"
               >
                 Tax Amt
               </label>
@@ -287,7 +287,7 @@ export function PrItemExpand({
                       disabled={disabled}
                       className="size-3.5"
                     />
-                    <span className="text-xs text-muted-foreground select-none">
+                    <span className="text-sm text-muted-foreground select-none">
                       Manual
                     </span>
                   </label>
@@ -314,7 +314,7 @@ export function PrItemExpand({
             <div>
               <label
                 htmlFor={`items-${index}-discount-rate`}
-                className="text-xs text-muted-foreground"
+                className="text-sm text-muted-foreground"
               >
                 Disc %
               </label>
@@ -335,7 +335,7 @@ export function PrItemExpand({
               <div className="flex items-center justify-between mb-0.5">
                 <label
                   htmlFor={`items-${index}-discount-amount`}
-                  className="text-xs text-muted-foreground"
+                  className="text-sm text-muted-foreground"
                 >
                   Disc Amt
                 </label>
@@ -350,7 +350,7 @@ export function PrItemExpand({
                         disabled={disabled}
                         className="size-3.5"
                       />
-                      <span className="text-xs text-muted-foreground select-none">
+                      <span className="text-sm text-muted-foreground select-none">
                         Manual
                       </span>
                     </label>
@@ -372,7 +372,7 @@ export function PrItemExpand({
             </div>
           </div>
           {/* Summary */}
-          <div className="text-xs tabular-nums text-right space-y-0.5 pl-3 border-l">
+          <div className="text-sm tabular-nums text-right space-y-0.5 pl-3 border-l">
             <div>
               <span className="text-muted-foreground">Net </span>
               <span className="font-medium">{formatCurrency(netAmount)}</span>

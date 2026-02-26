@@ -45,7 +45,7 @@ export default function TreeContent({
 
   if (filteredData.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-32 text-xs text-muted-foreground">
+      <div className="flex flex-col items-center justify-center h-32 text-sm text-muted-foreground">
         {search
           ? `No results for "${search}"`
           : 'No categories yet. Click "Add Category" to start.'}

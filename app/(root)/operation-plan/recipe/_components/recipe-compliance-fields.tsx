@@ -96,7 +96,7 @@ export function RecipeComplianceFields({
                   disabled={isDisabled}
                   {...form.register("carbon_footprint")}
                 />
-                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                   kg CO2e
                 </span>
               </div>

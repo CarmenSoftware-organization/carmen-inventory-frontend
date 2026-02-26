@@ -60,7 +60,7 @@ export function VendorAddressTab({
       )}
 
       {addressFields.length === 0 ? (
-        <p className="text-xs text-muted-foreground">No addresses added</p>
+        <p className="text-sm text-muted-foreground">No addresses added</p>
       ) : (
         <div className="space-y-3">
           {addressFields.map((field, index) => (
