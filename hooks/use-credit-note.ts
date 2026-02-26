@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
+import { buildUrl } from "@/utils/build-query-string";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import type { CreditNote, CreateCnDto } from "@/types/credit-note";
@@ -9,14 +10,18 @@ import type { ParamsDto, PaginatedResponse } from "@/types/params";
 import type { CommentAttachment, CommentItem } from "@/components/ui/comment-sheet";
 import { CACHE_DYNAMIC } from "@/lib/cache-config";
 import { ApiError, ERROR_CODES } from "@/lib/api-error";
-import * as api from "@/lib/api/credit-notes";
 
 export function useCreditNote(params?: ParamsDto) {
   const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<CreditNote>>({
     queryKey: [QUERY_KEYS.CREDIT_NOTES, buCode, params],
-    queryFn: () => api.getCreditNotes(buCode!, params),
+    queryFn: async () => {
+      const url = buildUrl(API_ENDPOINTS.CREDIT_NOTE(buCode!), params);
+      const res = await httpClient.get(url);
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch credit notes");
+      return res.json();
+    },
     enabled: !!buCode,
     ...CACHE_DYNAMIC,
   });
@@ -27,14 +32,22 @@ export function useCreditNoteById(id: string | undefined) {
 
   return useQuery<CreditNote>({
     queryKey: [QUERY_KEYS.CREDIT_NOTES, buCode, id],
-    queryFn: () => api.getCreditNoteById(buCode!, id!),
+    queryFn: async () => {
+      const res = await httpClient.get(
+        `${API_ENDPOINTS.CREDIT_NOTE(buCode!)}/${id!}`,
+      );
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch credit note");
+      const json = await res.json();
+      return json.data;
+    },
     enabled: !!buCode && !!id,
   });
 }
 
 export function useCreateCreditNote() {
   return useApiMutation<CreateCnDto>({
-    mutationFn: (data, buCode) => api.createCreditNote(buCode, data),
+    mutationFn: (data, buCode) =>
+      httpClient.post(API_ENDPOINTS.CREDIT_NOTE(buCode), data),
     invalidateKeys: [QUERY_KEYS.CREDIT_NOTES],
     errorMessage: "Failed to create credit note",
   });
@@ -43,7 +56,7 @@ export function useCreateCreditNote() {
 export function useUpdateCreditNote() {
   return useApiMutation<CreateCnDto & { id: string }>({
     mutationFn: ({ id, ...data }, buCode) =>
-      api.updateCreditNote(buCode, id, data),
+      httpClient.put(`${API_ENDPOINTS.CREDIT_NOTE(buCode)}/${id}`, data),
     invalidateKeys: [QUERY_KEYS.CREDIT_NOTES],
     errorMessage: "Failed to update credit note",
   });
@@ -51,7 +64,8 @@ export function useUpdateCreditNote() {
 
 export function useDeleteCreditNote() {
   return useApiMutation<string>({
-    mutationFn: (id, buCode) => api.deleteCreditNote(buCode, id),
+    mutationFn: (id, buCode) =>
+      httpClient.delete(`${API_ENDPOINTS.CREDIT_NOTE(buCode)}/${id}`),
     invalidateKeys: [QUERY_KEYS.CREDIT_NOTES],
     errorMessage: "Failed to delete credit note",
   });

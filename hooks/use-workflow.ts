@@ -1,7 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
+import { httpClient } from "@/lib/http-client";
+import { buildUrl } from "@/utils/build-query-string";
 import { QUERY_KEYS } from "@/constant/query-keys";
+import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import {
   type WorkflowDto,
   type Workflow,
@@ -10,14 +13,19 @@ import {
 } from "@/types/workflows";
 import type { PaginatedResponse, ParamsDto } from "@/types/params";
 import { CACHE_STATIC } from "@/lib/cache-config";
-import * as api from "@/lib/api/workflows";
+import { ApiError } from "@/lib/api-error";
 
 export function useWorkflow(params?: ParamsDto) {
   const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<WorkflowDto>>({
     queryKey: [QUERY_KEYS.WORKFLOWS, buCode, params],
-    queryFn: () => api.getWorkflows(buCode!, params),
+    queryFn: async () => {
+      const url = buildUrl(API_ENDPOINTS.WORKFLOWS(buCode!), params);
+      const res = await httpClient.get(url);
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch workflows");
+      return res.json();
+    },
     enabled: !!buCode,
     ...CACHE_STATIC,
   });
@@ -28,7 +36,14 @@ export function useWorkflowTypeQuery(type: WORKFLOW_TYPE) {
 
   return useQuery<WorkflowDto[]>({
     queryKey: [QUERY_KEYS.WORKFLOWS, buCode, "type", type],
-    queryFn: () => api.getWorkflowsByType(buCode!, type),
+    queryFn: async () => {
+      const res = await httpClient.get(
+        API_ENDPOINTS.WORKFLOW_BY_TYPE(buCode!, type),
+      );
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch workflows by type");
+      const json = await res.json();
+      return json.data ?? [];
+    },
     enabled: !!buCode,
     ...CACHE_STATIC,
   });
@@ -39,14 +54,22 @@ export function useWorkflowById(id: string | undefined) {
 
   return useQuery<Workflow>({
     queryKey: [QUERY_KEYS.WORKFLOWS, buCode, id],
-    queryFn: () => api.getWorkflowById(buCode!, id!),
+    queryFn: async () => {
+      const res = await httpClient.get(
+        `${API_ENDPOINTS.WORKFLOWS(buCode!)}/${id!}`,
+      );
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch workflow");
+      const json = await res.json();
+      return json.data;
+    },
     enabled: !!buCode && !!id,
   });
 }
 
 export function useCreateWorkflow() {
   return useApiMutation<WorkflowCreateModel>({
-    mutationFn: (data, buCode) => api.createWorkflow(buCode, data),
+    mutationFn: (data, buCode) =>
+      httpClient.post(API_ENDPOINTS.WORKFLOWS(buCode), data),
     invalidateKeys: [QUERY_KEYS.WORKFLOWS],
     errorMessage: "Failed to create workflow",
   });
@@ -55,7 +78,7 @@ export function useCreateWorkflow() {
 export function useUpdateWorkflow() {
   return useApiMutation<WorkflowCreateModel & { id: string }>({
     mutationFn: ({ id, ...data }, buCode) =>
-      api.updateWorkflow(buCode, id, data),
+      httpClient.put(`${API_ENDPOINTS.WORKFLOWS(buCode)}/${id}`, data),
     invalidateKeys: [QUERY_KEYS.WORKFLOWS],
     errorMessage: "Failed to update workflow",
   });
@@ -63,7 +86,8 @@ export function useUpdateWorkflow() {
 
 export function useDeleteWorkflow() {
   return useApiMutation<string>({
-    mutationFn: (id, buCode) => api.deleteWorkflow(buCode, id),
+    mutationFn: (id, buCode) =>
+      httpClient.delete(`${API_ENDPOINTS.WORKFLOWS(buCode)}/${id}`),
     invalidateKeys: [QUERY_KEYS.WORKFLOWS],
     errorMessage: "Failed to delete workflow",
   });

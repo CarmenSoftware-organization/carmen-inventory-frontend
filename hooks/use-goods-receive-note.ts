@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
+import { buildUrl } from "@/utils/build-query-string";
 import { QUERY_KEYS } from "@/constant/query-keys";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import type { GoodsReceiveNote, CreateGrnDto } from "@/types/goods-receive-note";
@@ -9,14 +10,18 @@ import type { ParamsDto, PaginatedResponse } from "@/types/params";
 import type { CommentAttachment, CommentItem } from "@/components/ui/comment-sheet";
 import { CACHE_DYNAMIC } from "@/lib/cache-config";
 import { ApiError, ERROR_CODES } from "@/lib/api-error";
-import * as api from "@/lib/api/goods-receive-notes";
 
 export function useGoodsReceiveNote(params?: ParamsDto) {
   const buCode = useBuCode();
 
   return useQuery<PaginatedResponse<GoodsReceiveNote>>({
     queryKey: [QUERY_KEYS.GOODS_RECEIVE_NOTES, buCode, params],
-    queryFn: () => api.getGoodsReceiveNotes(buCode!, params),
+    queryFn: async () => {
+      const url = buildUrl(API_ENDPOINTS.GOODS_RECEIVE_NOTE(buCode!), params);
+      const res = await httpClient.get(url);
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch goods receive notes");
+      return res.json();
+    },
     enabled: !!buCode,
     ...CACHE_DYNAMIC,
   });
@@ -27,14 +32,22 @@ export function useGoodsReceiveNoteById(id: string | undefined) {
 
   return useQuery<GoodsReceiveNote>({
     queryKey: [QUERY_KEYS.GOODS_RECEIVE_NOTES, buCode, id],
-    queryFn: () => api.getGoodsReceiveNoteById(buCode!, id!),
+    queryFn: async () => {
+      const res = await httpClient.get(
+        `${API_ENDPOINTS.GOODS_RECEIVE_NOTE(buCode!)}/${id!}`,
+      );
+      if (!res.ok) throw ApiError.fromResponse(res, "Failed to fetch goods receive note");
+      const json = await res.json();
+      return json.data;
+    },
     enabled: !!buCode && !!id,
   });
 }
 
 export function useCreateGoodsReceiveNote() {
   return useApiMutation<CreateGrnDto>({
-    mutationFn: (data, buCode) => api.createGoodsReceiveNote(buCode, data),
+    mutationFn: (data, buCode) =>
+      httpClient.post(API_ENDPOINTS.GOODS_RECEIVE_NOTE(buCode), data),
     invalidateKeys: [QUERY_KEYS.GOODS_RECEIVE_NOTES],
     errorMessage: "Failed to create goods receive note",
   });
@@ -43,7 +56,10 @@ export function useCreateGoodsReceiveNote() {
 export function useUpdateGoodsReceiveNote() {
   return useApiMutation<CreateGrnDto & { id: string }>({
     mutationFn: ({ id, ...data }, buCode) =>
-      api.updateGoodsReceiveNote(buCode, id, data),
+      httpClient.put(
+        `${API_ENDPOINTS.GOODS_RECEIVE_NOTE(buCode)}/${id}`,
+        data,
+      ),
     invalidateKeys: [QUERY_KEYS.GOODS_RECEIVE_NOTES],
     errorMessage: "Failed to update goods receive note",
   });
@@ -51,7 +67,10 @@ export function useUpdateGoodsReceiveNote() {
 
 export function useDeleteGoodsReceiveNote() {
   return useApiMutation<string>({
-    mutationFn: (id, buCode) => api.deleteGoodsReceiveNote(buCode, id),
+    mutationFn: (id, buCode) =>
+      httpClient.delete(
+        `${API_ENDPOINTS.GOODS_RECEIVE_NOTE(buCode)}/${id}`,
+      ),
     invalidateKeys: [QUERY_KEYS.GOODS_RECEIVE_NOTES],
     errorMessage: "Failed to delete goods receive note",
   });

@@ -99,7 +99,7 @@ describe("useDeliveryPoint", () => {
     await waitFor(() => expect(result.current.isError).toBe(true));
 
     expect(result.current.error?.message).toBe(
-      "Failed to fetch delivery points",
+      "Failed to fetch data",
     );
   });
 
