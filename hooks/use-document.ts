@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useBuCode } from "@/hooks/use-bu-code";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { httpClient } from "@/lib/http-client";
@@ -28,24 +28,17 @@ export function useDocument(params?: ParamsDto) {
 }
 
 export function useUploadDocument() {
-  const buCode = useBuCode();
-  const queryClient = useQueryClient();
-
-  return useMutation<unknown, Error, File>({
-    mutationFn: async (file) => {
-      if (!buCode) throw new ApiError(ERROR_CODES.MISSING_REQUIRED_FIELD, "Missing buCode");
+  return useApiMutation<File>({
+    mutationFn: (file, buCode) => {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await httpClient.post(
+      return httpClient.post(
         `${API_ENDPOINTS.DOCUMENTS(buCode)}/upload`,
         formData,
       );
-      if (!res.ok) throw ApiError.fromResponse(res, "Failed to upload document");
-      return res.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DOCUMENTS] });
-    },
+    invalidateKeys: [QUERY_KEYS.DOCUMENTS],
+    errorMessage: "Failed to upload document",
   });
 }
 

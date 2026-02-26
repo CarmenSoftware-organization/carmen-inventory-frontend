@@ -2,13 +2,18 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/lib/cookies";
 import { BACKEND_URL, X_APP_ID } from "@/lib/env";
+import { SECURITY_HEADERS } from "@/lib/security-headers";
+
+function json(body: unknown, init?: { status?: number }) {
+  return NextResponse.json(body, { ...init, headers: SECURITY_HEADERS });
+}
 
 export async function POST(request: Request) {
   let body: unknown;
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json(
+    return json(
       { error: "Invalid request body" },
       { status: 400 },
     );
@@ -17,7 +22,7 @@ export async function POST(request: Request) {
   const { email, password } = body as Record<string, unknown>;
 
   if (!email || !password) {
-    return NextResponse.json(
+    return json(
       { error: "Email and password are required" },
       { status: 400 },
     );
@@ -31,8 +36,8 @@ export async function POST(request: Request) {
   });
 
   if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    return NextResponse.json(
+    await res.json().catch(() => ({}));
+    return json(
       { error: "Login failed" },
       { status: res.status },
     );
@@ -42,7 +47,7 @@ export async function POST(request: Request) {
   const { access_token, refresh_token, expires_in, platform_role } = data;
 
   if (!access_token || !refresh_token) {
-    return NextResponse.json(
+    return json(
       { error: "Invalid login response from backend" },
       { status: 502 },
     );
@@ -75,13 +80,13 @@ export async function POST(request: Request) {
     });
 
     if (!profileRes.ok) {
-      return NextResponse.json({ platform_role });
+      return json({ platform_role });
     }
 
     const profileJson = await profileRes.json();
-    return NextResponse.json({ platform_role, profile: profileJson.data });
+    return json({ platform_role, profile: profileJson.data });
   } catch {
     // Profile fetch failed/timed out — login still succeeds
-    return NextResponse.json({ platform_role });
+    return json({ platform_role });
   }
 }

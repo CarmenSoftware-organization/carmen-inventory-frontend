@@ -1,28 +1,36 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { SECURITY_HEADERS } from "@/lib/security-headers";
 
 const API_KEY = process.env.EXCHANGE_RATE_API_KEY;
 const CURRENCY_CODE_RE = /^[A-Z]{3}$/;
+
+function json(body: unknown, init?: { status?: number; headers?: Record<string, string> }) {
+  return NextResponse.json(body, {
+    ...init,
+    headers: { ...SECURITY_HEADERS, ...init?.headers },
+  });
+}
 
 export async function GET(request: NextRequest) {
   const baseCurrency = request.nextUrl.searchParams.get("base");
 
   if (!baseCurrency) {
-    return NextResponse.json(
+    return json(
       { error: "Missing 'base' query parameter" },
       { status: 400 },
     );
   }
 
   if (!CURRENCY_CODE_RE.test(baseCurrency)) {
-    return NextResponse.json(
+    return json(
       { error: "Invalid currency code — must be 3 uppercase letters (e.g. USD)" },
       { status: 400 },
     );
   }
 
   if (!API_KEY) {
-    return NextResponse.json(
+    return json(
       { error: "Exchange rate API key is not configured" },
       { status: 500 },
     );
@@ -34,7 +42,7 @@ export async function GET(request: NextRequest) {
   );
 
   if (!res.ok) {
-    return NextResponse.json(
+    return json(
       { error: "External exchange rate service unavailable" },
       { status: 502 },
     );
@@ -42,7 +50,7 @@ export async function GET(request: NextRequest) {
 
   const data = await res.json();
 
-  return NextResponse.json(data, {
+  return json(data, {
     headers: {
       "Cache-Control": "public, s-maxage=300, stale-while-revalidate=60",
     },

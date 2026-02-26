@@ -29,11 +29,14 @@ export function useProfile() {
     },
     staleTime: Infinity,
     retry: (_, error) =>
-      !(error instanceof Error && error.message === "Unauthorized"),
+      !(error instanceof ApiError && error.code === ERROR_CODES.UNAUTHORIZED),
   });
 
   useEffect(() => {
-    if (query.error?.message === "Unauthorized") {
+    if (
+      query.error instanceof ApiError &&
+      query.error.code === ERROR_CODES.UNAUTHORIZED
+    ) {
       router.push("/login");
     }
   }, [query.error, router]);

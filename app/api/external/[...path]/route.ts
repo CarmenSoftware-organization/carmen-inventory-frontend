@@ -1,12 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { checkServerRateLimit } from "@/lib/rate-limit";
 import { BACKEND_URL, X_APP_ID } from "@/lib/env";
-
-const SECURITY_HEADERS = {
-  "X-Content-Type-Options": "nosniff",
-  "X-Frame-Options": "DENY",
-  "Referrer-Policy": "strict-origin-when-cross-origin",
-} as const;
+import { SECURITY_HEADERS } from "@/lib/security-headers";
 
 const MAX_BODY_SIZE = 1 * 1024 * 1024; // 1MB
 const FETCH_TIMEOUT_MS = 15_000; // 15s

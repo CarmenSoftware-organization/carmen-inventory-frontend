@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { BACKEND_URL, X_APP_ID } from "@/lib/env";
+import { SECURITY_HEADERS } from "@/lib/security-headers";
 
 export async function POST() {
   const cookieStore = await cookies();
@@ -20,5 +21,5 @@ export async function POST() {
 
   cookieStore.delete("access_token");
   cookieStore.delete("refresh_token");
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true }, { headers: SECURITY_HEADERS });
 }
