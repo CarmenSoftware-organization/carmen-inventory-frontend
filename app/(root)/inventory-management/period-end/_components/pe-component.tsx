@@ -66,15 +66,15 @@ export default function PeComponent() {
               router.push("/inventory-management/period-end/new")
             }
           >
-            <Plus />
+            <Plus aria-hidden="true" />
             Add Period End
           </Button>
-          <Button size="sm" variant="outline" disabled>
-            <Download />
+          <Button size="sm" variant="outline" disabled title="Coming soon">
+            <Download aria-hidden="true" />
             Export
           </Button>
-          <Button size="sm" variant="outline" disabled>
-            <Printer />
+          <Button size="sm" variant="outline" disabled title="Coming soon">
+            <Printer aria-hidden="true" />
             Print
           </Button>
         </>

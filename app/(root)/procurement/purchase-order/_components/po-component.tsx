@@ -68,7 +68,7 @@ export default function PoComponent() {
           size="sm"
           onClick={() => setCreateOpen(true)}
         >
-          <Plus />
+          <Plus aria-hidden="true" />
           Add Purchase Order
         </Button>
       }

@@ -44,7 +44,7 @@ export default function GrnComponent() {
 
   const newGrnBtn = (
     <Button size="sm" onClick={newgrn}>
-      <Plus />
+      <Plus aria-hidden="true" />
       Add GRN
     </Button>
   );
@@ -77,15 +77,15 @@ export default function GrnComponent() {
             size="sm"
             onClick={() => router.push("/procurement/goods-receive-note/new")}
           >
-            <Plus />
+            <Plus aria-hidden="true" />
             Add GRN
           </Button>
-          <Button size="sm" variant="outline" disabled>
-            <Download />
+          <Button size="sm" variant="outline" disabled title="Coming soon">
+            <Download aria-hidden="true" />
             Export
           </Button>
-          <Button size="sm" variant="outline" disabled>
-            <Printer />
+          <Button size="sm" variant="outline" disabled title="Coming soon">
+            <Printer aria-hidden="true" />
             Print
           </Button>
         </>

@@ -63,7 +63,7 @@ export default function PrtComponent() {
             router.push("/procurement/purchase-request-template/new")
           }
         >
-          <Plus />
+          <Plus aria-hidden="true" />
           Add Template
         </Button>
       }

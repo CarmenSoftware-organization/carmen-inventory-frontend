@@ -58,7 +58,7 @@ export default function ProductComponent() {
 
   const addNewBtn = (
     <Button size="sm" onClick={handleAddItem}>
-      <Plus />
+      <Plus aria-hidden="true" />
       Add New
     </Button>
   );
@@ -80,12 +80,12 @@ export default function ProductComponent() {
       actions={
         <>
           {addNewBtn}
-          <Button size="sm" variant="outline">
-            <Download />
+          <Button size="sm" variant="outline" disabled title="Coming soon">
+            <Download aria-hidden="true" />
             Export
           </Button>
-          <Button size="sm" variant="outline">
-            <Printer />
+          <Button size="sm" variant="outline" disabled title="Coming soon">
+            <Printer aria-hidden="true" />
             Print
           </Button>
         </>

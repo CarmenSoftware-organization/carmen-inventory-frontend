@@ -38,7 +38,7 @@ export function StatusFilter({
       value={value || "all"}
       onValueChange={(v) => onChange(v === "all" ? "" : v)}
     >
-      <SelectTrigger size="sm" className={className}>
+      <SelectTrigger size="sm" className={className} aria-label={`Filter by ${placeholder.toLowerCase()}`}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

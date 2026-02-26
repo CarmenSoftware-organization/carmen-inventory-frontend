@@ -72,7 +72,7 @@ export default function StoreRequisitionComponent() {
             router.push("/store-operation/store-requisition/new")
           }
         >
-          <Plus />
+          <Plus aria-hidden="true" />
           Add Requisition
         </Button>
       }

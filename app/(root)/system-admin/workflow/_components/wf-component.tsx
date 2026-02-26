@@ -60,15 +60,15 @@ export default function WorkflowComponent() {
             size="sm"
             onClick={() => router.push("/system-admin/workflow/new")}
           >
-            <Plus />
+            <Plus aria-hidden="true" />
             New Workflow
           </Button>
-          <Button size="sm" variant="outline">
-            <Download />
+          <Button size="sm" variant="outline" disabled title="Coming soon">
+            <Download aria-hidden="true" />
             Export
           </Button>
-          <Button size="sm" variant="outline">
-            <Printer />
+          <Button size="sm" variant="outline" disabled title="Coming soon">
+            <Printer aria-hidden="true" />
             Print
           </Button>
         </>

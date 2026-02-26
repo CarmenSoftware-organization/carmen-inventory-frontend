@@ -77,7 +77,7 @@ export default function InventoryAdjustmentComponent() {
               )
             }
           >
-            <Plus />
+            <Plus aria-hidden="true" />
             Add Stock In
           </Button>
           <Button
@@ -89,7 +89,7 @@ export default function InventoryAdjustmentComponent() {
               )
             }
           >
-            <Plus />
+            <Plus aria-hidden="true" />
             Add Stock Out
           </Button>
         </>

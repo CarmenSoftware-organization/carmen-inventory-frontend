@@ -99,15 +99,15 @@ export default function PurchaseRequestComponent() {
       actions={
         <>
           <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
-            <Plus />
+            <Plus aria-hidden="true" />
             Add Request
           </Button>
-          <Button size="sm" variant="outline">
-            <Download />
+          <Button size="sm" variant="outline" disabled title="Coming soon">
+            <Download aria-hidden="true" />
             Export
           </Button>
-          <Button size="sm" variant="outline">
-            <Printer />
+          <Button size="sm" variant="outline" disabled title="Coming soon">
+            <Printer aria-hidden="true" />
             Print
           </Button>
         </>

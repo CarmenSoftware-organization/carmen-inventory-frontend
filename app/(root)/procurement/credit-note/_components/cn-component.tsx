@@ -48,7 +48,7 @@ export default function CnComponent() {
 
   const newCnBtn = (
     <Button size="sm" onClick={newCreditnote}>
-      <Plus />
+      <Plus aria-hidden="true" />
       Add Credit Note
     </Button>
   );

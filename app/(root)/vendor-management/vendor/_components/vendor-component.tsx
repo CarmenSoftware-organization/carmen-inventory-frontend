@@ -61,15 +61,15 @@ export default function VendorComponent() {
             size="sm"
             onClick={() => router.push("/vendor-management/vendor/new")}
           >
-            <Plus />
+            <Plus aria-hidden="true" />
             Add Vendor
           </Button>
-          <Button size="sm" variant="outline">
-            <Download />
+          <Button size="sm" variant="outline" disabled title="Coming soon">
+            <Download aria-hidden="true" />
             Export
           </Button>
-          <Button size="sm" variant="outline">
-            <Printer />
+          <Button size="sm" variant="outline" disabled title="Coming soon">
+            <Printer aria-hidden="true" />
             Print
           </Button>
         </>

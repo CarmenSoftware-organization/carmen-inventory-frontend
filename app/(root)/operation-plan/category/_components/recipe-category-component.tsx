@@ -70,15 +70,15 @@ export default function RecipeCategoryComponent() {
             size="sm"
             onClick={() => router.push("/operation-plan/category/new")}
           >
-            <Plus />
+            <Plus aria-hidden="true" />
             Add Category
           </Button>
-          <Button size="sm" variant="outline">
-            <Download />
+          <Button size="sm" variant="outline" disabled title="Coming soon">
+            <Download aria-hidden="true" />
             Export
           </Button>
-          <Button size="sm" variant="outline">
-            <Printer />
+          <Button size="sm" variant="outline" disabled title="Coming soon">
+            <Printer aria-hidden="true" />
             Print
           </Button>
         </>

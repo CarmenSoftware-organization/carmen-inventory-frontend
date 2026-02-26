@@ -49,7 +49,7 @@ export default function RoleComponent() {
       toolbar={<SearchInput defaultValue={search} onSearch={setSearch} />}
       actions={
         <Button size="sm" onClick={() => router.push("/system-admin/role/new")}>
-          <Plus />
+          <Plus aria-hidden="true" />
           Add Role
         </Button>
       }
