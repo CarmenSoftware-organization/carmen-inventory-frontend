@@ -198,10 +198,9 @@ export function PrItemFields({
     const indices = getSelectedIndices();
     for (const index of indices) {
       form.setValue(`items.${index}.stage_status`, "approve");
-      form.setValue(`items.${index}.current_stage_status`, "approve");
+      form.setValue(`items.${index}.current_stage_status`, "approved");
     }
     table.resetRowSelection();
-    toast.success(`${indices.length} item(s) marked as approved`);
   };
 
   const handleBulkActionConfirm = (message: string) => {
@@ -238,7 +237,7 @@ export function PrItemFields({
       title: "Review Selected Items",
       description: "Please provide a reason for sending items for review.",
       confirmLabel: "Send for Review",
-      confirmVariant: "default" as const,
+      confirmVariant: "warning" as const,
     },
     rejected: {
       title: "Reject Selected Items",
@@ -310,7 +309,7 @@ export function PrItemFields({
               </Button>
               <Button
                 type="button"
-                variant="info"
+                variant="warning"
                 size="xs"
                 onClick={() => setBulkAction("review")}
               >

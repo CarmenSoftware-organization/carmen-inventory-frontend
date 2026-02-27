@@ -198,10 +198,13 @@ export function usePrItemTable({
             }}
             aria-label="Select all"
             className="align-[inherit]"
+            disabled={isDisabled}
           />
         );
       },
-      cell: ({ row }) => <DataGridTableRowSelect row={row} />,
+      cell: ({ row }) => (
+        <DataGridTableRowSelect row={row} disabled={isDisabled} />
+      ),
       enableSorting: false,
       enableHiding: false,
       size: 30,

@@ -20,7 +20,7 @@ interface PrActionDialogProps {
   readonly title: string;
   readonly description?: string;
   readonly confirmLabel?: string;
-  readonly confirmVariant?: "default" | "destructive";
+  readonly confirmVariant?: "warning" | "destructive";
   readonly isPending?: boolean;
   readonly onConfirm: (message: string) => void;
 }
@@ -31,7 +31,7 @@ export function PrActionDialog({
   title,
   description,
   confirmLabel = "Confirm",
-  confirmVariant = "default",
+  confirmVariant = "warning",
   isPending,
   onConfirm,
 }: PrActionDialogProps) {
@@ -61,7 +61,7 @@ export function PrActionDialog({
         <div className="space-y-1">
           <Label className="text-sm text-muted-foreground">Reason</Label>
           <Textarea
-            className="text-xs placeholder:text-xs"
+            className="text-xs placeholder:text-xs mb-4"
             placeholder="Enter reason (optional)..."
             maxLength={256}
             value={message}

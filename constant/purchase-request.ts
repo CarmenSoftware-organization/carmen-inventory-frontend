@@ -25,9 +25,8 @@ export const PR_ITEM_STATUS_CONFIG: Record<
   string,
   { variant: BadgeVariant; label: string }
 > = {
-  pending: { variant: "warning", label: "PENDING" },
+  pending: { variant: "info", label: "PENDING" },
   approved: { variant: "success", label: "APPROVED" },
-  review: { variant: "info", label: "REVIEW" },
   rejected: { variant: "destructive", label: "REJECTED" },
 };
 

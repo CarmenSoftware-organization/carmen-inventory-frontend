@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm, useWatch, type Resolver } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -128,10 +128,6 @@ export function PurchaseRequestForm({
     resolver: zodResolver(prSchema) as Resolver<PrFormValues>,
     defaultValues,
   });
-
-  const watchedItems = useWatch({ control: form.control, name: "items" });
-  const itemStatuses =
-    watchedItems?.map((item) => item.stage_status || "") ?? [];
 
   const requestorName = profile
     ? `${profile.user_info.firstname} ${profile.user_info.lastname}`
@@ -491,7 +487,8 @@ export function PurchaseRequestForm({
           isPending={isPending}
           isDeletePending={deletePr.isPending}
           hasRecord={!!purchaseRequest}
-          itemStatuses={itemStatuses}
+          control={form.control}
+          itemCount={defaultValues.items?.length ?? 0}
           onEdit={() => setMode("edit")}
           onCancel={handleCancel}
           onDelete={() => setShowDelete(true)}

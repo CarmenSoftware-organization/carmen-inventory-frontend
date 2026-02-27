@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useWatch, type Control } from "react-hook-form";
 import {
   Check,
   Eye,
@@ -23,6 +24,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { STAGE_ROLE } from "@/types/stage-role";
 import type { FormMode } from "@/types/form";
+import type { PrFormValues } from "./pr-form-schema";
 
 interface PrFormActionsProps {
   readonly mode: FormMode;
@@ -31,7 +33,8 @@ interface PrFormActionsProps {
   readonly isPending: boolean;
   readonly isDeletePending: boolean;
   readonly hasRecord: boolean;
-  readonly itemStatuses?: string[];
+  readonly control: Control<PrFormValues>;
+  readonly itemCount: number;
   readonly onEdit: () => void;
   readonly onCancel: () => void;
   readonly onDelete: () => void;
@@ -50,7 +53,8 @@ export function PrFormActions({
   isPending,
   isDeletePending,
   hasRecord,
-  itemStatuses,
+  control,
+  itemCount,
   onEdit,
   onCancel,
   onDelete,
@@ -65,7 +69,7 @@ export function PrFormActions({
   const isEdit = mode === "edit";
   const isVoided = prStatus === "voided";
   const isViewOnly = role === STAGE_ROLE.VIEW_ONLY;
-  const showWorkflowActions = isView && hasRecord && !isVoided && !isViewOnly;
+  const showWorkflowActions = hasRecord && !isVoided && !isViewOnly;
 
   return (
     <div className="flex items-center gap-2">
@@ -76,20 +80,6 @@ export function PrFormActions({
               <Pencil />
               Edit
             </Button>
-          )}
-
-          {showWorkflowActions && (
-            <WorkflowActions
-              role={role}
-              prStatus={prStatus}
-              isPending={isPending}
-              itemStatuses={itemStatuses}
-              onSubmitPr={onSubmitPr}
-              onApprove={onApprove}
-              onReject={onReject}
-              onSendBack={onSendBack}
-              onPurchaseApprove={onPurchaseApprove}
-            />
           )}
         </>
       ) : (
@@ -116,6 +106,21 @@ export function PrFormActions({
         </>
       )}
 
+      {showWorkflowActions && (
+        <WorkflowActions
+          control={control}
+          itemCount={itemCount}
+          role={role}
+          prStatus={prStatus}
+          isPending={isPending}
+          onSubmitPr={onSubmitPr}
+          onApprove={onApprove}
+          onReject={onReject}
+          onSendBack={onSendBack}
+          onPurchaseApprove={onPurchaseApprove}
+        />
+      )}
+
       {prStatus === "draft" && (
         <Button
           type="button"
@@ -140,10 +145,11 @@ export function PrFormActions({
 }
 
 interface WorkflowActionsProps {
+  readonly control: Control<PrFormValues>;
+  readonly itemCount: number;
   readonly role?: string;
   readonly prStatus?: string;
   readonly isPending: boolean;
-  readonly itemStatuses?: string[];
   readonly onSubmitPr?: () => void;
   readonly onApprove?: () => void;
   readonly onReject?: () => void;
@@ -163,18 +169,19 @@ const computePurchaseAction = (
   statuses: string[],
 ): "none" | "review" | "rejected" | "approved" => {
   if (statuses.length === 0) return "none";
-  if (statuses.includes("pending") || statuses.includes("")) return "none";
   if (statuses.includes("review")) return "review";
+  if (statuses.includes("pending") || statuses.includes("")) return "none";
   if (statuses.includes("approved")) return "approved";
   if (statuses.every((s) => s === "rejected")) return "rejected";
   return "none";
 };
 
 const WorkflowActions = ({
+  control,
+  itemCount,
   role,
   prStatus,
   isPending,
-  itemStatuses = [],
   onSubmitPr,
   onApprove,
   onReject,
@@ -182,6 +189,20 @@ const WorkflowActions = ({
   onPurchaseApprove,
 }: WorkflowActionsProps) => {
   const [confirm, setConfirm] = useState<ConfirmConfig | null>(null);
+
+  // Watch each item's current_stage_status individually — proven reactive
+  // pattern (same as StatusCell which correctly updates on setValue).
+  const statusFieldNames = Array.from(
+    { length: itemCount },
+    (_, i) => `items.${i}.current_stage_status` as const,
+  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rawStatuses = useWatch({ control, name: statusFieldNames as any });
+
+  const itemStatuses =
+    itemCount > 0 && Array.isArray(rawStatuses)
+      ? rawStatuses.map((s: unknown) => (typeof s === "string" ? s : "") || "")
+      : [];
 
   const canSubmit = role === STAGE_ROLE.CREATE && prStatus !== "in_progress";
 

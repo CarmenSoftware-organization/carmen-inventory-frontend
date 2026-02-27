@@ -456,7 +456,10 @@ function DataGridTableLoader() {
   );
 }
 
-function DataGridTableRowSelect<TData>({ row }: { row: Row<TData> }) {
+function DataGridTableRowSelect<TData>({
+  row,
+  disabled,
+}: { row: Row<TData>; disabled?: boolean }) {
   return (
     <>
       <div
@@ -468,6 +471,7 @@ function DataGridTableRowSelect<TData>({ row }: { row: Row<TData> }) {
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
+        disabled={disabled}
         aria-label="Select row"
         className="align-[inherit]"
       />
