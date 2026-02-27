@@ -116,7 +116,7 @@ export function PrFormActions({
         </>
       )}
 
-      {hasRecord && (isEdit || (isView && prStatus === "draft")) && (
+      {prStatus === "draft" && (
         <Button
           type="button"
           variant="destructive"
