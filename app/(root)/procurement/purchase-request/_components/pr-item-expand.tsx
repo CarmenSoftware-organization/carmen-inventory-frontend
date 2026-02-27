@@ -16,6 +16,7 @@ import { LookupTaxProfile } from "@/components/lookup/lookup-tax-profile";
 import type { PrFormValues } from "./pr-form-schema";
 import type { PricelistEntry } from "./pr-pricelist-dialog";
 import InventoryRow from "./inventory-row";
+import { PR_ITEM_PRICELIST_COMPARE_TYPE } from "@/types/purchase-request";
 
 const PrPricelistDialog = dynamic(() =>
   import("./pr-pricelist-dialog").then((mod) => mod.PrPricelistDialog),
@@ -153,6 +154,10 @@ export function PrItemExpand({
       entry.pricelist_detail_id,
     );
     form.setValue(`items.${index}.pricelist_no`, entry.pricelist_no);
+    form.setValue(
+      `items.${index}.pricelist_type`,
+      PR_ITEM_PRICELIST_COMPARE_TYPE.MANUAL_SELECT,
+    );
   };
 
   return (
@@ -197,6 +202,12 @@ export function PrItemExpand({
             {...form.register(`items.${index}.pricelist_price`, {
               valueAsNumber: true,
             })}
+            onChange={() => {
+              form.setValue(
+                `items.${index}.pricelist_type`,
+                PR_ITEM_PRICELIST_COMPARE_TYPE.MANUAL_INPUT,
+              );
+            }}
           />
         </div>
         <div>

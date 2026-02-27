@@ -94,7 +94,7 @@ export function PurchaseRequestForm({
   // Workflow action mutations
   const submitPr = useUpdatePr("submit");
   const approvePr = useUpdatePr("approve");
-  const purchaseApprovePr = useUpdatePr("purchase");
+  const purchaseApprovePr = useUpdatePr("approve");
   const rejectPr = useUpdatePr("reject");
   const sendBackPr = useUpdatePr("send_back");
   const reviewPr = useUpdatePr("review");
@@ -296,6 +296,7 @@ export function PurchaseRequestForm({
       .filter((item) => item.id)
       .map((item) => ({
         id: item.id!,
+        purchase_request_id: purchaseRequest?.id,
         stage_status: item.stage_status || "approve",
         stage_message: item.stage_message || "",
         approved_qty: Number(item.approved_qty),
@@ -303,12 +304,21 @@ export function PurchaseRequestForm({
         vendor_id: item.vendor_id || undefined,
         pricelist_detail_id: item.pricelist_detail_id,
         pricelist_price: Number(item.pricelist_price),
+        pricelist_no: item.pricelist_no,
+        pricelist_type: item.pricelist_type || null,
         currency_id: item.currency_id || undefined,
+        delivery_point_id: item.delivery_point_id,
+        delivery_date: item.delivery_date,
+        location_id: item.location_id,
         tax_profile_id: item.tax_profile_id,
         tax_rate: Number(item.tax_rate ?? 0),
         tax_amount: Number(item.tax_amount ?? 0),
+        is_tax_adjustment: item.is_tax_adjustment ?? false,
         discount_rate: Number(item.discount_rate ?? 0),
         discount_amount: Number(item.discount_amount ?? 0),
+        is_discount_adjustment: item.is_discount_adjustment ?? false,
+        net_amount: Number(item.net_amount ?? 0),
+        total_price: Number(item.total_price ?? 0),
         foc_qty: Number(item.foc_qty ?? 0),
         foc_unit_id: item.foc_unit_id || undefined,
       }));
@@ -449,7 +459,7 @@ export function PurchaseRequestForm({
   };
 
   return (
-    <div className="flex flex-col flex-1 gap-4">
+    <div className="flex flex-col flex-1">
       <div className="flex items-center justify-between my-2">
         <div className="flex items-center gap-2">
           <Button

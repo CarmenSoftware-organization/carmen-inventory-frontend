@@ -191,3 +191,9 @@ export const purchaseRequestSchema = z.looseObject({
   created_at: z.string(),
   purchase_request_detail: z.array(purchaseRequestDetailSummarySchema),
 });
+
+export enum PR_ITEM_PRICELIST_COMPARE_TYPE {
+  AUTOMATIC = "automatic",
+  MANUAL_SELECT = "manual_select",
+  MANUAL_INPUT = "manual_input",
+}

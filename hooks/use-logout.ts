@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { profileQueryKey } from "@/hooks/use-profile";
 import { useRouter } from "next/navigation";
 import { API_ENDPOINTS } from "@/constant/api-endpoints";
 import { httpClient } from "@/lib/http-client";
@@ -9,7 +8,7 @@ export function useLogout() {
   const router = useRouter();
 
   const redirectToLogin = () => {
-    queryClient.removeQueries({ queryKey: profileQueryKey });
+    queryClient.clear();
     router.push("/login");
   };
 

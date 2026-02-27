@@ -40,6 +40,7 @@ const PrSelectDialog = dynamic(() =>
 import EmptyComponent from "@/components/empty-component";
 import { PR_ITEM } from "./pr-form-schema";
 import { getDeleteDescription } from "@/lib/form-utils";
+import { PR_ITEM_PRICELIST_COMPARE_TYPE } from "@/types/purchase-request";
 
 interface PrItemFieldsProps {
   form: UseFormReturn<PrFormValues>;
@@ -166,6 +167,10 @@ export function PrItemFields({
         form.setValue(`items.${index}.vendor_name`, selected.vendor_name);
         form.setValue(`items.${index}.pricelist_price`, selected.price);
         form.setValue(
+          `items.${index}.pricelist_type`,
+          PR_ITEM_PRICELIST_COMPARE_TYPE.AUTOMATIC,
+        );
+        form.setValue(
           `items.${index}.pricelist_detail_id`,
           selected.pricelist_detail_id,
         );
@@ -274,11 +279,13 @@ export function PrItemFields({
               </Button>
             )}
             {!isDisabled &&
-              (isAdd || prStatus === "draft" || role === STAGE_ROLE.PURCHASE) && (
-              <Button type="button" size="xs" onClick={() => handleAddItem()}>
-                <Plus /> Add Item
-              </Button>
-            )}
+              (isAdd ||
+                prStatus === "draft" ||
+                role === STAGE_ROLE.PURCHASE) && (
+                <Button type="button" size="xs" onClick={() => handleAddItem()}>
+                  <Plus /> Add Item
+                </Button>
+              )}
 
             {role === STAGE_ROLE.PURCHASE && (
               <Button

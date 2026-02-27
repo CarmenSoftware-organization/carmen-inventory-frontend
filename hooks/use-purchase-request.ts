@@ -322,6 +322,7 @@ export interface WorkflowStageDetail {
 
 export interface ApproveDetail {
   id: string;
+  purchase_request_id?: string;
   stage_status: string;
   stage_message: string;
   approved_qty: number;
@@ -329,12 +330,21 @@ export interface ApproveDetail {
   vendor_id?: string | null;
   pricelist_detail_id?: string | null;
   pricelist_price?: number;
+  pricelist_no?: string | null;
+  pricelist_type?: string | null;
   currency_id?: string;
+  delivery_point_id?: string | null;
+  delivery_date?: string;
+  location_id?: string | null;
   tax_profile_id?: string | null;
   tax_rate?: number;
   tax_amount?: number;
+  is_tax_adjustment?: boolean;
   discount_rate?: number;
   discount_amount?: number;
+  is_discount_adjustment?: boolean;
+  net_amount?: number;
+  total_price?: number;
   foc_qty?: number;
   foc_unit_id?: string | null;
 }
