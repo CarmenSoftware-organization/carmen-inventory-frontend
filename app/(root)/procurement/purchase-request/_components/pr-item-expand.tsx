@@ -17,6 +17,7 @@ import type { PrFormValues } from "./pr-form-schema";
 import type { PricelistEntry } from "./pr-pricelist-dialog";
 import InventoryRow from "./inventory-row";
 import { PR_ITEM_PRICELIST_COMPARE_TYPE } from "@/types/purchase-request";
+import { formatDate } from "@/lib/date-utils";
 
 const PrPricelistDialog = dynamic(() =>
   import("./pr-pricelist-dialog").then((mod) => mod.PrPricelistDialog),
@@ -177,7 +178,16 @@ export function PrItemExpand({
             render={({ field }) => (
               <LookupVendor
                 value={field.value ?? ""}
-                onValueChange={field.onChange}
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  if (value) {
+                    form.setValue(`items.${index}.stage_status`, "approve");
+                    form.setValue(
+                      `items.${index}.current_stage_status`,
+                      "approved",
+                    );
+                  }
+                }}
                 disabled={disabled}
                 className="w-full h-7 text-xs"
               />
@@ -411,7 +421,7 @@ export function PrItemExpand({
         productName={productName}
         unitId={unitId}
         currencyId={currencyId}
-        atDate={deliveryDate}
+        atDate={formatDate(deliveryDate, "dd-MM-yyyy")}
         requestedQty={qty}
         requestedUnitName={requestedUnitName}
         approvedQty={approvedQty}

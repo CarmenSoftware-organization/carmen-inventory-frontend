@@ -47,7 +47,6 @@ export function LookupTaxProfile({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="none">None</SelectItem>
         {taxProfiles.map((tp) => (
           <SelectItem key={tp.id} value={tp.id} className="text-xs">
             {tp.name}

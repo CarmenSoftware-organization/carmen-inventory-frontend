@@ -41,6 +41,7 @@ import EmptyComponent from "@/components/empty-component";
 import { PR_ITEM } from "./pr-form-schema";
 import { getDeleteDescription } from "@/lib/form-utils";
 import { PR_ITEM_PRICELIST_COMPARE_TYPE } from "@/types/purchase-request";
+import { formatDate } from "@/lib/date-utils";
 
 interface PrItemFieldsProps {
   form: UseFormReturn<PrFormValues>;
@@ -151,7 +152,7 @@ export function PrItemFields({
           {
             product_id: item.product_id,
             unit_id: item.requested_unit_id,
-            at_date: item.delivery_date,
+            at_date: formatDate(item.delivery_date, "dd-MM-yyyy"),
             currency_id: item.currency_id,
           },
         );
@@ -305,15 +306,17 @@ export function PrItemFields({
           </div>
           {selectedRows.length > 0 && canBulkAction && (
             <div className="flex items-center gap-1.5">
-              <Button
-                type="button"
-                variant="success"
-                size="xs"
-                onClick={handleBulkApprove}
-              >
-                <Check />
-                Approve
-              </Button>
+              {role !== STAGE_ROLE.PURCHASE && (
+                <Button
+                  type="button"
+                  variant="success"
+                  size="xs"
+                  onClick={handleBulkApprove}
+                >
+                  <Check />
+                  Approve
+                </Button>
+              )}
               <Button
                 type="button"
                 variant="warning"

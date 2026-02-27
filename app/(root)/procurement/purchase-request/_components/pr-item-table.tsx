@@ -89,6 +89,8 @@ const ProductCell = memo(function ProductCell({
           locationId={locationId}
           value={field.value ?? ""}
           onValueChange={(value, product) => {
+            console.log("product", product);
+
             field.onChange(value);
             if (product) {
               form.setValue(`items.${index}.product_name`, product.name);

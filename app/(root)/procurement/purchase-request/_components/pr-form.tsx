@@ -241,6 +241,7 @@ export function PurchaseRequestForm({
             if (data?.data?.id) {
               router.replace(`/procurement/purchase-request/${data.data.id}`);
             }
+            setMode("view");
           },
           onError: (err) => toast.error(err.message),
         },
@@ -333,7 +334,10 @@ export function PurchaseRequestForm({
         details: prepareStageDetails(),
       },
       {
-        onSuccess: () => toast.success("Purchase request submitted"),
+        onSuccess: () => {
+          toast.success("Purchase request submitted");
+          setMode("view");
+        },
         onError: (err) => toast.error(err.message),
       },
     );
@@ -348,7 +352,10 @@ export function PurchaseRequestForm({
         details: prepareApproveDetails(),
       },
       {
-        onSuccess: () => toast.success("Purchase request approved"),
+        onSuccess: () => {
+          toast.success("Purchase request approved");
+          setMode("view");
+        },
         onError: (err) => toast.error(err.message),
       },
     );
@@ -363,7 +370,10 @@ export function PurchaseRequestForm({
         details: prepareApproveDetails(),
       },
       {
-        onSuccess: () => toast.success("Purchase approved"),
+        onSuccess: () => {
+          toast.success("Purchase approved");
+          setMode("view");
+        },
         onError: (err) => toast.error(err.message),
       },
     );
