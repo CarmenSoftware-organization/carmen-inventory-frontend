@@ -457,6 +457,7 @@ export function PurchaseRequestForm({
       <div className="sticky top-0 z-10 bg-background flex items-center justify-between py-2">
         <div className="flex items-center gap-2">
           <Button
+            type="button"
             variant="ghost"
             size="icon-sm"
             aria-label="Go back"

@@ -72,7 +72,7 @@ export function PrFormActions({
       {isView ? (
         <>
           {!isViewOnly && !isVoided && (
-            <Button size="sm" onClick={onEdit}>
+            <Button type="button" size="sm" onClick={onEdit}>
               <Pencil />
               Edit
             </Button>
@@ -130,7 +130,7 @@ export function PrFormActions({
       )}
 
       {hasRecord && (
-        <Button size="sm" variant="info" onClick={onComment}>
+        <Button type="button" size="sm" variant="info" onClick={onComment}>
           <MessageSquare />
           Comment
         </Button>
@@ -195,6 +195,7 @@ const WorkflowActions = ({
     <>
       {canSubmit && (
         <Button
+          type="button"
           size="sm"
           variant="info"
           disabled={isPending}
@@ -216,6 +217,7 @@ const WorkflowActions = ({
 
       {canApprove && purchaseAction === "approved" && (
         <Button
+          type="button"
           size="sm"
           variant="success"
           disabled={isPending}
@@ -237,6 +239,7 @@ const WorkflowActions = ({
 
       {canApprove && purchaseAction === "rejected" && (
         <Button
+          type="button"
           size="sm"
           variant="destructive"
           disabled={isPending}
@@ -258,6 +261,7 @@ const WorkflowActions = ({
 
       {canApprove && purchaseAction === "review" && (
         <Button
+          type="button"
           size="sm"
           variant="warning"
           disabled={isPending}
@@ -279,6 +283,7 @@ const WorkflowActions = ({
 
       {canPurchaseApprove && purchaseAction === "approved" && (
         <Button
+          type="button"
           size="sm"
           variant="success"
           disabled={isPending}
@@ -299,6 +304,7 @@ const WorkflowActions = ({
 
       {canPurchaseApprove && purchaseAction === "rejected" && (
         <Button
+          type="button"
           size="sm"
           variant="destructive"
           disabled={isPending}
@@ -320,6 +326,7 @@ const WorkflowActions = ({
 
       {canPurchaseApprove && purchaseAction === "review" && (
         <Button
+          type="button"
           size="sm"
           variant="warning"
           disabled={isPending}

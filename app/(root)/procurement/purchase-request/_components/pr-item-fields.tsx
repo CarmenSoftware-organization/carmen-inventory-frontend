@@ -123,6 +123,7 @@ export function PrItemFields({
     itemFields,
     isDisabled,
     prStatus,
+    role,
     dateFormat,
     buCode,
     onDelete: setDeleteIndex,
@@ -196,8 +197,8 @@ export function PrItemFields({
   const handleBulkApprove = () => {
     const indices = getSelectedIndices();
     for (const index of indices) {
-      form.setValue(`items.${index}.stage_status`, "approved");
-      form.setValue(`items.${index}.current_stage_status`, "approved");
+      form.setValue(`items.${index}.stage_status`, "approve");
+      form.setValue(`items.${index}.current_stage_status`, "approve");
     }
     table.resetRowSelection();
     toast.success(`${indices.length} item(s) marked as approved`);
@@ -213,7 +214,6 @@ export function PrItemFields({
     }
     table.resetRowSelection();
     setBulkAction(null);
-    toast.success(`${indices.length} item(s) marked as ${bulkAction}`);
   };
 
   const handleBulkSplit = () => {

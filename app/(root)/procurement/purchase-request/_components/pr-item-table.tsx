@@ -148,6 +148,7 @@ interface UsePrItemTableOptions {
   itemFields: ItemField[];
   isDisabled: boolean;
   prStatus?: string;
+  role?: string;
   dateFormat: string;
   buCode?: string;
   onDelete: (index: number) => void;
@@ -158,6 +159,7 @@ export function usePrItemTable({
   itemFields,
   isDisabled,
   prStatus,
+  role,
   buCode,
   onDelete,
 }: UsePrItemTableOptions) {
@@ -234,7 +236,7 @@ export function usePrItemTable({
           <PrItemExpand
             item={item}
             form={form}
-            disabled={isDisabled}
+            disabled={isDisabled || role !== "purchase"}
             itemFields={itemFields}
             buCode={buCode}
           />
@@ -486,6 +488,7 @@ export function usePrItemTable({
     form,
     isDisabled,
     prStatus,
+    role,
     buCode,
     itemFields,
     onDelete,
