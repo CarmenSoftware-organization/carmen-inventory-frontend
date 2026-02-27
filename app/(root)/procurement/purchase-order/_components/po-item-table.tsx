@@ -29,20 +29,20 @@ const setProductToItem = (
   value: string,
   product?: Product,
 ) => {
+  console.log("product", product);
+
   const current = form.getValues(`items.${index}`);
-  const unitId = product?.inventory_unit?.id ?? null;
-  const unitName = product?.inventory_unit?.name ?? "";
   form.setValue(`items.${index}`, {
     ...current,
     product_id: value,
     product_name: product?.name ?? "",
     product_local_name: product?.local_name ?? "",
     // base unit = inventory unit (always the product's base unit)
-    base_unit_id: unitId,
-    base_unit_name: unitName,
+    base_unit_id: product?.inventory_unit?.id ?? null,
+    base_unit_name: product?.inventory_unit?.name ?? "",
     // order unit = reset so LookupProductUnit auto-selects
-    order_unit_id: unitId ?? "",
-    order_unit_name: unitName,
+    order_unit_id: product?.inventory_unit?.id ?? "",
+    order_unit_name: product?.inventory_unit?.name ?? "",
     order_unit_conversion_factor: 1,
   });
 };
