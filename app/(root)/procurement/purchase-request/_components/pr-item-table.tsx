@@ -176,6 +176,8 @@ export function usePrItemTable({
 
   // Memoize all columns — prevents React Table from rebuilding table structure on every render.
   // Only rebuilds when form mode (disabled), status (prStatus), or items change.
+  const isCreateDisabled = isDisabled || role !== "create";
+
   const allColumns = useMemo<ColumnDef<ItemField>[]>(() => {
     const prSelectColumn: ColumnDef<ItemField> = {
       id: "select",
@@ -268,7 +270,7 @@ export function usePrItemTable({
               <LookupUserLocation
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
-                disabled={isDisabled}
+                disabled={isCreateDisabled}
                 className="w-full h-7 text-xs"
               />
             )}
@@ -284,7 +286,7 @@ export function usePrItemTable({
             control={form.control}
             form={form}
             index={row.index}
-            isDisabled={isDisabled}
+            isDisabled={isCreateDisabled}
           />
         ),
         size: 350,
@@ -307,7 +309,7 @@ export function usePrItemTable({
               min={1}
               placeholder="Qty"
               className="h-7 text-xs text-right"
-              disabled={isDisabled}
+              disabled={isCreateDisabled}
               {...form.register(`items.${row.index}.requested_qty`, {
                 valueAsNumber: true,
               })}
@@ -316,7 +318,7 @@ export function usePrItemTable({
               control={form.control}
               index={row.index}
               unitField="requested_unit_id"
-              disabled={isDisabled}
+              disabled={isCreateDisabled}
               onExtraChange={(value) => {
                 form.setValue(`items.${row.index}.foc_unit_id`, value);
                 form.setValue(`items.${row.index}.approved_unit_id`, value);
