@@ -28,6 +28,7 @@ export const PR_ITEM_STATUS_CONFIG: Record<
   pending: { variant: "info", label: "PENDING" },
   approved: { variant: "success", label: "APPROVED" },
   rejected: { variant: "destructive", label: "REJECTED" },
+  review: { variant: "warning", label: "REVIEW" },
 };
 
 /** Badge variant for workflow history actions */

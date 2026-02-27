@@ -273,7 +273,8 @@ export function PrItemFields({
                 )}
               </Button>
             )}
-            {!isDisabled && role !== STAGE_ROLE.PURCHASE && (
+            {!isDisabled &&
+              (isAdd || prStatus === "draft" || role === STAGE_ROLE.PURCHASE) && (
               <Button type="button" size="xs" onClick={() => handleAddItem()}>
                 <Plus /> Add Item
               </Button>

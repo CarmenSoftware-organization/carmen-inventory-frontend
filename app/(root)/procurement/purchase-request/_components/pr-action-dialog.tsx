@@ -80,7 +80,7 @@ export function PrActionDialog({
               e.preventDefault();
               handleConfirm();
             }}
-            disabled={isPending}
+            disabled={isPending || !message.trim()}
           >
             {isPending ? "Processing..." : confirmLabel}
           </AlertDialogAction>
