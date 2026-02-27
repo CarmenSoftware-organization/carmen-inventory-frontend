@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   Check,
-  ChevronDown,
   Eye,
   MessageSquare,
   Pencil,
@@ -9,16 +8,9 @@ import {
   SendHorizonal,
   ShoppingCart,
   Trash2,
-  Undo2,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -39,6 +31,7 @@ interface PrFormActionsProps {
   readonly isPending: boolean;
   readonly isDeletePending: boolean;
   readonly hasRecord: boolean;
+  readonly itemStatuses?: string[];
   readonly onEdit: () => void;
   readonly onCancel: () => void;
   readonly onDelete: () => void;
@@ -47,7 +40,6 @@ interface PrFormActionsProps {
   readonly onApprove?: () => void;
   readonly onReject?: () => void;
   readonly onSendBack?: () => void;
-  readonly onReview?: () => void;
   readonly onPurchaseApprove?: () => void;
 }
 
@@ -58,6 +50,7 @@ export function PrFormActions({
   isPending,
   isDeletePending,
   hasRecord,
+  itemStatuses,
   onEdit,
   onCancel,
   onDelete,
@@ -66,7 +59,6 @@ export function PrFormActions({
   onApprove,
   onReject,
   onSendBack,
-  onReview,
   onPurchaseApprove,
 }: PrFormActionsProps) {
   const isView = mode === "view";
@@ -91,11 +83,11 @@ export function PrFormActions({
               role={role}
               prStatus={prStatus}
               isPending={isPending}
+              itemStatuses={itemStatuses}
               onSubmitPr={onSubmitPr}
               onApprove={onApprove}
               onReject={onReject}
               onSendBack={onSendBack}
-              onReview={onReview}
               onPurchaseApprove={onPurchaseApprove}
             />
           )}
@@ -151,11 +143,11 @@ interface WorkflowActionsProps {
   readonly role?: string;
   readonly prStatus?: string;
   readonly isPending: boolean;
+  readonly itemStatuses?: string[];
   readonly onSubmitPr?: () => void;
   readonly onApprove?: () => void;
   readonly onReject?: () => void;
   readonly onSendBack?: () => void;
-  readonly onReview?: () => void;
   readonly onPurchaseApprove?: () => void;
 }
 
@@ -163,19 +155,30 @@ type ConfirmConfig = {
   title: string;
   description: string;
   confirmLabel: string;
-  variant: "default" | "destructive" | "success" | "info";
+  variant: "default" | "destructive" | "success" | "info" | "warning";
   onConfirm: () => void;
+};
+
+const computePurchaseAction = (
+  statuses: string[],
+): "none" | "review" | "rejected" | "approved" => {
+  if (statuses.length === 0) return "none";
+  if (statuses.includes("pending") || statuses.includes("")) return "none";
+  if (statuses.includes("review")) return "review";
+  if (statuses.includes("approved")) return "approved";
+  if (statuses.every((s) => s === "rejected")) return "rejected";
+  return "none";
 };
 
 const WorkflowActions = ({
   role,
   prStatus,
   isPending,
+  itemStatuses = [],
   onSubmitPr,
   onApprove,
   onReject,
   onSendBack,
-  onReview,
   onPurchaseApprove,
 }: WorkflowActionsProps) => {
   const [confirm, setConfirm] = useState<ConfirmConfig | null>(null);
@@ -184,7 +187,7 @@ const WorkflowActions = ({
 
   const canApprove = role === STAGE_ROLE.APPROVE;
   const canPurchaseApprove = role === STAGE_ROLE.PURCHASE;
-  const canAction = canApprove || canPurchaseApprove;
+  const purchaseAction = computePurchaseAction(itemStatuses);
 
   const openConfirm = (config: ConfirmConfig) => setConfirm(config);
 
@@ -211,7 +214,7 @@ const WorkflowActions = ({
         </Button>
       )}
 
-      {canApprove && (
+      {canApprove && purchaseAction === "approved" && (
         <Button
           size="sm"
           variant="success"
@@ -232,7 +235,49 @@ const WorkflowActions = ({
         </Button>
       )}
 
-      {canPurchaseApprove && (
+      {canApprove && purchaseAction === "rejected" && (
+        <Button
+          size="sm"
+          variant="destructive"
+          disabled={isPending}
+          onClick={() =>
+            openConfirm({
+              title: "Reject Purchase Request",
+              description:
+                "All items are rejected. This will reject the PR. Are you sure?",
+              confirmLabel: "Reject",
+              variant: "destructive",
+              onConfirm: () => onReject?.(),
+            })
+          }
+        >
+          <X />
+          Reject
+        </Button>
+      )}
+
+      {canApprove && purchaseAction === "review" && (
+        <Button
+          size="sm"
+          variant="warning"
+          disabled={isPending}
+          onClick={() =>
+            openConfirm({
+              title: "Send Back Purchase Request",
+              description:
+                "Some items need review. This will send the PR back. Are you sure?",
+              confirmLabel: "Send Back",
+              variant: "warning",
+              onConfirm: () => onSendBack?.(),
+            })
+          }
+        >
+          <Eye />
+          Send Back
+        </Button>
+      )}
+
+      {canPurchaseApprove && purchaseAction === "approved" && (
         <Button
           size="sm"
           variant="success"
@@ -248,33 +293,50 @@ const WorkflowActions = ({
           }
         >
           <ShoppingCart />
-          Purchase Approve
+          Approve
         </Button>
       )}
 
-      {canAction && (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button size="sm" variant="outline" disabled={isPending}>
-              More
-              <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={onReject}>
-              <X className="text-destructive" />
-              Reject
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onSendBack}>
-              <Undo2 className="text-warning" />
-              Send Back
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onReview}>
-              <Eye />
-              Review
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      {canPurchaseApprove && purchaseAction === "rejected" && (
+        <Button
+          size="sm"
+          variant="destructive"
+          disabled={isPending}
+          onClick={() =>
+            openConfirm({
+              title: "Reject Purchase Request",
+              description:
+                "All items are rejected. This will reject the PR. Are you sure?",
+              confirmLabel: "Reject",
+              variant: "destructive",
+              onConfirm: () => onReject?.(),
+            })
+          }
+        >
+          <X />
+          Reject
+        </Button>
+      )}
+
+      {canPurchaseApprove && purchaseAction === "review" && (
+        <Button
+          size="sm"
+          variant="warning"
+          disabled={isPending}
+          onClick={() =>
+            openConfirm({
+              title: "Send Back Purchase Request",
+              description:
+                "Some items need review. This will send the PR back. Are you sure?",
+              confirmLabel: "Send Back",
+              variant: "warning",
+              onConfirm: () => onSendBack?.(),
+            })
+          }
+        >
+          <Eye />
+          Send Back
+        </Button>
       )}
 
       <AlertDialog

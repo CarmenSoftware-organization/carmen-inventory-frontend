@@ -471,10 +471,10 @@ export function usePrItemTable({
     };
 
     const isDraft = !prStatus || prStatus === "draft";
-    const hiddenInDraft = new Set(["foc", "approved"]);
+    const hiddenInDraft = new Set(["foc", "approved", "amount"]);
 
     return [
-      expandColumn,
+      ...(isDraft ? [] : [expandColumn]),
       ...(isDraft ? [] : [prSelectColumn]),
       indexColumn,
       ...(isDraft

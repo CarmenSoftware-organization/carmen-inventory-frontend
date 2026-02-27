@@ -370,7 +370,7 @@ export function PrItemFields({
         </DataGridContainer>
       </DataGrid>
 
-      {!isAdd && itemFields.length > 0 && (
+      {!isAdd && itemFields.length > 0 && prStatus && prStatus !== "draft" && (
         <GrandTotal
           control={form.control}
           itemCount={itemFields.length}

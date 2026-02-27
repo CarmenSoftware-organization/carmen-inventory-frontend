@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm, type Resolver } from "react-hook-form";
+import { useForm, useWatch, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -128,6 +128,10 @@ export function PurchaseRequestForm({
     resolver: zodResolver(prSchema) as Resolver<PrFormValues>,
     defaultValues,
   });
+
+  const watchedItems = useWatch({ control: form.control, name: "items" });
+  const itemStatuses =
+    watchedItems?.map((item) => item.stage_status || "") ?? [];
 
   const requestorName = profile
     ? `${profile.user_info.firstname} ${profile.user_info.lastname}`
@@ -284,8 +288,7 @@ export function PurchaseRequestForm({
       .filter((item) => item.id)
       .map((item) => ({
         id: item.id!,
-        stage_status:
-          item.stage_status || item.current_stage_status || "pending",
+        stage_status: "submit",
         stage_message: item.stage_message || defaultMessage,
       }));
   };
@@ -361,7 +364,7 @@ export function PurchaseRequestForm({
 
   const handleReject = () => setActionDialog({ type: "reject" });
   const handleSendBack = () => setActionDialog({ type: "send_back" });
-  const handleReview = () => setActionDialog({ type: "review" });
+  // const handleReview = () => setActionDialog({ type: "review" });
 
   const handleActionConfirm = (message: string) => {
     if (!purchaseRequest) return;
@@ -487,6 +490,7 @@ export function PurchaseRequestForm({
           isPending={isPending}
           isDeletePending={deletePr.isPending}
           hasRecord={!!purchaseRequest}
+          itemStatuses={itemStatuses}
           onEdit={() => setMode("edit")}
           onCancel={handleCancel}
           onDelete={() => setShowDelete(true)}
@@ -495,7 +499,6 @@ export function PurchaseRequestForm({
           onApprove={handleApprove}
           onReject={handleReject}
           onSendBack={handleSendBack}
-          onReview={handleReview}
           onPurchaseApprove={handlePurchaseApprove}
         />
       </div>
