@@ -1,3 +1,5 @@
+import { ProductStatusType } from "./product";
+
 export interface PurchaseOrderDetail {
   id: string;
   sequence: number;
@@ -105,4 +107,19 @@ export interface PurchaseOrder {
   created_at: string;
   updated_at: string;
   details: PurchaseOrderDetail[];
+}
+
+export interface ProductOnPo {
+  id: string;
+  code: string;
+  name: string;
+  local_name: string;
+  product_status_type: ProductStatusType;
+  inventory_unit_id: string;
+  inventory_unit_name: string;
+  product_item_group: { id?: string; name: string } | null;
+  product_sub_category: { id?: string; name: string } | null;
+  product_category: { id?: string; name: string } | null;
+  created_at: string;
+  updated_at: string;
 }

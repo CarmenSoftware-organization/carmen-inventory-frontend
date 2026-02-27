@@ -20,8 +20,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { LookupProduct } from "@/components/lookup/lookup-product";
 import { LookupProductUnit } from "@/components/lookup/lookup-product-unit";
 import { LookupTaxProfile } from "@/components/lookup/lookup-tax-profile";
-import type { Product } from "@/types/product";
 import type { PoFormValues } from "./po-form-schema";
+import type { Product } from "@/types/product";
 
 const setProductToItem = (
   form: UseFormReturn<PoFormValues>,
@@ -29,20 +29,20 @@ const setProductToItem = (
   value: string,
   product?: Product,
 ) => {
-  console.log("product", product);
-
   const current = form.getValues(`items.${index}`);
+  const unitId = product?.inventory_unit?.id ?? null;
+  const unitName = product?.inventory_unit?.name ?? "";
   form.setValue(`items.${index}`, {
     ...current,
     product_id: value,
     product_name: product?.name ?? "",
     product_local_name: product?.local_name ?? "",
     // base unit = inventory unit (always the product's base unit)
-    base_unit_id: product?.inventory_unit_id ?? null,
-    base_unit_name: product?.inventory_unit_name ?? "",
+    base_unit_id: unitId,
+    base_unit_name: unitName,
     // order unit = reset so LookupProductUnit auto-selects
-    order_unit_id: product?.inventory_unit_id ?? "",
-    order_unit_name: product?.inventory_unit_name ?? "",
+    order_unit_id: unitId ?? "",
+    order_unit_name: unitName,
     order_unit_conversion_factor: 1,
   });
 };
