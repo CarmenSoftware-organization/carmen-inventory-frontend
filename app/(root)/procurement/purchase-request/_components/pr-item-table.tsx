@@ -176,7 +176,7 @@ export function usePrItemTable({
 
   // Memoize all columns — prevents React Table from rebuilding table structure on every render.
   // Only rebuilds when form mode (disabled), status (prStatus), or items change.
-  const isCreateDisabled = isDisabled || role !== "create";
+  const isCreateDisabled = isDisabled || (!!role && role !== "create");
 
   const allColumns = useMemo<ColumnDef<ItemField>[]>(() => {
     const prSelectColumn: ColumnDef<ItemField> = {
@@ -273,6 +273,14 @@ export function usePrItemTable({
               <LookupUserLocation
                 value={field.value ?? ""}
                 onValueChange={field.onChange}
+                onItemChange={(location) => {
+                  if (location.delivery_point?.id) {
+                    form.setValue(
+                      `items.${row.index}.delivery_point_id`,
+                      location.delivery_point.id,
+                    );
+                  }
+                }}
                 disabled={isCreateDisabled}
                 className="w-full h-7 text-xs"
               />
@@ -295,7 +303,7 @@ export function usePrItemTable({
         size: 350,
       },
       {
-        accessorKey: "current_stage_status",
+        id: "current_stage_status",
         header: "Status",
         cell: ({ row }) => (
           <StatusCell control={form.control} index={row.index} />
@@ -478,7 +486,12 @@ export function usePrItemTable({
     };
 
     const isDraft = !prStatus || prStatus === "draft";
-    const hiddenInDraft = new Set(["foc", "approved", "amount"]);
+    const hiddenInDraft = new Set([
+      "foc",
+      "approved",
+      "amount",
+      "current_stage_status",
+    ]);
 
     return [
       ...(isDraft ? [] : [expandColumn]),
@@ -499,6 +512,7 @@ export function usePrItemTable({
     onDelete,
     setSelectDialogOpen,
     today,
+    isCreateDisabled,
   ]);
 
   const table = useReactTable({

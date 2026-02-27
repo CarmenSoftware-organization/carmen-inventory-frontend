@@ -39,7 +39,6 @@ const PrSelectDialog = dynamic(() =>
 );
 import EmptyComponent from "@/components/empty-component";
 import { PR_ITEM } from "./pr-form-schema";
-import GrandTotal from "./pr-grand-total";
 import { getDeleteDescription } from "@/lib/form-utils";
 
 interface PrItemFieldsProps {
@@ -254,7 +253,7 @@ export function PrItemFields({
 
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-end gap-1.5">
-            {itemFields.length > 0 && (
+            {(role === STAGE_ROLE.APPROVE || role === STAGE_ROLE.PURCHASE) && (
               <Button
                 type="button"
                 variant="ghost"
@@ -369,13 +368,13 @@ export function PrItemFields({
         </DataGridContainer>
       </DataGrid>
 
-      {!isAdd && itemFields.length > 0 && prStatus && prStatus !== "draft" && (
+      {/* {!isAdd && itemFields.length > 0 && prStatus && prStatus !== "draft" && (
         <GrandTotal
           control={form.control}
           itemCount={itemFields.length}
           currencyCode={defaultBu?.config?.default_currency?.code ?? ""}
         />
-      )}
+      )} */}
 
       <DeleteDialog
         open={deleteIndex !== null}

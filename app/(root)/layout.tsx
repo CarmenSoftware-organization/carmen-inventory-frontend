@@ -12,7 +12,10 @@ export default function RootLayout({
       <AppSidebar />
       <SidebarInset className="h-dvh overflow-hidden">
         <Navbar />
-        <div id="main-content" className="flex flex-1 flex-col gap-4 p-3 overflow-auto">
+        <div
+          id="main-content"
+          className="flex flex-1 flex-col gap-4 m-3 overflow-auto"
+        >
           {children}
         </div>
       </SidebarInset>

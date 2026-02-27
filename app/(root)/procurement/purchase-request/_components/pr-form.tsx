@@ -44,6 +44,7 @@ const PrCommentSheet = dynamic(() =>
   import("./pr-comment-sheet").then((mod) => mod.PrCommentSheet),
 );
 import { PrFormActions } from "./pr-form-actions";
+import { PrFooterAction } from "./pr-footer-action";
 import { PrActionDialog } from "./pr-action-dialog";
 import { PrWorkflowStep } from "./pr-workflow-step";
 import { PrWorkflowHistory } from "./pr-workflow-history";
@@ -360,7 +361,6 @@ export function PurchaseRequestForm({
 
   const handleReject = () => setActionDialog({ type: "reject" });
   const handleSendBack = () => setActionDialog({ type: "send_back" });
-  // const handleReview = () => setActionDialog({ type: "review" });
 
   const handleActionConfirm = (message: string) => {
     if (!purchaseRequest) return;
@@ -438,19 +438,19 @@ export function PurchaseRequestForm({
       title: "Send Back Purchase Request",
       description: "Please provide a reason for sending back this PR.",
       confirmLabel: "Send Back",
-      confirmVariant: "default" as const,
+      confirmVariant: "warning" as const,
     },
     review: {
       title: "Send for Review",
       description: "Please provide a reason for sending this PR for review.",
       confirmLabel: "Send for Review",
-      confirmVariant: "default" as const,
+      confirmVariant: "warning" as const,
     },
   };
 
   return (
-    <div className="space-y-4">
-      <div className="sticky top-0 z-10 bg-background flex items-center justify-between py-2">
+    <div className="flex flex-col flex-1 gap-4">
+      <div className="flex items-center justify-between my-2">
         <div className="flex items-center gap-2">
           <Button
             type="button"
@@ -487,17 +487,10 @@ export function PurchaseRequestForm({
           isPending={isPending}
           isDeletePending={deletePr.isPending}
           hasRecord={!!purchaseRequest}
-          control={form.control}
-          itemCount={defaultValues.items?.length ?? 0}
           onEdit={() => setMode("edit")}
           onCancel={handleCancel}
           onDelete={() => setShowDelete(true)}
           onComment={() => setShowComment(true)}
-          onSubmitPr={handleSubmitPr}
-          onApprove={handleApprove}
-          onReject={handleReject}
-          onSendBack={handleSendBack}
-          onPurchaseApprove={handlePurchaseApprove}
         />
       </div>
 
@@ -618,6 +611,20 @@ export function PurchaseRequestForm({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <PrFooterAction
+        role={role}
+        prStatus={purchaseRequest?.pr_status}
+        isPending={isPending}
+        hasRecord={!!purchaseRequest}
+        control={form.control}
+        currencyCode={defaultBu?.config?.default_currency?.code ?? ""}
+        onSubmitPr={handleSubmitPr}
+        onApprove={handleApprove}
+        onReject={handleReject}
+        onSendBack={handleSendBack}
+        onPurchaseApprove={handlePurchaseApprove}
+      />
     </div>
   );
 }

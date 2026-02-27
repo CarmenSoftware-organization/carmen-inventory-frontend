@@ -1,30 +1,13 @@
-import { useState } from "react";
-import { useWatch, type Control } from "react-hook-form";
 import {
-  Check,
-  Eye,
   MessageSquare,
   Pencil,
   Save,
-  SendHorizonal,
-  ShoppingCart,
   Trash2,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { STAGE_ROLE } from "@/types/stage-role";
 import type { FormMode } from "@/types/form";
-import type { PrFormValues } from "./pr-form-schema";
 
 interface PrFormActionsProps {
   readonly mode: FormMode;
@@ -33,17 +16,10 @@ interface PrFormActionsProps {
   readonly isPending: boolean;
   readonly isDeletePending: boolean;
   readonly hasRecord: boolean;
-  readonly control: Control<PrFormValues>;
-  readonly itemCount: number;
   readonly onEdit: () => void;
   readonly onCancel: () => void;
   readonly onDelete: () => void;
   readonly onComment: () => void;
-  readonly onSubmitPr?: () => void;
-  readonly onApprove?: () => void;
-  readonly onReject?: () => void;
-  readonly onSendBack?: () => void;
-  readonly onPurchaseApprove?: () => void;
 }
 
 export function PrFormActions({
@@ -53,23 +29,14 @@ export function PrFormActions({
   isPending,
   isDeletePending,
   hasRecord,
-  control,
-  itemCount,
   onEdit,
   onCancel,
   onDelete,
   onComment,
-  onSubmitPr,
-  onApprove,
-  onReject,
-  onSendBack,
-  onPurchaseApprove,
 }: PrFormActionsProps) {
   const isView = mode === "view";
-  const isEdit = mode === "edit";
   const isVoided = prStatus === "voided";
   const isViewOnly = role === STAGE_ROLE.VIEW_ONLY;
-  const showWorkflowActions = hasRecord && !isVoided && !isViewOnly;
 
   return (
     <div className="flex items-center gap-2">
@@ -106,21 +73,6 @@ export function PrFormActions({
         </>
       )}
 
-      {showWorkflowActions && (
-        <WorkflowActions
-          control={control}
-          itemCount={itemCount}
-          role={role}
-          prStatus={prStatus}
-          isPending={isPending}
-          onSubmitPr={onSubmitPr}
-          onApprove={onApprove}
-          onReject={onReject}
-          onSendBack={onSendBack}
-          onPurchaseApprove={onPurchaseApprove}
-        />
-      )}
-
       {prStatus === "draft" && (
         <Button
           type="button"
@@ -143,259 +95,3 @@ export function PrFormActions({
     </div>
   );
 }
-
-interface WorkflowActionsProps {
-  readonly control: Control<PrFormValues>;
-  readonly itemCount: number;
-  readonly role?: string;
-  readonly prStatus?: string;
-  readonly isPending: boolean;
-  readonly onSubmitPr?: () => void;
-  readonly onApprove?: () => void;
-  readonly onReject?: () => void;
-  readonly onSendBack?: () => void;
-  readonly onPurchaseApprove?: () => void;
-}
-
-type ConfirmConfig = {
-  title: string;
-  description: string;
-  confirmLabel: string;
-  variant: "default" | "destructive" | "success" | "info" | "warning";
-  onConfirm: () => void;
-};
-
-const computePurchaseAction = (
-  statuses: string[],
-): "none" | "review" | "rejected" | "approved" => {
-  if (statuses.length === 0) return "none";
-  if (statuses.includes("review")) return "review";
-  if (statuses.includes("pending") || statuses.includes("")) return "none";
-  if (statuses.includes("approved")) return "approved";
-  if (statuses.every((s) => s === "rejected")) return "rejected";
-  return "none";
-};
-
-const WorkflowActions = ({
-  control,
-  itemCount,
-  role,
-  prStatus,
-  isPending,
-  onSubmitPr,
-  onApprove,
-  onReject,
-  onSendBack,
-  onPurchaseApprove,
-}: WorkflowActionsProps) => {
-  const [confirm, setConfirm] = useState<ConfirmConfig | null>(null);
-
-  // Watch each item's current_stage_status individually — proven reactive
-  // pattern (same as StatusCell which correctly updates on setValue).
-  const statusFieldNames = Array.from(
-    { length: itemCount },
-    (_, i) => `items.${i}.current_stage_status` as const,
-  );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const rawStatuses = useWatch({ control, name: statusFieldNames as any });
-
-  const itemStatuses =
-    itemCount > 0 && Array.isArray(rawStatuses)
-      ? rawStatuses.map((s: unknown) => (typeof s === "string" ? s : "") || "")
-      : [];
-
-  const canSubmit = role === STAGE_ROLE.CREATE && prStatus !== "in_progress";
-
-  const canApprove = role === STAGE_ROLE.APPROVE;
-  const canPurchaseApprove = role === STAGE_ROLE.PURCHASE;
-  const purchaseAction = computePurchaseAction(itemStatuses);
-
-  const openConfirm = (config: ConfirmConfig) => setConfirm(config);
-
-  return (
-    <>
-      {canSubmit && (
-        <Button
-          type="button"
-          size="sm"
-          variant="info"
-          disabled={isPending}
-          onClick={() =>
-            openConfirm({
-              title: "Submit Purchase Request",
-              description:
-                "This will submit the PR for approval. Are you sure?",
-              confirmLabel: "Submit",
-              variant: "info",
-              onConfirm: () => onSubmitPr?.(),
-            })
-          }
-        >
-          <SendHorizonal />
-          Submit
-        </Button>
-      )}
-
-      {canApprove && purchaseAction === "approved" && (
-        <Button
-          type="button"
-          size="sm"
-          variant="success"
-          disabled={isPending}
-          onClick={() =>
-            openConfirm({
-              title: "Approve Purchase Request",
-              description:
-                "This will approve the PR and move it to the next stage. Are you sure?",
-              confirmLabel: "Approve",
-              variant: "success",
-              onConfirm: () => onApprove?.(),
-            })
-          }
-        >
-          <Check />
-          Approve
-        </Button>
-      )}
-
-      {canApprove && purchaseAction === "rejected" && (
-        <Button
-          type="button"
-          size="sm"
-          variant="destructive"
-          disabled={isPending}
-          onClick={() =>
-            openConfirm({
-              title: "Reject Purchase Request",
-              description:
-                "All items are rejected. This will reject the PR. Are you sure?",
-              confirmLabel: "Reject",
-              variant: "destructive",
-              onConfirm: () => onReject?.(),
-            })
-          }
-        >
-          <X />
-          Reject
-        </Button>
-      )}
-
-      {canApprove && purchaseAction === "review" && (
-        <Button
-          type="button"
-          size="sm"
-          variant="warning"
-          disabled={isPending}
-          onClick={() =>
-            openConfirm({
-              title: "Send Back Purchase Request",
-              description:
-                "Some items need review. This will send the PR back. Are you sure?",
-              confirmLabel: "Send Back",
-              variant: "warning",
-              onConfirm: () => onSendBack?.(),
-            })
-          }
-        >
-          <Eye />
-          Send Back
-        </Button>
-      )}
-
-      {canPurchaseApprove && purchaseAction === "approved" && (
-        <Button
-          type="button"
-          size="sm"
-          variant="success"
-          disabled={isPending}
-          onClick={() =>
-            openConfirm({
-              title: "Purchase Approve",
-              description: "This will approve for purchasing. Are you sure?",
-              confirmLabel: "Purchase Approve",
-              variant: "success",
-              onConfirm: () => onPurchaseApprove?.(),
-            })
-          }
-        >
-          <ShoppingCart />
-          Approve
-        </Button>
-      )}
-
-      {canPurchaseApprove && purchaseAction === "rejected" && (
-        <Button
-          type="button"
-          size="sm"
-          variant="destructive"
-          disabled={isPending}
-          onClick={() =>
-            openConfirm({
-              title: "Reject Purchase Request",
-              description:
-                "All items are rejected. This will reject the PR. Are you sure?",
-              confirmLabel: "Reject",
-              variant: "destructive",
-              onConfirm: () => onReject?.(),
-            })
-          }
-        >
-          <X />
-          Reject
-        </Button>
-      )}
-
-      {canPurchaseApprove && purchaseAction === "review" && (
-        <Button
-          type="button"
-          size="sm"
-          variant="warning"
-          disabled={isPending}
-          onClick={() =>
-            openConfirm({
-              title: "Send Back Purchase Request",
-              description:
-                "Some items need review. This will send the PR back. Are you sure?",
-              confirmLabel: "Send Back",
-              variant: "warning",
-              onConfirm: () => onSendBack?.(),
-            })
-          }
-        >
-          <Eye />
-          Send Back
-        </Button>
-      )}
-
-      <AlertDialog
-        open={!!confirm}
-        onOpenChange={(open) => {
-          if (!open) setConfirm(null);
-        }}
-      >
-        {confirm && (
-          <AlertDialogContent size="sm">
-            <AlertDialogHeader>
-              <AlertDialogTitle>{confirm.title}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {confirm.description}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                variant={confirm.variant}
-                onClick={() => {
-                  confirm.onConfirm();
-                  setConfirm(null);
-                }}
-              >
-                {confirm.confirmLabel}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        )}
-      </AlertDialog>
-    </>
-  );
-};

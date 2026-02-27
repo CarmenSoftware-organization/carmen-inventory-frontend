@@ -3,12 +3,14 @@
 import { useMemo } from "react";
 import { Warehouse } from "lucide-react";
 import { useUserLocation } from "@/hooks/use-user-location";
+import type { Location } from "@/types/location";
 import { Badge } from "@/components/ui/badge";
 import { LookupCombobox } from "./lookup-combobox";
 
 interface LookupUserLocationProps {
   readonly value: string;
   readonly onValueChange: (value: string) => void;
+  readonly onItemChange?: (location: Location) => void;
   readonly disabled?: boolean;
   readonly placeholder?: string;
   readonly className?: string;
@@ -18,6 +20,7 @@ interface LookupUserLocationProps {
 export function LookupUserLocation({
   value,
   onValueChange,
+  onItemChange,
   disabled,
   placeholder = "Select location",
   className,
@@ -33,7 +36,10 @@ export function LookupUserLocation({
   return (
     <LookupCombobox
       value={value}
-      onValueChange={(id) => onValueChange(id)}
+      onValueChange={(id, item) => {
+        onValueChange(id);
+        if (item) onItemChange?.(item);
+      }}
       items={locations}
       getId={(l) => l.id}
       getLabel={(l) => l.name}
